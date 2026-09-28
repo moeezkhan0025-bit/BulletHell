@@ -13,6 +13,5 @@ MonoBehaviour:
   m_Name: PlayerData
   m_EditorClassIdentifier: BulletHell::BulletHell.Player.PlayerData
   moveSpeed: 6
-  armRingRadius: 0.85
+  armRingRadius: 0.45
   screenEdgePadding: 1.2
-  startingArmSlot: 0

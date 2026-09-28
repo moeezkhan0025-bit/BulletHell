@@ -110,7 +110,7 @@ Assets/
 - [x] Setup: Unity 6.3 project, Git repo, .gitignore, this file.
 - [x] M0 Project skeleton: folder layout, Boot/Game scenes, Gameplay action map + generated C# class.
 - [x] M1 Movement + arm selection: soft select, L3 lock with free 360 aim, indicators, debug overlay.
-- [ ] M1.5 Arm art + loadout: WeaponArmData for my 4 arm sprites (import settings, pivots, muzzles),
+- [x] M1.5 Arm art + loadout: WeaponArmData for my 4 arm sprites (import settings, pivots, muzzles),
       ArmLoadout with 8 slots, Starting/Debug loadouts, arms spawned from the loadout.
 - [ ] M2 R1 fires the selected arm in its current direction (slot direction when soft, aim direction when locked) with one ammo type, pooled projectiles.
       Each arm fires from its own muzzle using its own WeaponArmData stats.

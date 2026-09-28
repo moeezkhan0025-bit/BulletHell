@@ -1,4 +1,5 @@
 using BulletHell.Input;
+using BulletHell.Weapons;
 using UnityEngine;
 
 namespace BulletHell.Player
@@ -40,6 +41,13 @@ namespace BulletHell.Player
                 Selected = None;
                 Locked = false;
             }
+        }
+
+        /// <summary>Owns exactly the loadout's filled slots.</summary>
+        public void SetOwnedFromLoadout(ArmLoadout loadout)
+        {
+            for (int i = 0; i < ArmCount; i++)
+                SetOwned(i, loadout.IsFilled(i));
         }
 
         public static float HomeAngle(int arm) => arm * SliceDegrees;

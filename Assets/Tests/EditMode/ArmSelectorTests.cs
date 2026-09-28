@@ -1,5 +1,6 @@
 using BulletHell.Input;
 using BulletHell.Player;
+using BulletHell.Weapons;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -254,6 +255,23 @@ namespace BulletHell.Tests
             selector.SetOwned(E, false);
             selector.Update(Stick(100f, 0.9f)); // E is gone; SE (135) is nearer than NE (45)
             Assert.AreEqual(3, selector.Selected);
+        }
+
+        [Test]
+        public void Loadout_OwnsExactlyFilledSlots()
+        {
+            var arm = ScriptableObject.CreateInstance<WeaponArmData>();
+            var loadout = ScriptableObject.CreateInstance<ArmLoadout>();
+            loadout.SetSlot(N, arm);
+            loadout.SetSlot(S, arm); // same arm type in two slots
+
+            selector.SetOwnedFromLoadout(loadout);
+
+            for (int i = 0; i < ArmSelector.ArmCount; i++)
+                Assert.AreEqual(i == N || i == S, selector.IsOwned(i), $"slot {i}");
+
+            Object.DestroyImmediate(loadout);
+            Object.DestroyImmediate(arm);
         }
     }
 }

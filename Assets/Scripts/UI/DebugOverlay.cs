@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace BulletHell.UI
 {
     /// <summary>
-    /// On-screen readout of move stick, aim magnitude/angle, selected arm, selection state and arm aim.
+    /// On-screen readout of move stick, aim magnitude/angle, selected arm (slot and name), selection state and arm aim.
     /// Rebuilds its text only when a displayed value changes, so it doesn't allocate every frame.
     /// </summary>
     public sealed class DebugOverlay : MonoBehaviour
@@ -52,7 +52,12 @@ namespace BulletHell.UI
                    .Append((moveY / 100f).ToString("0.00")).Append(")\n");
             builder.Append("AIM    mag ").Append((magnitude / 100f).ToString("0.00"));
             builder.Append("   angle ").Append(angle < 0 ? "--" : angle.ToString()).Append("°\n");
-            builder.Append("ARM    ").Append(arm == ArmSelector.None ? "none" : ArmNames[arm]).Append('\n');
+            builder.Append("ARM    ");
+            if (arm == ArmSelector.None)
+                builder.Append("none");
+            else
+                builder.Append(ArmNames[arm]).Append("  ").Append(arms.SelectedArmData.DisplayName);
+            builder.Append('\n');
             builder.Append("STATE  ").Append(StateNames[state]).Append('\n');
             builder.Append("ARM AIM ").Append(armAim < 0 ? "--" : armAim.ToString()).Append('°');
             label.text = builder.ToString();
