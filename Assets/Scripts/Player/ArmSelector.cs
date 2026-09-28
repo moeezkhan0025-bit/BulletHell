@@ -3,9 +3,12 @@ using UnityEngine;
 
 namespace BulletHell.Player
 {
+    public enum ArmSelectionState { None, Soft, Locked }
+
     /// <summary>
-    /// Pure selection logic for the 8 weapon arms. Arm 0 = N, then clockwise in 45 degree steps.
-    /// Knows nothing about input devices; feed it a stick vector each frame.
+    /// Pure selection logic for the 8 weapon arm slots. Slot 0 = N, then clockwise in 45 degree steps.
+    /// The stick picks the nearest owned arm, so owned arms split the circle like a pie
+    /// (one arm = the whole circle). Knows nothing about input devices; feed it a stick vector each frame.
     /// </summary>
     public sealed class ArmSelector
     {
@@ -19,12 +22,13 @@ namespace BulletHell.Player
         public int Selected { get; private set; } = None;
         public bool Locked { get; private set; }
 
-        public ArmSelector(InputTuning tuning)
-        {
-            this.tuning = tuning;
-            for (int i = 0; i < ArmCount; i++)
-                owned[i] = true;
-        }
+        /// <summary>Compass direction the selected arm points: its home slot when soft, the free aim when locked.</summary>
+        public float AimAngle { get; private set; }
+
+        public ArmSelectionState State =>
+            Selected == None ? ArmSelectionState.None : Locked ? ArmSelectionState.Locked : ArmSelectionState.Soft;
+
+        public ArmSelector(InputTuning tuning) => this.tuning = tuning;
 
         public bool IsOwned(int arm) => owned[arm];
 
@@ -38,6 +42,8 @@ namespace BulletHell.Player
             }
         }
 
+        public static float HomeAngle(int arm) => arm * SliceDegrees;
+
         /// <summary>Compass angle of a vector: 0 = up (N), increasing clockwise, in [0, 360).</summary>
         public static float CompassAngle(Vector2 v)
         {
@@ -45,53 +51,110 @@ namespace BulletHell.Player
             return angle < 0f ? angle + 360f : angle;
         }
 
-        public static int NearestArm(float compassAngle) =>
-            Mathf.RoundToInt(compassAngle / SliceDegrees) % ArmCount;
+        /// <summary>The owned arm whose home slot is closest to the angle, or None if no arms are owned.</summary>
+        public int NearestOwnedArm(float compassAngle)
+        {
+            int nearest = None;
+            float nearestDistance = float.MaxValue;
+            for (int i = 0; i < ArmCount; i++)
+            {
+                if (!owned[i])
+                    continue;
+                float distance = AngleTo(compassAngle, i);
+                if (distance < nearestDistance)
+                {
+                    nearest = i;
+                    nearestDistance = distance;
+                }
+            }
+            return nearest;
+        }
 
-        /// <summary>Advances selection for this frame's stick. Returns true if the selected arm changed.</summary>
+        /// <summary>
+        /// Advances selection (soft) or aim (locked) for this frame's stick.
+        /// Returns true if the selected arm or its aim changed.
+        /// </summary>
         public bool Update(Vector2 stick)
         {
             if (Locked)
+            {
+                if (stick.magnitude < tuning.LockedAimDeadzone)
+                    return false;
+
+                float angle = CompassAngle(stick);
+                if (Mathf.Approximately(angle, AimAngle))
+                    return false;
+
+                AimAngle = angle;
+                return true;
+            }
+
+            return UpdateSoft(stick);
+        }
+
+        /// <summary>
+        /// Locks the soft-selected arm (aim snaps to the stick), or unlocks it (arm returns home and
+        /// soft select re-evaluates the stick). Does nothing with no arm selected. Returns true if lock changed.
+        /// </summary>
+        public bool ToggleLock(Vector2 stick)
+        {
+            if (Selected == None)
                 return false;
 
+            if (!Locked)
+            {
+                Locked = true;
+                if (stick.magnitude >= tuning.LockedAimDeadzone)
+                    AimAngle = CompassAngle(stick);
+                return true;
+            }
+
+            Locked = false;
+            Select(None);
+            UpdateSoft(stick);
+            return true;
+        }
+
+        private bool UpdateSoft(Vector2 stick)
+        {
             float magnitude = stick.magnitude;
             int next = Selected;
 
             if (Selected == None)
             {
                 if (magnitude >= tuning.SelectThreshold)
-                    next = OwnedOrNone(NearestArm(CompassAngle(stick)));
+                    next = NearestOwnedArm(CompassAngle(stick));
             }
             else if (magnitude < tuning.DeselectThreshold)
             {
                 next = None;
             }
-            else if (magnitude >= tuning.SelectThreshold)
+            else
             {
-                // At the edge: only switch once the stick is clearly past the current slice's boundary.
+                // Held: only switch once the stick is clearly past the boundary between the two arms.
+                // The boundary sits halfway between them, so being h degrees past it means the
+                // distances differ by 2h.
                 float angle = CompassAngle(stick);
-                float offCenter = Mathf.Abs(Mathf.DeltaAngle(angle, Selected * SliceDegrees));
-                if (offCenter > SliceDegrees * 0.5f + tuning.AngleHysteresisDegrees)
-                    next = OwnedOrNone(NearestArm(angle));
+                int candidate = NearestOwnedArm(angle);
+                if (candidate != Selected &&
+                    AngleTo(angle, Selected) - AngleTo(angle, candidate) > 2f * tuning.AngleHysteresisDegrees)
+                    next = candidate;
             }
 
             if (next == Selected)
                 return false;
 
-            Selected = next;
+            Select(next);
             return true;
         }
 
-        /// <summary>Toggles lock on the selected arm. Does nothing with no arm selected. Returns true if lock changed.</summary>
-        public bool ToggleLock()
+        private void Select(int arm)
         {
-            if (Selected == None)
-                return false;
-
-            Locked = !Locked;
-            return true;
+            Selected = arm;
+            AimAngle = arm == None ? 0f : HomeAngle(arm);
         }
 
-        private int OwnedOrNone(int arm) => owned[arm] ? arm : None;
+        private static float AngleTo(float compassAngle, int arm) =>
+            Mathf.Abs(Mathf.DeltaAngle(compassAngle, HomeAngle(arm)));
     }
 }

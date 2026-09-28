@@ -15,9 +15,18 @@ namespace BulletHell.Input
         [Tooltip("Degrees the stick must go past a slice boundary before switching arms.")]
         [SerializeField, Range(0f, 22.5f)] private float angleHysteresisDegrees = 8f;
 
+        [Tooltip("While locked, the arm only follows the stick at or above this magnitude; below it the last aim is kept.")]
+        [SerializeField, Range(0f, 1f)] private float lockedAimDeadzone = 0.5f;
+
+        [Header("Debug")]
+        [Tooltip("Equip all 8 placeholder arms instead of the single starting arm.")]
+        [SerializeField] private bool debugEquipAllArms = true;
+
         public float SelectThreshold => selectThreshold;
         public float DeselectThreshold => deselectThreshold;
         public float AngleHysteresisDegrees => angleHysteresisDegrees;
+        public float LockedAimDeadzone => lockedAimDeadzone;
+        public bool DebugEquipAllArms => debugEquipAllArms;
 
         private void OnValidate()
         {

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace BulletHell.UI
 {
     /// <summary>
-    /// On-screen readout of move stick, aim magnitude/angle, selected arm and lock state.
+    /// On-screen readout of move stick, aim magnitude/angle, selected arm, selection state and arm aim.
     /// Rebuilds its text only when a displayed value changes, so it doesn't allocate every frame.
     /// </summary>
     public sealed class DebugOverlay : MonoBehaviour
@@ -19,7 +19,9 @@ namespace BulletHell.UI
         [SerializeField] private Text label;
 
         private readonly StringBuilder builder = new StringBuilder(160);
-        private int shownMoveX = int.MinValue, shownMoveY, shownMagnitude, shownAngle, shownArm, shownLocked;
+        private static readonly string[] StateNames = { "none", "soft", "locked" };
+
+        private int shownMoveX = int.MinValue, shownMoveY, shownMagnitude, shownAngle, shownArm, shownState, shownArmAim;
 
         private void Update()
         {
@@ -30,10 +32,11 @@ namespace BulletHell.UI
             int magnitude = Mathf.RoundToInt(aim.magnitude * 100f);
             int angle = magnitude > 0 ? Mathf.RoundToInt(ArmSelector.CompassAngle(aim)) % 360 : -1;
             int arm = arms.SelectedArm;
-            int locked = arms.IsLocked ? 1 : 0;
+            int state = (int)arms.State;
+            int armAim = arm == ArmSelector.None ? -1 : Mathf.RoundToInt(arms.AimAngle) % 360;
 
             if (moveX == shownMoveX && moveY == shownMoveY && magnitude == shownMagnitude &&
-                angle == shownAngle && arm == shownArm && locked == shownLocked)
+                angle == shownAngle && arm == shownArm && state == shownState && armAim == shownArmAim)
                 return;
 
             shownMoveX = moveX;
@@ -41,7 +44,8 @@ namespace BulletHell.UI
             shownMagnitude = magnitude;
             shownAngle = angle;
             shownArm = arm;
-            shownLocked = locked;
+            shownState = state;
+            shownArmAim = armAim;
 
             builder.Clear();
             builder.Append("MOVE   (").Append((moveX / 100f).ToString("0.00")).Append(", ")
@@ -49,7 +53,8 @@ namespace BulletHell.UI
             builder.Append("AIM    mag ").Append((magnitude / 100f).ToString("0.00"));
             builder.Append("   angle ").Append(angle < 0 ? "--" : angle.ToString()).Append("°\n");
             builder.Append("ARM    ").Append(arm == ArmSelector.None ? "none" : ArmNames[arm]).Append('\n');
-            builder.Append("LOCKED ").Append(locked == 1 ? "YES" : "no");
+            builder.Append("STATE  ").Append(StateNames[state]).Append('\n');
+            builder.Append("ARM AIM ").Append(armAim < 0 ? "--" : armAim.ToString()).Append('°');
             label.text = builder.ToString();
         }
     }

@@ -15,3 +15,4 @@ MonoBehaviour:
   moveSpeed: 6
   armRingRadius: 0.85
   screenEdgePadding: 1.2
+  startingArmSlot: 0

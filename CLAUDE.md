@@ -29,20 +29,23 @@ PlayStation names below; Xbox = RB / LS click / A B X Y, Switch = R / L-stick cl
 
   SOFT SELECT (default, unlocked) - for rapid arm switching mid-fight:
   - Arm slots sit at 8 fixed directions around the player (N, NE, E, SE, S, SW, W, NW = 45 degree slices).
-  - Pushing the left stick into the outer threshold soft-selects the arm in that direction.
-  - Rotating the stick while in the outer threshold switches the selection to whichever arm is in the
-    new direction. The arm does NOT rotate; it fires in its slot's fixed direction.
+  - Selection areas work like a pie: the stick selects the NEAREST OWNED arm, with boundaries halfway
+    between neighbouring owned arms. One arm = the whole circle; each new arm cuts the pie further.
+    With all 8 owned this is the 45 degree slices.
+  - Pushing the left stick into the outer threshold soft-selects the arm for that direction.
+  - Rotating the stick while the selection is held (magnitude >= deselect threshold) switches the
+    selection to whichever arm owns the new direction. The arm does NOT rotate; it fires in its slot's fixed direction.
   - Stick drops out of the outer threshold -> arm deselects.
   - Select threshold: magnitude >= 0.85. Deselect threshold: magnitude < 0.65 (hysteresis).
-  - Angle hysteresis: ~8 degrees past a slice boundary before switching arms (no jitter on boundaries).
-  - Directions with no arm equipped select nothing.
+  - Angle hysteresis: ~8 degrees past a boundary before switching arms (no jitter on boundaries).
+  - Arms are only drawn while soft-selected or locked; with nothing selected no arms are visible.
 
   LOCKED (after pressing L3) - for committing to one arm and aiming it freely:
   - Pressing L3 while an arm is soft-selected locks that arm.
   - While locked, the left stick aims the locked arm freely through 360 degrees: the arm rotates around
     the player to point where the stick points, and fires in that direction. Rotating the stick no
     longer switches arms.
-  - Stick released while locked: the arm stays locked and keeps its last aim direction.
+  - Stick released while locked (below InputTuning's locked aim deadzone): the arm stays locked and keeps its last aim direction.
   - Pressing L3 again unlocks: the arm returns to its home slot and soft select resumes.
   - Pressing L3 with nothing soft-selected does nothing.
   - Clear on-screen indicator for locked vs soft-selected (e.g. solid outline vs dim outline).
