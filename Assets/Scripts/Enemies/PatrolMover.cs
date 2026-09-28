@@ -1,3 +1,4 @@
+using BulletHell.Core;
 using UnityEngine;
 
 namespace BulletHell.Enemies
@@ -12,10 +13,12 @@ namespace BulletHell.Enemies
         private float speed;
         private float range;
         private float elapsed;
+        private StatusEffects status;
 
         public void Configure(Vector2 startPosition, float moveSpeed, float moveRange, Vector2 moveAxis)
         {
             body = GetComponent<Rigidbody2D>();
+            TryGetComponent(out status);
             origin = startPosition;
             speed = moveSpeed;
             range = moveRange;
@@ -34,6 +37,9 @@ namespace BulletHell.Enemies
 
         private void FixedUpdate()
         {
+            if (status != null && status.IsStunned)
+                return; // stunned: hold position, and the patrol phase pauses too
+
             elapsed += Time.fixedDeltaTime;
             float offset = Mathf.PingPong(elapsed * speed + range, range * 2f) - range;
             body.MovePosition(origin + axis * offset);

@@ -25,22 +25,32 @@ namespace BulletHell.Weapons
         }
     }
 
-    /// <summary>An upgrade an arm instance can hold in one of its upgrade slots: a list of stat modifiers.</summary>
-    [CreateAssetMenu(fileName = "Upg_", menuName = "BulletHell/Upgrade Data")]
-    public sealed class UpgradeData : ScriptableObject
+    /// <summary>An armament an arm instance can hold in one of its armament slots: a list of stat modifiers.</summary>
+    [CreateAssetMenu(fileName = "Armament_", menuName = "BulletHell/Armament Data")]
+    public sealed class ArmamentData : ScriptableObject
     {
-        [SerializeField] private string displayName = "Upgrade";
+        [SerializeField] private string displayName = "Armament";
         [SerializeField] private StatModifier[] modifiers = Array.Empty<StatModifier>();
+        [Tooltip("Special effects (pierce, burn, ...) this armament adds to the arm it is equipped on.")]
+        [SerializeField] private ArmEffect[] effects = Array.Empty<ArmEffect>();
 
         public string DisplayName => displayName;
         public IReadOnlyList<StatModifier> Modifiers => modifiers;
+        public IReadOnlyList<ArmEffect> Effects => effects ?? Array.Empty<ArmEffect>();
 
 #if UNITY_EDITOR
-        /// <summary>Editor-only: used by setup scripts and tests to fill in an upgrade.</summary>
+        /// <summary>Editor-only: used by setup scripts and tests to fill in an armament.</summary>
         public void Set(string name, params StatModifier[] newModifiers)
         {
             displayName = name;
             modifiers = newModifiers;
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
+
+        /// <summary>Editor-only: sets the special effects.</summary>
+        public void SetEffects(params ArmEffect[] newEffects)
+        {
+            effects = newEffects;
             UnityEditor.EditorUtility.SetDirty(this);
         }
 #endif

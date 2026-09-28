@@ -31,11 +31,11 @@ namespace BulletHell.Input
 
         public event Action LockTogglePressed;
 
-        // Debug map (D-pad / F1-F4): add, remove, next and previous test upgrade.
-        public event Action DebugAddUpgradePressed;
-        public event Action DebugRemoveUpgradePressed;
-        public event Action DebugNextUpgradePressed;
-        public event Action DebugPrevUpgradePressed;
+        // Debug map (D-pad / F1-F4): add, remove, next and previous test armament.
+        public event Action DebugAddArmamentPressed;
+        public event Action DebugRemoveArmamentPressed;
+        public event Action DebugNextArmamentPressed;
+        public event Action DebugPrevArmamentPressed;
 
         /// <summary>A face button (ammo slot 0-3) was pressed.</summary>
         public event Action<int> AmmoPressed;
@@ -52,10 +52,10 @@ namespace BulletHell.Input
             lockToggleAction = gameplay.LockToggle;
             fireAction = gameplay.Fire;
             lockToggleAction.performed += OnLockToggle;
-            input.Debug.DebugAddUpgrade.performed += OnDebugAdd;
-            input.Debug.DebugRemoveUpgrade.performed += OnDebugRemove;
-            input.Debug.DebugNextUpgrade.performed += OnDebugNext;
-            input.Debug.DebugPrevUpgrade.performed += OnDebugPrev;
+            input.Debug.DebugAddArmament.performed += OnDebugAdd;
+            input.Debug.DebugRemoveArmament.performed += OnDebugRemove;
+            input.Debug.DebugNextArmament.performed += OnDebugNext;
+            input.Debug.DebugPrevArmament.performed += OnDebugPrev;
 
             ammoActions[0] = gameplay.EquipAmmo1;
             ammoActions[1] = gameplay.EquipAmmo2;
@@ -86,17 +86,17 @@ namespace BulletHell.Input
             lockToggleAction.performed -= OnLockToggle;
             for (int i = 0; i < AmmoButtonCount; i++)
                 ammoActions[i].performed -= ammoHandlers[i];
-            input.Debug.DebugAddUpgrade.performed -= OnDebugAdd;
-            input.Debug.DebugRemoveUpgrade.performed -= OnDebugRemove;
-            input.Debug.DebugNextUpgrade.performed -= OnDebugNext;
-            input.Debug.DebugPrevUpgrade.performed -= OnDebugPrev;
+            input.Debug.DebugAddArmament.performed -= OnDebugAdd;
+            input.Debug.DebugRemoveArmament.performed -= OnDebugRemove;
+            input.Debug.DebugNextArmament.performed -= OnDebugNext;
+            input.Debug.DebugPrevArmament.performed -= OnDebugPrev;
             input.Dispose();
         }
 
-        private void OnDebugAdd(InputAction.CallbackContext _) => DebugAddUpgradePressed?.Invoke();
-        private void OnDebugRemove(InputAction.CallbackContext _) => DebugRemoveUpgradePressed?.Invoke();
-        private void OnDebugNext(InputAction.CallbackContext _) => DebugNextUpgradePressed?.Invoke();
-        private void OnDebugPrev(InputAction.CallbackContext _) => DebugPrevUpgradePressed?.Invoke();
+        private void OnDebugAdd(InputAction.CallbackContext _) => DebugAddArmamentPressed?.Invoke();
+        private void OnDebugRemove(InputAction.CallbackContext _) => DebugRemoveArmamentPressed?.Invoke();
+        private void OnDebugNext(InputAction.CallbackContext _) => DebugNextArmamentPressed?.Invoke();
+        private void OnDebugPrev(InputAction.CallbackContext _) => DebugPrevArmamentPressed?.Invoke();
 
         private void OnLockToggle(InputAction.CallbackContext _) => LockTogglePressed?.Invoke();
     }

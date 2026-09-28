@@ -6,7 +6,7 @@ namespace BulletHell.Weapons
 
     /// <summary>
     /// Ammo type: defines how an arm shoots (projectile shape and count, or a continuous beam), plus heat and spin-up.
-    /// The arm's stats (WeaponArmData, later upgraded) are the base; the multipliers here scale them.
+    /// The arm's stats (WeaponArmData, later modified by armaments) are the base; the multipliers here scale them.
     /// Heat values are fractions of the heat bar (1 = overheat).
     /// </summary>
     [CreateAssetMenu(fileName = "Ammo_", menuName = "BulletHell/Ammo Type Data")]

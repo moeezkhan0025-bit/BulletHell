@@ -1,3 +1,4 @@
+using BulletHell.Core;
 using BulletHell.Input;
 using BulletHell.Player;
 using BulletHell.UI;
@@ -9,61 +10,134 @@ using UnityEngine;
 namespace BulletHell.EditorTools
 {
     /// <summary>
-    /// One-shot M3b setup: creates/updates the 4 test upgrades, adds DebugUpgradeControls to the Player prefab and
-    /// wires it into the debug overlay in the Game scene. Safe to run again.
+    /// One-shot M3b setup: creates/updates the effect assets and test armaments, adds PlayerInventory and
+    /// DebugArmamentControls to the Player prefab, StatusEffects to the test enemy prefab, and wires the debug overlay
+    /// in the Game scene. Safe to run again.
     /// </summary>
     public static class M3bSetup
     {
-        private const string UpgradeDir = "Assets/Data/Upgrades";
+        private const string ArmamentDir = "Assets/Data/Armaments";
+        private const string EffectDir = "Assets/Data/Effects";
         private const string PlayerPrefabPath = "Assets/Prefabs/Player.prefab";
+        private const string EnemyPrefabPath = "Assets/Prefabs/TestEnemy.prefab";
         private const string ScenePath = "Assets/Scenes/Game.unity";
 
-        [MenuItem("BulletHell/M3b/Create Test Upgrades And Wire Scene")]
+        [MenuItem("BulletHell/M3b/Create Test Armaments And Wire Scene")]
         public static void Run()
         {
-            UpgradeData[] upgrades =
+            if (!AssetDatabase.IsValidFolder(EffectDir))
+                AssetDatabase.CreateFolder("Assets/Data", "Effects");
+
+            var pierce = CreateAsset<PierceEffect>("Effect_Pierce");
+            pierce.Set(2);
+            pierce.SetDisplayName("Pierce");
+            var burn = CreateAsset<BurnEffect>("Effect_Burn");
+            burn.Set(2f, 3f, 0.5f);
+            burn.SetDisplayName("Burn");
+            var stun = CreateAsset<StunEffect>("Effect_Stun");
+            stun.Set(0.3f, 0.8f);
+            stun.SetDisplayName("Stun");
+            var ricochet = CreateAsset<RicochetEffect>("Effect_Ricochet");
+            ricochet.Set(2, 6f);
+            ricochet.SetDisplayName("Ricochet");
+
+            ArmamentData damage = CreateArmament("Armament_Damage", "+50% Damage", null, new StatModifier(StatType.Damage, ModifierMode.Percent, 50f));
+            ArmamentData fireRate = CreateArmament("Armament_FireRate", "+2 Fire Rate", null, new StatModifier(StatType.FireRate, ModifierMode.Flat, 2f));
+            ArmamentData bulletSpeed = CreateArmament("Armament_BulletSpeed", "+30% Bullet Speed", null, new StatModifier(StatType.ProjectileSpeed, ModifierMode.Percent, 30f));
+            ArmamentData extraProjectile = CreateArmament("Armament_ExtraProjectile", "+1 Projectile", null, new StatModifier(StatType.ProjectilesPerShot, ModifierMode.Flat, 1f));
+            ArmamentData pierceArmament = CreateArmament("Armament_Pierce", "Piercing Rounds", pierce);
+            ArmamentData burnArmament = CreateArmament("Armament_Burn", "Incendiary Rounds", burn);
+            ArmamentData stunArmament = CreateArmament("Armament_Stun", "Shock Rounds", stun);
+            ArmamentData ricochetArmament = CreateArmament("Armament_Ricochet", "Ricochet Rounds", ricochet);
+
+            // Effect armaments twice, so two of the same effect (stacking) can be tested.
+            ArmamentData[] startingArmaments =
             {
-                CreateUpgrade("Upg_Damage", "+50% Damage", new StatModifier(StatType.Damage, ModifierMode.Percent, 50f)),
-                CreateUpgrade("Upg_FireRate", "+2 Fire Rate", new StatModifier(StatType.FireRate, ModifierMode.Flat, 2f)),
-                CreateUpgrade("Upg_BulletSpeed", "+30% Bullet Speed", new StatModifier(StatType.ProjectileSpeed, ModifierMode.Percent, 30f)),
-                CreateUpgrade("Upg_ExtraProjectile", "+1 Projectile", new StatModifier(StatType.ProjectilesPerShot, ModifierMode.Flat, 1f)),
+                damage, fireRate, bulletSpeed, extraProjectile,
+                pierceArmament, pierceArmament, burnArmament, burnArmament,
+                stunArmament, stunArmament, ricochetArmament, ricochetArmament,
+            };
+            WeaponArmData[] spareArms =
+            {
+                AssetDatabase.LoadAssetAtPath<WeaponArmData>("Assets/Data/Arms/Arm_Red.asset"),
+                AssetDatabase.LoadAssetAtPath<WeaponArmData>("Assets/Data/Arms/Arm_Blue.asset"),
             };
 
-            SetupPlayerPrefab(upgrades);
+            SetupPlayerPrefab(startingArmaments, spareArms);
+            SetupEnemyPrefab();
             SetupScene();
             AssetDatabase.SaveAssets();
             Debug.Log("M3b setup complete.");
         }
 
-        private static UpgradeData CreateUpgrade(string assetName, string displayName, params StatModifier[] modifiers)
+        private static T CreateAsset<T>(string assetName) where T : ScriptableObject
         {
-            string path = $"{UpgradeDir}/{assetName}.asset";
-            var upgrade = AssetDatabase.LoadAssetAtPath<UpgradeData>(path);
-            if (upgrade == null)
+            string path = $"{EffectDir}/{assetName}.asset";
+            var asset = AssetDatabase.LoadAssetAtPath<T>(path);
+            if (asset == null)
             {
-                upgrade = ScriptableObject.CreateInstance<UpgradeData>();
-                AssetDatabase.CreateAsset(upgrade, path);
+                asset = ScriptableObject.CreateInstance<T>();
+                AssetDatabase.CreateAsset(asset, path);
             }
-            upgrade.Set(displayName, modifiers);
-            return upgrade;
+            return asset;
         }
 
-        private static void SetupPlayerPrefab(UpgradeData[] upgrades)
+        private static ArmamentData CreateArmament(string assetName, string displayName, ArmEffect effect,
+                                                   params StatModifier[] modifiers)
+        {
+            string path = $"{ArmamentDir}/{assetName}.asset";
+            var armament = AssetDatabase.LoadAssetAtPath<ArmamentData>(path);
+            if (armament == null)
+            {
+                armament = ScriptableObject.CreateInstance<ArmamentData>();
+                AssetDatabase.CreateAsset(armament, path);
+            }
+            armament.Set(displayName, modifiers);
+            armament.SetEffects(effect != null ? new[] { effect } : new ArmEffect[0]);
+            return armament;
+        }
+
+        private static void SetupPlayerPrefab(ArmamentData[] armaments, WeaponArmData[] spareArms)
         {
             GameObject root = PrefabUtility.LoadPrefabContents(PlayerPrefabPath);
             try
             {
-                var controls = root.GetComponent<DebugUpgradeControls>() ?? root.AddComponent<DebugUpgradeControls>();
+                var inventory = root.GetComponent<PlayerInventory>() ?? root.AddComponent<PlayerInventory>();
+                var inventorySo = new SerializedObject(inventory);
+                FillList(inventorySo.FindProperty("startingArmaments"), armaments);
+                FillList(inventorySo.FindProperty("startingSpareArms"), spareArms);
+                inventorySo.ApplyModifiedPropertiesWithoutUndo();
+
+                var controls = root.GetComponent<DebugArmamentControls>() ?? root.AddComponent<DebugArmamentControls>();
                 var so = new SerializedObject(controls);
                 so.FindProperty("input").objectReferenceValue = root.GetComponentInChildren<GameplayInputReader>();
                 so.FindProperty("arms").objectReferenceValue = root.GetComponentInChildren<ArmSelectionController>();
-                SerializedProperty list = so.FindProperty("testUpgrades");
-                list.arraySize = upgrades.Length;
-                for (int i = 0; i < upgrades.Length; i++)
-                    list.GetArrayElementAtIndex(i).objectReferenceValue = upgrades[i];
+                so.FindProperty("inventory").objectReferenceValue = inventory;
                 so.ApplyModifiedPropertiesWithoutUndo();
 
                 PrefabUtility.SaveAsPrefabAsset(root, PlayerPrefabPath);
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
+        private static void FillList(SerializedProperty list, Object[] items)
+        {
+            list.arraySize = items.Length;
+            for (int i = 0; i < items.Length; i++)
+                list.GetArrayElementAtIndex(i).objectReferenceValue = items[i];
+        }
+
+        private static void SetupEnemyPrefab()
+        {
+            GameObject root = PrefabUtility.LoadPrefabContents(EnemyPrefabPath);
+            try
+            {
+                if (root.GetComponent<StatusEffects>() == null)
+                    root.AddComponent<StatusEffects>();
+                PrefabUtility.SaveAsPrefabAsset(root, EnemyPrefabPath);
             }
             finally
             {
@@ -76,7 +150,7 @@ namespace BulletHell.EditorTools
             var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             var overlay = Object.FindFirstObjectByType<DebugOverlay>();
             var so = new SerializedObject(overlay);
-            so.FindProperty("upgradeControls").objectReferenceValue = Object.FindFirstObjectByType<DebugUpgradeControls>();
+            so.FindProperty("armamentControls").objectReferenceValue = Object.FindFirstObjectByType<DebugArmamentControls>();
             so.ApplyModifiedPropertiesWithoutUndo();
 
             EditorSceneManager.MarkSceneDirty(scene);

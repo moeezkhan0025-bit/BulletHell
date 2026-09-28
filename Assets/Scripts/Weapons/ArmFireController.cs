@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using BulletHell.Core;
 using BulletHell.Input;
 using BulletHell.Player;
@@ -83,7 +84,9 @@ namespace BulletHell.Weapons
             Vector2 origin = arm.Muzzle.position;
             Vector3 facing = arm.transform.right;
             float baseAngle = Mathf.Atan2(facing.y, facing.x) * Mathf.Rad2Deg;
-            ArmStats stats = arm.Instance.Stats; // base + upgrades; ammo scales these
+            ArmStats stats = arm.Instance.Stats; // base + armaments; ammo scales these
+            ShotProperties shot = arm.Instance.Shot;
+            IReadOnlyList<ArmEffect> effects = arm.Instance.Effects;
             int count = stats.ProjectilesPerShot + ammo.ExtraProjectiles;
             float spread = stats.Spread * ammo.SpreadMultiplier + ammo.AddedSpread;
             float speed = stats.ProjectileSpeed * ammo.ProjectileSpeedMultiplier;
@@ -96,7 +99,7 @@ namespace BulletHell.Weapons
                 float radians = (baseAngle + offset) * Mathf.Deg2Rad;
                 var direction = new Vector2(Mathf.Cos(radians), Mathf.Sin(radians));
                 pool.Get().Launch(origin, direction, speed, damage, data.IdColor, size,
-                                  ammo.ProjectileSprite, ammo.MaxLifetime);
+                                  ammo.ProjectileSprite, ammo.MaxLifetime, shot, effects);
             }
         }
 
@@ -114,6 +117,10 @@ namespace BulletHell.Weapons
                 {
                     ArmStats stats = arm.Instance.Stats;
                     target.TakeDamage(stats.Damage * stats.FireRate * ammo.DamageMultiplier * dt);
+                    IReadOnlyList<ArmEffect> effects = arm.Instance.Effects;
+                    for (int i = 0; i < effects.Count; i++)
+                        if (effects[i] != null)
+                            effects[i].OnBeamHit(BeamHit[0].collider, dt);
                 }
             }
 

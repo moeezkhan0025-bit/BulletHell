@@ -19,12 +19,14 @@ namespace BulletHell.Enemies
         [SerializeField] private PatrolMover patrol;
 
         private Vector2 spawnPosition;
+        private StatusEffects status;
 
         public EnemyData Data => data;
 
         private void Awake()
         {
             spawnPosition = transform.position;
+            TryGetComponent(out status);
             body.transform.localScale = Vector3.one * data.Size;
             hitbox.radius = data.Size * 0.5f;
             health.Initialize(data.MaxHealth);
@@ -42,6 +44,8 @@ namespace BulletHell.Enemies
 
         private void OnDied()
         {
+            if (status != null)
+                status.Clear();
             SetAlive(false);
             StartCoroutine(RespawnAfterDelay());
         }

@@ -163,9 +163,9 @@ Assets/
       ArmLoadout with 8 slots, Starting/Debug loadouts, arms spawned from the loadout.
 - [x] M2 R1 fires the selected arm in its current direction (slot direction when soft, aim direction when locked) with one ammo type, pooled projectiles.
       Each arm fires from its own muzzle using its own WeaponArmData stats.
-- [ ] M3a Ammo: AmmoTypeData + 4 starter types, 4 face-button ammo slots, HeatComponent/overheat per arm,
+- [x] M3a Ammo: AmmoTypeData + 4 starter types, 4 face-button ammo slots, HeatComponent/overheat per arm,
       ammo pickups (auto-fill empty slot, hold button to replace, dropped ammo), test pickups in scene.
-- [ ] M3b Armaments core: ArmInstance with 3 armament slots, ArmamentData stat modifiers, stat calculation,
+- [x] M3b Armaments core: ArmInstance with 3 armament slots, ArmamentData stat modifiers, stat calculation,
       arm + armament inventories, 1-2 test arm effects, debug controls, overlay shows final stats.
 - [ ] M4 Game flow skeleton: Boot bootstrapper, Main Menu (Start/Continue/Quit), single-slot save system,
       GameStateMachine with a stub round (ends when test enemies are cleared), Round Results -> Shop

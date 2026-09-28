@@ -2,7 +2,7 @@ namespace BulletHell.Weapons
 {
     public enum StatType { Damage, FireRate, ProjectileSpeed, ProjectilesPerShot, Spread }
 
-    /// <summary>The upgradeable stats of one arm. Immutable value; ammo multipliers are applied on top of it when firing.</summary>
+    /// <summary>The tunable stats of one arm. Immutable value; ammo multipliers are applied on top of it when firing.</summary>
     public readonly struct ArmStats
     {
         public readonly float Damage;

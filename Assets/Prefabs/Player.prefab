@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 2947929709545293842}
   - component: {fileID: 1064214870527336465}
   - component: {fileID: 7366169670956113522}
+  - component: {fileID: 4436466189903763867}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -156,14 +157,38 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3bb679e807af289408d7f418b87ea78c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: BulletHell::BulletHell.UI.DebugUpgradeControls
+  m_EditorClassIdentifier: BulletHell::BulletHell.UI.DebugArmamentControls
   input: {fileID: 7010803790201199158}
   arms: {fileID: 6126682682417762252}
-  testUpgrades:
+  inventory: {fileID: 4436466189903763867}
+--- !u!114 &4436466189903763867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5878368061300880211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6d28761e4f1c6e45985416efc05a8eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BulletHell::BulletHell.Player.PlayerInventory
+  startingArmaments:
   - {fileID: 11400000, guid: 84f33c678cc97e948acafc5e9fee6e2e, type: 2}
   - {fileID: 11400000, guid: 837b58284e231c6498559edd4cf4bfc8, type: 2}
   - {fileID: 11400000, guid: 8f64effc0a8f89f47909bfc3e1309fd3, type: 2}
   - {fileID: 11400000, guid: 42a4c8b069e06b143a9da36ffc7f5dcb, type: 2}
+  - {fileID: 11400000, guid: 68ae3a9e11abf4843ae05c1bd7b326dc, type: 2}
+  - {fileID: 11400000, guid: 68ae3a9e11abf4843ae05c1bd7b326dc, type: 2}
+  - {fileID: 11400000, guid: 6d59fa6f3e849724c812571c9373a58a, type: 2}
+  - {fileID: 11400000, guid: 6d59fa6f3e849724c812571c9373a58a, type: 2}
+  - {fileID: 11400000, guid: 3d689478f7a5f64439596c7102a3368d, type: 2}
+  - {fileID: 11400000, guid: 3d689478f7a5f64439596c7102a3368d, type: 2}
+  - {fileID: 11400000, guid: dce3b2b82567db744841bbdfdd6b0030, type: 2}
+  - {fileID: 11400000, guid: dce3b2b82567db744841bbdfdd6b0030, type: 2}
+  startingSpareArms:
+  - {fileID: 11400000, guid: 6a19fab820a00414a8d53e0496489b77, type: 2}
+  - {fileID: 11400000, guid: 73bc14a71f6add446b79b2dfd4f2305a, type: 2}
 --- !u!1 &7117061109556200686
 GameObject:
   m_ObjectHideFlags: 0

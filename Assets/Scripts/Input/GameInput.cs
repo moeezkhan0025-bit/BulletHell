@@ -290,7 +290,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             ""id"": ""6d2e1b20-7a4c-4d2f-8b63-2c8f3e5a9b02"",
             ""actions"": [
                 {
-                    ""name"": ""DebugAddUpgrade"",
+                    ""name"": ""DebugAddArmament"",
                     ""type"": ""Button"",
                     ""id"": ""1d000001-3333-4c01-8d01-0000000000c1"",
                     ""expectedControlType"": ""Button"",
@@ -300,7 +300,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""priority"": 0
                 },
                 {
-                    ""name"": ""DebugRemoveUpgrade"",
+                    ""name"": ""DebugRemoveArmament"",
                     ""type"": ""Button"",
                     ""id"": ""1d000002-3333-4c02-8d02-0000000000c2"",
                     ""expectedControlType"": ""Button"",
@@ -310,7 +310,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""priority"": 0
                 },
                 {
-                    ""name"": ""DebugNextUpgrade"",
+                    ""name"": ""DebugNextArmament"",
                     ""type"": ""Button"",
                     ""id"": ""1d000003-3333-4c03-8d03-0000000000c3"",
                     ""expectedControlType"": ""Button"",
@@ -320,7 +320,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""priority"": 0
                 },
                 {
-                    ""name"": ""DebugPrevUpgrade"",
+                    ""name"": ""DebugPrevArmament"",
                     ""type"": ""Button"",
                     ""id"": ""1d000004-3333-4c04-8d04-0000000000c4"",
                     ""expectedControlType"": ""Button"",
@@ -338,7 +338,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""DebugAddUpgrade"",
+                    ""action"": ""DebugAddArmament"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -349,7 +349,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""DebugAddUpgrade"",
+                    ""action"": ""DebugAddArmament"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -360,7 +360,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""DebugRemoveUpgrade"",
+                    ""action"": ""DebugRemoveArmament"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -371,7 +371,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""DebugRemoveUpgrade"",
+                    ""action"": ""DebugRemoveArmament"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -382,7 +382,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""DebugNextUpgrade"",
+                    ""action"": ""DebugNextArmament"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -393,7 +393,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""DebugNextUpgrade"",
+                    ""action"": ""DebugNextArmament"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -404,7 +404,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""DebugPrevUpgrade"",
+                    ""action"": ""DebugPrevArmament"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -415,7 +415,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""DebugPrevUpgrade"",
+                    ""action"": ""DebugPrevArmament"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -449,10 +449,10 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Gameplay_Pause = m_Gameplay.FindAction("Pause", throwIfNotFound: true);
         // Debug
         m_Debug = asset.FindActionMap("Debug", throwIfNotFound: true);
-        m_Debug_DebugAddUpgrade = m_Debug.FindAction("DebugAddUpgrade", throwIfNotFound: true);
-        m_Debug_DebugRemoveUpgrade = m_Debug.FindAction("DebugRemoveUpgrade", throwIfNotFound: true);
-        m_Debug_DebugNextUpgrade = m_Debug.FindAction("DebugNextUpgrade", throwIfNotFound: true);
-        m_Debug_DebugPrevUpgrade = m_Debug.FindAction("DebugPrevUpgrade", throwIfNotFound: true);
+        m_Debug_DebugAddArmament = m_Debug.FindAction("DebugAddArmament", throwIfNotFound: true);
+        m_Debug_DebugRemoveArmament = m_Debug.FindAction("DebugRemoveArmament", throwIfNotFound: true);
+        m_Debug_DebugNextArmament = m_Debug.FindAction("DebugNextArmament", throwIfNotFound: true);
+        m_Debug_DebugPrevArmament = m_Debug.FindAction("DebugPrevArmament", throwIfNotFound: true);
     }
 
     ~@GameInput()
@@ -718,10 +718,10 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     // Debug
     private readonly InputActionMap m_Debug;
     private List<IDebugActions> m_DebugActionsCallbackInterfaces = new List<IDebugActions>();
-    private readonly InputAction m_Debug_DebugAddUpgrade;
-    private readonly InputAction m_Debug_DebugRemoveUpgrade;
-    private readonly InputAction m_Debug_DebugNextUpgrade;
-    private readonly InputAction m_Debug_DebugPrevUpgrade;
+    private readonly InputAction m_Debug_DebugAddArmament;
+    private readonly InputAction m_Debug_DebugRemoveArmament;
+    private readonly InputAction m_Debug_DebugNextArmament;
+    private readonly InputAction m_Debug_DebugPrevArmament;
     /// <summary>
     /// Provides access to input actions defined in input action map "Debug".
     /// </summary>
@@ -734,21 +734,21 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// </summary>
         public DebugActions(@GameInput wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "Debug/DebugAddUpgrade".
+        /// Provides access to the underlying input action "Debug/DebugAddArmament".
         /// </summary>
-        public InputAction @DebugAddUpgrade => m_Wrapper.m_Debug_DebugAddUpgrade;
+        public InputAction @DebugAddArmament => m_Wrapper.m_Debug_DebugAddArmament;
         /// <summary>
-        /// Provides access to the underlying input action "Debug/DebugRemoveUpgrade".
+        /// Provides access to the underlying input action "Debug/DebugRemoveArmament".
         /// </summary>
-        public InputAction @DebugRemoveUpgrade => m_Wrapper.m_Debug_DebugRemoveUpgrade;
+        public InputAction @DebugRemoveArmament => m_Wrapper.m_Debug_DebugRemoveArmament;
         /// <summary>
-        /// Provides access to the underlying input action "Debug/DebugNextUpgrade".
+        /// Provides access to the underlying input action "Debug/DebugNextArmament".
         /// </summary>
-        public InputAction @DebugNextUpgrade => m_Wrapper.m_Debug_DebugNextUpgrade;
+        public InputAction @DebugNextArmament => m_Wrapper.m_Debug_DebugNextArmament;
         /// <summary>
-        /// Provides access to the underlying input action "Debug/DebugPrevUpgrade".
+        /// Provides access to the underlying input action "Debug/DebugPrevArmament".
         /// </summary>
-        public InputAction @DebugPrevUpgrade => m_Wrapper.m_Debug_DebugPrevUpgrade;
+        public InputAction @DebugPrevArmament => m_Wrapper.m_Debug_DebugPrevArmament;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -775,18 +775,18 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_DebugActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_DebugActionsCallbackInterfaces.Add(instance);
-            @DebugAddUpgrade.started += instance.OnDebugAddUpgrade;
-            @DebugAddUpgrade.performed += instance.OnDebugAddUpgrade;
-            @DebugAddUpgrade.canceled += instance.OnDebugAddUpgrade;
-            @DebugRemoveUpgrade.started += instance.OnDebugRemoveUpgrade;
-            @DebugRemoveUpgrade.performed += instance.OnDebugRemoveUpgrade;
-            @DebugRemoveUpgrade.canceled += instance.OnDebugRemoveUpgrade;
-            @DebugNextUpgrade.started += instance.OnDebugNextUpgrade;
-            @DebugNextUpgrade.performed += instance.OnDebugNextUpgrade;
-            @DebugNextUpgrade.canceled += instance.OnDebugNextUpgrade;
-            @DebugPrevUpgrade.started += instance.OnDebugPrevUpgrade;
-            @DebugPrevUpgrade.performed += instance.OnDebugPrevUpgrade;
-            @DebugPrevUpgrade.canceled += instance.OnDebugPrevUpgrade;
+            @DebugAddArmament.started += instance.OnDebugAddArmament;
+            @DebugAddArmament.performed += instance.OnDebugAddArmament;
+            @DebugAddArmament.canceled += instance.OnDebugAddArmament;
+            @DebugRemoveArmament.started += instance.OnDebugRemoveArmament;
+            @DebugRemoveArmament.performed += instance.OnDebugRemoveArmament;
+            @DebugRemoveArmament.canceled += instance.OnDebugRemoveArmament;
+            @DebugNextArmament.started += instance.OnDebugNextArmament;
+            @DebugNextArmament.performed += instance.OnDebugNextArmament;
+            @DebugNextArmament.canceled += instance.OnDebugNextArmament;
+            @DebugPrevArmament.started += instance.OnDebugPrevArmament;
+            @DebugPrevArmament.performed += instance.OnDebugPrevArmament;
+            @DebugPrevArmament.canceled += instance.OnDebugPrevArmament;
         }
 
         /// <summary>
@@ -798,18 +798,18 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="DebugActions" />
         private void UnregisterCallbacks(IDebugActions instance)
         {
-            @DebugAddUpgrade.started -= instance.OnDebugAddUpgrade;
-            @DebugAddUpgrade.performed -= instance.OnDebugAddUpgrade;
-            @DebugAddUpgrade.canceled -= instance.OnDebugAddUpgrade;
-            @DebugRemoveUpgrade.started -= instance.OnDebugRemoveUpgrade;
-            @DebugRemoveUpgrade.performed -= instance.OnDebugRemoveUpgrade;
-            @DebugRemoveUpgrade.canceled -= instance.OnDebugRemoveUpgrade;
-            @DebugNextUpgrade.started -= instance.OnDebugNextUpgrade;
-            @DebugNextUpgrade.performed -= instance.OnDebugNextUpgrade;
-            @DebugNextUpgrade.canceled -= instance.OnDebugNextUpgrade;
-            @DebugPrevUpgrade.started -= instance.OnDebugPrevUpgrade;
-            @DebugPrevUpgrade.performed -= instance.OnDebugPrevUpgrade;
-            @DebugPrevUpgrade.canceled -= instance.OnDebugPrevUpgrade;
+            @DebugAddArmament.started -= instance.OnDebugAddArmament;
+            @DebugAddArmament.performed -= instance.OnDebugAddArmament;
+            @DebugAddArmament.canceled -= instance.OnDebugAddArmament;
+            @DebugRemoveArmament.started -= instance.OnDebugRemoveArmament;
+            @DebugRemoveArmament.performed -= instance.OnDebugRemoveArmament;
+            @DebugRemoveArmament.canceled -= instance.OnDebugRemoveArmament;
+            @DebugNextArmament.started -= instance.OnDebugNextArmament;
+            @DebugNextArmament.performed -= instance.OnDebugNextArmament;
+            @DebugNextArmament.canceled -= instance.OnDebugNextArmament;
+            @DebugPrevArmament.started -= instance.OnDebugPrevArmament;
+            @DebugPrevArmament.performed -= instance.OnDebugPrevArmament;
+            @DebugPrevArmament.canceled -= instance.OnDebugPrevArmament;
         }
 
         /// <summary>
@@ -935,32 +935,32 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     public interface IDebugActions
     {
         /// <summary>
-        /// Method invoked when associated input action "DebugAddUpgrade" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "DebugAddArmament" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnDebugAddUpgrade(InputAction.CallbackContext context);
+        void OnDebugAddArmament(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "DebugRemoveUpgrade" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "DebugRemoveArmament" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnDebugRemoveUpgrade(InputAction.CallbackContext context);
+        void OnDebugRemoveArmament(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "DebugNextUpgrade" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "DebugNextArmament" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnDebugNextUpgrade(InputAction.CallbackContext context);
+        void OnDebugNextArmament(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "DebugPrevUpgrade" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "DebugPrevArmament" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnDebugPrevUpgrade(InputAction.CallbackContext context);
+        void OnDebugPrevArmament(InputAction.CallbackContext context);
     }
 }

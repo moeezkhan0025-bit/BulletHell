@@ -13,13 +13,13 @@ namespace BulletHell.Weapons
         private const float MinFireRate = 0.01f;
 
         /// <summary>Empty (null) slots are skipped. Does not allocate.</summary>
-        public static ArmStats Calculate(in ArmStats baseStats, IReadOnlyList<UpgradeData> upgrades)
+        public static ArmStats Calculate(in ArmStats baseStats, IReadOnlyList<ArmamentData> armaments)
         {
-            float damage = Stat(baseStats.Damage, StatType.Damage, upgrades);
-            float fireRate = Stat(baseStats.FireRate, StatType.FireRate, upgrades);
-            float speed = Stat(baseStats.ProjectileSpeed, StatType.ProjectileSpeed, upgrades);
-            float projectiles = Stat(baseStats.ProjectilesPerShot, StatType.ProjectilesPerShot, upgrades);
-            float spread = Stat(baseStats.Spread, StatType.Spread, upgrades);
+            float damage = Stat(baseStats.Damage, StatType.Damage, armaments);
+            float fireRate = Stat(baseStats.FireRate, StatType.FireRate, armaments);
+            float speed = Stat(baseStats.ProjectileSpeed, StatType.ProjectileSpeed, armaments);
+            float projectiles = Stat(baseStats.ProjectilesPerShot, StatType.ProjectilesPerShot, armaments);
+            float spread = Stat(baseStats.Spread, StatType.Spread, armaments);
 
             return new ArmStats(
                 Mathf.Max(0f, damage),
@@ -29,24 +29,24 @@ namespace BulletHell.Weapons
                 Mathf.Max(0f, spread));
         }
 
-        private static float Stat(float baseValue, StatType stat, IReadOnlyList<UpgradeData> upgrades)
+        private static float Stat(float baseValue, StatType stat, IReadOnlyList<ArmamentData> armaments)
         {
             float value = baseValue;
-            for (int u = 0; u < upgrades.Count; u++)
+            for (int u = 0; u < armaments.Count; u++)
             {
-                if (upgrades[u] == null)
+                if (armaments[u] == null)
                     continue;
-                IReadOnlyList<StatModifier> mods = upgrades[u].Modifiers;
+                IReadOnlyList<StatModifier> mods = armaments[u].Modifiers;
                 for (int m = 0; m < mods.Count; m++)
                     if (mods[m].Stat == stat && mods[m].Mode == ModifierMode.Flat)
                         value += mods[m].Value;
             }
 
-            for (int u = 0; u < upgrades.Count; u++)
+            for (int u = 0; u < armaments.Count; u++)
             {
-                if (upgrades[u] == null)
+                if (armaments[u] == null)
                     continue;
-                IReadOnlyList<StatModifier> mods = upgrades[u].Modifiers;
+                IReadOnlyList<StatModifier> mods = armaments[u].Modifiers;
                 for (int m = 0; m < mods.Count; m++)
                     if (mods[m].Stat == stat && mods[m].Mode == ModifierMode.Percent)
                         value *= 1f + mods[m].Value / 100f;

@@ -9,17 +9,17 @@ namespace BulletHell.Tests
         // damage 10, 5 shots/s, speed 20, 1 projectile, 0 spread.
         private static readonly ArmStats Base = new ArmStats(10f, 5f, 20f, 1, 0f);
 
-        private static UpgradeData Upgrade(params StatModifier[] modifiers)
+        private static ArmamentData Armament(params StatModifier[] modifiers)
         {
-            var upgrade = ScriptableObject.CreateInstance<UpgradeData>();
-            upgrade.Set("test", modifiers);
-            return upgrade;
+            var armament = ScriptableObject.CreateInstance<ArmamentData>();
+            armament.Set("test", modifiers);
+            return armament;
         }
 
-        private static ArmStats Calc(params UpgradeData[] upgrades) => StatCalculator.Calculate(Base, upgrades);
+        private static ArmStats Calc(params ArmamentData[] armaments) => StatCalculator.Calculate(Base, armaments);
 
         [Test]
-        public void NoUpgradesGivesBaseStats()
+        public void NoArmamentsGivesBaseStats()
         {
             ArmStats stats = Calc(null, null, null);
             Assert.AreEqual(10f, stats.Damage, 0.0001f);
@@ -32,23 +32,23 @@ namespace BulletHell.Tests
         public void FlatAddsBeforePercentMultiplies()
         {
             // (10 + 5) * 1.5 = 22.5; multiplying first would give 10 * 1.5 + 5 = 20.
-            var percent = Upgrade(new StatModifier(StatType.Damage, ModifierMode.Percent, 50f));
-            var flat = Upgrade(new StatModifier(StatType.Damage, ModifierMode.Flat, 5f));
+            var percent = Armament(new StatModifier(StatType.Damage, ModifierMode.Percent, 50f));
+            var flat = Armament(new StatModifier(StatType.Damage, ModifierMode.Flat, 5f));
             Assert.AreEqual(22.5f, Calc(percent, flat).Damage, 0.0001f);
         }
 
         [Test]
         public void PercentModifiersMultiplyTogether()
         {
-            var a = Upgrade(new StatModifier(StatType.Damage, ModifierMode.Percent, 50f));
-            var b = Upgrade(new StatModifier(StatType.Damage, ModifierMode.Percent, 50f));
+            var a = Armament(new StatModifier(StatType.Damage, ModifierMode.Percent, 50f));
+            var b = Armament(new StatModifier(StatType.Damage, ModifierMode.Percent, 50f));
             Assert.AreEqual(22.5f, Calc(a, b).Damage, 0.0001f);
         }
 
         [Test]
         public void ModifiersOnlyAffectTheirOwnStat()
         {
-            ArmStats stats = Calc(Upgrade(new StatModifier(StatType.FireRate, ModifierMode.Flat, 2f)));
+            ArmStats stats = Calc(Armament(new StatModifier(StatType.FireRate, ModifierMode.Flat, 2f)));
             Assert.AreEqual(7f, stats.FireRate, 0.0001f);
             Assert.AreEqual(10f, stats.Damage, 0.0001f);
         }
@@ -56,17 +56,17 @@ namespace BulletHell.Tests
         [Test]
         public void ProjectileCountAddsAndRounds()
         {
-            var extra = Upgrade(new StatModifier(StatType.ProjectilesPerShot, ModifierMode.Flat, 1f));
+            var extra = Armament(new StatModifier(StatType.ProjectilesPerShot, ModifierMode.Flat, 1f));
             Assert.AreEqual(3, Calc(extra, extra).ProjectilesPerShot);
 
-            var half = Upgrade(new StatModifier(StatType.ProjectilesPerShot, ModifierMode.Percent, 100f));
+            var half = Armament(new StatModifier(StatType.ProjectilesPerShot, ModifierMode.Percent, 100f));
             Assert.AreEqual(2, Calc(half).ProjectilesPerShot);
         }
 
         [Test]
         public void StatsAreClamped()
         {
-            var bad = Upgrade(
+            var bad = Armament(
                 new StatModifier(StatType.Damage, ModifierMode.Flat, -100f),
                 new StatModifier(StatType.FireRate, ModifierMode.Percent, -100f),
                 new StatModifier(StatType.ProjectilesPerShot, ModifierMode.Flat, -5f));

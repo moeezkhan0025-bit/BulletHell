@@ -26,7 +26,7 @@ namespace BulletHell.Player
         public int SelectedArm => selector.Selected;
         /// <summary>Data of the selected arm, or null when nothing is selected.</summary>
         public WeaponArmData SelectedArmData => selector.Selected == ArmSelector.None ? null : arms[selector.Selected].Data;
-        /// <summary>Run state (upgrades, final stats) of the selected arm, or null when nothing is selected.</summary>
+        /// <summary>Run state (armaments, final stats) of the selected arm, or null when nothing is selected.</summary>
         public ArmInstance SelectedInstance => selector.Selected == ArmSelector.None ? null : arms[selector.Selected].Instance;
         /// <summary>The spawned arm at a slot, or null if the slot is empty.</summary>
         public ArmVisual GetArm(int slot) => arms[slot];

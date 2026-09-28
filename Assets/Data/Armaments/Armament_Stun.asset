@@ -10,10 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 989f2d52c34befe43859c896a098f7cb, type: 3}
-  m_Name: Upg_FireRate
-  m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.UpgradeData
-  displayName: +2 Fire Rate
-  modifiers:
-  - Stat: 1
-    Mode: 0
-    Value: 2
+  m_Name: Armament_Stun
+  m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.ArmamentData
+  displayName: Shock Rounds
+  modifiers: []
+  effects:
+  - {fileID: 11400000, guid: 8fb5e51113dce424fada004a783689b6, type: 2}

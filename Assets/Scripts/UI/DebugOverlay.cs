@@ -23,7 +23,7 @@ namespace BulletHell.UI
         [SerializeField] private AmmoSlots ammoSlots;
         [SerializeField] private ArmFireController fireController;
         [SerializeField] private AmmoPickupCollector pickupCollector;
-        [SerializeField] private DebugUpgradeControls upgradeControls;
+        [SerializeField] private DebugArmamentControls armamentControls;
         [SerializeField] private Text label;
 
         private readonly StringBuilder builder = new StringBuilder(400);
@@ -40,7 +40,8 @@ namespace BulletHell.UI
         private AmmoPickup shownPickup;
         private ArmInstance shownInstance;
         private int shownInstanceVersion = -1;
-        private UpgradeData shownTestUpgrade;
+        private ArmamentData shownTestArmament;
+        private int shownTestPosition = -1, shownArmamentInvVersion = -1, shownArmInvVersion = -1;
 
         private void Update()
         {
@@ -77,19 +78,27 @@ namespace BulletHell.UI
             bool pickupChanged = nearPickup != shownPickup || pickupSlot != shownPickupSlot || pickupProgress != shownPickupProgress;
 
             ArmInstance instance = arms.SelectedInstance;
-            UpgradeData testUpgrade = upgradeControls.Current;
-            bool upgradesChanged = instance != shownInstance || testUpgrade != shownTestUpgrade ||
+            ArmamentData testArmament = armamentControls.Current;
+            int testPosition = armamentControls.CurrentPosition;
+            PlayerInventory playerInventory = armamentControls.Inventory;
+            int armamentInvVersion = playerInventory.Armaments.Version;
+            int armInvVersion = playerInventory.Arms.Version;
+            bool armamentsChanged = instance != shownInstance || testArmament != shownTestArmament || testPosition != shownTestPosition ||
+                                   armamentInvVersion != shownArmamentInvVersion || armInvVersion != shownArmInvVersion ||
                                    (instance != null && instance.Version != shownInstanceVersion);
 
             if (moveX == shownMoveX && moveY == shownMoveY && magnitude == shownMagnitude &&
                 angle == shownAngle && arm == shownArm && state == shownState && armAim == shownArmAim &&
                 active == shownActive && pooled == shownPooled && created == shownCreated && hits == shownHits &&
-                !ammoChanged && !heatChanged && !pickupChanged && !upgradesChanged)
+                !ammoChanged && !heatChanged && !pickupChanged && !armamentsChanged)
                 return;
 
             shownInstance = instance;
             shownInstanceVersion = instance != null ? instance.Version : -1;
-            shownTestUpgrade = testUpgrade;
+            shownTestArmament = testArmament;
+            shownTestPosition = testPosition;
+            shownArmamentInvVersion = armamentInvVersion;
+            shownArmInvVersion = armInvVersion;
 
             shownAmmoActive = ammoSlots.ActiveIndex;
             for (int i = 0; i < AmmoSlotSet.Count; i++)
@@ -157,21 +166,37 @@ namespace BulletHell.UI
             }
             builder.Append('\n');
 
-            builder.Append("UPGRADES ");
+            builder.Append("ARMAMENTS ");
             if (instance == null)
             {
                 builder.Append("--");
             }
             else
             {
-                for (int i = 0; i < ArmInstance.UpgradeSlots; i++)
+                for (int i = 0; i < ArmInstance.ArmamentSlots; i++)
                 {
-                    UpgradeData upgrade = instance.GetUpgrade(i);
-                    builder.Append(" [").Append(i + 1).Append(' ').Append(upgrade != null ? upgrade.DisplayName : "-").Append(']');
+                    ArmamentData armament = instance.GetArmament(i);
+                    builder.Append(" [").Append(i + 1).Append(' ').Append(armament != null ? armament.DisplayName : "-").Append(']');
                 }
             }
-            builder.Append("\n         add: ").Append(testUpgrade != null ? testUpgrade.DisplayName : "--")
-                   .Append("   (D-pad up add, down remove, left/right pick | F1-F4)\n");
+            builder.Append("\n         equip: ").Append(testArmament != null ? testArmament.DisplayName : "--");
+            if (testPosition > 0)
+                builder.Append(" (").Append(testPosition).Append('/').Append(playerInventory.Armaments.Count).Append(')');
+            builder.Append("   (D-pad up equip, down unequip, left/right pick | F1-F4)\n");
+            builder.Append("INVENTORY armaments ").Append(playerInventory.Armaments.Count)
+                   .Append("   spare arms ").Append(playerInventory.Arms.Count).Append('\n');
+
+            builder.Append("EFFECTS ");
+            if (instance == null || instance.Effects.Count == 0)
+            {
+                builder.Append("--");
+            }
+            else
+            {
+                for (int i = 0; i < instance.Effects.Count; i++)
+                    builder.Append(i > 0 ? ", " : "").Append(instance.Effects[i].DisplayName);
+            }
+            builder.Append('\n');
 
             builder.Append("STATS  ");
             if (instance == null)
@@ -201,7 +226,7 @@ namespace BulletHell.UI
             label.text = builder.ToString();
         }
 
-        /// <summary>"name base>final" when upgraded, "name value" otherwise.</summary>
+        /// <summary>"name base>final" when modified, "name value" otherwise.</summary>
         private void AppendStat(string name, float baseValue, float finalValue)
         {
             builder.Append(name).Append(' ');

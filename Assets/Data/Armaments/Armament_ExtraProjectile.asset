@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 989f2d52c34befe43859c896a098f7cb, type: 3}
-  m_Name: Upg_Damage
-  m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.UpgradeData
-  displayName: +50% Damage
+  m_Name: Armament_ExtraProjectile
+  m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.ArmamentData
+  displayName: +1 Projectile
   modifiers:
-  - Stat: 0
-    Mode: 1
-    Value: 50
+  - Stat: 3
+    Mode: 0
+    Value: 1
+  effects: []

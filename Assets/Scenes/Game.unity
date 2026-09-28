@@ -594,7 +594,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3bb679e807af289408d7f418b87ea78c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: BulletHell::BulletHell.UI.DebugUpgradeControls
+  m_EditorClassIdentifier: BulletHell::BulletHell.UI.DebugArmamentControls
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1303,7 +1303,7 @@ MonoBehaviour:
   ammoSlots: {fileID: 499677782}
   fireController: {fileID: 2050330950}
   pickupCollector: {fileID: 499677781}
-  upgradeControls: {fileID: 499677783}
+  armamentControls: {fileID: 499677783}
   label: {fileID: 124758213}
 --- !u!114 &1414673287
 MonoBehaviour:

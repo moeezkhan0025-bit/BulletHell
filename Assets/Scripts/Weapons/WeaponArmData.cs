@@ -34,6 +34,10 @@ namespace BulletHell.Weapons
         [Tooltip("Bullet diameter in world units (also its hit radius). Heavier arms get bigger bullets.")]
         [SerializeField, Min(0.05f)] private float projectileSize = 0.25f;
 
+        [Header("Effects")]
+        [Tooltip("Special effects (pierce, burn, ...) this arm type always has, on top of its armaments'.")]
+        [SerializeField] private ArmEffect[] effects = System.Array.Empty<ArmEffect>();
+
         public string DisplayName => displayName;
         public Color IdColor => idColor;
         public Sprite Sprite => sprite;
@@ -45,6 +49,7 @@ namespace BulletHell.Weapons
         public int ProjectilesPerShot => projectilesPerShot;
         public float Spread => spread;
         public float ProjectileSize => projectileSize;
+        public System.Collections.Generic.IReadOnlyList<ArmEffect> Effects => effects ?? System.Array.Empty<ArmEffect>();
 
 #if UNITY_EDITOR
         /// <summary>Editor-only: stores art rotation and muzzle tuned in the Scene view.</summary>

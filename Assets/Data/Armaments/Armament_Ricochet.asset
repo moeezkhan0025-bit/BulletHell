@@ -10,10 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 989f2d52c34befe43859c896a098f7cb, type: 3}
-  m_Name: Upg_BulletSpeed
-  m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.UpgradeData
-  displayName: +30% Bullet Speed
-  modifiers:
-  - Stat: 2
-    Mode: 1
-    Value: 30
+  m_Name: Armament_Ricochet
+  m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.ArmamentData
+  displayName: Ricochet Rounds
+  modifiers: []
+  effects:
+  - {fileID: 11400000, guid: 7331aabf724b314429fdffa2045b6b5e, type: 2}

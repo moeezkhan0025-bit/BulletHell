@@ -28,7 +28,7 @@ namespace BulletHell.Player
         private WeaponArmData data;
 
         public WeaponArmData Data => data;
-        /// <summary>Run state of this arm (upgrades and final stats).</summary>
+        /// <summary>Run state of this arm (armaments and final stats).</summary>
         public ArmInstance Instance => instance;
         public Transform Muzzle => muzzle;
 
