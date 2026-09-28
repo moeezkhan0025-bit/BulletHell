@@ -1,3 +1,4 @@
+using BulletHell.Enemies;
 using BulletHell.Save;
 using BulletHell.Shop;
 using BulletHell.Weapons;
@@ -34,11 +35,15 @@ namespace BulletHell.Core
         [Header("Shop")]
         [SerializeField] private ShopPool shopPool;
 
-        [Header("Rewards (stub until M5 currency drops)")]
-        [SerializeField, Min(0)] private int roundRewardBase = 50;
-        [SerializeField, Min(0)] private int roundRewardPerRound = 25;
+        [Header("Rounds")]
+        [Tooltip("Round 1, 2, 3... in order. Rounds past the end loop over the rounds from Endless Loop Start Round on.")]
+        [SerializeField] private RoundData[] rounds = new RoundData[0];
+        [Tooltip("After the last authored round, play continues by repeating the authored rounds from this one (1-based) to the end.")]
+        [SerializeField, Min(1)] private int endlessLoopStartRound = 4;
+        [SerializeField] private DifficultyCurve difficulty;
 
         public AssetRegistry Registry => registry;
+        public DifficultyCurve Difficulty => difficulty;
         public int StartingCurrency => startingCurrency;
         public ShopPool ShopPool => shopPool;
         public string SaveFileName => saveFileName;
@@ -47,7 +52,29 @@ namespace BulletHell.Core
         public ArmamentData[] StartingArmaments => startingArmaments;
         public WeaponArmData[] StartingSpareArms => startingSpareArms;
 
-        /// <summary>Currency granted for clearing a round.</summary>
-        public int RoundReward(int round) => roundRewardBase + roundRewardPerRound * Mathf.Max(0, round - 1);
+        /// <summary>
+        /// The round to play for a round number (1-based). Past the authored rounds it loops over the ones from
+        /// Endless Loop Start Round on, so with bosses on rounds 5 and 7 a boss comes every second round forever.
+        /// </summary>
+        public RoundData GetRound(int round)
+        {
+            if (rounds == null || rounds.Length == 0)
+                return null;
+            if (round <= rounds.Length)
+                return rounds[Mathf.Max(1, round) - 1];
+
+            int loopStart = Mathf.Clamp(endlessLoopStartRound, 1, rounds.Length);
+            int loopLength = rounds.Length - loopStart + 1;
+            return rounds[loopStart - 1 + (round - loopStart) % loopLength];
+        }
+
+#if UNITY_EDITOR
+        /// <summary>Editor-only: used by tests.</summary>
+        public void SetRounds(RoundData[] newRounds, int loopStartRound)
+        {
+            rounds = newRounds;
+            endlessLoopStartRound = loopStartRound;
+        }
+#endif
     }
 }

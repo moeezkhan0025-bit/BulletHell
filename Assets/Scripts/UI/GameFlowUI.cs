@@ -55,7 +55,7 @@ namespace BulletHell.UI
             {
                 case GameState.RoundResults:
                     builder.Clear();
-                    builder.Append("Currency earned: +").Append(run.LastReward)
+                    builder.Append("Currency collected: +").Append(run.LastReward)
                            .Append("\nTotal currency: ").Append(state.Currency);
                     roundResults.Show($"Round {state.Round} cleared", builder.ToString());
                     break;

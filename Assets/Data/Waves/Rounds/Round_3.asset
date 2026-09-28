@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 097e976c87ab2bf4d8d9a1c38836bcd5, type: 3}
+  m_Name: Round_3
+  m_EditorClassIdentifier: BulletHell::BulletHell.Enemies.RoundData
+  waves:
+  - {fileID: 11400000, guid: af5e0ef3113e2764694aae53f3a3d0c0, type: 2}
+  - {fileID: 11400000, guid: 63741aa28bc2bbf4280d535de913079c, type: 2}
+  - {fileID: 11400000, guid: 11e8523c56649914a8af406360332cbf, type: 2}
+  isBossRound: 1
+  waveBreatherSeconds: 3

@@ -236,17 +236,12 @@ namespace BulletHell.EditorTools
             }
 
             var input = Object.FindFirstObjectByType<GameplayInputReader>();
-            Enemy[] enemies = Object.FindObjectsByType<Enemy>(FindObjectsSortMode.None).OrderBy(e => e.name).ToArray();
             if (Object.FindFirstObjectByType<EventSystem>() == null)
                 CreateEventSystem();
 
             var flow = new GameObject("GameFlow");
             var sceneController = flow.AddComponent<GameSceneController>();
             SetRef(sceneController, "input", input);
-            var combat = flow.AddComponent<CombatController>();
-            var combatSo = new SerializedObject(combat);
-            SetList(combatSo.FindProperty("enemies"), enemies);
-            combatSo.ApplyModifiedPropertiesWithoutUndo();
 
             Canvas canvas = UiBuilder.CreateCanvas("FlowUI", 20);
             RectTransform safe = UiBuilder.CreateRect("SafeArea", canvas.transform);

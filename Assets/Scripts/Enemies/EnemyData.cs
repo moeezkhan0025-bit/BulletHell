@@ -14,8 +14,11 @@ namespace BulletHell.Enemies
 
         [Header("Health")]
         [SerializeField, Min(0.01f)] private float maxHealth = 10f;
-        [SerializeField, Min(0f)] private float respawnDelay = 3f;
         [SerializeField, Min(0f)] private float hitFlashDuration = 0.08f;
+
+        [Header("Reward")]
+        [Tooltip("Currency in the coin this enemy drops when it dies.")]
+        [SerializeField, Min(0)] private int coinValue = 5;
 
         [Header("Attacks")]
         [Tooltip("Patterns this enemy fires (each on its own timer). Empty = never shoots.")]
@@ -29,10 +32,10 @@ namespace BulletHell.Enemies
 
         public string DisplayName => displayName;
         public AttackPattern[] Attacks => attacks;
+        public int CoinValue => coinValue;
         public Color Color => color;
         public float Size => size;
         public float MaxHealth => maxHealth;
-        public float RespawnDelay => respawnDelay;
         public float HitFlashDuration => hitFlashDuration;
         public float MoveSpeed => moveSpeed;
         public float MoveRange => moveRange;

@@ -18,8 +18,13 @@ namespace BulletHell.Core
         public GameStateMachine Machine { get; } = new GameStateMachine();
         /// <summary>State the Game scene starts in: Combat for a new run, Shop for a continued one.</summary>
         public GameState PendingStart { get; private set; } = GameState.Combat;
-        /// <summary>Currency granted by the round that just ended (for the Round Results screen).</summary>
+        /// <summary>Currency banked by the round that just ended (for the Round Results screen).</summary>
         public int LastReward { get; private set; }
+        /// <summary>Currency picked up so far this round. It is banked into the RunState when the round is cleared.</summary>
+        public int RoundEarnings { get; private set; }
+
+        /// <summary>Raised (with the round number) every time a round's combat begins: new run, next round, or a debug skip.</summary>
+        public event System.Action<int> RoundStarted;
 
         public bool HasRun => State != null;
 
@@ -36,6 +41,7 @@ namespace BulletHell.Core
             State = RunState.NewRun(config);
             PendingStart = GameState.Combat;
             LastReward = 0;
+            RoundEarnings = 0;
         }
 
         /// <summary>Loads the save and prepares to resume at its Shop. Returns false when there is no usable save.</summary>
@@ -49,6 +55,7 @@ namespace BulletHell.Core
             State = loaded;
             PendingStart = GameState.Shop;
             LastReward = 0;
+            RoundEarnings = 0;
             return true;
         }
 
@@ -63,17 +70,47 @@ namespace BulletHell.Core
         public void BeginGame()
         {
             Machine.Reset();
-            Machine.TryEnter(PendingStart);
+            if (Machine.TryEnter(PendingStart) && PendingStart == GameState.Combat)
+                StartRound();
         }
 
-        /// <summary>Combat is over (stub: all test enemies dead). Banks the reward and shows Round Results.</summary>
+        /// <summary>A coin was picked up: it counts toward this round's earnings.</summary>
+        public void AddEarnings(int amount)
+        {
+            if (amount > 0)
+                RoundEarnings += amount;
+        }
+
+        /// <summary>The last wave is cleared. Banks the round's earnings into the run's currency and shows Round Results.</summary>
         public bool CombatCleared()
         {
             if (Machine.Current != GameState.Combat)
                 return false;
-            LastReward = config.RoundReward(State.Round);
-            State.Currency += LastReward;
+            LastReward = RoundEarnings;
+            State.Currency += RoundEarnings;
+            RoundEarnings = 0;
             return Machine.TryEnter(GameState.RoundResults);
+        }
+
+        /// <summary>
+        /// Debug: restart combat at any round. Only allowed from Pause (it is the pause screen's debug option); the run's
+        /// loadout and currency are untouched, this round's uncollected earnings are dropped.
+        /// </summary>
+        public bool DebugSkipToRound(int round)
+        {
+            if (Machine.Current != GameState.Pause)
+                return false;
+            State.Round = System.Math.Max(1, round);
+            if (!Machine.TryEnter(GameState.Combat))
+                return false;
+            StartRound();
+            return true;
+        }
+
+        private void StartRound()
+        {
+            RoundEarnings = 0;
+            RoundStarted?.Invoke(State.Round);
         }
 
         /// <summary>The Continue button of the current between-rounds screen.</summary>
@@ -91,7 +128,8 @@ namespace BulletHell.Core
                 case GameState.Armory:
                     SaveRun();
                     State.Round++;
-                    Machine.TryEnter(GameState.Combat);
+                    if (Machine.TryEnter(GameState.Combat))
+                        StartRound();
                     break;
             }
         }

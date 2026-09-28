@@ -13,23 +13,28 @@ namespace BulletHell.UI
         [SerializeField] private PlayerHealth playerHealth;
 
         private readonly StringBuilder builder = new StringBuilder(64);
-        private int shownRound = -1, shownCurrency = -1, shownHealth = -1;
+        private int shownRound = -1, shownCurrency = -1, shownHealth = -1, shownEarned = -1;
 
         private void Update()
         {
-            RunState state = GameServices.Ensure().Run.State;
+            RunManager run = GameServices.Ensure().Run;
+            RunState state = run.State;
             if (state == null)
                 return;
 
             int health = playerHealth != null ? Mathf.CeilToInt(playerHealth.Current) : 0;
-            if (state.Round == shownRound && state.Currency == shownCurrency && health == shownHealth)
+            int earned = run.RoundEarnings;
+            if (state.Round == shownRound && state.Currency == shownCurrency && health == shownHealth && earned == shownEarned)
                 return;
 
             shownRound = state.Round;
             shownCurrency = state.Currency;
             shownHealth = health;
+            shownEarned = earned;
             builder.Clear();
             builder.Append("ROUND ").Append(shownRound).Append("   CURRENCY ").Append(shownCurrency);
+            if (earned > 0)
+                builder.Append(" (+").Append(earned).Append(")");
             if (playerHealth != null)
                 builder.Append("   HP ").Append(shownHealth).Append('/').Append(Mathf.CeilToInt(playerHealth.Max));
             label.text = builder.ToString();

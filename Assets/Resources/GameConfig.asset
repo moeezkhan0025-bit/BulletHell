@@ -24,5 +24,13 @@ MonoBehaviour:
   startingSpareArms: []
   startingCurrency: 500
   shopPool: {fileID: 11400000, guid: 48ef8a6aba4082d499bc6b8da5ce3540, type: 2}
-  roundRewardBase: 50
-  roundRewardPerRound: 25
+  rounds:
+  - {fileID: 11400000, guid: 1b5de15eb1c59f84d937c87d93b9fc02, type: 2}
+  - {fileID: 11400000, guid: 40335bb13d3652e47a3c8edc3a4f6e6c, type: 2}
+  - {fileID: 11400000, guid: 6b51e5054a9830c42a5035c5bac6215c, type: 2}
+  - {fileID: 11400000, guid: a24279bc427484840aaf92e839d3297f, type: 2}
+  - {fileID: 11400000, guid: 7f2270c033a0c6a469a2770854a44a70, type: 2}
+  - {fileID: 11400000, guid: bf7d6327260ab4c41a1f0791218171b2, type: 2}
+  - {fileID: 11400000, guid: d6e163190d873484c89fe0dc60e265a5, type: 2}
+  endlessLoopStartRound: 4
+  difficulty: {fileID: 11400000, guid: 296fa2f0357a6c846a28bec910ee6e86, type: 2}

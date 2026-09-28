@@ -38,13 +38,13 @@ namespace BulletHell.Player
 
         private void OnEnable()
         {
-            run.Machine.StateChanged += OnStateChanged;
+            run.RoundStarted += OnRoundStarted;
             health.Died += OnDied;
         }
 
         private void OnDisable()
         {
-            run.Machine.StateChanged -= OnStateChanged;
+            run.RoundStarted -= OnRoundStarted;
             health.Died -= OnDied;
         }
 
@@ -80,11 +80,7 @@ namespace BulletHell.Player
             body.color = color;
         }
 
-        private void OnStateChanged(GameState from, GameState to)
-        {
-            if (to == GameState.Combat && from != GameState.Pause)
-                ResetForRound();
-        }
+        private void OnRoundStarted(int round) => ResetForRound();
 
         private void OnDied() => run.GameOver();
     }

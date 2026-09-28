@@ -1,4 +1,5 @@
 using System.Text;
+using BulletHell.Enemies;
 using BulletHell.Input;
 using BulletHell.Pickups;
 using BulletHell.Player;
@@ -25,13 +26,14 @@ namespace BulletHell.UI
         [SerializeField] private AmmoPickupCollector pickupCollector;
         [SerializeField] private DebugArmamentControls armamentControls;
         [SerializeField] private PlayerHealth playerHealth;
+        [SerializeField] private WaveSpawner waveSpawner;
         [SerializeField] private Text label;
 
         private readonly StringBuilder builder = new StringBuilder(400);
         private static readonly string[] StateNames = { "none", "soft", "locked" };
 
         private int shownMoveX = int.MinValue, shownMoveY, shownMagnitude, shownAngle, shownArm, shownState, shownArmAim;
-        private int shownActive = -1, shownPooled = -1, shownCreated = -1, shownHits = -1, shownHealth = -2;
+        private int shownActive = -1, shownPooled = -1, shownCreated = -1, shownHits = -1, shownHealth = -2, shownWave = -2;
 
         // Heat is stored as percent, -1 = no arm in that slot, 101 = overheated. Ammo/pickup state is compared as a signature.
         private readonly int[] shownHeat = new int[ArmLoadout.SlotCount];
@@ -60,6 +62,7 @@ namespace BulletHell.UI
             int pooled = projectiles.CountInactive;
             int created = projectiles.TotalCreated;
             int hits = projectiles.TotalHits;
+            int wave = waveSpawner == null ? -1 : waveSpawner.WaveNumber * 10000 + waveSpawner.WaveCount * 100 + waveSpawner.EnemiesAlive + (waveSpawner.IsBreather ? 1000000 : 0);
             int health = playerHealth == null ? -1 : Mathf.CeilToInt(playerHealth.Current * 10f) + (playerHealth.IsInvulnerable ? 1000 : 0);
 
             bool ammoChanged = ammoSlots.ActiveIndex != shownAmmoActive;
@@ -91,7 +94,7 @@ namespace BulletHell.UI
 
             if (moveX == shownMoveX && moveY == shownMoveY && magnitude == shownMagnitude &&
                 angle == shownAngle && arm == shownArm && state == shownState && armAim == shownArmAim &&
-                active == shownActive && pooled == shownPooled && created == shownCreated && hits == shownHits && health == shownHealth &&
+                active == shownActive && pooled == shownPooled && created == shownCreated && hits == shownHits && health == shownHealth && wave == shownWave &&
                 !ammoChanged && !heatChanged && !pickupChanged && !armamentsChanged)
                 return;
 
@@ -116,6 +119,7 @@ namespace BulletHell.UI
             shownCreated = created;
             shownHits = hits;
             shownHealth = health;
+            shownWave = wave;
 
             shownMoveX = moveX;
             shownMoveY = moveY;
@@ -141,6 +145,11 @@ namespace BulletHell.UI
             builder.Append("BULLETS active ").Append(active).Append("   pooled ").Append(pooled)
                    .Append("   created ").Append(created).Append('\n');
             builder.Append("HITS   ").Append(hits).Append('\n');
+            if (waveSpawner != null && waveSpawner.WaveCount > 0)
+                builder.Append("WAVE   ").Append(waveSpawner.WaveNumber).Append('/').Append(waveSpawner.WaveCount)
+                       .Append(waveSpawner.IsBossRound ? " (boss round)" : "")
+                       .Append("   enemies ").Append(waveSpawner.EnemiesAlive)
+                       .Append(waveSpawner.IsBreather ? "   breather" : "").Append('\n');
             if (playerHealth != null)
                 builder.Append("PLAYER HP ").Append(playerHealth.Current.ToString("0.#")).Append('/')
                        .Append(playerHealth.Max.ToString("0.#"))

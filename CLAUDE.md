@@ -171,7 +171,7 @@ Assets/
       GameStateMachine with a stub round (ends when test enemies are cleared), Round Results -> Shop
       (fixed test stock) -> Armory (select arm -> 3 slots -> equip from inventory; place arms in empty
       slots) -> next round. Autosave + Continue working. Plain skeleton UI, fully controller navigable.
-- [ ] M5 Enemies that shoot back + data-driven waves + currency drops + difficulty scaling per round.
+- [x] M5 Enemies that shoot back + data-driven waves + currency drops + difficulty scaling per round.
 - [ ] M6 Shop pools and pricing (random stock, scaling prices), more arms/armaments/effects.
 - [ ] M7 Bosses (round 3 first, then 5 and 7).
 - [ ] M8 UI/visual pass: clean menus, Shop, Armory, HUD; final art.

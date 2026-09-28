@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using BulletHell.Core;
 using BulletHell.Player;
 using BulletHell.Projectiles;
@@ -8,12 +7,12 @@ using UnityEngine;
 namespace BulletHell.Enemies
 {
     /// <summary>
-    /// Binds an EnemyData to the shared Health / hit flash / health bar / patrol components, hides itself on death
-    /// and respawns at its start position (unless a CombatController runs the round and turns auto-respawn off).
+    /// A pooled enemy. The wave spawner takes one from the EnemyPool and calls Initialize with the enemy type and the
+    /// round's difficulty; this binds the EnemyData to the shared Health / hit flash / health bar / patrol / attacker
+    /// components. When it dies it hides and raises Defeated; the spawner returns it to the pool.
     /// </summary>
     public sealed class Enemy : MonoBehaviour
     {
-        [SerializeField] private EnemyData data;
         [SerializeField] private Health health;
         [SerializeField] private CircleCollider2D hitbox;
         [SerializeField] private SpriteRenderer body;
@@ -21,42 +20,21 @@ namespace BulletHell.Enemies
         [SerializeField] private HealthBar healthBar;
         [SerializeField] private PatrolMover patrol;
 
-        private Vector2 spawnPosition;
+        private EnemyData data;
         private StatusEffects status;
         private EnemyAttacker attacker;
 
         public EnemyData Data => data;
-        public bool IsAlive => health.IsAlive;
-
-        /// <summary>Respawn by itself after the data's delay. A round controller turns this off and calls ResetForRound instead.</summary>
-        public bool AutoRespawn { get; set; } = true;
-
-        /// <summary>Scales how often this enemy shoots and how fast its bullets fly (difficulty). Applied on the next ResetForRound.</summary>
-        public float FireRateMultiplier { get; set; } = 1f;
-        public float BulletSpeedMultiplier { get; set; } = 1f;
-
-        /// <summary>Gives the enemy the bullet pool and the player to shoot at.</summary>
-        public void Bind(ProjectilePool pool, PlayerHealth player)
-        {
-            if (attacker != null)
-                attacker.Bind(pool, player);
-        }
+        public bool IsAlive => health.IsAlive && body.enabled;
+        public Vector2 Position => transform.position;
 
         /// <summary>Raised when this enemy dies.</summary>
         public event Action<Enemy> Defeated;
 
         private void Awake()
         {
-            spawnPosition = transform.position;
             TryGetComponent(out status);
-            if (TryGetComponent(out attacker))
-                attacker.Configure(data.Attacks);
-            body.transform.localScale = Vector3.one * data.Size;
-            hitbox.radius = data.Size * 0.5f;
-            health.Initialize(data.MaxHealth);
-            hitFlash.Configure(data.Color, data.HitFlashDuration);
-            healthBar.Layout(Mathf.Max(0.6f, data.Size), data.Size * 0.5f + 0.25f);
-            patrol.Configure(spawnPosition, data.MoveSpeed, data.MoveRange, data.MoveAxis);
+            TryGetComponent(out attacker);
             health.Died += OnDied;
         }
 
@@ -66,6 +44,33 @@ namespace BulletHell.Enemies
                 health.Died -= OnDied;
         }
 
+        /// <summary>Makes this enemy a fresh, alive enemy of the given type at a position, scaled by the round's difficulty.</summary>
+        public void Initialize(EnemyData enemyData, Vector2 position, in RoundDifficulty difficulty,
+                               ProjectilePool pool, PlayerHealth player)
+        {
+            data = enemyData;
+            transform.position = position;
+
+            body.transform.localScale = Vector3.one * data.Size;
+            hitbox.radius = data.Size * 0.5f;
+            health.Initialize(data.MaxHealth * difficulty.HealthMultiplier);
+            hitFlash.Configure(data.Color, data.HitFlashDuration);
+            healthBar.Layout(Mathf.Max(0.6f, data.Size), data.Size * 0.5f + 0.25f);
+            patrol.Configure(position, data.MoveSpeed, data.MoveRange, data.MoveAxis);
+            if (status != null)
+                status.Clear();
+            SetAlive(true);
+
+            if (attacker != null)
+            {
+                attacker.Configure(data.Attacks);
+                attacker.Bind(pool, player);
+                attacker.FireRateMultiplier = difficulty.FireRateMultiplier;
+                attacker.BulletSpeedMultiplier = difficulty.BulletSpeedMultiplier;
+                attacker.Begin();
+            }
+        }
+
         private void OnDied()
         {
             if (status != null)
@@ -73,33 +78,7 @@ namespace BulletHell.Enemies
             if (attacker != null)
                 attacker.Stop();
             SetAlive(false);
-            if (AutoRespawn)
-                StartCoroutine(RespawnAfterDelay());
             Defeated?.Invoke(this);
-        }
-
-        private IEnumerator RespawnAfterDelay()
-        {
-            yield return new WaitForSeconds(data.RespawnDelay);
-            ResetForRound();
-        }
-
-        /// <summary>Back to full health at the start position, alive. Used at the start of every round.</summary>
-        public void ResetForRound()
-        {
-            StopAllCoroutines();
-            if (status != null)
-                status.Clear();
-            patrol.Restart();
-            health.Revive();
-            hitFlash.Clear();
-            SetAlive(true);
-            if (attacker != null)
-            {
-                attacker.FireRateMultiplier = FireRateMultiplier;
-                attacker.BulletSpeedMultiplier = BulletSpeedMultiplier;
-                attacker.Begin();
-            }
         }
 
         private void SetAlive(bool alive)
