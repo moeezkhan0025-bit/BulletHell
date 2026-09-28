@@ -101,12 +101,15 @@ namespace BulletHell.Core
             return paused ? Machine.TryEnter(GameState.Pause) : Machine.Current == GameState.Pause && Machine.TryEnter(GameState.Combat);
         }
 
-        /// <summary>The run was lost: roguelike rules, the save is deleted.</summary>
+        /// <summary>
+        /// The run was lost: roguelike rules, the save is deleted. The RunState stays so the Game Over screen can show it;
+        /// leaving to the menu (AbandonRun) clears it.
+        /// </summary>
         public void GameOver()
         {
-            Machine.TryEnter(GameState.GameOver);
+            if (!Machine.TryEnter(GameState.GameOver))
+                return;
             saveSystem.Delete();
-            AbandonRun();
         }
 
         /// <summary>Leaves the run without touching the save (back to the menu).</summary>

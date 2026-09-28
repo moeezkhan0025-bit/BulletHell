@@ -24,12 +24,13 @@ namespace BulletHell.UI
             menuButton.onClick.AddListener(() => MenuPressed?.Invoke());
         }
 
-        public void Show(string titleText, string bodyText)
+        public void Show(string titleText, string bodyText, bool showContinue = true)
         {
             title.text = titleText;
             body.text = bodyText;
+            continueButton.gameObject.SetActive(showContinue);
             gameObject.SetActive(true);
-            UIFocusGuard.Focus(continueButton.gameObject);
+            UIFocusGuard.Focus((showContinue ? continueButton : menuButton).gameObject);
         }
 
         public void Hide() => gameObject.SetActive(false);

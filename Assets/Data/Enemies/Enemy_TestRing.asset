@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7948270311cf6c7458ee5d6397a9ff37, type: 3}
-  m_Name: Enemy_TestStatic
+  m_Name: Enemy_TestRing
   m_EditorClassIdentifier: BulletHell::BulletHell.Enemies.EnemyData
-  displayName: Test Static
+  displayName: Test Ring Shooter
   color: {r: 0.85, g: 0.25, b: 0.25, a: 1}
   size: 1.1
   maxHealth: 20
   respawnDelay: 3
   hitFlashDuration: 0.08
   attacks:
-  - {fileID: 11400000, guid: e9d4c3a518cc7e944a86c814be30425f, type: 2}
+  - {fileID: 11400000, guid: 3a8a9167dbb3b28469322bae0addd19c, type: 2}
   moveSpeed: 0
   moveRange: 3
   moveAxis: {x: 1, y: 0}

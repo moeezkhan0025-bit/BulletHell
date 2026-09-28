@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using BulletHell.Core;
+using BulletHell.Player;
 using BulletHell.Weapons;
 using UnityEngine;
 
@@ -34,6 +35,10 @@ namespace BulletHell.Projectiles
         private int bouncesLeft;
         private float bounceRange;
         private bool released;
+        private bool hostile;
+
+        /// <summary>Index in the pool's list of active projectiles (managed by ProjectilePool).</summary>
+        public int PoolIndex { get; set; } = -1;
 
         public void Bind(ProjectilePool owner)
         {
@@ -57,14 +62,29 @@ namespace BulletHell.Projectiles
             bouncesLeft = shot.Bounces;
             bounceRange = shot.BounceRange;
             hitEffects = effects;
+            hostile = false;
             recentCount = 0;
             recentNext = 0;
             released = false;
         }
 
+        /// <summary>An enemy bullet: hurts only the player, ignores enemies, carries no arm effects.</summary>
+        public void LaunchHostile(Vector2 position, Vector2 direction, float speed, float damageAmount,
+                                  Color color, float size, Sprite sprite, float maxLifetime)
+        {
+            Launch(position, direction, speed, damageAmount, color, size, sprite, maxLifetime, default, null);
+            hostile = true;
+        }
+
         private void Update()
         {
             float dt = Time.deltaTime;
+            if (hostile)
+            {
+                HostileStep(dt);
+                return;
+            }
+
             Vector2 start = transform.position;
             Vector2 step = velocity * dt;
             float distance = step.magnitude;
@@ -87,6 +107,34 @@ namespace BulletHell.Projectiles
             }
 
             Vector2 end = start + step;
+            transform.position = end;
+            lifeLeft -= dt;
+            if (lifeLeft <= 0f || !pool.ViewBounds.Contains(end))
+                ReleaseToPool();
+        }
+
+        // Enemy bullets test one circle (the player's hitbox) against the segment they travel this frame: no physics query.
+        // While the player is invulnerable (or dead) bullets fly straight through.
+        private void HostileStep(float dt)
+        {
+            Vector2 start = transform.position;
+            Vector2 end = start + velocity * dt;
+
+            PlayerHealth target = pool.PlayerTarget;
+            if (target != null && target.CanBeHit)
+            {
+                Vector2 segment = end - start;
+                float lengthSqr = segment.sqrMagnitude;
+                float t = lengthSqr > 0f ? Mathf.Clamp01(Vector2.Dot(target.Position - start, segment) / lengthSqr) : 0f;
+                float reach = radius + target.HitRadius;
+                if ((target.Position - (start + segment * t)).sqrMagnitude <= reach * reach)
+                {
+                    target.TryHit(damage);
+                    ReleaseToPool();
+                    return;
+                }
+            }
+
             transform.position = end;
             lifeLeft -= dt;
             if (lifeLeft <= 0f || !pool.ViewBounds.Contains(end))

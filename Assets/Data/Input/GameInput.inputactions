@@ -320,6 +320,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Menu",
+            "id": "7e3f2c31-8b5d-4e30-9c74-3d9a4f6b0c03",
+            "actions": [
+                {
+                    "name": "Primary",
+                    "type": "Button",
+                    "id": "2f000001-5555-4e01-9f01-0000000000e1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "2f000002-5555-4e02-9f02-0000000000e2",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Primary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using BulletHell.Player;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -11,6 +13,8 @@ namespace BulletHell.Projectiles
     {
         [SerializeField] private Projectile prefab;
         [SerializeField] private Camera viewCamera;
+        [Tooltip("The player: enemy bullets hurt only this.")]
+        [SerializeField] private PlayerHealth playerTarget;
         [Tooltip("Physics layers a projectile can hit.")]
         [SerializeField] private LayerMask hitMask;
         [SerializeField, Min(1)] private int prewarm = 128;
@@ -20,6 +24,7 @@ namespace BulletHell.Projectiles
 
         private ObjectPool<Projectile> pool;
         private ContactFilter2D hitFilter;
+        private readonly List<Projectile> active = new List<Projectile>();
 
         public int CountActive => pool.CountActive;
         public int CountInactive => pool.CountInactive;
@@ -27,6 +32,7 @@ namespace BulletHell.Projectiles
         public int TotalHits { get; private set; }
         public Rect ViewBounds { get; private set; }
         public ContactFilter2D HitFilter => hitFilter;
+        public PlayerHealth PlayerTarget => playerTarget;
 
         private void Awake()
         {
@@ -44,9 +50,39 @@ namespace BulletHell.Projectiles
 
         private void Update() => RefreshBounds();
 
-        public Projectile Get() => pool.Get();
+        public Projectile Get()
+        {
+            Projectile projectile = pool.Get();
+            projectile.PoolIndex = active.Count;
+            active.Add(projectile);
+            return projectile;
+        }
 
-        public void Release(Projectile projectile) => pool.Release(projectile);
+        public void Release(Projectile projectile)
+        {
+            int index = projectile.PoolIndex;
+            if (index >= 0 && index < active.Count && active[index] == projectile)
+            {
+                Projectile last = active[active.Count - 1];
+                active[index] = last;
+                last.PoolIndex = index;
+                active.RemoveAt(active.Count - 1);
+            }
+            projectile.PoolIndex = -1;
+            pool.Release(projectile);
+        }
+
+        /// <summary>Returns every bullet in flight to the pool (start of a round, so nothing carries over).</summary>
+        public void ReleaseAll()
+        {
+            for (int i = active.Count - 1; i >= 0; i--)
+            {
+                Projectile projectile = active[i];
+                projectile.PoolIndex = -1;
+                pool.Release(projectile);
+            }
+            active.Clear();
+        }
 
         public void RegisterHit() => TotalHits++;
 

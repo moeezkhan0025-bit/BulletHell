@@ -14,6 +14,8 @@ namespace BulletHell.UI
     {
         [SerializeField] private GameSceneController scene;
         [SerializeField] private FlowPanel roundResults;
+        [SerializeField] private FlowPanel pause;
+        [SerializeField] private FlowPanel gameOver;
         [SerializeField] private ShopScreen shop;
         [SerializeField] private ArmoryScreen armory;
 
@@ -29,14 +31,15 @@ namespace BulletHell.UI
 
             roundResults.ContinuePressed += run.Advance;
             roundResults.MenuPressed += scene.QuitToMenu;
+            pause.ContinuePressed += Resume;
+            pause.MenuPressed += scene.QuitToMenu;
+            gameOver.MenuPressed += scene.QuitToMenu;
             shop.ContinuePressed += run.Advance;
             shop.MenuPressed += scene.QuitToMenu;
             armory.ContinuePressed += run.Advance;
             armory.MenuPressed += scene.QuitToMenu;
 
-            roundResults.Hide();
-            shop.Hide();
-            armory.Hide();
+            HideAll();
         }
 
         private void OnEnable() => run.Machine.StateChanged += OnStateChanged;
@@ -45,9 +48,7 @@ namespace BulletHell.UI
 
         private void OnStateChanged(GameState from, GameState to)
         {
-            roundResults.Hide();
-            shop.Hide();
-            armory.Hide();
+            HideAll();
             RunState state = run.State;
 
             switch (to)
@@ -64,7 +65,24 @@ namespace BulletHell.UI
                 case GameState.Armory:
                     armory.Show(state);
                     break;
+                case GameState.Pause:
+                    pause.Show("Paused", $"Round {state.Round}");
+                    break;
+                case GameState.GameOver:
+                    gameOver.Show("GAME OVER", $"You reached round {state.Round}.\nThe run has ended and its save was deleted.", false);
+                    break;
             }
+        }
+
+        private void Resume() => run.SetPaused(false);
+
+        private void HideAll()
+        {
+            roundResults.Hide();
+            pause.Hide();
+            gameOver.Hide();
+            shop.Hide();
+            armory.Hide();
         }
     }
 }

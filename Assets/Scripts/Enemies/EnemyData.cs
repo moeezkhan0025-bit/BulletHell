@@ -17,6 +17,10 @@ namespace BulletHell.Enemies
         [SerializeField, Min(0f)] private float respawnDelay = 3f;
         [SerializeField, Min(0f)] private float hitFlashDuration = 0.08f;
 
+        [Header("Attacks")]
+        [Tooltip("Patterns this enemy fires (each on its own timer). Empty = never shoots.")]
+        [SerializeField] private AttackPattern[] attacks = new AttackPattern[0];
+
         [Header("Patrol (speed 0 = static)")]
         [SerializeField, Min(0f)] private float moveSpeed;
         [Tooltip("Distance from the start position it travels each way.")]
@@ -24,6 +28,7 @@ namespace BulletHell.Enemies
         [SerializeField] private Vector2 moveAxis = Vector2.right;
 
         public string DisplayName => displayName;
+        public AttackPattern[] Attacks => attacks;
         public Color Color => color;
         public float Size => size;
         public float MaxHealth => maxHealth;

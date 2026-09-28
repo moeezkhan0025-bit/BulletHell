@@ -1,15 +1,20 @@
 using BulletHell.Core;
+using BulletHell.Player;
+using BulletHell.Projectiles;
 using UnityEngine;
 
 namespace BulletHell.Enemies
 {
     /// <summary>
-    /// Runs a round's combat. Stub for M4: the round's enemies are the ones listed here; every time Combat starts they
-    /// are reset to full health, and when all of them are dead the round is cleared. Real waves replace this in M5.
+    /// Runs a round's combat. Stub until the M5b wave spawner: the round's enemies are the ones listed here; every time
+    /// Combat starts they are reset to full health, bound to the bullet pool and the player, and started shooting.
+    /// When all of them are dead the round is cleared. Any bullets left over from earlier are cleared at round start.
     /// </summary>
     public sealed class CombatController : MonoBehaviour
     {
         [SerializeField] private Enemy[] enemies;
+        [SerializeField] private ProjectilePool pool;
+        [SerializeField] private PlayerHealth player;
 
         private RunManager run;
         private int alive;
@@ -21,6 +26,7 @@ namespace BulletHell.Enemies
             foreach (Enemy enemy in enemies)
             {
                 enemy.AutoRespawn = false;
+                enemy.Bind(pool, player);
                 enemy.Defeated += OnEnemyDefeated;
             }
         }
@@ -40,6 +46,7 @@ namespace BulletHell.Enemies
             if (to != GameState.Combat || from == GameState.Pause)
                 return;
 
+            pool.ReleaseAll();
             foreach (Enemy enemy in enemies)
                 enemy.ResetForRound();
             alive = enemies.Length;

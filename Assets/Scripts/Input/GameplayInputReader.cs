@@ -31,6 +31,9 @@ namespace BulletHell.Input
 
         public event Action LockTogglePressed;
 
+        /// <summary>Options / Start pressed (pause).</summary>
+        public event Action PausePressed;
+
         // Debug map (D-pad / F1-F4): add, remove, next and previous test armament.
         public event Action DebugAddArmamentPressed;
         public event Action DebugRemoveArmamentPressed;
@@ -52,6 +55,7 @@ namespace BulletHell.Input
             lockToggleAction = gameplay.LockToggle;
             fireAction = gameplay.Fire;
             lockToggleAction.performed += OnLockToggle;
+            gameplay.Pause.performed += OnPause;
             input.Debug.DebugAddArmament.performed += OnDebugAdd;
             input.Debug.DebugRemoveArmament.performed += OnDebugRemove;
             input.Debug.DebugNextArmament.performed += OnDebugNext;
@@ -84,6 +88,7 @@ namespace BulletHell.Input
         private void OnDestroy()
         {
             lockToggleAction.performed -= OnLockToggle;
+            input.Gameplay.Pause.performed -= OnPause;
             for (int i = 0; i < AmmoButtonCount; i++)
                 ammoActions[i].performed -= ammoHandlers[i];
             input.Debug.DebugAddArmament.performed -= OnDebugAdd;
@@ -99,5 +104,7 @@ namespace BulletHell.Input
         private void OnDebugPrev(InputAction.CallbackContext _) => DebugPrevArmamentPressed?.Invoke();
 
         private void OnLockToggle(InputAction.CallbackContext _) => LockTogglePressed?.Invoke();
+
+        private void OnPause(InputAction.CallbackContext _) => PausePressed?.Invoke();
     }
 }

@@ -35,6 +35,7 @@ namespace BulletHell.UI
 
         private void Start()
         {
+            Time.timeScale = 1f;
             messageText.text = "";
             CloseConfirm();
         }

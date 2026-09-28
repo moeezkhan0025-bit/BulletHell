@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using BulletHell.Core;
+using BulletHell.Player;
+using BulletHell.Projectiles;
 using UnityEngine;
 
 namespace BulletHell.Enemies
@@ -21,12 +23,24 @@ namespace BulletHell.Enemies
 
         private Vector2 spawnPosition;
         private StatusEffects status;
+        private EnemyAttacker attacker;
 
         public EnemyData Data => data;
         public bool IsAlive => health.IsAlive;
 
         /// <summary>Respawn by itself after the data's delay. A round controller turns this off and calls ResetForRound instead.</summary>
         public bool AutoRespawn { get; set; } = true;
+
+        /// <summary>Scales how often this enemy shoots and how fast its bullets fly (difficulty). Applied on the next ResetForRound.</summary>
+        public float FireRateMultiplier { get; set; } = 1f;
+        public float BulletSpeedMultiplier { get; set; } = 1f;
+
+        /// <summary>Gives the enemy the bullet pool and the player to shoot at.</summary>
+        public void Bind(ProjectilePool pool, PlayerHealth player)
+        {
+            if (attacker != null)
+                attacker.Bind(pool, player);
+        }
 
         /// <summary>Raised when this enemy dies.</summary>
         public event Action<Enemy> Defeated;
@@ -35,6 +49,8 @@ namespace BulletHell.Enemies
         {
             spawnPosition = transform.position;
             TryGetComponent(out status);
+            if (TryGetComponent(out attacker))
+                attacker.Configure(data.Attacks);
             body.transform.localScale = Vector3.one * data.Size;
             hitbox.radius = data.Size * 0.5f;
             health.Initialize(data.MaxHealth);
@@ -54,6 +70,8 @@ namespace BulletHell.Enemies
         {
             if (status != null)
                 status.Clear();
+            if (attacker != null)
+                attacker.Stop();
             SetAlive(false);
             if (AutoRespawn)
                 StartCoroutine(RespawnAfterDelay());
@@ -76,6 +94,12 @@ namespace BulletHell.Enemies
             health.Revive();
             hitFlash.Clear();
             SetAlive(true);
+            if (attacker != null)
+            {
+                attacker.FireRateMultiplier = FireRateMultiplier;
+                attacker.BulletSpeedMultiplier = BulletSpeedMultiplier;
+                attacker.Begin();
+            }
         }
 
         private void SetAlive(bool alive)

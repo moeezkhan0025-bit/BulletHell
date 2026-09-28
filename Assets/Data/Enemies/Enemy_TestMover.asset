@@ -18,6 +18,8 @@ MonoBehaviour:
   maxHealth: 20
   respawnDelay: 3
   hitFlashDuration: 0.08
+  attacks:
+  - {fileID: 11400000, guid: c24d44386a99baa4a848cc0c04b8690f, type: 2}
   moveSpeed: 2.5
   moveRange: 3
   moveAxis: {x: 1, y: 0}

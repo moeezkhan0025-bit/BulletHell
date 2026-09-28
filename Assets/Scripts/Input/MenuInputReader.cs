@@ -1,0 +1,36 @@
+using System;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+namespace BulletHell.Input
+{
+    /// <summary>
+    /// Owner of the "Menu" input map: the controller's Start / Options button as the menu's primary action.
+    /// Navigating and pressing buttons is the EventSystem's job (stick/D-pad + A/Cross); this adds the Start shortcut.
+    /// </summary>
+    public sealed class MenuInputReader : MonoBehaviour
+    {
+        private GameInput input;
+
+        /// <summary>Start / Options pressed.</summary>
+        public event Action PrimaryPressed;
+
+        private void Awake()
+        {
+            input = new GameInput();
+            input.Menu.Primary.performed += OnPrimary;
+        }
+
+        private void OnEnable() => input.Menu.Enable();
+
+        private void OnDisable() => input.Menu.Disable();
+
+        private void OnDestroy()
+        {
+            input.Menu.Primary.performed -= OnPrimary;
+            input.Dispose();
+        }
+
+        private void OnPrimary(InputAction.CallbackContext _) => PrimaryPressed?.Invoke();
+    }
+}

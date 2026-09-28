@@ -277,7 +277,7 @@ namespace BulletHell.EditorTools
             EditorSceneManager.SaveScene(scene);
         }
 
-        private static FlowPanel CreateFlowPanel(Transform parent, string name, string continueLabel)
+        public static FlowPanel CreateFlowPanel(Transform parent, string name, string continueLabel)
         {
             RectTransform root = UiBuilder.CreateDimmer(name, parent);
             RectTransform box = UiBuilder.CreateVerticalBox("Box", root, new Vector2(900f, 640f), 26f, 44);

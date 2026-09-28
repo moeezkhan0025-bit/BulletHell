@@ -24,13 +24,14 @@ namespace BulletHell.UI
         [SerializeField] private ArmFireController fireController;
         [SerializeField] private AmmoPickupCollector pickupCollector;
         [SerializeField] private DebugArmamentControls armamentControls;
+        [SerializeField] private PlayerHealth playerHealth;
         [SerializeField] private Text label;
 
         private readonly StringBuilder builder = new StringBuilder(400);
         private static readonly string[] StateNames = { "none", "soft", "locked" };
 
         private int shownMoveX = int.MinValue, shownMoveY, shownMagnitude, shownAngle, shownArm, shownState, shownArmAim;
-        private int shownActive = -1, shownPooled = -1, shownCreated = -1, shownHits = -1;
+        private int shownActive = -1, shownPooled = -1, shownCreated = -1, shownHits = -1, shownHealth = -2;
 
         // Heat is stored as percent, -1 = no arm in that slot, 101 = overheated. Ammo/pickup state is compared as a signature.
         private readonly int[] shownHeat = new int[ArmLoadout.SlotCount];
@@ -59,6 +60,7 @@ namespace BulletHell.UI
             int pooled = projectiles.CountInactive;
             int created = projectiles.TotalCreated;
             int hits = projectiles.TotalHits;
+            int health = playerHealth == null ? -1 : Mathf.CeilToInt(playerHealth.Current * 10f) + (playerHealth.IsInvulnerable ? 1000 : 0);
 
             bool ammoChanged = ammoSlots.ActiveIndex != shownAmmoActive;
             for (int i = 0; i < AmmoSlotSet.Count; i++)
@@ -89,7 +91,7 @@ namespace BulletHell.UI
 
             if (moveX == shownMoveX && moveY == shownMoveY && magnitude == shownMagnitude &&
                 angle == shownAngle && arm == shownArm && state == shownState && armAim == shownArmAim &&
-                active == shownActive && pooled == shownPooled && created == shownCreated && hits == shownHits &&
+                active == shownActive && pooled == shownPooled && created == shownCreated && hits == shownHits && health == shownHealth &&
                 !ammoChanged && !heatChanged && !pickupChanged && !armamentsChanged)
                 return;
 
@@ -113,6 +115,7 @@ namespace BulletHell.UI
             shownPooled = pooled;
             shownCreated = created;
             shownHits = hits;
+            shownHealth = health;
 
             shownMoveX = moveX;
             shownMoveY = moveY;
@@ -138,6 +141,10 @@ namespace BulletHell.UI
             builder.Append("BULLETS active ").Append(active).Append("   pooled ").Append(pooled)
                    .Append("   created ").Append(created).Append('\n');
             builder.Append("HITS   ").Append(hits).Append('\n');
+            if (playerHealth != null)
+                builder.Append("PLAYER HP ").Append(playerHealth.Current.ToString("0.#")).Append('/')
+                       .Append(playerHealth.Max.ToString("0.#"))
+                       .Append(playerHealth.IsInvulnerable ? "  (invulnerable)" : "").Append('\n');
 
             builder.Append("AMMO  ");
             for (int i = 0; i < AmmoSlotSet.Count; i++)
