@@ -26,6 +26,8 @@ namespace BulletHell.Player
         public int SelectedArm => selector.Selected;
         /// <summary>Data of the selected arm, or null when nothing is selected.</summary>
         public WeaponArmData SelectedArmData => selector.Selected == ArmSelector.None ? null : arms[selector.Selected].Data;
+        /// <summary>Run state (upgrades, final stats) of the selected arm, or null when nothing is selected.</summary>
+        public ArmInstance SelectedInstance => selector.Selected == ArmSelector.None ? null : arms[selector.Selected].Instance;
         /// <summary>The spawned arm at a slot, or null if the slot is empty.</summary>
         public ArmVisual GetArm(int slot) => arms[slot];
         public ArmSelectionState State => selector.State;
@@ -48,7 +50,7 @@ namespace BulletHell.Player
                     continue;
                 arms[i] = Instantiate(armPrefab, armParent);
                 arms[i].name = $"Arm_{i}_{loadout.GetSlot(i).name}";
-                arms[i].Setup(loadout.GetSlot(i));
+                arms[i].Setup(new ArmInstance(loadout.GetSlot(i)));
                 PlaceArm(i, ArmSelector.HomeAngle(i));
             }
         }

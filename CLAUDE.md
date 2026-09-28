@@ -18,9 +18,29 @@ Consoles come later (need platform approval + Unity Pro), but the code must be c
 - Saving goes through an ISaveSystem interface (local file for now; platform save APIs plug in later).
 - No platform-specific code outside Scripts/Platform/.
 
-## Core loop
-Stage (survive waves, collect currency) -> Results/payout -> Shop (buy upgrades & ammo types) -> next Stage (harder).
-Boss rounds: 3, 5, 7. After round 7: [TBD - e.g. boss every 2 rounds / endless scaling / game ends].
+## Game flow
+Boot scene (bootstrapper) -> Main Menu scene -> Game scene.
+- Boot: first scene in the build. Creates persistent services once (DontDestroyOnLoad): SaveSystem,
+  GameStateMachine/run manager, audio stub, scene loader. Then loads Main Menu. Nothing gameplay here.
+  Pressing Play in any scene in the Editor must still work (services self-bootstrap if Boot was skipped).
+- Main Menu: Start Game, Continue, Quit. Continue is disabled when no save exists.
+  Start Game with an existing save asks to confirm overwriting it.
+- Run loop (Game scene, one GameStateMachine):
+  Combat (round N: waves) -> Round Results (currency earned) -> Shop -> Armory (equip) -> Combat (round N+1, harder).
+  Boss rounds: 3, 5, 7. After round 7: [TBD - e.g. boss every 2 rounds / endless scaling / game ends].
+  Pause and Game Over can happen during Combat. Game Over returns to Main Menu.
+- Arms and armaments can only be equipped in the Armory, between rounds - never during combat.
+  [TBD: also allow the Armory between waves inside a round?]
+
+## Save system
+- Exactly ONE save file (single slot), JSON, written through ISaveSystem (platform save APIs plug in later).
+- Autosave when entering the Shop after each round, and after leaving the Armory.
+- Saved: round number, currency, arm inventory, armament inventory, loadout (8 slots of arm instances
+  with their equipped armaments), 4 ammo slots, save version number.
+- Continue loads the save and resumes at the Shop for the saved round.
+- Game Over deletes the run save (roguelike). [TBD: any permanent meta-progression, saved separately]
+- Save data uses plain serializable classes and asset IDs, never direct ScriptableObject references
+  (an AssetRegistry maps IDs -> WeaponArmData / ArmamentData / AmmoTypeData).
 
 ## Controls (action map "Gameplay")
 PlayStation names below; Xbox = RB / LS click / A B X Y, Switch = R / L-stick click / B A Y X.
@@ -64,18 +84,21 @@ PlayStation names below; Xbox = RB / LS click / A B X Y, Switch = R / L-stick cl
   The player's arms are spawned from the loadout at runtime - no arm is hard-coded in the scene.
   - StartingLoadout asset: ONE arm equipped (slot N by default). DebugLoadout asset: all 8 slots filled
     for testing. A field on the player (or a debug setting) chooses which loadout is used.
-  - Equipping in-game (shop/equip screen) comes in M5; for now loadouts are edited in the Inspector.
-- Arm instances: each filled loadout slot is a runtime ArmInstance = WeaponArmData + 3 upgrade slots.
-  Upgrades belong to the instance (two slots holding the same arm type can be upgraded differently).
+  - Equipping in-game happens in the Armory (M4); StartingLoadout defines a new run.
+- Arm instances: each filled loadout slot is a runtime ArmInstance = WeaponArmData + 3 armament slots.
+  Armaments belong to the instance (two slots holding the same arm type can be kitted differently).
   Never modify ScriptableObject assets at runtime; all run state lives on instances.
 - Arm stats = damage, fire rate, projectile speed, projectiles per shot, spread (base values on WeaponArmData).
-- Upgrades: UpgradeData assets, each a list of stat modifiers (flat add or percent multiply).
-  Final stat = base, then all flat adds, then all percent multipliers (order fixed and documented in code).
-  3 upgrade slots per arm instance. How upgrades are acquired (shop / pickups) comes later; for now
-  they're added via the Inspector / debug controls.
+- Armaments (arm upgrades): ArmamentData assets, each a list of stat modifiers (flat add or percent
+  multiply). Final stat = base, then all flat adds, then all percent multipliers (order documented in code).
+  3 armament slots per arm instance. Armaments are bought in the Shop into the armament inventory and
+  equipped in the Armory. Unequipping returns the armament to the inventory.
+- Arm effects: WeaponArmData can carry special effects beyond stats (e.g. pierce, burn, ricochet).
+  Built as a small effect interface so new effects are new classes/assets, not edits to firing code.
+  Start with 1-2 test effects.
 - Ammo types: AmmoTypeData assets. Starter set: Basic, Shotgun (multiple pellets + spread),
   Laser (continuous beam, heat), Gatling (spin-up, heat). Later: Tracking, Automatic, more.
-  Ammo type defines projectile behavior; the arm's (upgraded) stats scale it.
+  Ammo type defines projectile behavior; the arm's (armament-modified) stats scale it.
 - Ammo slots: the player carries 4 ammo slots, one per face button (Cross/Circle/Square/Triangle).
   Tapping a face button makes that slot's ammo active for firing. Empty slots can't be selected.
   Run start: slot 1 = Basic, others empty.
@@ -90,16 +113,24 @@ PlayStation names below; Xbox = RB / LS click / A B X Y, Switch = R / L-stick cl
   firing; at max heat the arm overheats and can't fire until it cools to a restart threshold.
   Heat decays when not firing. All heat values live on AmmoTypeData. One shared HeatComponent.
 - Currency: dropped by enemies, collected by the player, banked at round end.
-- Shop: buy new ammo types, arm upgrades, and [TBD]. Prices scale per purchase.
+- Shop (after each round): offers a few random items from pools - new arms (with effects) and armaments
+  (and later ammo types). Buying adds the item to the arm or armament inventory. Prices scale per round.
+  Skeleton first: fixed test stock, plain list UI, controller navigable.
+- Armory (after the Shop): shows the player with its 8 arm slots.
+  - Select an arm -> a panel shows its 3 armament slots -> pick a slot -> choose an armament from the
+    inventory (or remove the current one).
+  - Selecting an EMPTY arm slot lets the player place an arm from the arm inventory there.
+    Removing an arm from a slot returns it (with its armaments still attached) to the arm inventory.
+  - "Continue" starts the next round. Skeleton UI first; visual polish later.
 - Difficulty: each round scales enemy count, HP, fire rate and bullet speed via a DifficultyCurve asset.
 - Bosses: multi-phase, each phase = list of attack patterns.
 
 ## Architecture rules (follow these strictly)
-- All tunable data lives in ScriptableObjects: WeaponArmData, AmmoTypeData, UpgradeData,
-  EnemyData, WaveData, BossData, DifficultyCurve, InputTuning, ArmLoadout, PickupTuning. No gameplay numbers hard-coded in MonoBehaviours.
+- All tunable data lives in ScriptableObjects: WeaponArmData, AmmoTypeData, ArmamentData,
+  EnemyData, WaveData, BossData, DifficultyCurve, InputTuning, ArmLoadout, PickupTuning, ShopPool, AssetRegistry. No gameplay numbers hard-coded in MonoBehaviours.
 - ALL projectiles (player and enemy) use object pooling (UnityEngine.Pool.ObjectPool<T>).
   Never Instantiate/Destroy bullets during gameplay.
-- Game flow is a single GameStateMachine: Stage, Results, Shop, Boss, GameOver, Pause.
+- Run flow is a single GameStateMachine: Combat, RoundResults, Shop, Armory, Pause, GameOver.
 - Systems talk through C# events or ScriptableObject event channels, not FindObjectOfType.
 - Input only through the generated Input Actions class. No legacy Input Manager.
 - Sprites are referenced from data assets / prefabs so art can be swapped without code changes.
@@ -109,10 +140,10 @@ PlayStation names below; Xbox = RB / LS click / A B X Y, Switch = R / L-stick cl
 ## Folder layout
 Assets/
   Art/ (Player, Arms, Placeholder)
-  Data/ (Arms, Loadouts, Ammo, Upgrades, Pickups, Enemies, Waves, Bosses, Input)
+  Data/ (Arms, Loadouts, Ammo, Armaments, Pickups, Shop, Enemies, Waves, Bosses, Input)
   Prefabs/
-  Scenes/ (Boot, Game, Shop)
-  Scripts/ (Core, Input, Player, Weapons, Projectiles, Enemies, Bosses, Shop, UI, Platform)
+  Scenes/ (Boot, MainMenu, Game)   (Shop and Armory are UI states inside Game)
+  Scripts/ (Core, Save, Input, Player, Weapons, Projectiles, Enemies, Bosses, Shop, Armory, UI, Platform)
   Tests/
 
 ## Working agreement
@@ -134,10 +165,14 @@ Assets/
       Each arm fires from its own muzzle using its own WeaponArmData stats.
 - [ ] M3a Ammo: AmmoTypeData + 4 starter types, 4 face-button ammo slots, HeatComponent/overheat per arm,
       ammo pickups (auto-fill empty slot, hold button to replace, dropped ammo), test pickups in scene.
-- [ ] M3b Upgrades: ArmInstance with 3 upgrade slots, UpgradeData stat modifiers, stat calculation,
-      a few test upgrades, debug way to add/remove upgrades, overlay shows final stats.
-- [ ] M4 Enemies + data-driven waves + currency drops.
-- [ ] M5 Round loop, results screen, shop, difficulty scaling.
-- [ ] M6 Bosses (round 3 first, then 5 and 7).
-- [ ] M7 Final art pass (player body, any remaining placeholders).
-- [ ] M8 Polish: touch controls, button glyphs, juice, audio, save data, performance pass.
+- [ ] M3b Armaments core: ArmInstance with 3 armament slots, ArmamentData stat modifiers, stat calculation,
+      arm + armament inventories, 1-2 test arm effects, debug controls, overlay shows final stats.
+- [ ] M4 Game flow skeleton: Boot bootstrapper, Main Menu (Start/Continue/Quit), single-slot save system,
+      GameStateMachine with a stub round (ends when test enemies are cleared), Round Results -> Shop
+      (fixed test stock) -> Armory (select arm -> 3 slots -> equip from inventory; place arms in empty
+      slots) -> next round. Autosave + Continue working. Plain skeleton UI, fully controller navigable.
+- [ ] M5 Enemies that shoot back + data-driven waves + currency drops + difficulty scaling per round.
+- [ ] M6 Shop pools and pricing (random stock, scaling prices), more arms/armaments/effects.
+- [ ] M7 Bosses (round 3 first, then 5 and 7).
+- [ ] M8 UI/visual pass: clean menus, Shop, Armory, HUD; final art.
+- [ ] M9 Polish: touch controls, button glyphs, juice, audio, performance pass.

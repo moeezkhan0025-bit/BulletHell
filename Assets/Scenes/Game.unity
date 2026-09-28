@@ -584,6 +584,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1af2b9615671cd84e89de931cebfacc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.AmmoSlots
+--- !u!114 &499677783 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7366169670956113522, guid: 2d78b03a72bf2e84d9872bab12ebc84d, type: 3}
+  m_PrefabInstance: {fileID: 499677778}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2050330947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bb679e807af289408d7f418b87ea78c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BulletHell::BulletHell.UI.DebugUpgradeControls
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1292,6 +1303,7 @@ MonoBehaviour:
   ammoSlots: {fileID: 499677782}
   fireController: {fileID: 2050330950}
   pickupCollector: {fileID: 499677781}
+  upgradeControls: {fileID: 499677783}
   label: {fileID: 124758213}
 --- !u!114 &1414673287
 MonoBehaviour:

@@ -284,6 +284,142 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Debug"",
+            ""id"": ""6d2e1b20-7a4c-4d2f-8b63-2c8f3e5a9b02"",
+            ""actions"": [
+                {
+                    ""name"": ""DebugAddUpgrade"",
+                    ""type"": ""Button"",
+                    ""id"": ""1d000001-3333-4c01-8d01-0000000000c1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""DebugRemoveUpgrade"",
+                    ""type"": ""Button"",
+                    ""id"": ""1d000002-3333-4c02-8d02-0000000000c2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""DebugNextUpgrade"",
+                    ""type"": ""Button"",
+                    ""id"": ""1d000003-3333-4c03-8d03-0000000000c3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""DebugPrevUpgrade"",
+                    ""type"": ""Button"",
+                    ""id"": ""1d000004-3333-4c04-8d04-0000000000c4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""1e000001-4444-4d01-9e01-0000000000d1"",
+                    ""path"": ""<Gamepad>/dpad/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""DebugAddUpgrade"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e000002-4444-4d02-9e02-0000000000d2"",
+                    ""path"": ""<Keyboard>/f1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DebugAddUpgrade"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e000003-4444-4d03-9e03-0000000000d3"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""DebugRemoveUpgrade"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e000004-4444-4d04-9e04-0000000000d4"",
+                    ""path"": ""<Keyboard>/f2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DebugRemoveUpgrade"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e000005-4444-4d05-9e05-0000000000d5"",
+                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""DebugNextUpgrade"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e000006-4444-4d06-9e06-0000000000d6"",
+                    ""path"": ""<Keyboard>/f3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DebugNextUpgrade"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e000007-4444-4d07-9e07-0000000000d7"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""DebugPrevUpgrade"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e000008-4444-4d08-9e08-0000000000d8"",
+                    ""path"": ""<Keyboard>/f4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DebugPrevUpgrade"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -311,11 +447,18 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Gameplay_EquipAmmo3 = m_Gameplay.FindAction("EquipAmmo3", throwIfNotFound: true);
         m_Gameplay_EquipAmmo4 = m_Gameplay.FindAction("EquipAmmo4", throwIfNotFound: true);
         m_Gameplay_Pause = m_Gameplay.FindAction("Pause", throwIfNotFound: true);
+        // Debug
+        m_Debug = asset.FindActionMap("Debug", throwIfNotFound: true);
+        m_Debug_DebugAddUpgrade = m_Debug.FindAction("DebugAddUpgrade", throwIfNotFound: true);
+        m_Debug_DebugRemoveUpgrade = m_Debug.FindAction("DebugRemoveUpgrade", throwIfNotFound: true);
+        m_Debug_DebugNextUpgrade = m_Debug.FindAction("DebugNextUpgrade", throwIfNotFound: true);
+        m_Debug_DebugPrevUpgrade = m_Debug.FindAction("DebugPrevUpgrade", throwIfNotFound: true);
     }
 
     ~@GameInput()
     {
         UnityEngine.Debug.Assert(!m_Gameplay.enabled, "This will cause a leak and performance issues, GameInput.Gameplay.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_Debug.enabled, "This will cause a leak and performance issues, GameInput.Debug.Disable() has not been called.");
     }
 
     /// <summary>
@@ -571,6 +714,135 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="GameplayActions" /> instance referencing this action map.
     /// </summary>
     public GameplayActions @Gameplay => new GameplayActions(this);
+
+    // Debug
+    private readonly InputActionMap m_Debug;
+    private List<IDebugActions> m_DebugActionsCallbackInterfaces = new List<IDebugActions>();
+    private readonly InputAction m_Debug_DebugAddUpgrade;
+    private readonly InputAction m_Debug_DebugRemoveUpgrade;
+    private readonly InputAction m_Debug_DebugNextUpgrade;
+    private readonly InputAction m_Debug_DebugPrevUpgrade;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "Debug".
+    /// </summary>
+    public struct DebugActions
+    {
+        private @GameInput m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public DebugActions(@GameInput wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "Debug/DebugAddUpgrade".
+        /// </summary>
+        public InputAction @DebugAddUpgrade => m_Wrapper.m_Debug_DebugAddUpgrade;
+        /// <summary>
+        /// Provides access to the underlying input action "Debug/DebugRemoveUpgrade".
+        /// </summary>
+        public InputAction @DebugRemoveUpgrade => m_Wrapper.m_Debug_DebugRemoveUpgrade;
+        /// <summary>
+        /// Provides access to the underlying input action "Debug/DebugNextUpgrade".
+        /// </summary>
+        public InputAction @DebugNextUpgrade => m_Wrapper.m_Debug_DebugNextUpgrade;
+        /// <summary>
+        /// Provides access to the underlying input action "Debug/DebugPrevUpgrade".
+        /// </summary>
+        public InputAction @DebugPrevUpgrade => m_Wrapper.m_Debug_DebugPrevUpgrade;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_Debug; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="DebugActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(DebugActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="DebugActions" />
+        public void AddCallbacks(IDebugActions instance)
+        {
+            if (instance == null || m_Wrapper.m_DebugActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_DebugActionsCallbackInterfaces.Add(instance);
+            @DebugAddUpgrade.started += instance.OnDebugAddUpgrade;
+            @DebugAddUpgrade.performed += instance.OnDebugAddUpgrade;
+            @DebugAddUpgrade.canceled += instance.OnDebugAddUpgrade;
+            @DebugRemoveUpgrade.started += instance.OnDebugRemoveUpgrade;
+            @DebugRemoveUpgrade.performed += instance.OnDebugRemoveUpgrade;
+            @DebugRemoveUpgrade.canceled += instance.OnDebugRemoveUpgrade;
+            @DebugNextUpgrade.started += instance.OnDebugNextUpgrade;
+            @DebugNextUpgrade.performed += instance.OnDebugNextUpgrade;
+            @DebugNextUpgrade.canceled += instance.OnDebugNextUpgrade;
+            @DebugPrevUpgrade.started += instance.OnDebugPrevUpgrade;
+            @DebugPrevUpgrade.performed += instance.OnDebugPrevUpgrade;
+            @DebugPrevUpgrade.canceled += instance.OnDebugPrevUpgrade;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="DebugActions" />
+        private void UnregisterCallbacks(IDebugActions instance)
+        {
+            @DebugAddUpgrade.started -= instance.OnDebugAddUpgrade;
+            @DebugAddUpgrade.performed -= instance.OnDebugAddUpgrade;
+            @DebugAddUpgrade.canceled -= instance.OnDebugAddUpgrade;
+            @DebugRemoveUpgrade.started -= instance.OnDebugRemoveUpgrade;
+            @DebugRemoveUpgrade.performed -= instance.OnDebugRemoveUpgrade;
+            @DebugRemoveUpgrade.canceled -= instance.OnDebugRemoveUpgrade;
+            @DebugNextUpgrade.started -= instance.OnDebugNextUpgrade;
+            @DebugNextUpgrade.performed -= instance.OnDebugNextUpgrade;
+            @DebugNextUpgrade.canceled -= instance.OnDebugNextUpgrade;
+            @DebugPrevUpgrade.started -= instance.OnDebugPrevUpgrade;
+            @DebugPrevUpgrade.performed -= instance.OnDebugPrevUpgrade;
+            @DebugPrevUpgrade.canceled -= instance.OnDebugPrevUpgrade;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="DebugActions.UnregisterCallbacks(IDebugActions)" />.
+        /// </summary>
+        /// <seealso cref="DebugActions.UnregisterCallbacks(IDebugActions)" />
+        public void RemoveCallbacks(IDebugActions instance)
+        {
+            if (m_Wrapper.m_DebugActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="DebugActions.AddCallbacks(IDebugActions)" />
+        /// <seealso cref="DebugActions.RemoveCallbacks(IDebugActions)" />
+        /// <seealso cref="DebugActions.UnregisterCallbacks(IDebugActions)" />
+        public void SetCallbacks(IDebugActions instance)
+        {
+            foreach (var item in m_Wrapper.m_DebugActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_DebugActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="DebugActions" /> instance referencing this action map.
+    /// </summary>
+    public DebugActions @Debug => new DebugActions(this);
     private int m_GamepadSchemeIndex = -1;
     /// <summary>
     /// Provides access to the input control scheme.
@@ -654,5 +926,41 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPause(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Debug" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="DebugActions.AddCallbacks(IDebugActions)" />
+    /// <seealso cref="DebugActions.RemoveCallbacks(IDebugActions)" />
+    public interface IDebugActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "DebugAddUpgrade" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDebugAddUpgrade(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DebugRemoveUpgrade" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDebugRemoveUpgrade(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DebugNextUpgrade" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDebugNextUpgrade(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DebugPrevUpgrade" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDebugPrevUpgrade(InputAction.CallbackContext context);
     }
 }

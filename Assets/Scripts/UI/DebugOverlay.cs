@@ -23,6 +23,7 @@ namespace BulletHell.UI
         [SerializeField] private AmmoSlots ammoSlots;
         [SerializeField] private ArmFireController fireController;
         [SerializeField] private AmmoPickupCollector pickupCollector;
+        [SerializeField] private DebugUpgradeControls upgradeControls;
         [SerializeField] private Text label;
 
         private readonly StringBuilder builder = new StringBuilder(400);
@@ -37,6 +38,9 @@ namespace BulletHell.UI
         private int shownAmmoActive = -2, shownPickupProgress = -1, shownPickupSlot = -2;
         private readonly AmmoTypeData[] shownAmmo = new AmmoTypeData[AmmoSlotSet.Count];
         private AmmoPickup shownPickup;
+        private ArmInstance shownInstance;
+        private int shownInstanceVersion = -1;
+        private UpgradeData shownTestUpgrade;
 
         private void Update()
         {
@@ -72,11 +76,20 @@ namespace BulletHell.UI
             int pickupProgress = Mathf.RoundToInt(pickupCollector.HoldProgress01 * 100f);
             bool pickupChanged = nearPickup != shownPickup || pickupSlot != shownPickupSlot || pickupProgress != shownPickupProgress;
 
+            ArmInstance instance = arms.SelectedInstance;
+            UpgradeData testUpgrade = upgradeControls.Current;
+            bool upgradesChanged = instance != shownInstance || testUpgrade != shownTestUpgrade ||
+                                   (instance != null && instance.Version != shownInstanceVersion);
+
             if (moveX == shownMoveX && moveY == shownMoveY && magnitude == shownMagnitude &&
                 angle == shownAngle && arm == shownArm && state == shownState && armAim == shownArmAim &&
                 active == shownActive && pooled == shownPooled && created == shownCreated && hits == shownHits &&
-                !ammoChanged && !heatChanged && !pickupChanged)
+                !ammoChanged && !heatChanged && !pickupChanged && !upgradesChanged)
                 return;
+
+            shownInstance = instance;
+            shownInstanceVersion = instance != null ? instance.Version : -1;
+            shownTestUpgrade = testUpgrade;
 
             shownAmmoActive = ammoSlots.ActiveIndex;
             for (int i = 0; i < AmmoSlotSet.Count; i++)
@@ -144,6 +157,39 @@ namespace BulletHell.UI
             }
             builder.Append('\n');
 
+            builder.Append("UPGRADES ");
+            if (instance == null)
+            {
+                builder.Append("--");
+            }
+            else
+            {
+                for (int i = 0; i < ArmInstance.UpgradeSlots; i++)
+                {
+                    UpgradeData upgrade = instance.GetUpgrade(i);
+                    builder.Append(" [").Append(i + 1).Append(' ').Append(upgrade != null ? upgrade.DisplayName : "-").Append(']');
+                }
+            }
+            builder.Append("\n         add: ").Append(testUpgrade != null ? testUpgrade.DisplayName : "--")
+                   .Append("   (D-pad up add, down remove, left/right pick | F1-F4)\n");
+
+            builder.Append("STATS  ");
+            if (instance == null)
+            {
+                builder.Append("--");
+            }
+            else
+            {
+                ArmStats baseStats = instance.BaseStats;
+                ArmStats final = instance.Stats;
+                AppendStat("dmg", baseStats.Damage, final.Damage);
+                AppendStat("rate", baseStats.FireRate, final.FireRate);
+                AppendStat("speed", baseStats.ProjectileSpeed, final.ProjectileSpeed);
+                AppendStat("proj", baseStats.ProjectilesPerShot, final.ProjectilesPerShot);
+                AppendStat("spread", baseStats.Spread, final.Spread);
+            }
+            builder.Append('\n');
+
             builder.Append("PICKUP ");
             if (nearPickup == null)
                 builder.Append("--");
@@ -153,6 +199,17 @@ namespace BulletHell.UI
                 builder.Append(nearPickup.Ammo.DisplayName).Append(" -> slot ").Append(pickupSlot + 1)
                        .Append("  ").Append(pickupProgress).Append('%');
             label.text = builder.ToString();
+        }
+
+        /// <summary>"name base>final" when upgraded, "name value" otherwise.</summary>
+        private void AppendStat(string name, float baseValue, float finalValue)
+        {
+            builder.Append(name).Append(' ');
+            if (Mathf.Approximately(baseValue, finalValue))
+                builder.Append(finalValue.ToString("0.##"));
+            else
+                builder.Append(baseValue.ToString("0.##")).Append(">").Append(finalValue.ToString("0.##"));
+            builder.Append("  ");
         }
     }
 }

@@ -61,7 +61,7 @@ namespace BulletHell.Weapons
                 bool beaming = firing && ammo.Behavior == AmmoBehavior.Beam;
 
                 float spin = spins[slot].Tick(dt, firing && !beaming, spinSettings);
-                float rate = arm != null && ammo != null ? arm.Data.FireRate * ammo.FireRateMultiplier * spin : 1f;
+                float rate = arm != null && ammo != null ? arm.Instance.Stats.FireRate * ammo.FireRateMultiplier * spin : 1f;
                 int shots = timers[slot].Tick(dt, firing && !beaming, rate);
                 for (int s = 0; s < shots && !slotHeat.IsOverheated; s++)
                 {
@@ -83,10 +83,11 @@ namespace BulletHell.Weapons
             Vector2 origin = arm.Muzzle.position;
             Vector3 facing = arm.transform.right;
             float baseAngle = Mathf.Atan2(facing.y, facing.x) * Mathf.Rad2Deg;
-            int count = data.ProjectilesPerShot + ammo.ExtraProjectiles;
-            float spread = data.Spread * ammo.SpreadMultiplier + ammo.AddedSpread;
-            float speed = data.ProjectileSpeed * ammo.ProjectileSpeedMultiplier;
-            float damage = data.Damage * ammo.DamageMultiplier;
+            ArmStats stats = arm.Instance.Stats; // base + upgrades; ammo scales these
+            int count = stats.ProjectilesPerShot + ammo.ExtraProjectiles;
+            float spread = stats.Spread * ammo.SpreadMultiplier + ammo.AddedSpread;
+            float speed = stats.ProjectileSpeed * ammo.ProjectileSpeedMultiplier;
+            float damage = stats.Damage * ammo.DamageMultiplier;
             float size = data.ProjectileSize * ammo.ProjectileSizeMultiplier;
 
             for (int i = 0; i < count; i++)
@@ -110,7 +111,10 @@ namespace BulletHell.Weapons
             {
                 end = BeamHit[0].point;
                 if (BeamHit[0].collider.TryGetComponent(out IDamageable target) && target.IsAlive)
-                    target.TakeDamage(arm.Data.Damage * arm.Data.FireRate * ammo.DamageMultiplier * dt);
+                {
+                    ArmStats stats = arm.Instance.Stats;
+                    target.TakeDamage(stats.Damage * stats.FireRate * ammo.DamageMultiplier * dt);
+                }
             }
 
             LineRenderer line = beams[slot];

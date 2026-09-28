@@ -24,15 +24,19 @@ namespace BulletHell.Player
         [Tooltip("Editor only: arm shown when editing the prefab. Spawned arms get their data from the loadout.")]
         [SerializeField] private WeaponArmData previewData;
 
+        private ArmInstance instance;
         private WeaponArmData data;
 
         public WeaponArmData Data => data;
+        /// <summary>Run state of this arm (upgrades and final stats).</summary>
+        public ArmInstance Instance => instance;
         public Transform Muzzle => muzzle;
 
-        public void Setup(WeaponArmData armData)
+        public void Setup(ArmInstance armInstance)
         {
-            data = armData;
-            ApplyData(armData);
+            instance = armInstance;
+            data = armInstance.Data;
+            ApplyData(data);
             SetState(State.Hidden);
         }
 
