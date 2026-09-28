@@ -73,6 +73,11 @@ namespace BulletHell.Projectiles
 
         private static void OnRelease(Projectile projectile) => projectile.gameObject.SetActive(false);
 
-        private static void OnDestroyItem(Projectile projectile) => Destroy(projectile.gameObject);
+        // On leaving Play mode the scene objects are already gone when Unity clears the pool.
+        private static void OnDestroyItem(Projectile projectile)
+        {
+            if (projectile != null)
+                Destroy(projectile.gameObject);
+        }
     }
 }

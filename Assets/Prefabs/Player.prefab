@@ -43,6 +43,8 @@ GameObject:
   - component: {fileID: 7010803790201199158}
   - component: {fileID: 2613759947517743153}
   - component: {fileID: 6126682682417762252}
+  - component: {fileID: 2947929709545293842}
+  - component: {fileID: 1064214870527336465}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -112,6 +114,36 @@ MonoBehaviour:
   loadout: {fileID: 11400000, guid: 417db03862c741c4e9097842a949a97c, type: 2}
   armPrefab: {fileID: 6386787572170391266, guid: d92b07116e0a4a544ba1ab398fcc389a, type: 3}
   armParent: {fileID: 792335173535145330}
+--- !u!114 &2947929709545293842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5878368061300880211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1af2b9615671cd84e89de931cebfacc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.AmmoSlots
+  input: {fileID: 7010803790201199158}
+  startingAmmo: {fileID: 11400000, guid: ede6581f4c2de6b498087e5d7fd6d580, type: 2}
+--- !u!114 &1064214870527336465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5878368061300880211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9255210c7f2809e4f9c8074716d9800e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BulletHell::BulletHell.Pickups.AmmoPickupCollector
+  input: {fileID: 7010803790201199158}
+  slots: {fileID: 2947929709545293842}
+  tuning: {fileID: 11400000, guid: 55541f50769304a4490dc9fcccc3eb58, type: 2}
+  pickupPrefab: {fileID: 2627059105708570461, guid: 26c4d2dfb2b1bf1418bdd055acf37e10, type: 3}
 --- !u!1 &7117061109556200686
 GameObject:
   m_ObjectHideFlags: 0

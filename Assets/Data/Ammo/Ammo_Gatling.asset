@@ -10,28 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e3b9b2626e5a76443b2d20dea1b156b8, type: 3}
-  m_Name: Ammo_Basic
+  m_Name: Ammo_Gatling
   m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.AmmoTypeData
-  displayName: Basic
+  displayName: Gatling
   projectileSprite: {fileID: 21300000, guid: 6b794c9ce314a7a4fbe9cab037811ec0, type: 3}
-  tint: {r: 1, g: 1, b: 1, a: 1}
+  tint: {r: 1, g: 0.9, b: 0.3, a: 1}
   behavior: 0
   maxLifetime: 6
-  damageMultiplier: 1
+  damageMultiplier: 0.5
   fireRateMultiplier: 1
   projectileSpeedMultiplier: 1
-  projectileSizeMultiplier: 1
+  projectileSizeMultiplier: 0.6
   extraProjectiles: 0
   spreadMultiplier: 1
-  addedSpread: 0
+  addedSpread: 4
   beamRange: 30
   beamWidth: 0.12
-  usesHeat: 0
-  heatPerShot: 0
+  usesHeat: 1
+  heatPerShot: 0.02
   heatPerSecond: 0
-  coolPerSecond: 0.35
-  restartThreshold: 0.4
-  spinUpTime: 0
+  coolPerSecond: 0.25
+  restartThreshold: 0.3
+  spinUpTime: 1.5
   spinDownTime: 1
-  minRateMultiplier: 1
-  maxRateMultiplier: 1
+  minRateMultiplier: 0.3
+  maxRateMultiplier: 2.5
