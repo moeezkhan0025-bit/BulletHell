@@ -14,12 +14,16 @@ namespace BulletHell.Input
         private InputAction moveAction;
         private InputAction aimAction;
         private InputAction lockToggleAction;
+        private InputAction fireAction;
 
         /// <summary>Right stick.</summary>
         public Vector2 Move => moveAction.ReadValue<Vector2>();
 
         /// <summary>Left stick.</summary>
         public Vector2 Aim => aimAction.ReadValue<Vector2>();
+
+        /// <summary>R1 held down.</summary>
+        public bool FireHeld => fireAction.IsPressed();
 
         public event Action LockTogglePressed;
 
@@ -30,6 +34,7 @@ namespace BulletHell.Input
             moveAction = gameplay.Move;
             aimAction = gameplay.Aim;
             lockToggleAction = gameplay.LockToggle;
+            fireAction = gameplay.Fire;
             lockToggleAction.performed += OnLockToggle;
         }
 

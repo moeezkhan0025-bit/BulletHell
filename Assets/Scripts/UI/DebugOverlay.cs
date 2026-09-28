@@ -1,6 +1,7 @@
 using System.Text;
 using BulletHell.Input;
 using BulletHell.Player;
+using BulletHell.Projectiles;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,12 +17,14 @@ namespace BulletHell.UI
 
         [SerializeField] private GameplayInputReader input;
         [SerializeField] private ArmSelectionController arms;
+        [SerializeField] private ProjectilePool projectiles;
         [SerializeField] private Text label;
 
         private readonly StringBuilder builder = new StringBuilder(160);
         private static readonly string[] StateNames = { "none", "soft", "locked" };
 
         private int shownMoveX = int.MinValue, shownMoveY, shownMagnitude, shownAngle, shownArm, shownState, shownArmAim;
+        private int shownActive = -1, shownPooled = -1, shownCreated = -1, shownHits = -1;
 
         private void Update()
         {
@@ -35,9 +38,20 @@ namespace BulletHell.UI
             int state = (int)arms.State;
             int armAim = arm == ArmSelector.None ? -1 : Mathf.RoundToInt(arms.AimAngle) % 360;
 
+            int active = projectiles.CountActive;
+            int pooled = projectiles.CountInactive;
+            int created = projectiles.TotalCreated;
+            int hits = projectiles.TotalHits;
+
             if (moveX == shownMoveX && moveY == shownMoveY && magnitude == shownMagnitude &&
-                angle == shownAngle && arm == shownArm && state == shownState && armAim == shownArmAim)
+                angle == shownAngle && arm == shownArm && state == shownState && armAim == shownArmAim &&
+                active == shownActive && pooled == shownPooled && created == shownCreated && hits == shownHits)
                 return;
+
+            shownActive = active;
+            shownPooled = pooled;
+            shownCreated = created;
+            shownHits = hits;
 
             shownMoveX = moveX;
             shownMoveY = moveY;
@@ -59,7 +73,10 @@ namespace BulletHell.UI
                 builder.Append(ArmNames[arm]).Append("  ").Append(arms.SelectedArmData.DisplayName);
             builder.Append('\n');
             builder.Append("STATE  ").Append(StateNames[state]).Append('\n');
-            builder.Append("ARM AIM ").Append(armAim < 0 ? "--" : armAim.ToString()).Append('°');
+            builder.Append("ARM AIM ").Append(armAim < 0 ? "--" : armAim.ToString()).Append("°\n");
+            builder.Append("BULLETS active ").Append(active).Append("   pooled ").Append(pooled)
+                   .Append("   created ").Append(created).Append('\n');
+            builder.Append("HITS   ").Append(hits);
             label.text = builder.ToString();
         }
     }

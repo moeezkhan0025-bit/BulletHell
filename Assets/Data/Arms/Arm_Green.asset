@@ -22,3 +22,4 @@ MonoBehaviour:
   projectileSpeed: 14
   projectilesPerShot: 1
   spread: 0
+  projectileSize: 0.3

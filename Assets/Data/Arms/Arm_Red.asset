@@ -17,8 +17,9 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 33099a98b94aabd4cb10fb01e96c7811, type: 3}
   artRotation: 36
   muzzleOffset: {x: 0.5995676, y: 0}
-  damage: 1
-  fireRate: 6
-  projectileSpeed: 14
+  damage: 6
+  fireRate: 1.2
+  projectileSpeed: 10
   projectilesPerShot: 1
   spread: 0
+  projectileSize: 0.6

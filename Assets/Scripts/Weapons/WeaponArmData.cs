@@ -31,6 +31,8 @@ namespace BulletHell.Weapons
         [SerializeField, Min(1)] private int projectilesPerShot = 1;
         [Tooltip("Total spread angle in degrees across the projectiles of one shot.")]
         [SerializeField, Range(0f, 180f)] private float spread;
+        [Tooltip("Bullet diameter in world units (also its hit radius). Heavier arms get bigger bullets.")]
+        [SerializeField, Min(0.05f)] private float projectileSize = 0.25f;
 
         public string DisplayName => displayName;
         public Color IdColor => idColor;
@@ -42,6 +44,7 @@ namespace BulletHell.Weapons
         public float ProjectileSpeed => projectileSpeed;
         public int ProjectilesPerShot => projectilesPerShot;
         public float Spread => spread;
+        public float ProjectileSize => projectileSize;
 
 #if UNITY_EDITOR
         /// <summary>Editor-only: stores art rotation and muzzle tuned in the Scene view.</summary>

@@ -65,12 +65,30 @@ PlayStation names below; Xbox = RB / LS click / A B X Y, Switch = R / L-stick cl
   - StartingLoadout asset: ONE arm equipped (slot N by default). DebugLoadout asset: all 8 slots filled
     for testing. A field on the player (or a debug setting) chooses which loadout is used.
   - Equipping in-game (shop/equip screen) comes in M5; for now loadouts are edited in the Inspector.
-- Arm stats = damage, fire rate, projectile speed, projectiles per shot, spread.
-  Upgrades modify these stats; an arm can have multiple upgrade levels.
-- Ammo types (4 equipped slots): Laser, Shotgun, Tracking, Automatic, Gatling (more later).
-  Ammo type defines projectile behavior. Arm stats scale it.
-- Heat/cooldown: Laser, Automatic, Gatling build heat while firing and overheat into a cooldown.
-  One shared HeatComponent; each ammo type sets its own heat values.
+- Arm instances: each filled loadout slot is a runtime ArmInstance = WeaponArmData + 3 upgrade slots.
+  Upgrades belong to the instance (two slots holding the same arm type can be upgraded differently).
+  Never modify ScriptableObject assets at runtime; all run state lives on instances.
+- Arm stats = damage, fire rate, projectile speed, projectiles per shot, spread (base values on WeaponArmData).
+- Upgrades: UpgradeData assets, each a list of stat modifiers (flat add or percent multiply).
+  Final stat = base, then all flat adds, then all percent multipliers (order fixed and documented in code).
+  3 upgrade slots per arm instance. How upgrades are acquired (shop / pickups) comes later; for now
+  they're added via the Inspector / debug controls.
+- Ammo types: AmmoTypeData assets. Starter set: Basic, Shotgun (multiple pellets + spread),
+  Laser (continuous beam, heat), Gatling (spin-up, heat). Later: Tracking, Automatic, more.
+  Ammo type defines projectile behavior; the arm's (upgraded) stats scale it.
+- Ammo slots: the player carries 4 ammo slots, one per face button (Cross/Circle/Square/Triangle).
+  Tapping a face button makes that slot's ammo active for firing. Empty slots can't be selected.
+  Run start: slot 1 = Basic, others empty.
+- Ammo pickups (found in the world as the game progresses):
+  - Walking over a pickup while any ammo slot is empty auto-fills the first empty slot.
+  - If all 4 slots are full, standing near the pickup and HOLDING a face button (default 0.75s,
+    tunable) replaces that slot's ammo. The replaced ammo drops on the ground as a pickup.
+  - Tap still just switches ammo; only a hold near a pickup swaps. Show a simple hold-progress indicator
+    and a prompt when near a pickup (basic debug-style UI is fine for now).
+  - Picking up an ammo type already carried: [DEFAULT: does nothing / stays on the ground].
+- Heat/overheat: heat is tracked per arm instance. Ammo types with heat (Laser, Gatling) add heat while
+  firing; at max heat the arm overheats and can't fire until it cools to a restart threshold.
+  Heat decays when not firing. All heat values live on AmmoTypeData. One shared HeatComponent.
 - Currency: dropped by enemies, collected by the player, banked at round end.
 - Shop: buy new ammo types, arm upgrades, and [TBD]. Prices scale per purchase.
 - Difficulty: each round scales enemy count, HP, fire rate and bullet speed via a DifficultyCurve asset.
@@ -78,7 +96,7 @@ PlayStation names below; Xbox = RB / LS click / A B X Y, Switch = R / L-stick cl
 
 ## Architecture rules (follow these strictly)
 - All tunable data lives in ScriptableObjects: WeaponArmData, AmmoTypeData, UpgradeData,
-  EnemyData, WaveData, BossData, DifficultyCurve, InputTuning, ArmLoadout. No gameplay numbers hard-coded in MonoBehaviours.
+  EnemyData, WaveData, BossData, DifficultyCurve, InputTuning, ArmLoadout, PickupTuning. No gameplay numbers hard-coded in MonoBehaviours.
 - ALL projectiles (player and enemy) use object pooling (UnityEngine.Pool.ObjectPool<T>).
   Never Instantiate/Destroy bullets during gameplay.
 - Game flow is a single GameStateMachine: Stage, Results, Shop, Boss, GameOver, Pause.
@@ -91,7 +109,7 @@ PlayStation names below; Xbox = RB / LS click / A B X Y, Switch = R / L-stick cl
 ## Folder layout
 Assets/
   Art/ (Player, Arms, Placeholder)
-  Data/ (Arms, Loadouts, Ammo, Upgrades, Enemies, Waves, Bosses, Input)
+  Data/ (Arms, Loadouts, Ammo, Upgrades, Pickups, Enemies, Waves, Bosses, Input)
   Prefabs/
   Scenes/ (Boot, Game, Shop)
   Scripts/ (Core, Input, Player, Weapons, Projectiles, Enemies, Bosses, Shop, UI, Platform)
@@ -112,9 +130,12 @@ Assets/
 - [x] M1 Movement + arm selection: soft select, L3 lock with free 360 aim, indicators, debug overlay.
 - [x] M1.5 Arm art + loadout: WeaponArmData for my 4 arm sprites (import settings, pivots, muzzles),
       ArmLoadout with 8 slots, Starting/Debug loadouts, arms spawned from the loadout.
-- [ ] M2 R1 fires the selected arm in its current direction (slot direction when soft, aim direction when locked) with one ammo type, pooled projectiles.
+- [x] M2 R1 fires the selected arm in its current direction (slot direction when soft, aim direction when locked) with one ammo type, pooled projectiles.
       Each arm fires from its own muzzle using its own WeaponArmData stats.
-- [ ] M3 Data layer: ammo/upgrade ScriptableObjects (arm data exists from M1.5), 4 ammo slots, face-button swap, HeatComponent.
+- [ ] M3a Ammo: AmmoTypeData + 4 starter types, 4 face-button ammo slots, HeatComponent/overheat per arm,
+      ammo pickups (auto-fill empty slot, hold button to replace, dropped ammo), test pickups in scene.
+- [ ] M3b Upgrades: ArmInstance with 3 upgrade slots, UpgradeData stat modifiers, stat calculation,
+      a few test upgrades, debug way to add/remove upgrades, overlay shows final stats.
 - [ ] M4 Enemies + data-driven waves + currency drops.
 - [ ] M5 Round loop, results screen, shop, difficulty scaling.
 - [ ] M6 Bosses (round 3 first, then 5 and 7).
