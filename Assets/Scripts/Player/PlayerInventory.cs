@@ -1,31 +1,32 @@
+using BulletHell.Core;
 using BulletHell.Weapons;
 using UnityEngine;
 
 namespace BulletHell.Player
 {
     /// <summary>
-    /// The player's run inventories: armaments and spare arms that aren't equipped. Seeded from the lists below for
-    /// now; the M4 run state replaces the seeding (new run = starting stock, Continue = loaded from the save).
+    /// Player-side access to the run's inventories (armaments and spare arms that aren't equipped). The data lives in
+    /// the RunState, so it is saved and survives between rounds; the starting stock comes from the GameConfig.
     /// </summary>
     public sealed class PlayerInventory : MonoBehaviour
     {
-        [Tooltip("Armaments in the inventory at start (duplicates allowed).")]
-        [SerializeField] private ArmamentData[] startingArmaments;
-        [Tooltip("Spare arms in the arm inventory at start.")]
-        [SerializeField] private WeaponArmData[] startingSpareArms;
+        private RunState state;
 
-        public ArmamentInventory Armaments { get; } = new ArmamentInventory();
-        public ArmInventory Arms { get; } = new ArmInventory();
+        public ArmamentInventory Armaments => State.Armaments;
+        public ArmInventory Arms => State.SpareArms;
 
-        private void Awake()
+        private RunState State
         {
-            if (startingArmaments != null)
-                foreach (ArmamentData armament in startingArmaments)
-                    Armaments.Add(armament);
-            if (startingSpareArms != null)
-                foreach (WeaponArmData arm in startingSpareArms)
-                    if (arm != null)
-                        Arms.Add(new ArmInstance(arm));
+            get
+            {
+                if (state == null)
+                {
+                    RunManager run = GameServices.Ensure().Run;
+                    run.EnsureRun();
+                    state = run.State;
+                }
+                return state;
+            }
         }
     }
 }

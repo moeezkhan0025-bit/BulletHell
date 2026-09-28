@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3b9b2626e5a76443b2d20dea1b156b8, type: 3}
   m_Name: Ammo_Gatling
   m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.AmmoTypeData
+  id: Ammo_Gatling
   displayName: Gatling
   projectileSprite: {fileID: 21300000, guid: 6b794c9ce314a7a4fbe9cab037811ec0, type: 3}
   tint: {r: 1, g: 0.9, b: 0.3, a: 1}

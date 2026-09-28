@@ -45,6 +45,22 @@ namespace BulletHell.Weapons
             }
         }
 
+        private void OnEnable() => arms.ArmsRebuilt += ResetSlots;
+
+        private void OnDisable() => arms.ArmsRebuilt -= ResetSlots;
+
+        // The arms in the slots were swapped: heat, cooldown and spin-up belong to the old arms.
+        private void ResetSlots()
+        {
+            for (int i = 0; i < timers.Length; i++)
+            {
+                timers[i] = new FireTimer();
+                heat[i] = new HeatComponent();
+                spins[i] = new SpinUp();
+                beams[i].enabled = false;
+            }
+        }
+
         private void Update()
         {
             float dt = Time.deltaTime;

@@ -13,6 +13,8 @@ namespace BulletHell.Weapons
     public sealed class AmmoTypeData : ScriptableObject
     {
         [Header("Identity")]
+        [Tooltip("Stable ID used in save files. Never change it once players may have saves. Filled by BulletHell/Collect Asset Registry.")]
+        [SerializeField] private string id;
         [SerializeField] private string displayName = "Basic";
         [SerializeField] private Sprite projectileSprite;
         [Tooltip("Colour of the pickup and of the laser beam.")]
@@ -53,6 +55,7 @@ namespace BulletHell.Weapons
         [SerializeField, Min(0.01f)] private float minRateMultiplier = 1f;
         [SerializeField, Min(0.01f)] private float maxRateMultiplier = 1f;
 
+        public string Id => id;
         public string DisplayName => displayName;
         public Sprite ProjectileSprite => projectileSprite;
         public Color Tint => tint;
@@ -77,5 +80,14 @@ namespace BulletHell.Weapons
             usesHeat ? heatPerShot : 0f, usesHeat ? heatPerSecond : 0f, coolPerSecond, restartThreshold);
 
         public SpinSettings Spin => new SpinSettings(spinUpTime, spinDownTime, minRateMultiplier, maxRateMultiplier);
+
+#if UNITY_EDITOR
+        /// <summary>Editor-only: assigns the save ID.</summary>
+        public void SetId(string value)
+        {
+            id = value;
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
+#endif
     }
 }

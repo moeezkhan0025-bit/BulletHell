@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9753a8897fb5c00469637d386f5a8179, type: 3}
+  m_Name: ShopPool
+  m_EditorClassIdentifier: BulletHell::BulletHell.Shop.ShopPool
+  entries:
+  - Kind: 0
+    Arm: {fileID: 11400000, guid: 4085216c44a760d429509282f6316ed7, type: 2}
+    Armament: {fileID: 0}
+    Price: 200
+  - Kind: 0
+    Arm: {fileID: 11400000, guid: 901f2daeafddcaf4b99a1382c436936a, type: 2}
+    Armament: {fileID: 0}
+    Price: 220
+  - Kind: 1
+    Arm: {fileID: 0}
+    Armament: {fileID: 11400000, guid: 84f33c678cc97e948acafc5e9fee6e2e, type: 2}
+    Price: 60
+  - Kind: 1
+    Arm: {fileID: 0}
+    Armament: {fileID: 11400000, guid: 42a4c8b069e06b143a9da36ffc7f5dcb, type: 2}
+    Price: 90
+  - Kind: 1
+    Arm: {fileID: 0}
+    Armament: {fileID: 11400000, guid: 6d59fa6f3e849724c812571c9373a58a, type: 2}
+    Price: 80
+  - Kind: 1
+    Arm: {fileID: 0}
+    Armament: {fileID: 11400000, guid: 3d689478f7a5f64439596c7102a3368d, type: 2}
+    Price: 80

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ab64873f3d1b446845afe00f9de750, type: 3}
+  m_Name: GameConfig
+  m_EditorClassIdentifier: BulletHell::BulletHell.Core.GameConfig
+  registry: {fileID: 11400000, guid: 8058fab5ba083a541a03ae8e3eb9f5f2, type: 2}
+  saveFileName: run_save.json
+  newRunLoadout: {fileID: 11400000, guid: 43b9ca098e138b24bb5e06a0eb8de85c, type: 2}
+  startingAmmo:
+  - {fileID: 11400000, guid: ede6581f4c2de6b498087e5d7fd6d580, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  startingArmaments: []
+  startingSpareArms: []
+  startingCurrency: 500
+  shopPool: {fileID: 11400000, guid: 48ef8a6aba4082d499bc6b8da5ce3540, type: 2}
+  roundRewardBase: 50
+  roundRewardPerRound: 25

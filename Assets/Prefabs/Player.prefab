@@ -113,7 +113,6 @@ MonoBehaviour:
   input: {fileID: 7010803790201199158}
   tuning: {fileID: 11400000, guid: d8c0056b82e0fde4f91ab2a71b9a5e96, type: 2}
   playerData: {fileID: 11400000, guid: 728780c55f9c4cc4cad1c114afcd2403, type: 2}
-  loadout: {fileID: 11400000, guid: 417db03862c741c4e9097842a949a97c, type: 2}
   armPrefab: {fileID: 6386787572170391266, guid: d92b07116e0a4a544ba1ab398fcc389a, type: 3}
   armParent: {fileID: 792335173535145330}
 --- !u!114 &2947929709545293842
@@ -129,7 +128,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.AmmoSlots
   input: {fileID: 7010803790201199158}
-  startingAmmo: {fileID: 11400000, guid: ede6581f4c2de6b498087e5d7fd6d580, type: 2}
 --- !u!114 &1064214870527336465
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -173,22 +171,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6d28761e4f1c6e45985416efc05a8eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BulletHell::BulletHell.Player.PlayerInventory
-  startingArmaments:
-  - {fileID: 11400000, guid: 84f33c678cc97e948acafc5e9fee6e2e, type: 2}
-  - {fileID: 11400000, guid: 837b58284e231c6498559edd4cf4bfc8, type: 2}
-  - {fileID: 11400000, guid: 8f64effc0a8f89f47909bfc3e1309fd3, type: 2}
-  - {fileID: 11400000, guid: 42a4c8b069e06b143a9da36ffc7f5dcb, type: 2}
-  - {fileID: 11400000, guid: 68ae3a9e11abf4843ae05c1bd7b326dc, type: 2}
-  - {fileID: 11400000, guid: 68ae3a9e11abf4843ae05c1bd7b326dc, type: 2}
-  - {fileID: 11400000, guid: 6d59fa6f3e849724c812571c9373a58a, type: 2}
-  - {fileID: 11400000, guid: 6d59fa6f3e849724c812571c9373a58a, type: 2}
-  - {fileID: 11400000, guid: 3d689478f7a5f64439596c7102a3368d, type: 2}
-  - {fileID: 11400000, guid: 3d689478f7a5f64439596c7102a3368d, type: 2}
-  - {fileID: 11400000, guid: dce3b2b82567db744841bbdfdd6b0030, type: 2}
-  - {fileID: 11400000, guid: dce3b2b82567db744841bbdfdd6b0030, type: 2}
-  startingSpareArms:
-  - {fileID: 11400000, guid: 6a19fab820a00414a8d53e0496489b77, type: 2}
-  - {fileID: 11400000, guid: 73bc14a71f6add446b79b2dfd4f2305a, type: 2}
 --- !u!1 &7117061109556200686
 GameObject:
   m_ObjectHideFlags: 0

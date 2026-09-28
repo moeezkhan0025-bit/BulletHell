@@ -167,7 +167,7 @@ Assets/
       ammo pickups (auto-fill empty slot, hold button to replace, dropped ammo), test pickups in scene.
 - [x] M3b Armaments core: ArmInstance with 3 armament slots, ArmamentData stat modifiers, stat calculation,
       arm + armament inventories, 1-2 test arm effects, debug controls, overlay shows final stats.
-- [ ] M4 Game flow skeleton: Boot bootstrapper, Main Menu (Start/Continue/Quit), single-slot save system,
+- [x] M4 Game flow skeleton: Boot bootstrapper, Main Menu (Start/Continue/Quit), single-slot save system,
       GameStateMachine with a stub round (ends when test enemies are cleared), Round Results -> Shop
       (fixed test stock) -> Armory (select arm -> 3 slots -> equip from inventory; place arms in empty
       slots) -> next round. Autosave + Continue working. Plain skeleton UI, fully controller navigable.

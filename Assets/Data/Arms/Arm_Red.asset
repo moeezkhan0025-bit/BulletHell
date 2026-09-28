@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 311c617e1e09cab409fe7e4d5091c00c, type: 3}
   m_Name: Arm_Red
   m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.WeaponArmData
+  id: Arm_Red
   displayName: Red Arm
   idColor: {r: 1, g: 0.35, b: 0.15, a: 1}
   sprite: {fileID: 21300000, guid: 33099a98b94aabd4cb10fb01e96c7811, type: 3}
@@ -23,3 +24,4 @@ MonoBehaviour:
   projectilesPerShot: 1
   spread: 0
   projectileSize: 0.6
+  effects: []

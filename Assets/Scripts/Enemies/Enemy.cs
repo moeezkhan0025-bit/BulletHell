@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using BulletHell.Core;
 using UnityEngine;
@@ -6,7 +7,7 @@ namespace BulletHell.Enemies
 {
     /// <summary>
     /// Binds an EnemyData to the shared Health / hit flash / health bar / patrol components, hides itself on death
-    /// and respawns at its start position. Real enemies (M4) build on this.
+    /// and respawns at its start position (unless a CombatController runs the round and turns auto-respawn off).
     /// </summary>
     public sealed class Enemy : MonoBehaviour
     {
@@ -22,6 +23,13 @@ namespace BulletHell.Enemies
         private StatusEffects status;
 
         public EnemyData Data => data;
+        public bool IsAlive => health.IsAlive;
+
+        /// <summary>Respawn by itself after the data's delay. A round controller turns this off and calls ResetForRound instead.</summary>
+        public bool AutoRespawn { get; set; } = true;
+
+        /// <summary>Raised when this enemy dies.</summary>
+        public event Action<Enemy> Defeated;
 
         private void Awake()
         {
@@ -47,12 +55,23 @@ namespace BulletHell.Enemies
             if (status != null)
                 status.Clear();
             SetAlive(false);
-            StartCoroutine(RespawnAfterDelay());
+            if (AutoRespawn)
+                StartCoroutine(RespawnAfterDelay());
+            Defeated?.Invoke(this);
         }
 
         private IEnumerator RespawnAfterDelay()
         {
             yield return new WaitForSeconds(data.RespawnDelay);
+            ResetForRound();
+        }
+
+        /// <summary>Back to full health at the start position, alive. Used at the start of every round.</summary>
+        public void ResetForRound()
+        {
+            StopAllCoroutines();
+            if (status != null)
+                status.Clear();
             patrol.Restart();
             health.Revive();
             hitFlash.Clear();

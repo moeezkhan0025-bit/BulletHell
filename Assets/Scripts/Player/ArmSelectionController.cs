@@ -1,4 +1,5 @@
 using System;
+using BulletHell.Core;
 using BulletHell.Input;
 using BulletHell.Weapons;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine;
 namespace BulletHell.Player
 {
     /// <summary>
-    /// Spawns the arms from the loadout, feeds the left stick into ArmSelector, handles L3 lock,
+    /// Spawns the arms from the run state's loadout, feeds the left stick into ArmSelector, handles L3 lock,
     /// and drives the arm visuals.
     /// </summary>
     public sealed class ArmSelectionController : MonoBehaviour
@@ -14,8 +15,6 @@ namespace BulletHell.Player
         [SerializeField] private GameplayInputReader input;
         [SerializeField] private InputTuning tuning;
         [SerializeField] private PlayerData playerData;
-        [Tooltip("Arms equipped at start. StartingLoadout for real runs, DebugLoadout for testing.")]
-        [SerializeField] private ArmLoadout loadout;
         [SerializeField] private ArmVisual armPrefab;
         [SerializeField] private Transform armParent;
 
@@ -39,25 +38,74 @@ namespace BulletHell.Player
         public event Action<int> SelectionChanged;
         public event Action<bool> LockChanged;
 
+        /// <summary>Raised after the arms were respawned from the loadout (the Armory changed it).</summary>
+        public event Action ArmsRebuilt;
+
+        private RunManager run;
+
         private void Awake()
         {
-            selector = new ArmSelector(tuning);
-            selector.SetOwnedFromLoadout(loadout);
+            run = GameServices.Ensure().Run;
+            run.EnsureRun();
+            BuildArms();
+        }
 
+        private void OnEnable()
+        {
+            input.LockTogglePressed += OnLockTogglePressed;
+            run.Machine.StateChanged += OnStateChanged;
+        }
+
+        private void OnDisable()
+        {
+            input.LockTogglePressed -= OnLockTogglePressed;
+            run.Machine.StateChanged -= OnStateChanged;
+        }
+
+        // The Armory is the only place the loadout changes: respawn the arms when the next round starts.
+        private void OnStateChanged(GameState from, GameState to)
+        {
+            if (from == GameState.Armory && to == GameState.Combat)
+                Rebuild();
+        }
+
+        /// <summary>Destroys the spawned arms and spawns them again from the run state's loadout. Clears any selection.</summary>
+        public void Rebuild()
+        {
+            int previous = selector.Selected;
+            bool wasLocked = selector.Locked;
+            for (int i = 0; i < arms.Length; i++)
+            {
+                if (arms[i] != null)
+                    Destroy(arms[i].gameObject);
+                arms[i] = null;
+            }
+
+            shownArm = ArmSelector.None;
+            BuildArms();
+            ArmsRebuilt?.Invoke();
+            if (wasLocked)
+                LockChanged?.Invoke(false);
+            if (previous != ArmSelector.None)
+                SelectionChanged?.Invoke(ArmSelector.None);
+        }
+
+        private void BuildArms()
+        {
+            ArmInstance[] loadout = run.State.Loadout;
+
+            selector = new ArmSelector(tuning);
             for (int i = 0; i < ArmLoadout.SlotCount; i++)
             {
-                if (!loadout.IsFilled(i))
+                selector.SetOwned(i, loadout[i] != null);
+                if (loadout[i] == null)
                     continue;
                 arms[i] = Instantiate(armPrefab, armParent);
-                arms[i].name = $"Arm_{i}_{loadout.GetSlot(i).name}";
-                arms[i].Setup(new ArmInstance(loadout.GetSlot(i)));
+                arms[i].name = $"Arm_{i}_{loadout[i].Data.name}";
+                arms[i].Setup(loadout[i]);
                 PlaceArm(i, ArmSelector.HomeAngle(i));
             }
         }
-
-        private void OnEnable() => input.LockTogglePressed += OnLockTogglePressed;
-
-        private void OnDisable() => input.LockTogglePressed -= OnLockTogglePressed;
 
         private void Update()
         {

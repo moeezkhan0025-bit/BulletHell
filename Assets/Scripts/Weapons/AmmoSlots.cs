@@ -1,4 +1,5 @@
 using System;
+using BulletHell.Core;
 using BulletHell.Input;
 using UnityEngine;
 
@@ -6,14 +7,13 @@ namespace BulletHell.Weapons
 {
     /// <summary>
     /// Player-side owner of the 4 ammo slots. Tapping a face button makes that slot's ammo active for every arm.
-    /// Run start: slot 1 holds the starting ammo (Basic), the rest are empty.
+    /// The slots live in the RunState (so they are saved); the starting ammo comes from the GameConfig.
     /// </summary>
     public sealed class AmmoSlots : MonoBehaviour
     {
         [SerializeField] private GameplayInputReader input;
-        [SerializeField] private AmmoTypeData startingAmmo;
 
-        private readonly AmmoSlotSet set = new AmmoSlotSet();
+        private AmmoSlotSet set;
 
         public AmmoTypeData Active => set.Active;
         public int ActiveIndex => set.ActiveIndex;
@@ -26,8 +26,9 @@ namespace BulletHell.Weapons
 
         private void Awake()
         {
-            if (startingAmmo != null)
-                set.Set(0, startingAmmo);
+            RunManager run = GameServices.Ensure().Run;
+            run.EnsureRun();
+            set = run.State.Ammo;
         }
 
         private void OnEnable() => input.AmmoPressed += OnAmmoPressed;

@@ -10,6 +10,8 @@ namespace BulletHell.Weapons
     public sealed class WeaponArmData : ScriptableObject
     {
         [Header("Identity")]
+        [Tooltip("Stable ID used in save files. Never change it once players may have saves. Filled by BulletHell/Collect Asset Registry.")]
+        [SerializeField] private string id;
         [SerializeField] private string displayName = "Arm";
         [Tooltip("Colour that identifies this arm in UI and selection indicators.")]
         [SerializeField] private Color idColor = Color.white;
@@ -38,6 +40,7 @@ namespace BulletHell.Weapons
         [Tooltip("Special effects (pierce, burn, ...) this arm type always has, on top of its armaments'.")]
         [SerializeField] private ArmEffect[] effects = System.Array.Empty<ArmEffect>();
 
+        public string Id => id;
         public string DisplayName => displayName;
         public Color IdColor => idColor;
         public Sprite Sprite => sprite;
@@ -52,6 +55,13 @@ namespace BulletHell.Weapons
         public System.Collections.Generic.IReadOnlyList<ArmEffect> Effects => effects ?? System.Array.Empty<ArmEffect>();
 
 #if UNITY_EDITOR
+        /// <summary>Editor-only: assigns the save ID.</summary>
+        public void SetId(string value)
+        {
+            id = value;
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
+
         /// <summary>Editor-only: stores art rotation and muzzle tuned in the Scene view.</summary>
         public void SetArtAlignment(float rotation, Vector2 muzzle)
         {

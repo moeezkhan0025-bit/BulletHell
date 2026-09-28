@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 989f2d52c34befe43859c896a098f7cb, type: 3}
   m_Name: Armament_FireRate
   m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.ArmamentData
+  id: Armament_FireRate
   displayName: +2 Fire Rate
   modifiers:
   - Stat: 1

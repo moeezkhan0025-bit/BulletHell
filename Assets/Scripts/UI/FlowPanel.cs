@@ -1,0 +1,37 @@
+using System;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace BulletHell.UI
+{
+    /// <summary>
+    /// One full-screen between-rounds screen (Round Results, Shop, Armory): a title, some text, a Continue button and a
+    /// Menu button. Skeleton UI; the real Shop and Armory replace the body later.
+    /// </summary>
+    public sealed class FlowPanel : MonoBehaviour
+    {
+        [SerializeField] private Text title;
+        [SerializeField] private Text body;
+        [SerializeField] private Button continueButton;
+        [SerializeField] private Button menuButton;
+
+        public event Action ContinuePressed;
+        public event Action MenuPressed;
+
+        private void Awake()
+        {
+            continueButton.onClick.AddListener(() => ContinuePressed?.Invoke());
+            menuButton.onClick.AddListener(() => MenuPressed?.Invoke());
+        }
+
+        public void Show(string titleText, string bodyText)
+        {
+            title.text = titleText;
+            body.text = bodyText;
+            gameObject.SetActive(true);
+            UIFocusGuard.Focus(continueButton.gameObject);
+        }
+
+        public void Hide() => gameObject.SetActive(false);
+    }
+}

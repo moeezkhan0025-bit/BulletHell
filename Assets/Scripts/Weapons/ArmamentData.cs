@@ -29,16 +29,26 @@ namespace BulletHell.Weapons
     [CreateAssetMenu(fileName = "Armament_", menuName = "BulletHell/Armament Data")]
     public sealed class ArmamentData : ScriptableObject
     {
+        [Tooltip("Stable ID used in save files. Never change it once players may have saves. Filled by BulletHell/Collect Asset Registry.")]
+        [SerializeField] private string id;
         [SerializeField] private string displayName = "Armament";
         [SerializeField] private StatModifier[] modifiers = Array.Empty<StatModifier>();
         [Tooltip("Special effects (pierce, burn, ...) this armament adds to the arm it is equipped on.")]
         [SerializeField] private ArmEffect[] effects = Array.Empty<ArmEffect>();
 
+        public string Id => id;
         public string DisplayName => displayName;
         public IReadOnlyList<StatModifier> Modifiers => modifiers;
         public IReadOnlyList<ArmEffect> Effects => effects ?? Array.Empty<ArmEffect>();
 
 #if UNITY_EDITOR
+        /// <summary>Editor-only: assigns the save ID.</summary>
+        public void SetId(string value)
+        {
+            id = value;
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
+
         /// <summary>Editor-only: used by setup scripts and tests to fill in an armament.</summary>
         public void Set(string name, params StatModifier[] newModifiers)
         {
