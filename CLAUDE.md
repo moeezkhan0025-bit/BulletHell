@@ -1,6 +1,7 @@
 # Project: Bullet Hell (working title)
 
-Roguelike arcade bullet hell, top-down 2D. Developed and playtested on Windows with a PS5 DualSense.
+Roguelike arcade bullet hell, top-down 2D. Theme: the player is a CANDY GLADIATOR fighting food-based
+combatants in a VEGETABLE COLOSSEUM (arena, crowd, announcer vibe; bright, playful, readable). Developed and playtested on Windows with a PS5 DualSense.
 Unity 6.3 LTS (6000.3), 2D URP, new Input System. Solo developer. I playtest every change myself.
 Project root: C:\Dev\BulletHell. Version control: Git (GitHub private repo), shell: Git Bash.
 
@@ -21,19 +22,38 @@ Consoles come later (need platform approval + Unity Pro), but the code must be c
 ## Game flow
 Boot scene (bootstrapper) -> Main Menu scene -> Game scene.
 - Boot: first scene in the build. Creates persistent services once (DontDestroyOnLoad): SaveSystem,
-  GameStateMachine/run manager, audio stub, scene loader. Then loads Main Menu. Nothing gameplay here.
+  SettingsService, GameStateMachine/run manager, audio stub, scene loader. Then loads Main Menu.
   Pressing Play in any scene in the Editor must still work (services self-bootstrap if Boot was skipped).
-- Main Menu: Start Game, Continue, Quit. Continue is disabled when no save exists.
-  Start Game with an existing save asks to confirm overwriting it.
+- Main Menu: New Game, Continue, Settings, Quit. Continue is disabled when no run save exists.
+  New Game with an existing run save asks to confirm overwriting it.
+- Settings (from Main Menu and Pause): master / music / SFX volume, screen shake on/off, controller
+  vibration on/off, aim sensitivity (scales the InputTuning thresholds within safe limits), show debug
+  overlay (dev builds), and on PC fullscreen/windowed + resolution. Applied immediately, saved in the
+  settings file, Back returns to wherever Settings was opened from.
+- New Game -> Gladiator customization (cosmetics) -> Round intro -> Combat.
+  Continue skips customization and resumes at the Shop for the saved round.
+- Round intro: every round starts with a banner/announcer moment ("Round 1 - Begin!", boss rounds get
+  a special banner) and a short countdown; player can move during it but enemies and traps are idle.
 - Run loop (Game scene, one GameStateMachine):
-  Combat (round N: waves) -> Round Results (currency earned) -> Shop -> Armory (equip) -> Combat (round N+1, harder).
+  RoundIntro -> Combat (waves) -> Round Results -> Shop -> Armory -> RoundIntro (round N+1, harder).
   Boss rounds: 3, 5, 7. After round 7: [TBD - e.g. boss every 2 rounds / endless scaling / game ends].
   Pause and Game Over can happen during Combat. Game Over returns to Main Menu.
 - Arms and armaments can only be equipped in the Armory, between rounds - never during combat.
   [TBD: also allow the Armory between waves inside a round?]
 
+## Gladiator customization (cosmetics)
+- Purely visual; never changes stats. CosmeticData assets, each belonging to a slot. Starting slots:
+  candy coating (body color/pattern), headgear (helmet/crest), cape/trail, and arm tint.
+- Cosmetics render as layered sprites/tints on the gladiator, so new items are new assets, not code.
+- The customization screen shows a live preview of the gladiator, cycles items per slot with the
+  controller, and has Randomize and Confirm. Placeholder items for now (colored shapes/tints).
+- The chosen look is stored in the profile file and pre-selected on the next New Game.
+  [TBD: how new cosmetics are unlocked - all unlocked for now]
+
 ## Save system
-- Exactly ONE save file (single slot), JSON, written through ISaveSystem (platform save APIs plug in later).
+- Exactly ONE run save (single slot), JSON, written through ISaveSystem (platform save APIs plug in later).
+- Separate from the run save: a settings file and a profile file (chosen cosmetics, unlocks). These are
+  never deleted by Game Over or New Game.
 - Autosave when entering the Shop after each round, and after leaving the Armory.
 - Saved: round number, currency, arm inventory, armament inventory, loadout (8 slots of arm instances
   with their equipped armaments), 4 ammo slots, save version number.
@@ -112,7 +132,42 @@ PlayStation names below; Xbox = RB / LS click / A B X Y, Switch = R / L-stick cl
 - Heat/overheat: heat is tracked per arm instance. Ammo types with heat (Laser, Gatling) add heat while
   firing; at max heat the arm overheats and can't fire until it cools to a restart threshold.
   Heat decays when not firing. All heat values live on AmmoTypeData. One shared HeatComponent.
-- Currency: dropped by enemies, collected by the player, banked at round end.
+- Player health: [DEFAULT: 5 HP], small visible hitbox core (bullet-hell style - smaller than the sprite),
+  ~1s invulnerability with flashing after a hit. HP 0 -> Game Over (run save deleted) -> Main Menu.
+  Values on PlayerData.
+- Arena: the vegetable colosseum. ArenaData defines bounds (walls), player spawn, enemy spawn gates,
+  and placed obstacles/traps. Rounds can reference different ArenaData layouts. Placeholder art for now.
+- Obstacles (both block movement AND all bullets, player's and enemies'):
+  - Solid: permanent, indestructible (e.g. stone/giant veggie pillars).
+  - Breakable: has HP, takes damage from any bullets, shows damage stages, breaks into non-blocking debris
+    (e.g. cabbage crates, pumpkins). Breaking one updates enemy navigation.
+- Traps: TrapData = shape/area, damage, telegraph time, active time, cooldown. Traps hurt ANYTHING inside
+  them - the player and enemies - so luring enemies into traps is a valid tactic. Always telegraphed
+  (visual warning before activating). Starter traps: periodic floor vent (area burst), a spike/skewer line,
+  and a hazard zone that ticks damage while you stand in it. Traps are idle during the Round intro.
+- Enemies: food-based combatants. EnemyData assets = HP, movement behavior, attack(s), fire rate,
+  contact damage, currency value, placeholder shape + color. Movement must feel ACTIVE and grounded:
+  enemies pursue, reposition and flank with acceleration/turning limits - no floaty drifting.
+  - Navigation: grid flow field toward the player over the arena (cheap for many enemies), rebuilt
+    when a breakable obstacle breaks; local separation so enemies don't stack.
+  - Ranged enemies need line of sight to fire; without it they reposition.
+  Archetypes:
+  - Chaser: aggressively pursues and closes distance, melee/contact damage (fast swarm variants later).
+  - Skirmisher (ranged): holds a preferred distance, strafes, backs off when approached, fires patterns.
+  - Mobile Sentry: moves to a firing position with line of sight, plants, fires a continuous stream,
+    then overheats and slows/stops firing while cooling (reuse the HeatComponent) - its vulnerable window.
+  - Charger and Sniper stay as variants (telegraph + dash; warning line + fast shot).
+  Existing Grunt/Spinner are converted: Grunt -> Chaser, Spinner -> Sentry-style or retired.
+- Waves and rounds: WaveData = list of spawn entries (enemy, count, spawn edge/point, delay between spawns).
+  RoundData = ordered list of waves. A round ends when its last wave is fully cleared.
+  Authored RoundData for rounds 1-7; beyond the authored rounds, reuse the last ones with scaling.
+  Boss rounds (3, 5, 7) use a tougher placeholder wave until bosses are built.
+  Short breather (~2s, tunable) between waves with a "Wave X/Y" message.
+- Difficulty: DifficultyCurve asset scales enemy HP, enemy fire rate, enemy bullet speed and spawn count by
+  round number (AnimationCurves or per-round multipliers).
+- Currency: enemies drop coins worth their currency value. Coins are attracted to the player within a
+  magnet radius. At round end any remaining coins fly to the player automatically. Currency banks into
+  the run state and shows on Round Results.
 - Shop (after each round): offers a few random items from pools - new arms (with effects) and armaments
   (and later ammo types). Buying adds the item to the arm or armament inventory. Prices scale per round.
   Skeleton first: fixed test stock, plain list UI, controller navigable.
@@ -127,7 +182,7 @@ PlayStation names below; Xbox = RB / LS click / A B X Y, Switch = R / L-stick cl
 
 ## Architecture rules (follow these strictly)
 - All tunable data lives in ScriptableObjects: WeaponArmData, AmmoTypeData, ArmamentData,
-  EnemyData, WaveData, BossData, DifficultyCurve, InputTuning, ArmLoadout, PickupTuning, ShopPool, AssetRegistry. No gameplay numbers hard-coded in MonoBehaviours.
+  EnemyData, WaveData, BossData, DifficultyCurve, InputTuning, ArmLoadout, PickupTuning, ShopPool, AssetRegistry, BulletPatternData, RoundData, PlayerData, ArenaData, TrapData, CosmeticData, SettingsDefaults. No gameplay numbers hard-coded in MonoBehaviours.
 - ALL projectiles (player and enemy) use object pooling (UnityEngine.Pool.ObjectPool<T>).
   Never Instantiate/Destroy bullets during gameplay.
 - Run flow is a single GameStateMachine: Combat, RoundResults, Shop, Armory, Pause, GameOver.
@@ -140,10 +195,10 @@ PlayStation names below; Xbox = RB / LS click / A B X Y, Switch = R / L-stick cl
 ## Folder layout
 Assets/
   Art/ (Player, Arms, Placeholder)
-  Data/ (Arms, Loadouts, Ammo, Armaments, Pickups, Shop, Enemies, Waves, Bosses, Input)
+  Data/ (Arms, Loadouts, Ammo, Armaments, Pickups, Shop, Cosmetics, Arenas, Traps, Settings, Enemies, Waves, Bosses, Input)
   Prefabs/
   Scenes/ (Boot, MainMenu, Game)   (Shop and Armory are UI states inside Game)
-  Scripts/ (Core, Save, Input, Player, Weapons, Projectiles, Enemies, Bosses, Shop, Armory, UI, Platform)
+  Scripts/ (Core, Save, Settings, Input, Player, Cosmetics, Weapons, Projectiles, Enemies, AI, Arena, Bosses, Shop, Armory, UI, Platform)
   Tests/
 
 ## Working agreement
@@ -171,8 +226,18 @@ Assets/
       GameStateMachine with a stub round (ends when test enemies are cleared), Round Results -> Shop
       (fixed test stock) -> Armory (select arm -> 3 slots -> equip from inventory; place arms in empty
       slots) -> next round. Autosave + Continue working. Plain skeleton UI, fully controller navigable.
-- [x] M5 Enemies that shoot back + data-driven waves + currency drops + difficulty scaling per round.
-- [ ] M6 Shop pools and pricing (random stock, scaling prices), more arms/armaments/effects.
-- [ ] M7 Bosses (round 3 first, then 5 and 7).
-- [ ] M8 UI/visual pass: clean menus, Shop, Armory, HUD; final art.
-- [ ] M9 Polish: touch controls, button glyphs, juice, audio, performance pass.
+- [x] M5a Combat: player health/hitbox/i-frames/Game Over, BulletPatternData, pooled enemy bullets,
+      4 starter enemy types (Grunt, Spinner, Charger, Sniper), enemy test mode to spawn each type.
+- [x] M5b Rounds: WaveData/RoundData for rounds 1-7, wave spawner replacing the stub round,
+      coin drops + magnet + round-end collection, DifficultyCurve scaling, currency on Round Results.
+- [ ] M6 Front end: Main Menu (New Game/Continue/Settings/Quit), Settings screen + settings file,
+      Gladiator customization screen with placeholder cosmetics + profile file, Round intro banner and
+      countdown state. Skeleton UI, fully controller navigable.
+- [ ] M7 Arena: ArenaData, colosseum bounds, solid + breakable obstacles (block all bullets),
+      3 starter traps (hurt player and enemies, telegraphed), one test arena layout.
+- [ ] M8 Enemy AI rework: flow-field navigation + separation, line of sight, Chaser / Skirmisher /
+      Mobile Sentry, convert existing enemies, retune rounds 1-7 for the arena.
+- [ ] M9 Shop pools and pricing (random stock, scaling prices), more arms/armaments/effects.
+- [ ] M10 Bosses (round 3 first, then 5 and 7).
+- [ ] M11 Themed UI/visual pass: candy-colosseum style for menus, HUD, Shop, Armory, customization; final art.
+- [ ] M12 Polish: touch controls, button glyphs, juice, announcer/audio, performance pass.
