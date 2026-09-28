@@ -29,23 +29,20 @@ PlayStation names below; Xbox = RB / LS click / A B X Y, Switch = R / L-stick cl
 
   SOFT SELECT (default, unlocked) - for rapid arm switching mid-fight:
   - Arm slots sit at 8 fixed directions around the player (N, NE, E, SE, S, SW, W, NW = 45 degree slices).
-  - Selection areas work like a pie: the stick selects the NEAREST OWNED arm, with boundaries halfway
-    between neighbouring owned arms. One arm = the whole circle; each new arm cuts the pie further.
-    With all 8 owned this is the 45 degree slices.
-  - Pushing the left stick into the outer threshold soft-selects the arm for that direction.
-  - Rotating the stick while the selection is held (magnitude >= deselect threshold) switches the
-    selection to whichever arm owns the new direction. The arm does NOT rotate; it fires in its slot's fixed direction.
+  - Pushing the left stick into the outer threshold soft-selects the arm in that direction.
+  - Rotating the stick while in the outer threshold switches the selection to whichever arm is in the
+    new direction. The arm does NOT rotate; it fires in its slot's fixed direction.
   - Stick drops out of the outer threshold -> arm deselects.
   - Select threshold: magnitude >= 0.85. Deselect threshold: magnitude < 0.65 (hysteresis).
-  - Angle hysteresis: ~8 degrees past a boundary before switching arms (no jitter on boundaries).
-  - Arms are only drawn while soft-selected or locked; with nothing selected no arms are visible.
+  - Angle hysteresis: ~8 degrees past a slice boundary before switching arms (no jitter on boundaries).
+  - Directions whose loadout slot is empty select nothing.
 
   LOCKED (after pressing L3) - for committing to one arm and aiming it freely:
   - Pressing L3 while an arm is soft-selected locks that arm.
   - While locked, the left stick aims the locked arm freely through 360 degrees: the arm rotates around
     the player to point where the stick points, and fires in that direction. Rotating the stick no
     longer switches arms.
-  - Stick released while locked (below InputTuning's locked aim deadzone): the arm stays locked and keeps its last aim direction.
+  - Stick released while locked: the arm stays locked and keeps its last aim direction.
   - Pressing L3 again unlocks: the arm returns to its home slot and soft select resumes.
   - Pressing L3 with nothing soft-selected does nothing.
   - Clear on-screen indicator for locked vs soft-selected (e.g. solid outline vs dim outline).
@@ -60,8 +57,14 @@ PlayStation names below; Xbox = RB / LS click / A B X Y, Switch = R / L-stick cl
 - Controller haptics/light bar: not in scope until M8.
 
 ## Systems
-- Weapon arms: the player starts with ONE arm equipped and can own/equip up to 8 later (unlock/equip flow
-  comes with the shop in M5). A debug toggle in InputTuning equips all 8 placeholder arms for testing.
+- Weapon arms: each arm TYPE is a WeaponArmData asset with its own sprite (drawn pointing right),
+  display name, tint/ID color, muzzle offset, and stats. There are currently 4 unique arm types.
+- Arm loadout: an ArmLoadout asset holds 8 slots (N, NE, E, SE, S, SW, W, NW). Each slot is empty or
+  references a WeaponArmData; the same arm type may be equipped in more than one slot.
+  The player's arms are spawned from the loadout at runtime - no arm is hard-coded in the scene.
+  - StartingLoadout asset: ONE arm equipped (slot N by default). DebugLoadout asset: all 8 slots filled
+    for testing. A field on the player (or a debug setting) chooses which loadout is used.
+  - Equipping in-game (shop/equip screen) comes in M5; for now loadouts are edited in the Inspector.
 - Arm stats = damage, fire rate, projectile speed, projectiles per shot, spread.
   Upgrades modify these stats; an arm can have multiple upgrade levels.
 - Ammo types (4 equipped slots): Laser, Shotgun, Tracking, Automatic, Gatling (more later).
@@ -75,7 +78,7 @@ PlayStation names below; Xbox = RB / LS click / A B X Y, Switch = R / L-stick cl
 
 ## Architecture rules (follow these strictly)
 - All tunable data lives in ScriptableObjects: WeaponArmData, AmmoTypeData, UpgradeData,
-  EnemyData, WaveData, BossData, DifficultyCurve, InputTuning. No gameplay numbers hard-coded in MonoBehaviours.
+  EnemyData, WaveData, BossData, DifficultyCurve, InputTuning, ArmLoadout. No gameplay numbers hard-coded in MonoBehaviours.
 - ALL projectiles (player and enemy) use object pooling (UnityEngine.Pool.ObjectPool<T>).
   Never Instantiate/Destroy bullets during gameplay.
 - Game flow is a single GameStateMachine: Stage, Results, Shop, Boss, GameOver, Pause.
@@ -88,7 +91,7 @@ PlayStation names below; Xbox = RB / LS click / A B X Y, Switch = R / L-stick cl
 ## Folder layout
 Assets/
   Art/ (Player, Arms, Placeholder)
-  Data/ (Arms, Ammo, Upgrades, Enemies, Waves, Bosses, Input)
+  Data/ (Arms, Loadouts, Ammo, Upgrades, Enemies, Waves, Bosses, Input)
   Prefabs/
   Scenes/ (Boot, Game, Shop)
   Scripts/ (Core, Input, Player, Weapons, Projectiles, Enemies, Bosses, Shop, UI, Platform)
@@ -106,13 +109,14 @@ Assets/
 ## Milestones
 - [x] Setup: Unity 6.3 project, Git repo, .gitignore, this file.
 - [x] M0 Project skeleton: folder layout, Boot/Game scenes, Gameplay action map + generated C# class.
-- [x] M1 Movement + arm selection: right stick moves; left stick soft select with hysteresis; L3 lock with
-      free 360 aim of the locked arm; unlock returns arm to its slot; soft/locked indicators; debug toggle to
-      equip all 8 arms; debug overlay showing stick magnitude, angle, selected arm, state (none/soft/locked).
+- [x] M1 Movement + arm selection: soft select, L3 lock with free 360 aim, indicators, debug overlay.
+- [ ] M1.5 Arm art + loadout: WeaponArmData for my 4 arm sprites (import settings, pivots, muzzles),
+      ArmLoadout with 8 slots, Starting/Debug loadouts, arms spawned from the loadout.
 - [ ] M2 R1 fires the selected arm in its current direction (slot direction when soft, aim direction when locked) with one ammo type, pooled projectiles.
-- [ ] M3 Data layer: arm/ammo/upgrade ScriptableObjects, 4 ammo slots, face-button swap, HeatComponent.
+      Each arm fires from its own muzzle using its own WeaponArmData stats.
+- [ ] M3 Data layer: ammo/upgrade ScriptableObjects (arm data exists from M1.5), 4 ammo slots, face-button swap, HeatComponent.
 - [ ] M4 Enemies + data-driven waves + currency drops.
 - [ ] M5 Round loop, results screen, shop, difficulty scaling.
 - [ ] M6 Bosses (round 3 first, then 5 and 7).
-- [ ] M7 Swap in final player/arm art.
+- [ ] M7 Final art pass (player body, any remaining placeholders).
 - [ ] M8 Polish: touch controls, button glyphs, juice, audio, save data, performance pass.
