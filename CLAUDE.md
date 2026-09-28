@@ -106,7 +106,7 @@ Assets/
 ## Milestones
 - [x] Setup: Unity 6.3 project, Git repo, .gitignore, this file.
 - [ ] M0 Project skeleton: folder layout, Boot/Game scenes, Gameplay action map + generated C# class.
-- [ ] M1 Movement + arm selection: right stick moves; left stick soft select with hysteresis; L3 lock with
+- [x] M1 Movement + arm selection: right stick moves; left stick soft select with hysteresis; L3 lock with
       free 360 aim of the locked arm; unlock returns arm to its slot; soft/locked indicators; debug toggle to
       equip all 8 arms; debug overlay showing stick magnitude, angle, selected arm, state (none/soft/locked).
 - [ ] M2 R1 fires the selected arm in its current direction (slot direction when soft, aim direction when locked) with one ammo type, pooled projectiles.
