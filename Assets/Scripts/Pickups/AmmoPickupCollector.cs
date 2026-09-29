@@ -1,4 +1,5 @@
 using BulletHell.Input;
+using BulletHell.Player;
 using BulletHell.Weapons;
 using UnityEngine;
 
@@ -28,9 +29,19 @@ namespace BulletHell.Pickups
 
         public float HoldProgress01 => holdSlot < 0 ? 0f : Mathf.Clamp01(holdTime / tuning.HoldDuration);
 
+        private PlayerHealth playerHealth;
+
+        private void Awake() => TryGetComponent(out playerHealth);
+
         private void Update()
         {
             NearPickup = null;
+            if (playerHealth != null && playerHealth.IsAirborne)   // airborne: pickups are passed over, and collected on landing if still in reach
+            {
+                ResetHold(AnyHeld());
+                return;
+            }
+
             Vector2 position = transform.position;
 
             AmmoPickup pickup = AmmoPickup.FindNearest(position, tuning.PromptRadius);

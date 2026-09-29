@@ -123,6 +123,16 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""priority"": 0
                 },
                 {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""0a1b2c0f-1111-4a0f-8b0f-0000000000af"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
                     ""name"": ""Fire"",
                     ""type"": ""Button"",
                     ""id"": ""0a1b2c04-1111-4a04-8b04-0000000000a4"",
@@ -214,6 +224,28 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""LockToggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0b00000f-2222-4b0f-9c0f-0000000000bf"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0b000010-2222-4b10-9c10-0000000000c0"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -470,6 +502,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Gameplay_Move = m_Gameplay.FindAction("Move", throwIfNotFound: true);
         m_Gameplay_Aim = m_Gameplay.FindAction("Aim", throwIfNotFound: true);
         m_Gameplay_LockToggle = m_Gameplay.FindAction("LockToggle", throwIfNotFound: true);
+        m_Gameplay_Jump = m_Gameplay.FindAction("Jump", throwIfNotFound: true);
         m_Gameplay_Fire = m_Gameplay.FindAction("Fire", throwIfNotFound: true);
         m_Gameplay_EquipAmmo1 = m_Gameplay.FindAction("EquipAmmo1", throwIfNotFound: true);
         m_Gameplay_EquipAmmo2 = m_Gameplay.FindAction("EquipAmmo2", throwIfNotFound: true);
@@ -570,6 +603,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Move;
     private readonly InputAction m_Gameplay_Aim;
     private readonly InputAction m_Gameplay_LockToggle;
+    private readonly InputAction m_Gameplay_Jump;
     private readonly InputAction m_Gameplay_Fire;
     private readonly InputAction m_Gameplay_EquipAmmo1;
     private readonly InputAction m_Gameplay_EquipAmmo2;
@@ -599,6 +633,10 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Gameplay/LockToggle".
         /// </summary>
         public InputAction @LockToggle => m_Wrapper.m_Gameplay_LockToggle;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/Jump".
+        /// </summary>
+        public InputAction @Jump => m_Wrapper.m_Gameplay_Jump;
         /// <summary>
         /// Provides access to the underlying input action "Gameplay/Fire".
         /// </summary>
@@ -658,6 +696,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @LockToggle.started += instance.OnLockToggle;
             @LockToggle.performed += instance.OnLockToggle;
             @LockToggle.canceled += instance.OnLockToggle;
+            @Jump.started += instance.OnJump;
+            @Jump.performed += instance.OnJump;
+            @Jump.canceled += instance.OnJump;
             @Fire.started += instance.OnFire;
             @Fire.performed += instance.OnFire;
             @Fire.canceled += instance.OnFire;
@@ -696,6 +737,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @LockToggle.started -= instance.OnLockToggle;
             @LockToggle.performed -= instance.OnLockToggle;
             @LockToggle.canceled -= instance.OnLockToggle;
+            @Jump.started -= instance.OnJump;
+            @Jump.performed -= instance.OnJump;
+            @Jump.canceled -= instance.OnJump;
             @Fire.started -= instance.OnFire;
             @Fire.performed -= instance.OnFire;
             @Fire.canceled -= instance.OnFire;
@@ -1013,6 +1057,13 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnLockToggle(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Jump" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnJump(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "Fire" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

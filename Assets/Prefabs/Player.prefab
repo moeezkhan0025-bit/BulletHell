@@ -174,7 +174,9 @@ GameObject:
   - component: {fileID: 4765755847776505306}
   - component: {fileID: 6821134129356681973}
   - component: {fileID: 4440210814101122337}
-  m_Layer: 0
+  - component: {fileID: 1675270301295084253}
+  - component: {fileID: 680370913061971403}
+  m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -226,6 +228,7 @@ MonoBehaviour:
   playerData: {fileID: 11400000, guid: 728780c55f9c4cc4cad1c114afcd2403, type: 2}
   viewCamera: {fileID: 0}
   arena: {fileID: 0}
+  jump: {fileID: 680370913061971403}
 --- !u!114 &6126682682417762252
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -373,6 +376,62 @@ MonoBehaviour:
   visuals: {fileID: 1662912164508180331}
   core: {fileID: 7493657890671877493}
   shadow: {fileID: 2574953801748975764}
+--- !u!58 &1675270301295084253
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5878368061300880211}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 0.35
+--- !u!114 &680370913061971403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5878368061300880211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e3cf106ac7b52d4c93c45c718a0b9ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BulletHell::BulletHell.Player.JumpController
+  input: {fileID: 7010803790201199158}
+  rig: {fileID: 4440210814101122337}
+  health: {fileID: 7959830608968871281}
+  data: {fileID: 11400000, guid: 728780c55f9c4cc4cad1c114afcd2403, type: 2}
+  tuning: {fileID: 11400000, guid: 047327f311c6f7b4ab34734da99e0ea0, type: 2}
+  sortingGroup: {fileID: 6821134129356681973}
+  shadow: {fileID: 2574953801748975764}
+  arena: {fileID: 0}
 --- !u!1 &6677104261125855496
 GameObject:
   m_ObjectHideFlags: 0

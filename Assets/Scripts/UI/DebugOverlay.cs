@@ -27,13 +27,14 @@ namespace BulletHell.UI
         [SerializeField] private DebugArmamentControls armamentControls;
         [SerializeField] private PlayerHealth playerHealth;
         [SerializeField] private WaveSpawner waveSpawner;
+        [SerializeField] private JumpController jump;
         [SerializeField] private Text label;
 
         private readonly StringBuilder builder = new StringBuilder(400);
         private static readonly string[] StateNames = { "none", "soft", "locked" };
 
         private int shownMoveX = int.MinValue, shownMoveY, shownMagnitude, shownAngle, shownArm, shownState, shownArmAim;
-        private int shownActive = -1, shownPooled = -1, shownCreated = -1, shownHits = -1, shownHealth = -2, shownWave = -2;
+        private int shownActive = -1, shownPooled = -1, shownCreated = -1, shownHits = -1, shownHealth = -2, shownWave = -2, shownJump = -2;
 
         // Heat is stored as percent, -1 = no arm in that slot, 101 = overheated. Ammo/pickup state is compared as a signature.
         private readonly int[] shownHeat = new int[ArmLoadout.SlotCount];
@@ -65,6 +66,9 @@ namespace BulletHell.UI
             int wave = waveSpawner == null ? -1 : waveSpawner.WaveNumber * 10000 + waveSpawner.WaveCount * 100 + waveSpawner.EnemiesAlive + (waveSpawner.IsBreather ? 1000000 : 0);
             int health = playerHealth == null ? -1 : Mathf.CeilToInt(playerHealth.Current * 10f) + (playerHealth.IsInvulnerable ? 1000 : 0);
 
+            // Jump: airborne shows the progress in percent, on the ground the cooldown in hundredths of a second.
+            int jumpSig = jump == null ? -1 : jump.IsAirborne ? 1000 + Mathf.RoundToInt(jump.Progress01 * 100f) : Mathf.CeilToInt(jump.CooldownLeft * 100f);
+
             bool ammoChanged = ammoSlots.ActiveIndex != shownAmmoActive;
             for (int i = 0; i < AmmoSlotSet.Count; i++)
                 ammoChanged |= ammoSlots.Get(i) != shownAmmo[i];
@@ -94,7 +98,7 @@ namespace BulletHell.UI
 
             if (moveX == shownMoveX && moveY == shownMoveY && magnitude == shownMagnitude &&
                 angle == shownAngle && arm == shownArm && state == shownState && armAim == shownArmAim &&
-                active == shownActive && pooled == shownPooled && created == shownCreated && hits == shownHits && health == shownHealth && wave == shownWave &&
+                active == shownActive && pooled == shownPooled && created == shownCreated && hits == shownHits && health == shownHealth && wave == shownWave && jumpSig == shownJump &&
                 !ammoChanged && !heatChanged && !pickupChanged && !armamentsChanged)
                 return;
 
@@ -120,6 +124,7 @@ namespace BulletHell.UI
             shownHits = hits;
             shownHealth = health;
             shownWave = wave;
+            shownJump = jumpSig;
 
             shownMoveX = moveX;
             shownMoveY = moveY;
@@ -154,6 +159,18 @@ namespace BulletHell.UI
                 builder.Append("PLAYER HP ").Append(playerHealth.Current.ToString("0.#")).Append('/')
                        .Append(playerHealth.Max.ToString("0.#"))
                        .Append(playerHealth.IsInvulnerable ? "  (invulnerable)" : "").Append('\n');
+            if (jump != null)
+            {
+                builder.Append("JUMP   ");
+                if (jump.IsAirborne)
+                    builder.Append("AIRBORNE ").Append(Mathf.RoundToInt(jump.Progress01 * 100f)).Append("%  height ")
+                           .Append(jump.Height.ToString("0.00"));
+                else if (jump.CooldownLeft > 0f)
+                    builder.Append("landed, cooldown ").Append(jump.CooldownLeft.ToString("0.00")).Append('s');
+                else
+                    builder.Append("ready");
+                builder.Append("   bullets ").Append(jump.JumpDodgesBullets ? "dodged" : "still hit").Append('\n');
+            }
 
             builder.Append("AMMO  ");
             for (int i = 0; i < AmmoSlotSet.Count; i++)

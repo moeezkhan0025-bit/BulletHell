@@ -1804,6 +1804,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 161284813}
   m_CullTransparentMesh: 1
+--- !u!114 &161972030 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 680370913061971403, guid: 2d78b03a72bf2e84d9872bab12ebc84d, type: 3}
+  m_PrefabInstance: {fileID: 499677778}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2050330947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e3cf106ac7b52d4c93c45c718a0b9ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BulletHell::BulletHell.Player.JumpController
 --- !u!1 &171393562
 GameObject:
   m_ObjectHideFlags: 0
@@ -3618,6 +3629,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 680370913061971403, guid: 2d78b03a72bf2e84d9872bab12ebc84d, type: 3}
+      propertyPath: arena
+      value: 
+      objectReference: {fileID: 950003562}
     - target: {fileID: 1650089964709040817, guid: 2d78b03a72bf2e84d9872bab12ebc84d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -4803,7 +4818,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
-  m_ApplyToSortingLayers: 4c1d00004d1d0000000000004f1d0000501d0000
+  m_ApplyToSortingLayers: 4c1d00004d1d0000000000004e1d00004f1d0000501d0000
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -9922,6 +9937,7 @@ MonoBehaviour:
   armamentControls: {fileID: 499677783}
   playerHealth: {fileID: 1106794848}
   waveSpawner: {fileID: 350638568}
+  jump: {fileID: 161972030}
   label: {fileID: 124758213}
 --- !u!114 &1414673287
 MonoBehaviour:

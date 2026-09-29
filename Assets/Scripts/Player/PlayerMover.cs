@@ -15,11 +15,13 @@ namespace BulletHell.Player
         [SerializeField] private Camera viewCamera;
         [Tooltip("The arena to collide with. Optional.")]
         [SerializeField] private ArenaController arena;
+        [Tooltip("Scales the speed while airborne. Optional.")]
+        [SerializeField] private JumpController jump;
 
         private void Update()
         {
             Vector2 move = Vector2.ClampMagnitude(input.Move, 1f);
-            Vector2 delta = move * (playerData.MoveSpeed * Time.deltaTime);
+            Vector2 delta = move * (playerData.MoveSpeed * (jump != null ? jump.MoveMultiplier : 1f) * Time.deltaTime);
 
             if (arena != null && arena.IsBuilt)
             {

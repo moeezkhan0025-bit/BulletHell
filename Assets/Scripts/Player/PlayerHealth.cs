@@ -21,12 +21,17 @@ namespace BulletHell.Player
         private RunManager run;
         private Color bodyColor;
         private float invulnerableLeft;
+        private bool dodgesBulletsInAir;
 
         public float Current => health.Current;
         public float Max => health.Max;
         public bool IsAlive => health.IsAlive;
         public bool IsInvulnerable => invulnerableLeft > 0f;
-        public bool CanBeHit => health.IsAlive && invulnerableLeft <= 0f;
+        /// <summary>Airborne (a jump). Enemy bullets still hit unless the jump is set to dodge them.</summary>
+        public bool IsAirborne { get; private set; }
+        /// <summary>On the ground: ground hazards (traps, hazard zones) only hurt a grounded player.</summary>
+        public bool IsGrounded => !IsAirborne;
+        public bool CanBeHit => health.IsAlive && invulnerableLeft <= 0f && !(IsAirborne && dodgesBulletsInAir);
         /// <summary>Where enemy bullets aim and hit: the damage core at the body's centre.</summary>
         public Vector2 Position => core != null ? core.position : transform.position;
         /// <summary>Where the player stands on the floor (traps, coins, spawn distances use this).</summary>
@@ -51,6 +56,13 @@ namespace BulletHell.Player
         {
             run.RoundIntroStarted -= OnRoundStarted;
             health.Died -= OnDied;
+        }
+
+        /// <summary>Set by the jump: while airborne the player can (optionally) pass through enemy bullets.</summary>
+        public void SetAirborne(bool airborne, bool dodgesBullets)
+        {
+            IsAirborne = airborne;
+            dodgesBulletsInAir = dodgesBullets;
         }
 
         /// <summary>An enemy bullet reached the player. Returns false when the player couldn't be hit (invulnerable or dead).</summary>

@@ -12,6 +12,7 @@ namespace BulletHell.Core
         public const string Background = "Background";
         public const string Ground = "Ground";
         public const string Characters = "Default";
+        public const string Airborne = "Airborne";
         public const string Bullets = "Bullets";
         public const string Foreground = "Foreground";
 

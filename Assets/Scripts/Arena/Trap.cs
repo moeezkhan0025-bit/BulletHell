@@ -98,7 +98,7 @@ namespace BulletHell.Arena
                 }
             }
 
-            if (data.HurtsPlayer && player != null && player.CanBeHit && FootprintInside(player.FeetPosition, player.HitRadius))
+            if (data.HurtsPlayer && player != null && player.IsGrounded && player.CanBeHit && FootprintInside(player.FeetPosition, player.HitRadius))
                 player.TryHit(data.DamageToPlayer);
         }
 

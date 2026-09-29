@@ -31,6 +31,9 @@ namespace BulletHell.Input
 
         public event Action LockTogglePressed;
 
+        /// <summary>R2 / Space pressed (jump).</summary>
+        public event Action JumpPressed;
+
         /// <summary>Options / Start pressed (pause).</summary>
         public event Action PausePressed;
 
@@ -56,6 +59,7 @@ namespace BulletHell.Input
             fireAction = gameplay.Fire;
             lockToggleAction.performed += OnLockToggle;
             gameplay.Pause.performed += OnPause;
+            gameplay.Jump.performed += OnJump;
             input.Debug.DebugAddArmament.performed += OnDebugAdd;
             input.Debug.DebugRemoveArmament.performed += OnDebugRemove;
             input.Debug.DebugNextArmament.performed += OnDebugNext;
@@ -92,6 +96,7 @@ namespace BulletHell.Input
 
             lockToggleAction.performed -= OnLockToggle;
             input.Gameplay.Pause.performed -= OnPause;
+            input.Gameplay.Jump.performed -= OnJump;
             for (int i = 0; i < AmmoButtonCount; i++)
                 ammoActions[i].performed -= ammoHandlers[i];
             input.Debug.DebugAddArmament.performed -= OnDebugAdd;
@@ -109,5 +114,7 @@ namespace BulletHell.Input
         private void OnLockToggle(InputAction.CallbackContext _) => LockTogglePressed?.Invoke();
 
         private void OnPause(InputAction.CallbackContext _) => PausePressed?.Invoke();
+
+        private void OnJump(InputAction.CallbackContext _) => JumpPressed?.Invoke();
     }
 }
