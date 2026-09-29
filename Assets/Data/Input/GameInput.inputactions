@@ -259,15 +259,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "DebugCycleCharacterScale",
-                    "type": "Button",
-                    "id": "1d000005-3333-4c05-8d05-0000000000c5",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -356,17 +347,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "DebugPrevArmament",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "1e000009-4444-4d09-9e09-0000000000d9",
-                    "path": "<Keyboard>/f5",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "DebugCycleCharacterScale",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

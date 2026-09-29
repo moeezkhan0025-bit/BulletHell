@@ -58,7 +58,7 @@ namespace BulletHell.Enemies
         /// <summary>Middle of the body, where its bullets come out.</summary>
         public Vector2 BodyCenter => rig.position;
         /// <summary>Radius of the flat movement footprint at the feet.</summary>
-        public float FootprintRadius => baseFootprint * CharacterScale.Value;
+        public float FootprintRadius => baseFootprint;
         private float baseFootprint;
 
         /// <summary>Raised when this enemy dies.</summary>
@@ -66,8 +66,6 @@ namespace BulletHell.Enemies
 
         private void Awake()
         {
-            if (!TryGetComponent(out CharacterScaleApplier _))
-                gameObject.AddComponent<CharacterScaleApplier>();
             TryGetComponent(out status);
             TryGetComponent(out attacker);
             health.Died += OnDied;
@@ -101,12 +99,11 @@ namespace BulletHell.Enemies
             PerspectiveTuning perspective = config.Perspective;
             float size = data.Size;
 
-            // Painted art (scale test): the sprite's pivot is at the feet and it is drawn at its own size. The rig still
+            // Painted art: the sprite's pivot is at the feet and it is drawn at its own size. The rig still
             // sits mid-body (bullets leave from it, motion squashes around it); the body hangs down to put the pivot on the feet.
             if (placeholderSprite == null)
                 placeholderSprite = body.sprite;
-            ScaleTestArt art = config.ScaleTestArt;
-            Sprite painted = art != null && art.UsePaintedEnemies ? data.PaintedSprite : null;
+            Sprite painted = data.PaintedSprite;
             bool isPainted = painted != null;
             body.sprite = isPainted ? painted : placeholderSprite;
 

@@ -42,8 +42,6 @@ namespace BulletHell.Input
         public event Action DebugRemoveArmamentPressed;
         public event Action DebugNextArmamentPressed;
         public event Action DebugPrevArmamentPressed;
-        /// <summary>F5: cycles the temporary character-scale test (CharacterScale).</summary>
-        public event Action DebugCycleCharacterScalePressed;
 
         /// <summary>A face button (ammo slot 0-3) was pressed.</summary>
         public event Action<int> AmmoPressed;
@@ -66,7 +64,6 @@ namespace BulletHell.Input
             input.Debug.DebugRemoveArmament.performed += OnDebugRemove;
             input.Debug.DebugNextArmament.performed += OnDebugNext;
             input.Debug.DebugPrevArmament.performed += OnDebugPrev;
-            input.Debug.DebugCycleCharacterScale.performed += OnDebugCycleScale;
 
             ammoActions[0] = gameplay.EquipAmmo1;
             ammoActions[1] = gameplay.EquipAmmo2;
@@ -106,7 +103,6 @@ namespace BulletHell.Input
             input.Debug.DebugRemoveArmament.performed -= OnDebugRemove;
             input.Debug.DebugNextArmament.performed -= OnDebugNext;
             input.Debug.DebugPrevArmament.performed -= OnDebugPrev;
-            input.Debug.DebugCycleCharacterScale.performed -= OnDebugCycleScale;
             input.Dispose();
         }
 
@@ -114,7 +110,6 @@ namespace BulletHell.Input
         private void OnDebugRemove(InputAction.CallbackContext _) => DebugRemoveArmamentPressed?.Invoke();
         private void OnDebugNext(InputAction.CallbackContext _) => DebugNextArmamentPressed?.Invoke();
         private void OnDebugPrev(InputAction.CallbackContext _) => DebugPrevArmamentPressed?.Invoke();
-        private void OnDebugCycleScale(InputAction.CallbackContext _) => DebugCycleCharacterScalePressed?.Invoke();
 
         private void OnLockToggle(InputAction.CallbackContext _) => LockTogglePressed?.Invoke();
 

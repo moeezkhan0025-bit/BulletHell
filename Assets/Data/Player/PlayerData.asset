@@ -15,3 +15,8 @@ MonoBehaviour:
   moveSpeed: 6
   armRingRadius: 0.45
   screenEdgePadding: 1.2
+  bodyRadius: 0.525
+  bodyCenterHeight: 0.57
+  maxHealth: 5
+  hitboxRadius: 0.18
+  coreFootOffset: 0.12

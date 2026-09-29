@@ -427,7 +427,7 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
       pulse / tint / UV-scroll / wave shaders, particle presets, tween library, 2D Animation + PSD Importer
       installed with a rigged test character; apply to player and current enemies (placeholders).
 - [x] Art scale test: backdrop + Chaser hooked up, 16:9 framing, import quality fixed, character scale 1.5x chosen.
-- [ ] C1 Cleanup: bake the 1.5x character scale (PPU/import, not runtime), remove scale-test debug scaffolding,
+- [x] C1 Cleanup: bake the 1.5x character scale (PPU/import, not runtime), remove scale-test debug scaffolding,
       keep damage core small, re-check arm ring radius/jump height/colliders at the new scale, fix leftovers.
 - [ ] UI1 UI theme: UITheme asset + shared components reading from it, integrate my free UI pack(s) from
       Assets/ThirdParty, Docs/CREDITS.md, apply to all existing screens.

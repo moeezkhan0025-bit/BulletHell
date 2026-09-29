@@ -87,7 +87,7 @@ namespace BulletHell.EditorTools
             o.Crate.ConfigureHeightClass(ObstacleHeightClass.Low);
             o.Cabbage.ConfigureHeightClass(ObstacleHeightClass.Low);
 
-            // A big pumpkin: a wider footprint and a body well above the jump (placeholder proportions; ART_SPEC scale test comes later).
+            // A big pumpkin: a wider footprint and a body well above the jump (placeholder proportions; arena objects keep the original scale, only characters are 1.5x).
             o.Pumpkin.Configure(ObstacleKind.Breakable, ObstacleShape.Circle, new Vector2(1.3f, 0.8f), Color.white, 40f);
             o.Pumpkin.ConfigureArt(o.Pumpkin.Sprite, new Vector2(1.6f, 1.6f));
             return o;

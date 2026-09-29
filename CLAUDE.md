@@ -399,7 +399,11 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
 - [x] M8.6 Animation toolkit: procedural motion + feedback components, hit flash / dissolve / outline /
       pulse / tint / UV-scroll / wave shaders, particle presets, tween library, 2D Animation + PSD Importer
       installed with a rigged test character; apply to player and current enemies (placeholders).
-- [ ] Art scale test (Docs/ART_SPEC.md section 9), then vertical slice art for one arena.
+- [x] Art scale test: backdrop + Chaser hooked up, 16:9 framing, character scale 1.5x chosen.
+- [x] C1 Cleanup: 1.5x character scale baked via import PPU + data (player 315->210, arms 400->266.67, painted enemy 220->146.67,
+      placeholder enemy sizes x1.5), CharacterScale + F5 key removed, damage core kept at 0.18, arm ring, muzzles,
+      jump height, footprints and nav radius retuned. ScaleTestArt renamed ArenaArt (backdrop only).
+- [ ] Vertical slice art for one arena (Docs/ART_SPEC.md section 9).
 - [ ] M9a Armament behaviors: effect interface, variable armament slots per arm, rarity/tags/stacks,
       Homing, Auto-fire, Velocity, Pierce, Ricochet with documented interactions, generated descriptions.
 - [ ] M9b Shop screen: merchant + card layout, ShopPool/RarityTable random stock, crate (pick 1 of 3), reroll,

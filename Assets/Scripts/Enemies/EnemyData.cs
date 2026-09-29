@@ -30,10 +30,10 @@ namespace BulletHell.Enemies
         [Tooltip("Diameter in world units.")]
         [SerializeField, Min(0.1f)] private float size = 1f;
 
-        [Header("Painted art (optional; ScaleTestArt switches it on)")]
+        [Header("Painted art (optional; values are world units at the 1.5x character scale)")]
         [Tooltip("Painted sprite with its pivot at the feet. Empty = the placeholder shape. Drawn at its own size, Size does not scale it.")]
         [SerializeField] private Sprite paintedSprite;
-        [Tooltip("Height of the painted body above the feet, in world units (0.79 = the tomato Chaser, drawn 0.79 P tall). Places the health bar and the mid-body point.")]
+        [Tooltip("Height of the painted body above the feet, in world units (1.185 = the tomato Chaser, 0.79 of the original P, x1.5). Places the health bar and the mid-body point.")]
         [SerializeField, Min(0.1f)] private float paintedHeight = 0.79f;
         [Tooltip("Movement footprint radius at the feet, in world units.")]
         [SerializeField, Min(0.05f)] private float paintedFootprintRadius = 0.3f;

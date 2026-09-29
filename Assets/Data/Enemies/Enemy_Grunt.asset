@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: BulletHell::BulletHell.Enemies.EnemyData
   displayName: Grunt
   color: {r: 0.9, g: 0.35, b: 0.35, a: 1}
-  size: 0.9
+  size: 1.35
   paintedSprite: {fileID: 21300000, guid: 1186da3c56d3eec43b0a56cb7ff1a232, type: 3}
-  paintedHeight: 0.79
-  paintedFootprintRadius: 0.3
-  paintedHurtboxSize: {x: 1, y: 0.75}
-  paintedHurtboxOffsetX: 0.12
+  paintedHeight: 1.185
+  paintedFootprintRadius: 0.45
+  paintedHurtboxSize: {x: 1.5, y: 1.125}
+  paintedHurtboxOffsetX: 0.18
   maxHealth: 10
   hitFlashDuration: 0.08
   motionOverride: {fileID: 0}

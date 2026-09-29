@@ -360,16 +360,6 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
-                },
-                {
-                    ""name"": ""DebugCycleCharacterScale"",
-                    ""type"": ""Button"",
-                    ""id"": ""1d000005-3333-4c05-8d05-0000000000c5"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false,
-                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -460,17 +450,6 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""action"": ""DebugPrevArmament"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""1e000009-4444-4d09-9e09-0000000000d9"",
-                    ""path"": ""<Keyboard>/f5"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""DebugCycleCharacterScale"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -536,7 +515,6 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Debug_DebugRemoveArmament = m_Debug.FindAction("DebugRemoveArmament", throwIfNotFound: true);
         m_Debug_DebugNextArmament = m_Debug.FindAction("DebugNextArmament", throwIfNotFound: true);
         m_Debug_DebugPrevArmament = m_Debug.FindAction("DebugPrevArmament", throwIfNotFound: true);
-        m_Debug_DebugCycleCharacterScale = m_Debug.FindAction("DebugCycleCharacterScale", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Primary = m_Menu.FindAction("Primary", throwIfNotFound: true);
@@ -821,7 +799,6 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Debug_DebugRemoveArmament;
     private readonly InputAction m_Debug_DebugNextArmament;
     private readonly InputAction m_Debug_DebugPrevArmament;
-    private readonly InputAction m_Debug_DebugCycleCharacterScale;
     /// <summary>
     /// Provides access to input actions defined in input action map "Debug".
     /// </summary>
@@ -849,10 +826,6 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Debug/DebugPrevArmament".
         /// </summary>
         public InputAction @DebugPrevArmament => m_Wrapper.m_Debug_DebugPrevArmament;
-        /// <summary>
-        /// Provides access to the underlying input action "Debug/DebugCycleCharacterScale".
-        /// </summary>
-        public InputAction @DebugCycleCharacterScale => m_Wrapper.m_Debug_DebugCycleCharacterScale;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -891,9 +864,6 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @DebugPrevArmament.started += instance.OnDebugPrevArmament;
             @DebugPrevArmament.performed += instance.OnDebugPrevArmament;
             @DebugPrevArmament.canceled += instance.OnDebugPrevArmament;
-            @DebugCycleCharacterScale.started += instance.OnDebugCycleCharacterScale;
-            @DebugCycleCharacterScale.performed += instance.OnDebugCycleCharacterScale;
-            @DebugCycleCharacterScale.canceled += instance.OnDebugCycleCharacterScale;
         }
 
         /// <summary>
@@ -917,9 +887,6 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @DebugPrevArmament.started -= instance.OnDebugPrevArmament;
             @DebugPrevArmament.performed -= instance.OnDebugPrevArmament;
             @DebugPrevArmament.canceled -= instance.OnDebugPrevArmament;
-            @DebugCycleCharacterScale.started -= instance.OnDebugCycleCharacterScale;
-            @DebugCycleCharacterScale.performed -= instance.OnDebugCycleCharacterScale;
-            @DebugCycleCharacterScale.canceled -= instance.OnDebugCycleCharacterScale;
         }
 
         /// <summary>
@@ -1175,13 +1142,6 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDebugPrevArmament(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "DebugCycleCharacterScale" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnDebugCycleCharacterScale(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Menu" which allows adding and removing callbacks.

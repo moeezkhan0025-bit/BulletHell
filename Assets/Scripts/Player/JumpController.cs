@@ -153,7 +153,7 @@ namespace BulletHell.Player
         /// <summary>The nearest spot to a landing position that is not inside an obstacle, wall or enemy footprint.</summary>
         private Vector2 ResolveLanding(Vector2 position)
         {
-            float radius = data.BodyRadius * CharacterScale.Value;
+            float radius = data.BodyRadius;
             float step = arena != null && arena.IsBuilt ? arena.Grid.CellSize : 0.25f;
             return LandingResolver.Resolve(position, p => IsTaken(p, radius), step, 6f);
         }
