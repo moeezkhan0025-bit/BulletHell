@@ -30,16 +30,17 @@ namespace BulletHell.Player
         {
             visuals.localPosition = new Vector3(0f, data.BodyCenterHeight, 0f);
             core.localPosition = new Vector3(0f, data.CoreFootOffset, 0f);
+            PerspectiveTuning tuning = GameServices.Ensure().Config.Perspective;
             if (coreMarker != null)
             {
+                // Lies flat on the ground like the shadow (same floor ratio), so it reads as a spot on the floor, not a disc on the body.
                 Vector2 native = coreMarker.sprite != null ? (Vector2)coreMarker.sprite.bounds.size : Vector2.one;
                 float diameter = data.HitboxRadius * 2f;
-                coreMarker.transform.localScale = new Vector3(diameter / native.x, diameter / native.y, 1f);
+                coreMarker.transform.localScale = new Vector3(diameter / native.x, diameter * tuning.ShadowFlatness / native.y, 1f);
             }
 
             if (shadow != null)
             {
-                PerspectiveTuning tuning = GameServices.Ensure().Config.Perspective;
                 float width = data.BodyRadius * 2f * tuning.ShadowWidth;
                 Vector2 native = shadow.sprite != null ? (Vector2)shadow.sprite.bounds.size : Vector2.one;
                 shadow.transform.localScale = new Vector3(width / native.x, width * tuning.ShadowFlatness / native.y, 1f);

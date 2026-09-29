@@ -111,7 +111,8 @@ namespace BulletHell.EditorTools
             }
         }
 
-        // A bright dot with a dark outline, above the body, so the hitbox reads against any cosmetics.
+        // The damage core: a bright flat ellipse with a dark outline lying on the ground at the core, BEHIND the body (above the
+        // shadow) so it never covers the sprite. PlayerVisualRig sizes it to the hitbox and flattens it by the floor ratio.
         private static SpriteRenderer EnsureMarker(Transform core)
         {
             Sprite circle = AssetDatabase.LoadAssetAtPath<Sprite>(CirclePath);
@@ -125,7 +126,7 @@ namespace BulletHell.EditorTools
             marker.sprite = circle;
             marker.color = new Color(1f, 0.95f, 0.45f, 1f);
             marker.sortingLayerID = 0;
-            marker.sortingOrder = 10;
+            marker.sortingOrder = -5;
             marker.spriteSortPoint = SpriteSortPoint.Pivot;
 
             Transform outlineT = markerT.Find("Outline");
@@ -139,7 +140,7 @@ namespace BulletHell.EditorTools
             outline.sprite = circle;
             outline.color = new Color(0.1f, 0.05f, 0.15f, 0.9f);
             outline.sortingLayerID = 0;
-            outline.sortingOrder = 9;
+            outline.sortingOrder = -6;
             outline.spriteSortPoint = SpriteSortPoint.Pivot;
             return marker;
         }

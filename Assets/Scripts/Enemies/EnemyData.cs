@@ -30,6 +30,18 @@ namespace BulletHell.Enemies
         [Tooltip("Diameter in world units.")]
         [SerializeField, Min(0.1f)] private float size = 1f;
 
+        [Header("Painted art (optional; ScaleTestArt switches it on)")]
+        [Tooltip("Painted sprite with its pivot at the feet. Empty = the placeholder shape. Drawn at its own size, Size does not scale it.")]
+        [SerializeField] private Sprite paintedSprite;
+        [Tooltip("Height of the painted body above the feet, in world units (0.79 = the tomato Chaser, drawn 0.79 P tall). Places the health bar and the mid-body point.")]
+        [SerializeField, Min(0.1f)] private float paintedHeight = 0.79f;
+        [Tooltip("Movement footprint radius at the feet, in world units.")]
+        [SerializeField, Min(0.05f)] private float paintedFootprintRadius = 0.3f;
+        [Tooltip("Player bullets hit this box (width, height), standing on the feet.")]
+        [SerializeField] private Vector2 paintedHurtboxSize = new Vector2(1f, 0.75f);
+        [Tooltip("Hurtbox centre sideways from the feet, for art whose body is off-centre.")]
+        [SerializeField] private float paintedHurtboxOffsetX;
+
         [Header("Health")]
         [SerializeField, Min(0.01f)] private float maxHealth = 10f;
         [SerializeField, Min(0f)] private float hitFlashDuration = 0.08f;
@@ -116,6 +128,11 @@ namespace BulletHell.Enemies
         public int CoinValue => coinValue;
         public Color Color => color;
         public float Size => size;
+        public Sprite PaintedSprite => paintedSprite;
+        public float PaintedHeight => paintedHeight;
+        public float PaintedFootprintRadius => paintedFootprintRadius;
+        public Vector2 PaintedHurtboxSize => paintedHurtboxSize;
+        public float PaintedHurtboxOffsetX => paintedHurtboxOffsetX;
         public float MaxHealth => maxHealth;
         public float HitFlashDuration => hitFlashDuration;
         public MotionTuning MotionOverride => motionOverride;

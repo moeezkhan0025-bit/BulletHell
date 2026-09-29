@@ -13,38 +13,38 @@ MonoBehaviour:
   m_Name: Layout_R2
   m_EditorClassIdentifier: BulletHell::BulletHell.Arena.ArenaLayoutData
   arena: {fileID: 11400000, guid: 2bada0b4c7a7f674cbbfc9561e526544, type: 2}
-  playerSpawn: {x: 0, y: -3.2}
+  playerSpawn: {x: 0, y: -2.4}
   spawnGates:
-  - {x: -5, y: 3.8}
-  - {x: 5, y: 3.8}
-  - {x: -7.2, y: 0.5}
-  - {x: 7.2, y: 0.5}
+  - {x: -4.3, y: 2.3}
+  - {x: 4.3, y: 2.3}
+  - {x: -5.7, y: 0.3}
+  - {x: 5.7, y: 0.3}
   obstacles:
   - Data: {fileID: 11400000, guid: e48e8df06d2c0c24091cb26fcda967a3, type: 2}
-    Position: {x: -3.5, y: 0.8}
+    Position: {x: -1.6, y: 1.4}
     SizeOverride: {x: 0, y: 0}
   - Data: {fileID: 11400000, guid: e48e8df06d2c0c24091cb26fcda967a3, type: 2}
-    Position: {x: 3.5, y: 0.8}
+    Position: {x: 1.6, y: 1.4}
     SizeOverride: {x: 0, y: 0}
   - Data: {fileID: 11400000, guid: e48e8df06d2c0c24091cb26fcda967a3, type: 2}
-    Position: {x: -3.5, y: -1.4}
+    Position: {x: -1.6, y: 1.2}
     SizeOverride: {x: 0, y: 0}
   - Data: {fileID: 11400000, guid: e48e8df06d2c0c24091cb26fcda967a3, type: 2}
-    Position: {x: 3.5, y: -1.4}
+    Position: {x: 1.6, y: 1.2}
     SizeOverride: {x: 0, y: 0}
   - Data: {fileID: 11400000, guid: dbbdca10504cdda4fa7928949d48003f, type: 2}
-    Position: {x: 0, y: 1.9}
+    Position: {x: 0, y: 1.6}
     SizeOverride: {x: 2.6, y: 0.5}
   - Data: {fileID: 11400000, guid: 1e7a679d5eedbcd46b56d9417abe83cb, type: 2}
-    Position: {x: -1.8, y: -0.2}
+    Position: {x: -0.8, y: 1.2}
     SizeOverride: {x: 0, y: 0}
   - Data: {fileID: 11400000, guid: 1e7a679d5eedbcd46b56d9417abe83cb, type: 2}
-    Position: {x: 1.8, y: -0.2}
+    Position: {x: 0.8, y: 1.2}
     SizeOverride: {x: 0, y: 0}
   - Data: {fileID: 11400000, guid: bc94bcec0b7987441878fd07a0887edf, type: 2}
-    Position: {x: -5.5, y: 2.2}
+    Position: {x: -2.6, y: 1.6}
     SizeOverride: {x: 0, y: 0}
   - Data: {fileID: 11400000, guid: a77b136a7d7e34744a8c0c5322c5990b, type: 2}
-    Position: {x: 5.5, y: 2.2}
+    Position: {x: 2.6, y: 1.6}
     SizeOverride: {x: 0, y: 0}
   traps: []

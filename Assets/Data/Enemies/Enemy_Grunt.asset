@@ -15,8 +15,16 @@ MonoBehaviour:
   displayName: Grunt
   color: {r: 0.9, g: 0.35, b: 0.35, a: 1}
   size: 0.9
+  paintedSprite: {fileID: 21300000, guid: 1186da3c56d3eec43b0a56cb7ff1a232, type: 3}
+  paintedHeight: 0.79
+  paintedFootprintRadius: 0.3
+  paintedHurtboxSize: {x: 1, y: 0.75}
+  paintedHurtboxOffsetX: 0.12
   maxHealth: 10
   hitFlashDuration: 0.08
+  motionOverride: {fileID: 0}
+  hitOverride: {fileID: 0}
+  lifeCycleOverride: {fileID: 0}
   coinValue: 5
   attacks: []
   behavior: 1

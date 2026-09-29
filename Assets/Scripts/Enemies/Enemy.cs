@@ -38,6 +38,7 @@ namespace BulletHell.Enemies
         [SerializeField] private EnemyBrain brain;
 
         private EnemyData data;
+        private Sprite placeholderSprite;
         private LifeCycleTuning lifeCycle;
         private StatusEffects status;
         private EnemyAttacker attacker;
@@ -93,16 +94,47 @@ namespace BulletHell.Enemies
             data = enemyData;
             transform.position = position;
 
-            PerspectiveTuning perspective = GameServices.Ensure().Config.Perspective;
+            GameConfig config = GameServices.Ensure().Config;
+            PerspectiveTuning perspective = config.Perspective;
             float size = data.Size;
-            FootprintRadius = perspective.EnemyFootprintRadiusFor(size);
-            float lift = size * (0.5f - perspective.EnemyFeetInset);
-            rig.localPosition = new Vector3(0f, lift, 0f);
-            body.transform.localScale = Vector3.one * size;
 
-            Vector2 hurtbox = perspective.EnemyHurtboxSizeFor(size);
+            // Painted art (scale test): the sprite's pivot is at the feet and it is drawn at its own size. The rig still
+            // sits mid-body (bullets leave from it, motion squashes around it); the body hangs down to put the pivot on the feet.
+            if (placeholderSprite == null)
+                placeholderSprite = body.sprite;
+            ScaleTestArt art = config.ScaleTestArt;
+            Sprite painted = art != null && art.UsePaintedEnemies ? data.PaintedSprite : null;
+            bool isPainted = painted != null;
+            body.sprite = isPainted ? painted : placeholderSprite;
+
+            float lift;
+            float barHeight;
+            Vector2 hurtbox;
+            Vector2 hurtboxOffset;
+            if (isPainted)
+            {
+                FootprintRadius = data.PaintedFootprintRadius;
+                float top = data.PaintedHeight;
+                lift = top * 0.5f;
+                barHeight = top - lift + 0.2f;
+                body.transform.localPosition = new Vector3(0f, -lift, 0f);
+                body.transform.localScale = Vector3.one;
+                hurtbox = data.PaintedHurtboxSize;
+                hurtboxOffset = new Vector2(data.PaintedHurtboxOffsetX, hurtbox.y * 0.5f);
+            }
+            else
+            {
+                FootprintRadius = perspective.EnemyFootprintRadiusFor(size);
+                lift = size * (0.5f - perspective.EnemyFeetInset);
+                barHeight = size * 0.5f + 0.25f;
+                body.transform.localPosition = Vector3.zero;
+                body.transform.localScale = Vector3.one * size;
+                hurtbox = perspective.EnemyHurtboxSizeFor(size);
+                hurtboxOffset = new Vector2(0f, -size * perspective.EnemyFeetInset + hurtbox.y * 0.5f);
+            }
+            rig.localPosition = new Vector3(0f, lift, 0f);
             hitbox.size = hurtbox;
-            hitbox.offset = new Vector2(0f, -size * perspective.EnemyFeetInset + hurtbox.y * 0.5f);
+            hitbox.offset = hurtboxOffset;
 
             if (shadow != null)
             {
@@ -122,8 +154,8 @@ namespace BulletHell.Enemies
             telegraph.ClearWindup();
             telegraph.SetStatusTint(Color.white, 0f);
             hitFeedback.Configure(data.HitOverride != null ? data.HitOverride : feedback.EnemyHit, data.HitFlashDuration);
-            healthBar.Layout(Mathf.Max(0.6f, size), size * 0.5f + 0.25f);
-            body.color = data.Color;
+            healthBar.Layout(Mathf.Max(0.6f, isPainted ? hurtbox.x : size), barHeight);
+            body.color = isPainted ? Color.white : data.Color;
             bool patrols = data.Behavior == EnemyBehavior.Patrol;
             patrol.Configure(position, patrols ? data.MoveSpeed : 0f, data.MoveRange, data.MoveAxis, arena, FootprintRadius);
             if (status != null)

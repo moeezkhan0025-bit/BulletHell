@@ -68,6 +68,19 @@ namespace BulletHell.Arena
 
             ViewRect = Rect.MinMaxRect(b.xMin - side - standsMargin, crowdBottom, b.xMax + side + standsMargin, top + standsMargin);
 
+            // Scale test: one painted backdrop replaces the placeholder stands, floor, walls and torches. The camera frames the
+            // image exactly; the foreground layer, obstacles, traps and bullets are untouched.
+            ScaleTestArt art = GameServices.Ensure().Config.ScaleTestArt;
+            if (art != null && art.UseBackdrop)
+            {
+                Vector2 size = art.Backdrop.bounds.size;
+                ViewRect = new Rect(art.BackdropPosition - size * 0.5f, size);
+                Add(Group("Backdrop"), "Backdrop", art.Backdrop, ViewRect, Color.white, SortingLayers.Background, art.BackdropSortingOrder, false);
+                if (!art.HidePlaceholderForeground)
+                    BuildForeground(b, side, railTop, railBottom, crowdBottom);
+                return;
+            }
+
             BuildStands(b, side, top, crowdBottom);
             BuildFloor(data, b);
             BuildWalls(data, gates, b, side, top);
