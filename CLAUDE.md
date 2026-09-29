@@ -310,7 +310,7 @@ Docs/Reference/ (concept art and references, OUTSIDE Assets so Unity doesn't imp
 - [x] M7.7 Arm ring: arms on a flattened ellipse around the feet, front/back sorting around the body,
       locked aim slides along the ellipse, muzzles/bullet spawn consistent, bullet height + damage-core
       position consistent with ground-plane collision, ArmRingTuning.
-- [ ] M8 Enemy AI rework: flow-field navigation + separation, line of sight, Chaser / Skirmisher /
+- [x] M8 Enemy AI rework: flow-field navigation + separation, line of sight, Chaser / Skirmisher /
       Mobile Sentry, convert existing enemies, retune rounds 1-7 for the arena. Enemies account for the
       player's jump (chasers keep tracking the shadow; chargers can be jumped).
 - [ ] M9 Shop pools and pricing (random stock, scaling prices), more arms/armaments/effects.
