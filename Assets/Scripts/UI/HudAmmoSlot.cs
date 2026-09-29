@@ -1,4 +1,5 @@
 using BulletHell.Weapons;
+using PrimeTween;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -38,6 +39,7 @@ namespace BulletHell.UI
 
             if (initialised && ammo == shownAmmo && active == shownActive && holding == shownHolding)
                 return;
+            bool animate = initialised;
             initialised = true;
             shownAmmo = ammo;
             shownActive = active;
@@ -53,7 +55,12 @@ namespace BulletHell.UI
             }
             highlight.enabled = active && filled;
             holdRing.enabled = holding;
-            transform.localScale = Vector3.one * (active && filled ? activeScale : 1f);
+            float targetScale = active && filled ? activeScale : 1f;
+            Tween.StopAll(transform);
+            if (animate)
+                Tween.Scale(transform, targetScale, 0.18f, Ease.OutBack, useUnscaledTime: true);
+            else
+                transform.localScale = Vector3.one * targetScale;
             glyph.canvasRenderer.SetAlpha(filled ? 1f : 0.55f);
         }
     }

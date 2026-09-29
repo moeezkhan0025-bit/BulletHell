@@ -10,6 +10,13 @@ How to log a bug (one entry each, newest at the top of "Open"):
 
 ## Open
 
+### Sprite_Character materials disable 2D SRP batching (console warning)
+- **Steps:** enter Play mode; the Console shows "Material Mat_SpriteCharacter (and Mat_SpriteOutline) has _TexelSize / _ST texture properties which are not supported by 2D SRP Batcher"
+- **Expected:** no warning
+- **Actual:** warning once per material; those renderers (player, enemies, arms) are drawn without SRP batching. Comes from the _MainTex property Unity's own Sprite Unlit graph template declares, so it is harmless for now; revisit in the M12 performance pass if draw calls matter.
+- **How often:** always
+- **Severity:** minor
+
 ### Example: Ricochet bullets pass through low walls
 - **Steps:** Round 2, equip Ricochet on the red arm, fire at the low wall near the left gate
 - **Expected:** bullet bounces off the wall

@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 085354d49cae88e46a99fa011fd4a208, type: 3}
+  m_Name: FeedbackTuning
+  m_EditorClassIdentifier: BulletHell::BulletHell.Feedback.FeedbackTuning
+  dangerColor: {r: 1, g: 0.2, b: 0.55, a: 1}
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
+  hitstopScale: 0
+  shakeMaxOffset: 0.35
+  shakeDecay: 2.2
+  shakeFrequency: 28
+  playerMotion: {fileID: 11400000, guid: caeb32ab669e8f849b7ab628b8b32c11, type: 2}
+  playerHit: {fileID: 11400000, guid: 46050573a53ed8f408a4a72c422bd11f, type: 2}
+  enemyMotion: {fileID: 11400000, guid: e57137e1786e0784091e5c1f7974371f, type: 2}
+  enemyHit: {fileID: 11400000, guid: b0ade2a7cfd3a0d4391670e1a8102a89, type: 2}
+  enemyLifeCycle: {fileID: 11400000, guid: 5df044e68e3126e4c996cd90629a11c2, type: 2}
+  ghostPoolSize: 16
+  spark: {fileID: 3785815155309802259, guid: f4f32db6ec619d84f8fc0a74df6c6de4, type: 3}
+  dust: {fileID: 4633274995839677876, guid: 43c1cb7992f90ef47a52ccd6b59b6126, type: 3}
+  smoke: {fileID: 5128225383711020984, guid: e4853f51b9c42a144b79432571db982c, type: 3}
+  steam: {fileID: 7257767767501324751, guid: a131cdaec504fc64b804c60509b6095b, type: 3}
+  debris: {fileID: 3999802831636771893, guid: f79d52d69b817944da53e8a247424546, type: 3}
+  coin: {fileID: 2117672399299262135, guid: c68ff7f4ee67d034393e4608f6d29b2f, type: 3}
+  confetti: {fileID: 1364883383727479848, guid: 64b0c8b5fa636fa42901aba93de6298e, type: 3}
+  particlePoolPerPreset: 6

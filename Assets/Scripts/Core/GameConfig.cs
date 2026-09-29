@@ -1,5 +1,6 @@
 using BulletHell.Arena;
 using BulletHell.Enemies;
+using BulletHell.Feedback;
 using BulletHell.Save;
 using BulletHell.Settings;
 using BulletHell.Shop;
@@ -51,8 +52,11 @@ namespace BulletHell.Core
         [SerializeField] private ArenaLayoutData defaultLayout;
         [Tooltip("How the 3/4 art sits over the flat gameplay plane (footprints, bullet reach, hurtboxes).")]
         [SerializeField] private PerspectiveTuning perspective;
+        [Tooltip("Procedural motion, hit feedback, hitstop, camera shake and particle presets.")]
+        [SerializeField] private FeedbackTuning feedback;
 
         public AssetRegistry Registry => registry;
+        public FeedbackTuning Feedback => feedback;
         public PerspectiveTuning Perspective => perspective != null ? perspective : PerspectiveTuning.Fallback;
         public DifficultyCurve Difficulty => difficulty;
         public ArenaLayoutData DefaultLayout => defaultLayout;

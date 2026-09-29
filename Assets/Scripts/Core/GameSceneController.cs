@@ -34,7 +34,9 @@ namespace BulletHell.Core
             input.PausePressed -= OnPausePressed;
         }
 
-        private void OnDestroy() => Time.timeScale = 1f;
+        private void OnDestroy() => GameClock.Reset();
+
+        private void Update() => GameClock.Tick();
 
         private void Start() => run.BeginGame();
 
@@ -43,8 +45,10 @@ namespace BulletHell.Core
             stateChangeFrame = Time.frameCount;
             // The round intro plays in real time and lets the player move; enemies and traps are idle until Combat.
             bool live = to == GameState.Combat || to == GameState.RoundIntro;
+            if (to == GameState.RoundResults && Camera.main != null)
+                Feedback.FeedbackHub.Play(Feedback.VfxKind.Confetti, Camera.main.transform.position + new Vector3(0f, Camera.main.orthographicSize * 0.8f, 1f));
             input.enabled = live;
-            Time.timeScale = live ? 1f : 0f;
+            GameClock.SetState(to);
         }
 
         // The Start press that just left a menu screen (or paused) must not also pause the round it started.
@@ -57,7 +61,7 @@ namespace BulletHell.Core
         /// <summary>Back to the Main Menu. The save stays; Continue there resumes the run at its last Shop.</summary>
         public void QuitToMenu()
         {
-            Time.timeScale = 1f;
+            GameClock.Reset();
             GameServices services = GameServices.Ensure();
             services.Run.AbandonRun();
             services.Scenes.Load(SceneLoader.MainMenu);

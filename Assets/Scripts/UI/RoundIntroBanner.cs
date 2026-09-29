@@ -1,5 +1,6 @@
 using BulletHell.Core;
 using BulletHell.Enemies;
+using PrimeTween;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -61,11 +62,13 @@ namespace BulletHell.UI
                 : $"ROUND {round}\n<size=56>Get ready, gladiator!</size>";
             phase = Phase.Title;
             timeLeft = tuning.IntroBannerSeconds;
-            Present(1f, 1f);
+            PopIn(0.6f);
         }
 
         private void Stop()
         {
+            Tween.StopAll(label);
+            Tween.StopAll(label.transform);
             phase = Phase.Idle;
             label.gameObject.SetActive(false);
         }
@@ -92,19 +95,11 @@ namespace BulletHell.UI
                         else
                             ShowNumber();
                     }
-                    else
-                    {
-                        // Each number punches in big and settles.
-                        float t = 1f - timeLeft / tuning.CountdownStepSeconds;
-                        Present(1f, 1f + 0.35f * (1f - t));
-                    }
                     break;
 
                 case Phase.Begin:
                     if (timeLeft <= 0f)
                         Stop();
-                    else
-                        Present(Mathf.Clamp01(timeLeft / Mathf.Min(0.4f, tuning.BeginSeconds)), 1f);
                     break;
             }
         }
@@ -120,7 +115,7 @@ namespace BulletHell.UI
         {
             label.text = number.ToString();
             timeLeft = tuning.CountdownStepSeconds;
-            Present(1f, 1.35f);
+            PopIn(1.6f); // each number punches in big and settles
         }
 
         private void StartBegin()
@@ -129,16 +124,20 @@ namespace BulletHell.UI
             phase = Phase.Begin;
             timeLeft = tuning.BeginSeconds;
             run.BeginCombat();
-            Present(1f, 1f);
+            PopIn(0.7f);
+            float fade = Mathf.Min(0.4f, tuning.BeginSeconds);
+            Tween.Alpha(label, baseColor.a, 0f, fade, Ease.Linear, startDelay: tuning.BeginSeconds - fade);
         }
 
-        private void Present(float alpha, float scale)
+        // Shows the label at full alpha, scaled from `fromScale` to 1 with a springy overshoot.
+        private void PopIn(float fromScale)
         {
-            Color color = baseColor;
-            color.a = baseColor.a * alpha;
-            label.color = color;
-            label.transform.localScale = Vector3.one * scale;
+            Tween.StopAll(label);
+            Tween.StopAll(label.transform);
+            label.color = baseColor;
+            label.transform.localScale = Vector3.one * fromScale;
             label.gameObject.SetActive(true);
+            Tween.Scale(label.transform, 1f, 0.3f, Ease.OutBack);
         }
     }
 }

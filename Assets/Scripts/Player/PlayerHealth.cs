@@ -1,4 +1,5 @@
 using BulletHell.Core;
+using BulletHell.Feedback;
 using UnityEngine;
 
 namespace BulletHell.Player
@@ -22,6 +23,7 @@ namespace BulletHell.Player
         private Color bodyColor;
         private float invulnerableLeft;
         private bool dodgesBulletsInAir;
+        private HitFeedback hitFeedback;
 
         public float Current => health.Current;
         public float Max => health.Max;
@@ -45,6 +47,7 @@ namespace BulletHell.Player
             health = GetComponent<Health>();
             health.Initialize(data.MaxHealth);
             bodyColor = body.color;
+            TryGetComponent(out hitFeedback);
             run = GameServices.Ensure().Run;
         }
 
@@ -68,11 +71,13 @@ namespace BulletHell.Player
         }
 
         /// <summary>An enemy bullet reached the player. Returns false when the player couldn't be hit (invulnerable or dead).</summary>
-        public bool TryHit(float damage)
+        public bool TryHit(float damage, Vector2 travelDirection = default)
         {
             if (!CanBeHit)
                 return false;
 
+            if (hitFeedback != null && travelDirection != Vector2.zero)
+                hitFeedback.OnHitFrom(travelDirection);
             health.TakeDamage(damage);
             if (health.IsAlive)
                 invulnerableLeft = data.InvulnerabilitySeconds;

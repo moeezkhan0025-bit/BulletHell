@@ -255,12 +255,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3882448029976121760}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2292362838794561783}
+  m_Father: {fileID: 7256430539053673150}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8136097864362708746
 SpriteRenderer:
@@ -288,7 +288,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 71412d8342c8c7c46a8c751ea2fa71ce, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -350,8 +350,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8028421130337087457}
   - {fileID: 254713311146982412}
+  - {fileID: 7256430539053673150}
   m_Father: {fileID: 1532610592477388681}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7097544237152915582
@@ -478,6 +478,38 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 1
+--- !u!1 &8209416069425039424
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7256430539053673150}
+  m_Layer: 0
+  m_Name: Motion
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7256430539053673150
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8209416069425039424}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8028421130337087457}
+  m_Father: {fileID: 2292362838794561783}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8422228227964243467
 GameObject:
   m_ObjectHideFlags: 0
@@ -491,12 +523,15 @@ GameObject:
   - component: {fileID: 7883848592751313383}
   - component: {fileID: 2647023060197285167}
   - component: {fileID: 8821326253940058926}
-  - component: {fileID: 5908550554090874521}
   - component: {fileID: 1758407203107639333}
   - component: {fileID: 6859631337615153813}
   - component: {fileID: 3399826400218559680}
   - component: {fileID: 4901844061941737072}
   - component: {fileID: 3607617252094108553}
+  - component: {fileID: 3663821222396316128}
+  - component: {fileID: 27577543700101440}
+  - component: {fileID: 3901260580511573945}
+  - component: {fileID: 757513337312468468}
   m_Layer: 6
   m_Name: Enemy
   m_TagString: Untagged
@@ -589,24 +624,13 @@ MonoBehaviour:
   rig: {fileID: 2292362838794561783}
   body: {fileID: 8136097864362708746}
   shadow: {fileID: 6678732859944139480}
-  hitFlash: {fileID: 5908550554090874521}
+  hitFeedback: {fileID: 3901260580511573945}
+  motion: {fileID: 27577543700101440}
+  telegraph: {fileID: 757513337312468468}
+  lineMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   healthBar: {fileID: 2478527951018183151}
   patrol: {fileID: 2647023060197285167}
   brain: {fileID: 3607617252094108553}
---- !u!114 &5908550554090874521
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8422228227964243467}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a56bb8532ba59442a9fd9ff9a119ebb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: BulletHell::BulletHell.Enemies.HitFlash
-  health: {fileID: 7883848592751313383}
-  target: {fileID: 8136097864362708746}
 --- !u!114 &1758407203107639333
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -693,3 +717,63 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e483ae54e9d5dd849801bdda26b7f704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BulletHell::BulletHell.Enemies.EnemyBrain
+--- !u!114 &3663821222396316128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8422228227964243467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e967b0af4415faf40bee99a415368c23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BulletHell::BulletHell.Feedback.SpriteFx
+  renderers:
+  - {fileID: 8136097864362708746}
+--- !u!114 &27577543700101440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8422228227964243467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 620e8061481d4c54c9ddb341334285c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BulletHell::BulletHell.Feedback.ProceduralMotion
+  motion: {fileID: 7256430539053673150}
+  tuning: {fileID: 0}
+  jump: {fileID: 0}
+--- !u!114 &3901260580511573945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8422228227964243467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcc4281d985ba144b95734fa74171db9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BulletHell::BulletHell.Feedback.HitFeedback
+  health: {fileID: 7883848592751313383}
+  motion: {fileID: 27577543700101440}
+  fx: {fileID: 3663821222396316128}
+  sparkAnchor: {fileID: 2292362838794561783}
+  shakesCamera: 0
+--- !u!114 &757513337312468468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8422228227964243467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad4f6b4b7ee592b49aacba2f0553f92d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BulletHell::BulletHell.Feedback.TelegraphFx
+  motion: {fileID: 27577543700101440}
+  fx: {fileID: 3663821222396316128}

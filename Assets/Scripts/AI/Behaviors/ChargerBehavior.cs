@@ -26,7 +26,7 @@ namespace BulletHell.AI
         public void End(EnemyAgent agent)
         {
             agent.Line?.Hide();
-            agent.Enemy.ClearTint();
+            agent.Enemy.ClearWindup();
         }
 
         public void Tick(EnemyAgent agent, float dt)
@@ -84,12 +84,12 @@ namespace BulletHell.AI
             Color line = tuning.WarningColor;
             line.a = Mathf.Lerp(0.35f, tuning.WarningColor.a, pulse);
             agent.Line?.Show(agent.Position, agent.Position + dashDirection * length, line, tuning.WarningLineWidth);
-            agent.Enemy.SetTint(Color.Lerp(agent.Data.Color, Color.white, pulse * 0.6f));
+            agent.Enemy.SetWindup(1f - Mathf.Clamp01(timer / Mathf.Max(0.01f, agent.Data.TelegraphSeconds)));
 
             if (timer <= 0f)
             {
                 agent.Line?.Hide();
-                agent.Enemy.ClearTint();
+                agent.Enemy.ClearWindup();
                 agent.Velocity = dashDirection * agent.Data.DashSpeed * agent.Difficulty.MoveSpeedMultiplier;
                 travelled = 0f;
                 state = State.Dash;

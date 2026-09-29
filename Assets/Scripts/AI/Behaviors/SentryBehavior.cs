@@ -1,3 +1,4 @@
+using BulletHell.Feedback;
 using BulletHell.Weapons;
 using UnityEngine;
 
@@ -40,7 +41,7 @@ namespace BulletHell.AI
             }
             hooked = null;
             if (tinted)
-                agent.Enemy.ClearTint();
+                agent.Enemy.ClearStatusTint();
             tinted = false;
         }
 
@@ -72,9 +73,12 @@ namespace BulletHell.AI
             {
                 tinted = heat.IsOverheated;
                 if (tinted)
-                    agent.Enemy.SetTint(OverheatTint);
+                {
+                    agent.Enemy.SetStatusTint(OverheatTint);
+                    FeedbackHub.Play(VfxKind.Steam, agent.Enemy.BodyCenter, 8);
+                }
                 else
-                    agent.Enemy.ClearTint();
+                    agent.Enemy.ClearStatusTint();
             }
         }
     }

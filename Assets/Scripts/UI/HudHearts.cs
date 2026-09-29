@@ -1,3 +1,4 @@
+using PrimeTween;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,6 +20,7 @@ namespace BulletHell.UI
             int total = Mathf.Max(1, Mathf.CeilToInt(max));
             if (health == shownHealth && total == shownMax)
                 return;
+            int previous = shownHealth;
             shownHealth = health;
             shownMax = total;
 
@@ -26,6 +28,19 @@ namespace BulletHell.UI
             {
                 hearts[i].gameObject.SetActive(i < total);
                 hearts[i].sprite = i < health ? fullHeart : emptyHeart;
+            }
+
+            // Pop the hearts that just changed (lost or regained); the first draw is silent.
+            if (previous >= 0)
+            {
+                int from = Mathf.Min(previous, health);
+                int to = Mathf.Max(previous, health);
+                for (int i = from; i < to && i < hearts.Length; i++)
+                {
+                    Tween.StopAll(hearts[i].transform);
+                    hearts[i].transform.localScale = Vector3.one;
+                    Tween.PunchScale(hearts[i].transform, Vector3.one * 0.5f, 0.35f, frequency: 6, useUnscaledTime: true);
+                }
             }
         }
     }

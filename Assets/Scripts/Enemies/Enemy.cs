@@ -2,6 +2,7 @@ using System;
 using BulletHell.AI;
 using BulletHell.Arena;
 using BulletHell.Core;
+using BulletHell.Feedback;
 using BulletHell.Player;
 using BulletHell.Projectiles;
 using UnityEngine;
@@ -25,22 +26,31 @@ namespace BulletHell.Enemies
         [SerializeField] private SpriteRenderer body;
         [Tooltip("Flat ground shadow at the feet. Optional.")]
         [SerializeField] private SpriteRenderer shadow;
-        [SerializeField] private HitFlash hitFlash;
+        [SerializeField] private HitFeedback hitFeedback;
+        [Tooltip("Single writer of the Motion child: breathing, bob, squash, punch, windup, spawn pop-in.")]
+        [SerializeField] private ProceduralMotion motion;
+        [SerializeField] private TelegraphFx telegraph;
+        [Tooltip("Material for the ground warning lines (the body uses the character shader, which lines must not).")]
+        [SerializeField] private Material lineMaterial;
         [SerializeField] private HealthBar healthBar;
         [SerializeField] private PatrolMover patrol;
         [Tooltip("Movement AI for the non-patrol behaviours (Chaser, Skirmisher, Sentry, Charger, Sniper).")]
         [SerializeField] private EnemyBrain brain;
 
         private EnemyData data;
+        private LifeCycleTuning lifeCycle;
         private StatusEffects status;
         private EnemyAttacker attacker;
         private NavigationService navigation;
 
         public EnemyData Data => data;
         public EnemyBrain Brain => brain;
-        /// <summary>Draws the body in a different colour (telegraphs, overheating). ClearTint restores the enemy's own colour.</summary>
-        public void SetTint(Color tint) => body.color = tint;
-        public void ClearTint() => body.color = data.Color;
+        /// <summary>Attack wind-up 0..1: inflate, tremble and DANGER pulse. ClearWindup ends it.</summary>
+        public void SetWindup(float progress01) => telegraph.SetWindup(progress01);
+        public void ClearWindup() => telegraph.ClearWindup();
+        /// <summary>A steady colour wash (overheated). ClearStatusTint removes it.</summary>
+        public void SetStatusTint(Color tint) => telegraph.SetStatusTint(tint, 0.6f);
+        public void ClearStatusTint() => telegraph.SetStatusTint(Color.white, 0f);
         public bool IsAlive => health.IsAlive && body.enabled;
         /// <summary>The enemy's feet: where it stands on the floor.</summary>
         public Vector2 Position => transform.position;
@@ -103,7 +113,15 @@ namespace BulletHell.Enemies
             }
 
             health.Initialize(data.MaxHealth * difficulty.HealthMultiplier);
-            hitFlash.Configure(data.Color, data.HitFlashDuration);
+            FeedbackTuning feedback = GameServices.Ensure().Config.Feedback;
+            MotionTuning motionTuning = data.MotionOverride != null ? data.MotionOverride : feedback.EnemyMotion;
+            lifeCycle = data.LifeCycleOverride != null ? data.LifeCycleOverride : feedback.EnemyLifeCycle;
+            motion.SetTuning(motionTuning);
+            motion.ResetState();
+            telegraph.Configure(motionTuning);
+            telegraph.ClearWindup();
+            telegraph.SetStatusTint(Color.white, 0f);
+            hitFeedback.Configure(data.HitOverride != null ? data.HitOverride : feedback.EnemyHit, data.HitFlashDuration);
             healthBar.Layout(Mathf.Max(0.6f, size), size * 0.5f + 0.25f);
             body.color = data.Color;
             bool patrols = data.Behavior == EnemyBehavior.Patrol;
@@ -111,6 +129,7 @@ namespace BulletHell.Enemies
             if (status != null)
                 status.Clear();
             SetAlive(true);
+            motion.PlaySpawn(lifeCycle);
 
             if (attacker != null)
             {
@@ -124,7 +143,7 @@ namespace BulletHell.Enemies
 
             if (brain != null)
             {
-                brain.Configure(this, data, difficulty, pool, player, arena, navigation, attacker, body.sharedMaterial);
+                brain.Configure(this, data, difficulty, pool, player, arena, navigation, attacker, lineMaterial != null ? lineMaterial : body.sharedMaterial);
                 if (navigation != null && brain.IsActive)
                     navigation.Register(this);
             }
@@ -132,6 +151,10 @@ namespace BulletHell.Enemies
 
         private void OnDied()
         {
+            telegraph.ClearWindup();
+            FeedbackHub.SpawnGhost(body, transform, lifeCycle);
+            if (lifeCycle != null && lifeCycle.SplatParticles > 0)
+                FeedbackHub.Play(VfxKind.Debris, BodyCenter, lifeCycle.SplatParticles);
             if (status != null)
                 status.Clear();
             if (attacker != null)

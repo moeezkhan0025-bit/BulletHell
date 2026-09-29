@@ -4,7 +4,8 @@ using UnityEngine;
 namespace BulletHell.Player
 {
     /// <summary>
-    /// Look of one spawned arm: hidden, soft-selected (dim halo) or locked (solid halo), halo in the arm's ID colour.
+    /// Look of one spawned arm: hidden, soft-selected (thin dim outline) or locked (thick solid pulsing outline), the
+    /// outline (shader) in the arm's ID colour; widths and alphas live in ArmRingTuning.
     /// The root sits at the attach point with +X as the firing direction; Art is rotated by the data's
     /// art rotation and Muzzle sits at its muzzle offset.
     /// To align art: open the Arm prefab, set Preview Data, rotate Art and move Muzzle in the Scene view,
@@ -15,10 +16,9 @@ namespace BulletHell.Player
         public enum State { Hidden, Selected, Locked }
 
         [SerializeField] private SpriteRenderer art;
+        [Tooltip("Retired: the outline shader replaces the halo sprite. Left empty or disabled.")]
         [SerializeField] private SpriteRenderer halo;
         [SerializeField] private Transform muzzle;
-        [SerializeField, Range(0f, 1f)] private float selectedHaloAlpha = 0.3f;
-        [SerializeField, Range(0f, 1f)] private float lockedHaloAlpha = 0.9f;
         [SerializeField, Min(0f)] private float selectedScale = 1.15f;
 
         [Tooltip("Editor only: arm shown when editing the prefab. Spawned arms get their data from the loadout.")]
@@ -44,6 +44,10 @@ namespace BulletHell.Player
         private State state = State.Hidden;
         private float depthScale = 1f;
         private float brightness = 1f;
+        private ArmRingTuning ring;
+        private MaterialPropertyBlock block;
+        private static readonly int OutlineColorId = Shader.PropertyToID("_OutlineColor");
+        private static readonly int OutlineWidthId = Shader.PropertyToID("_OutlineWidth");
 
         /// <summary>The arm tint cosmetic: multiplies the arm art's colours. White = art as drawn.</summary>
         public void SetArtTint(Color tint)
@@ -56,11 +60,11 @@ namespace BulletHell.Player
         {
             state = newState;
             art.enabled = state != State.Hidden;
-            halo.enabled = state != State.Hidden;
-            Color color = data != null ? data.IdColor : Color.white;
-            color.a = state == State.Locked ? lockedHaloAlpha : selectedHaloAlpha;
-            halo.color = color;
+            if (halo != null)
+                halo.enabled = false;
             ApplyScale();
+            ApplyOutline();
+            enabled = state == State.Locked;
         }
 
         /// <summary>
@@ -69,12 +73,46 @@ namespace BulletHell.Player
         /// </summary>
         public void SetDepth(bool isBack, float depth01, ArmRingTuning ring)
         {
+            this.ring = ring;
             art.sortingOrder = isBack ? ring.BackArtOrder : ring.FrontArtOrder;
-            halo.sortingOrder = isBack ? ring.BackHaloOrder : ring.FrontHaloOrder;
             depthScale = ring.ScaleAt(depth01);
             brightness = ring.BrightnessAt(depth01);
             ApplyScale();
             ApplyArtColor();
+            ApplyOutline();
+        }
+
+        private void Awake() => enabled = false;
+
+        // Locked: the outline breathes so a committed arm is unmistakable.
+        private void Update() => ApplyOutline();
+
+        private void ApplyOutline()
+        {
+            if (art == null)
+                return;
+            if (block == null)
+                block = new MaterialPropertyBlock();
+            float width = 0f;
+            Color color = data != null ? data.IdColor : Color.white;
+            if (ring != null && state != State.Hidden)
+            {
+                if (state == State.Locked)
+                {
+                    float pulse = 0.5f + 0.5f * Mathf.Sin(Time.time * ring.LockedPulseSpeed);
+                    width = ring.LockedOutlineWidth * Mathf.Lerp(1f - ring.LockedPulseAmount, 1f, pulse);
+                    color.a = ring.LockedOutlineAlpha;
+                }
+                else
+                {
+                    width = ring.SoftOutlineWidth;
+                    color.a = ring.SoftOutlineAlpha;
+                }
+            }
+            art.GetPropertyBlock(block);
+            block.SetColor(OutlineColorId, color);
+            block.SetFloat(OutlineWidthId, width);
+            art.SetPropertyBlock(block);
         }
 
         private void ApplyScale() =>

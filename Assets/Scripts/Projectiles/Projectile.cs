@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using BulletHell.Arena;
 using BulletHell.Core;
+using BulletHell.Feedback;
 using BulletHell.Player;
 using BulletHell.Weapons;
 using UnityEngine;
@@ -153,7 +154,7 @@ namespace BulletHell.Projectiles
                 float reach = radius + target.HitRadius;
                 if ((target.Position - (start + segment * t)).sqrMagnitude <= reach * reach)
                 {
-                    target.TryHit(damage);
+                    target.TryHit(damage, velocity);
                     ReleaseToPool();
                     return;
                 }
@@ -175,6 +176,8 @@ namespace BulletHell.Projectiles
                 return true;
             }
 
+            if (target.TryGetComponent(out IHitReceiver receiver))
+                receiver.OnHitFrom(velocity);
             damageable.TakeDamage(damage);
             pool.RegisterHit();
             if (hitEffects != null)

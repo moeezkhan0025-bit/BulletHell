@@ -1,3 +1,4 @@
+using BulletHell.Feedback;
 using UnityEngine;
 
 namespace BulletHell.Enemies
@@ -32,6 +33,11 @@ namespace BulletHell.Enemies
         [Header("Health")]
         [SerializeField, Min(0.01f)] private float maxHealth = 10f;
         [SerializeField, Min(0f)] private float hitFlashDuration = 0.08f;
+
+        [Header("Feedback (empty = the defaults in FeedbackTuning)")]
+        [SerializeField] private MotionTuning motionOverride;
+        [SerializeField] private HitFeedbackTuning hitOverride;
+        [SerializeField] private LifeCycleTuning lifeCycleOverride;
 
         [Header("Reward")]
         [Tooltip("Currency in the coin this enemy drops when it dies.")]
@@ -112,6 +118,9 @@ namespace BulletHell.Enemies
         public float Size => size;
         public float MaxHealth => maxHealth;
         public float HitFlashDuration => hitFlashDuration;
+        public MotionTuning MotionOverride => motionOverride;
+        public HitFeedbackTuning HitOverride => hitOverride;
+        public LifeCycleTuning LifeCycleOverride => lifeCycleOverride;
         public EnemyBehavior Behavior => behavior;
         public float MoveSpeed => moveSpeed;
         public float MoveRange => moveRange;

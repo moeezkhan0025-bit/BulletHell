@@ -43,6 +43,27 @@ Art rules (sizes, perspective, pivots, height classes, colors, naming): Docs/ART
 - Arena fits on one screen with a fixed camera for the main arena size; extra width/height on other aspect
   ratios is filled with crowd/wall art, never gameplay space.
 
+## Animation approach (hybrid: draw key poses, let code do the motion)
+- Default for enemies/NPCs: 1-3 drawn key poses (idle, windup, attack) + procedural motion. Player: a short
+  drawn run cycle (4 frames) + procedural motion. Bosses/merchant: drawn in PARTS and rigged.
+- Procedural toolkit (reusable components, values in data assets, all optional per character):
+  - Motion: idle breathing (scale sine), hop-walk bob + tilt while moving, lean into movement,
+    squash/stretch on start/stop/land, facing flip with a quick squash.
+  - Combat feedback: white hit flash (shader), knockback nudge, scale punch, short hitstop, camera shake.
+  - Telegraphs: windup = inflate + tremble + DANGER-color pulse (shader), so every attack reads.
+  - Spawn: pop-in scale from a gate puff. Death: squash, flash, juice-splat particles, dissolve or shrink.
+- Rigging: Unity 2D Animation + 2D PSD Importer (+ 2D IK where useful). Layered PSDs exported from
+  Procreate, one layer per body part, named consistently (head, torso, arm_L, arm_R, leg_L, leg_R, ...).
+- Shaders (Shader Graph, 2D): hit flash, dissolve, outline (arm soft/locked states, focus highlight),
+  palette/tint swap (cosmetics, rarity), pulse/glow (telegraphs, heat), UV scroll (laser beam),
+  wave (banners, flags), ripple (sauce puddles).
+- Particles do most VFX (sparks, dust, smoke, steam, debris, coins, confetti, torch flames) from a few
+  small textures: soft dot, spark streak, smoke puff, shard.
+- Arena life: crowd heads bob procedurally with random offsets; banners use the wave shader; torches
+  use particles.
+- UI motion is all tweened (card lift, buy fly-in, SOLD stamp, heart pop, banners, screen transitions)
+  with a free tween library (PrimeTween or DOTween - pick one and use it everywhere).
+
 ## HUD (combat)
 - Bottom-left: gladiator portrait (reflects chosen cosmetics), 5 hearts = 5 HP (1 heart per hit),
   and a heat bar under them showing the SELECTED arm's heat (fills while firing heat ammo, changes color and
@@ -309,9 +330,11 @@ Assets/
   Data/ (Arms, Loadouts, Ammo, Armaments, Pickups, Shop, Cosmetics, Arenas, Traps, Settings, Enemies, Waves, Bosses, Input)
   Prefabs/
   Scenes/ (Boot, MainMenu, Game)   (Shop and Armory are UI states inside Game)
-  Scripts/ (Core, Save, Settings, Input, Player, Cosmetics, Weapons, Projectiles, Enemies, AI, Arena, Bosses, Shop, Armory, UI, Platform)
+  Scripts/ (Core, Save, Settings, Input, Player, Cosmetics, Weapons, Projectiles, Feedback, Enemies, AI, Arena, Bosses, Shop, Armory, UI, Platform)
   Tests/
 Docs/Reference/ (concept art and references, OUTSIDE Assets so Unity doesn't import them)
+ArtSource/ (4x master PNGs from Procreate, mirrors Assets/Art folders; OUTSIDE Assets)
+Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Assets/Art as 2x game PNGs)
 
 ## Working agreement
 - One milestone per session. Propose a plan first; wait for my OK before large changes.
@@ -365,6 +388,9 @@ Docs/Reference/ (concept art and references, OUTSIDE Assets so Unity doesn't imp
 - [x] M8.5 Arena progression + height classes: Low/Tall obstacle classes, jumping over Low obstacles,
       Tall-obstacle fade when something is behind it, ArenaLayoutData per round with HazardBudget
       (round 1 has no traps/hazards, ramping up after), clear spawn areas and lanes, retune rounds 1-7.
+- [x] M8.6 Animation toolkit: procedural motion + feedback components, hit flash / dissolve / outline /
+      pulse / tint / UV-scroll / wave shaders, particle presets, tween library, 2D Animation + PSD Importer
+      installed with a rigged test character; apply to player and current enemies (placeholders).
 - [ ] Art scale test (Docs/ART_SPEC.md section 9), then vertical slice art for one arena.
 - [ ] M9a Armament behaviors: effect interface, variable armament slots per arm, rarity/tags/stacks,
       Homing, Auto-fire, Velocity, Pierce, Ricochet with documented interactions, generated descriptions.

@@ -2,7 +2,8 @@
 
 Everything drawn for the game follows this sheet so it fits on the first try.
 Values marked (start) are starting points: confirm them in the scale test (section 9), then lock them.
-Keep this file in `Docs/` next to `CLAUDE.md`'s reference folder. Claude reads it when hooking up art.
+Keep this file at `Docs/ART_SPEC.md`. Claude reads it when hooking up art.
+Templates: `procreate_templates_4x.zip` (4x masters). The older 2x pack is retired.
 
 ---
 
@@ -17,7 +18,18 @@ Keep this file in `Docs/` next to `CLAUDE.md`'s reference folder. Claude reads i
 | Draw at | 2x final size, export at 2x | 1x, never scale in the art program |
 | Unity filter | Bilinear, compression High Quality | Point (no filter), no compression |
 
-Chosen style: **[A / B]**  PPU: **[ ]**  Player height P: **[ ] px**
+Chosen style: **A (painted HD)**. Player height in game: **110 px at 1920x1080**.
+
+**Resolution pipeline (Option A):**
+| | Scale | P (player height) | Arena / screen | Used for |
+|---|---|---|---|---|
+| Master (you draw here) | 4x | **440 px** | 7680 x 4320 | Procreate source art, kept in `ArtSource/` |
+| Game export | 2x | 220 px | 3840 x 2160 | PNGs in `Assets/Art/` (made from masters by a script) |
+| On screen at 1080p | 1x | 110 px | 1920 x 1080 | What players see; 4K screens show the 2x detail |
+
+Use the 4x template pack (`procreate_templates_4x.zip`) for masters. Export PNGs at master size into
+`ArtSource/<same folders as Assets/Art>`; Claude's `Tools/export_art` script downscales them by 50% into
+`Assets/Art/`. Never paint directly at 2x once masters exist.
 
 Everything below uses **P = the player body's height** (feet to top of head, not counting headgear),
 so sizes stay correct whichever style you pick.
@@ -143,13 +155,19 @@ short front face, consistent "jumpable" rim/cap color. Separate `_shadow`.
 - `cooldown`: settling back
 Parts that rise out of the floor (spikes, skewers) are drawn upright (Rule 1) on top of the flat base.
 
-**Characters (player + enemies):** 4 facing directions using 3 drawings: `down`, `side` (flipped in code
-for left/right), `up`. Animations:
-- Player: `idle` (4 frames), `run` (6-8), `hit` (2), `death` (6), `jump_takeoff` (1-2), `jump_land` (1-2).
-  The jump arc itself is code, so no mid-air frames are needed.
-- Enemies: `idle`, `move`, `windup` (the telegraph before attacking: essential for fairness), `attack`,
-  `hit` (1-2), `death`. Sentry adds `plant`, `overheat` (vents glowing).
-- Keep frame counts small; readable poses beat smooth motion in a bullet hell.
+**Characters (player + enemies): hybrid animation.** Draw KEY POSES; code adds the motion
+(breathing, hop-walk bob, lean, squash/stretch, hit flash, knockback, windup tremble, death splat/dissolve).
+See CLAUDE.md "Animation approach".
+- Player (facings `down`, `side` flipped in code, `up`): `idle` (1 pose), `run` (4-frame cycle),
+  `jump_takeoff` (1), `jump_land` (1). No hit/death frames needed (code handles them).
+- Regular enemies (side-facing only for now): `idle` (1), `windup` (1, a clear telegraph silhouette),
+  `attack` (1-2). Sentry adds `planted` (1) and `overheat` (1, vents glowing).
+- Bosses and the merchant: drawn in PARTS for rigging (see below), plus alternate parts for phase changes.
+- Readable poses beat smooth motion in a bullet hell.
+
+**Rigged characters (bosses, merchant):** one body part per layer, named `head`, `torso`, `arm_L`, `arm_R`,
+`leg_L`, `leg_R`, `weapon`, etc. Draw a little extra where parts overlap (e.g. the top of an arm continues
+under the shoulder) so no gaps show when parts rotate. Export with Procreate Share -> PSD into `ArtSource/`.
 
 **Bullets:** simple, bold shapes. Player bullets can vary per ammo type. Enemy bullets: round or
 diamond shapes with a bright core and dark outline, 2-3 frame pulse.
@@ -206,13 +224,14 @@ Assets/Art/
    - [ ] Readable on a phone screen (or the Game view set to a small phone resolution).
 4. Adjust P, PPU or F in this file, not the art. Then lock the values and start final art.
 
-**Hook-up prompt for Claude:**
+**Hook-up prompt for Claude** (masters exported at 4x to `ArtSource/ScaleTest/`):
 ```
-Read Docs/ART_SPEC.md. I added scale-test sprites in Assets/Art (player, one enemy, a low wall, a pillar,
-a floor trap, a floor tile, an enemy bullet). Apply the import settings for our style, set pivots at the
-footprint centers, size colliders to the footprints, set the arm ring and shadow ellipse ratio to F,
-and swap them in for the matching placeholders. Take screenshots of the arena at 1920x1080 and at a
-phone resolution and tell me how the sizes compare to the spec.
+Read Docs/ART_SPEC.md. Run Tools/export_art for ArtSource/ScaleTest (create the script first if it doesn't
+exist: 50% high-quality downscale of 4x masters into the matching Assets/Art folder). Then apply import
+settings for our style, set pivots at the footprint centers, size colliders to the footprints, set the arm
+ring and shadow ellipse ratio to F, and temporarily swap the sketches in for the matching placeholders
+(keep the placeholders). Take screenshots at 1920x1080 and at a phone resolution with enemies firing, and
+report how the on-screen sizes compare to the spec.
 ```
 
 ---

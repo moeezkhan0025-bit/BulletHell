@@ -1,0 +1,20 @@
+{
+    "name": "Unity.Environment.Editor.ShaderGraph",
+    "rootNamespace": "BulletHell.EditorTools.ShaderGen",
+    "references": [
+        "Unity.ShaderGraph.Editor",
+        "Unity.RenderPipelines.Universal.Editor",
+        "Unity.RenderPipelines.Universal.Runtime"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

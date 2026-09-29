@@ -28,6 +28,17 @@ namespace BulletHell.Player
         [SerializeField] private int frontArtOrder = 3;
         [SerializeField] private int frontHaloOrder = 2;
 
+        [Header("Selection outline (shader)")]
+        [Tooltip("Soft-selected arm: thin, dim outline in the arm's ID colour. Width is in texels of the arm sprite.")]
+        [SerializeField, Min(0f)] private float softOutlineWidth = 1.5f;
+        [SerializeField, Range(0f, 1f)] private float softOutlineAlpha = 0.45f;
+        [Tooltip("Locked arm: thick, solid outline that breathes.")]
+        [SerializeField, Min(0f)] private float lockedOutlineWidth = 3f;
+        [SerializeField, Range(0f, 1f)] private float lockedOutlineAlpha = 1f;
+        [SerializeField, Min(0f)] private float lockedPulseSpeed = 6f;
+        [Tooltip("How far the locked outline width dips (0.3 = down to 70%).")]
+        [SerializeField, Range(0f, 0.9f)] private float lockedPulseAmount = 0.3f;
+
         [Header("Depth cue (subtle)")]
         [SerializeField] private bool depthCue = true;
         [Tooltip("Scale of an arm at the very back / very front of the ring.")]
@@ -46,6 +57,12 @@ namespace BulletHell.Player
         public int FrontArtOrder => frontArtOrder;
         public int FrontHaloOrder => frontHaloOrder;
         public bool DepthCue => depthCue;
+        public float SoftOutlineWidth => softOutlineWidth;
+        public float SoftOutlineAlpha => softOutlineAlpha;
+        public float LockedOutlineWidth => lockedOutlineWidth;
+        public float LockedOutlineAlpha => lockedOutlineAlpha;
+        public float LockedPulseSpeed => lockedPulseSpeed;
+        public float LockedPulseAmount => lockedPulseAmount;
 
         /// <summary>Scale multiplier for an arm at a depth (0 = back of the ring, 1 = front).</summary>
         public float ScaleAt(float depth01) => depthCue ? Mathf.Lerp(backScale, frontScale, depth01) : 1f;

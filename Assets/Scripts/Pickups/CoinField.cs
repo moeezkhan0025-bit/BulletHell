@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using BulletHell.Core;
 using BulletHell.Player;
+using BulletHell.Feedback;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -59,7 +60,7 @@ namespace BulletHell.Pickups
         public void CollectAll()
         {
             for (int i = active.Count - 1; i >= 0; i--)
-                Collect(active[i]);
+                Collect(active[i], false);
         }
 
         /// <summary>Removes every coin without collecting it (start of a round).</summary>
@@ -107,9 +108,11 @@ namespace BulletHell.Pickups
             }
         }
 
-        private void Collect(CoinPickup coin)
+        private void Collect(CoinPickup coin, bool sparkle = true)
         {
             run.AddEarnings(coin.Value);
+            if (sparkle)
+                FeedbackHub.Play(VfxKind.Coin, coin.transform.position, 4);
             Remove(coin);
         }
 

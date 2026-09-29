@@ -1,4 +1,5 @@
 using System;
+using PrimeTween;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -9,7 +10,7 @@ namespace BulletHell.UI
     /// One selectable row of a skeleton menu list. Submit (A / Cross) runs the select action; Cancel (B / Circle)
     /// runs the cancel action while this row is focused. Rows are pooled by UIList and reused.
     /// </summary>
-    public sealed class MenuRow : MonoBehaviour, ICancelHandler
+    public sealed class MenuRow : MonoBehaviour, ICancelHandler, ISelectHandler, IDeselectHandler
     {
         [SerializeField] private Button button;
         [SerializeField] private Text label;
@@ -30,5 +31,22 @@ namespace BulletHell.UI
         }
 
         public void OnCancel(BaseEventData eventData) => onCancel?.Invoke();
+
+        // Focus lift: the focused row swells a little. Unscaled so it works while the game is paused.
+        public void OnSelect(BaseEventData eventData) => Lift(1.06f);
+
+        public void OnDeselect(BaseEventData eventData) => Lift(1f);
+
+        private void OnDisable()
+        {
+            Tween.StopAll(transform);
+            transform.localScale = Vector3.one;
+        }
+
+        private void Lift(float scale)
+        {
+            Tween.StopAll(transform);
+            Tween.Scale(transform, scale, 0.12f, Ease.OutQuad, useUnscaledTime: true);
+        }
     }
 }
