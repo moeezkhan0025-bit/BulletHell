@@ -12,9 +12,13 @@ namespace BulletHell.Projectiles
     /// through targets. Released to its pool on a final hit, on leaving the screen, or after its safety lifetime.
     /// The firing arm's effects can let it pierce, ricochet and apply on-hit effects (burn, stun, ...).
     /// </summary>
-    [RequireComponent(typeof(SpriteRenderer))]
     public sealed class Projectile : MonoBehaviour
     {
+        [Tooltip("The bullet's sprite, a child lifted above the ground point by the perspective's bullet lift.")]
+        [SerializeField] private SpriteRenderer body;
+        [Tooltip("Tiny flattened shadow on the ground under the bullet.")]
+        [SerializeField] private SpriteRenderer shadow;
+
         private const int RecentCapacity = 8;
 
         private static readonly RaycastHit2D[] HitBuffer = new RaycastHit2D[8];
@@ -25,8 +29,9 @@ namespace BulletHell.Projectiles
         private int recentCount;
         private int recentNext;
 
-        private SpriteRenderer spriteRenderer;
         private ProjectilePool pool;
+        private PerspectiveTuning perspective;
+        private float shadowFlatness;
         private IReadOnlyList<ArmEffect> hitEffects;
         private Vector2 velocity;
         private float damage;
@@ -44,7 +49,14 @@ namespace BulletHell.Projectiles
         public void Bind(ProjectilePool owner)
         {
             pool = owner;
-            spriteRenderer = GetComponent<SpriteRenderer>();
+            perspective = GameServices.Ensure().Config.Perspective;
+
+            // Collision stays on the ground plane (this transform); only the drawing is lifted.
+            body.transform.localPosition = new Vector3(0f, perspective.BulletVisualLift, 0f);
+            Color shadowColor = Color.black;
+            shadowColor.a = perspective.BulletShadowAlpha;
+            shadow.color = shadowColor;
+            shadowFlatness = perspective.ShadowFlatness;
         }
 
         public void Launch(Vector2 position, Vector2 direction, float speed, float damageAmount,
@@ -52,9 +64,11 @@ namespace BulletHell.Projectiles
                            ShotProperties shot, IReadOnlyList<ArmEffect> effects)
         {
             transform.position = position;
-            transform.localScale = Vector3.one * size;
-            spriteRenderer.sprite = sprite;
-            spriteRenderer.color = color;
+            body.transform.localScale = Vector3.one * size;
+            body.sprite = sprite;
+            body.color = color;
+            float shadowSize = size * perspective.BulletShadowScale;
+            shadow.transform.localScale = new Vector3(shadowSize, shadowSize * shadowFlatness, 1f);
             velocity = direction.normalized * speed;
             damage = damageAmount;
             radius = size * 0.5f;

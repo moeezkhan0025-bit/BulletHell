@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73f5995cb42c1b148bca0cd69587e652, type: 3}
+  m_Name: ArmRingTuning
+  m_EditorClassIdentifier: BulletHell::BulletHell.Player.ArmRingTuning
+  radiusX: 0.55
+  radiusYRatio: 0.5
+  verticalOffset: 0.1
+  spinDegreesPerSecond: 720
+  backDeadzone: 0.05
+  backArtOrder: -3
+  backHaloOrder: -4
+  frontArtOrder: 3
+  frontHaloOrder: 2
+  depthCue: 1
+  backScale: 0.9
+  frontScale: 1.05
+  backBrightness: 0.8

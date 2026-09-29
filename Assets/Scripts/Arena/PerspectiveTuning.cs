@@ -34,6 +34,17 @@ namespace BulletHell.Arena
         [Tooltip("Shadow height / width: flat, because it lies on the floor.")]
         [SerializeField, Range(0.1f, 1f)] private float shadowFlatness = 0.45f;
 
+        [Header("Bullets (player and enemy)")]
+        [Tooltip("Bullets collide on the ground plane but are drawn this far above it, with a tiny shadow on the ground, so they read as flying.")]
+        [SerializeField, Min(0f)] private float bulletVisualLift = 0.25f;
+        [Tooltip("Bullet shadow width as a multiple of the bullet's size.")]
+        [SerializeField, Range(0.2f, 1.5f)] private float bulletShadowScale = 0.7f;
+        [Tooltip("Opacity of the bullet shadow.")]
+        [SerializeField, Range(0f, 1f)] private float bulletShadowAlpha = 0.3f;
+
+        public float BulletVisualLift => bulletVisualLift;
+        public float BulletShadowScale => bulletShadowScale;
+        public float BulletShadowAlpha => bulletShadowAlpha;
         public float ObstacleBulletAllowance => obstacleBulletAllowance;
         public float BulletHeadroom => bulletHeadroom;
         public float EnemyFeetInset => enemyFeetInset;

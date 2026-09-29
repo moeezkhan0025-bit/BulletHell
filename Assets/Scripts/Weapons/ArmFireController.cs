@@ -34,8 +34,11 @@ namespace BulletHell.Weapons
         /// <summary>Heat state of the arm in a slot (also valid for empty slots).</summary>
         public HeatComponent GetHeat(int slot) => heat[slot];
 
+        private float bulletLift;
+
         private void Awake()
         {
+            bulletLift = GameServices.Ensure().Config.Perspective.BulletVisualLift;
             for (int i = 0; i < timers.Length; i++)
             {
                 timers[i] = new FireTimer();
@@ -97,7 +100,7 @@ namespace BulletHell.Weapons
         private void Fire(ArmVisual arm, AmmoTypeData ammo)
         {
             WeaponArmData data = arm.Data;
-            Vector2 origin = arm.Muzzle.position;
+            Vector2 origin = arms.GroundMuzzle(arm); // bullets live on the ground plane; the arm is drawn above it
             Vector3 facing = arm.transform.right;
             float baseAngle = Mathf.Atan2(facing.y, facing.x) * Mathf.Rad2Deg;
             ArmStats stats = arm.Instance.Stats; // base + armaments; ammo scales these
@@ -121,7 +124,7 @@ namespace BulletHell.Weapons
 
         private void FireBeam(int slot, ArmVisual arm, AmmoTypeData ammo, float dt)
         {
-            Vector2 origin = arm.Muzzle.position;
+            Vector2 origin = arms.GroundMuzzle(arm);
             Vector2 direction = arm.transform.right;
             Vector2 end = origin + direction * ammo.BeamRange;
 
@@ -143,8 +146,10 @@ namespace BulletHell.Weapons
             LineRenderer line = beams[slot];
             line.startColor = line.endColor = ammo.Tint;
             line.widthMultiplier = ammo.BeamWidth;
-            line.SetPosition(0, origin);
-            line.SetPosition(1, end);
+            // Collision is on the ground; the beam is drawn with the same lift as bullets.
+            Vector2 lift = Vector2.up * bulletLift;
+            line.SetPosition(0, origin + lift);
+            line.SetPosition(1, end + lift);
         }
 
         private LineRenderer CreateBeam(int slot)

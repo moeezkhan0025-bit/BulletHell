@@ -15,8 +15,10 @@ namespace BulletHell.Player
         [SerializeField] private PlayerData data;
         [Tooltip("Parent of everything that is drawn above the ground: body, cosmetics, arms, core.")]
         [SerializeField] private Transform visuals;
-        [Tooltip("The small damage hitbox's centre, under Visuals.")]
+        [Tooltip("The small damage hitbox's centre: a child of the root, low near the feet on the ground plane.")]
         [SerializeField] private Transform core;
+        [Tooltip("Visible marker of the damage core, sized to the hitbox. Optional.")]
+        [SerializeField] private SpriteRenderer coreMarker;
         [SerializeField] private SpriteRenderer shadow;
 
         /// <summary>Everything drawn above the ground.</summary>
@@ -27,7 +29,13 @@ namespace BulletHell.Player
         private void Awake()
         {
             visuals.localPosition = new Vector3(0f, data.BodyCenterHeight, 0f);
-            core.localPosition = Vector3.zero;
+            core.localPosition = new Vector3(0f, data.CoreFootOffset, 0f);
+            if (coreMarker != null)
+            {
+                Vector2 native = coreMarker.sprite != null ? (Vector2)coreMarker.sprite.bounds.size : Vector2.one;
+                float diameter = data.HitboxRadius * 2f;
+                coreMarker.transform.localScale = new Vector3(diameter / native.x, diameter / native.y, 1f);
+            }
 
             if (shadow != null)
             {

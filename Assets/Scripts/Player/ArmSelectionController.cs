@@ -17,7 +17,12 @@ namespace BulletHell.Player
         [SerializeField] private GameplayInputReader input;
         [SerializeField] private InputTuning tuning;
         [SerializeField] private PlayerData playerData;
+        [Tooltip("The elliptical arm ring around the feet (radii, front/back sorting, depth cue, spin).")]
+        [SerializeField] private ArmRingTuning ring;
+        [Tooltip("Rises with the body during a jump, so the ring does too. Optional.")]
+        [SerializeField] private JumpController jump;
         [SerializeField] private ArmVisual armPrefab;
+        [Tooltip("The ArmRing anchor at the feet (a child of the player root, not of the lifted Visuals).")]
         [SerializeField] private Transform armParent;
         [Tooltip("Provides the arm tint cosmetic. Optional.")]
         [SerializeField] private GladiatorCosmetics cosmetics;
@@ -25,6 +30,18 @@ namespace BulletHell.Player
         private readonly ArmVisual[] arms = new ArmVisual[ArmLoadout.SlotCount];
         private ArmSelector selector;
         private int shownArm = ArmSelector.None;
+        private float ringAngle;   // where the shown arm is on the ring; eases towards the aim angle (the "spin")
+
+        private ArmRingTuning Ring => ring != null ? ring : ArmRingTuning.Fallback;
+
+        /// <summary>
+        /// How far below a muzzle's world position the ground point is: the ring's lift above the feet plus the
+        /// jump height. Bullets and beams start on the ground plane at muzzle - GroundOffset.
+        /// </summary>
+        public float GroundOffset => armParent.position.y - transform.position.y + Ring.VerticalOffset;
+
+        /// <summary>The muzzle of an arm projected onto the ground plane: where its bullets really start.</summary>
+        public Vector2 GroundMuzzle(ArmVisual arm) => (Vector2)arm.Muzzle.position - Vector2.up * GroundOffset;
 
         public int SelectedArm => selector.Selected;
         /// <summary>Data of the selected arm, or null when nothing is selected.</summary>
@@ -117,7 +134,7 @@ namespace BulletHell.Player
                 arms[i].Setup(loadout[i]);
                 if (cosmetics != null)
                     arms[i].SetArtTint(cosmetics.ArmTint);
-                PlaceArm(i, ArmSelector.HomeAngle(i));
+                PlaceArm(i, ArmSelector.HomeAngle(i), ArmSelector.HomeAngle(i));
             }
         }
 
@@ -125,12 +142,30 @@ namespace BulletHell.Player
         {
             AimStick = input.Aim;
             int previous = selector.Selected;
-            if (!selector.Update(AimStick))
-                return;
+            if (selector.Update(AimStick))
+            {
+                RefreshVisuals();
+                if (selector.Selected != previous)
+                    SelectionChanged?.Invoke(selector.Selected);
+            }
 
-            RefreshVisuals();
-            if (selector.Selected != previous)
-                SelectionChanged?.Invoke(selector.Selected);
+            SpinRing(Time.deltaTime);
+        }
+
+        // The ring rises with the jump but is not squashed with the body, and the shadow stays on the ground.
+        private void LateUpdate()
+        {
+            float height = jump != null ? jump.Height : 0f;
+            armParent.localPosition = new Vector3(0f, height, 0f);
+        }
+
+        // The shown arm slides along the ellipse to the aim angle; its sprite already points along the true aim.
+        private void SpinRing(float dt)
+        {
+            if (shownArm == ArmSelector.None)
+                return;
+            ringAngle = ArmRingMath.MoveAngle(ringAngle, selector.AimAngle, Ring.SpinDegreesPerSecond, dt);
+            PlaceArm(shownArm, ringAngle, selector.AimAngle);
         }
 
         private void OnLockTogglePressed()
@@ -145,30 +180,40 @@ namespace BulletHell.Player
                 SelectionChanged?.Invoke(selector.Selected);
         }
 
-        /// <summary>Puts an arm's attach point on the ring around the player, pointing outward along a compass angle.</summary>
-        private void PlaceArm(int index, float compassDegrees)
+        /// <summary>
+        /// Puts an arm's attach point on the ellipse at ringDegrees (compass) and rotates it to fire along aimDegrees
+        /// (compass). Position and aim are separate: the ring only decides where the arm is drawn and where its
+        /// muzzle sits, never which way it shoots.
+        /// </summary>
+        private void PlaceArm(int index, float ringDegrees, float aimDegrees)
         {
-            float radians = compassDegrees * Mathf.Deg2Rad;
-            var arm = arms[index].transform;
-            arm.localPosition = new Vector3(Mathf.Sin(radians), Mathf.Cos(radians), 0f) * playerData.ArmRingRadius;
+            ArmVisual visual = arms[index];
+            Transform arm = visual.transform;
+            arm.localPosition = Ring.PositionAt(ringDegrees);
             // Arm space fires along +X; compass 0 (N) is +Y, increasing clockwise.
-            arm.localRotation = Quaternion.Euler(0f, 0f, 90f - compassDegrees);
+            arm.localRotation = Quaternion.Euler(0f, 0f, 90f - aimDegrees);
+            visual.SetDepth(ArmRingMath.IsBack(ringDegrees, Ring.BackDeadzone), ArmRingMath.Depth01(ringDegrees), Ring);
         }
 
         private void RefreshVisuals()
         {
             int selected = selector.Selected;
-            if (shownArm != ArmSelector.None && shownArm != selected)
+            int previous = shownArm;
+            if (previous != ArmSelector.None && previous != selected)
             {
-                PlaceArm(shownArm, ArmSelector.HomeAngle(shownArm));
-                arms[shownArm].SetState(ArmVisual.State.Hidden);
+                PlaceArm(previous, ArmSelector.HomeAngle(previous), ArmSelector.HomeAngle(previous));
+                arms[previous].SetState(ArmVisual.State.Hidden);
             }
 
             shownArm = selected;
             if (selected == ArmSelector.None)
                 return;
 
-            PlaceArm(selected, selector.AimAngle);
+            // A newly shown arm appears in place; switching straight from another arm (or a lock change) keeps
+            // the ring angle so the arm spins along the ellipse to its new spot.
+            if (previous == ArmSelector.None)
+                ringAngle = selector.AimAngle;
+            PlaceArm(selected, ringAngle, selector.AimAngle);
             arms[selected].SetState(selector.Locked ? ArmVisual.State.Locked : ArmVisual.State.Selected);
         }
     }

@@ -40,17 +40,53 @@ namespace BulletHell.Player
             SetState(State.Hidden);
         }
 
-        /// <summary>The arm tint cosmetic: multiplies the arm art's colours. White = art as drawn.</summary>
-        public void SetArtTint(Color tint) => art.color = tint;
+        private Color artTint = Color.white;
+        private State state = State.Hidden;
+        private float depthScale = 1f;
+        private float brightness = 1f;
 
-        public void SetState(State state)
+        /// <summary>The arm tint cosmetic: multiplies the arm art's colours. White = art as drawn.</summary>
+        public void SetArtTint(Color tint)
         {
+            artTint = tint;
+            ApplyArtColor();
+        }
+
+        public void SetState(State newState)
+        {
+            state = newState;
             art.enabled = state != State.Hidden;
             halo.enabled = state != State.Hidden;
             Color color = data != null ? data.IdColor : Color.white;
             color.a = state == State.Locked ? lockedHaloAlpha : selectedHaloAlpha;
             halo.color = color;
-            transform.localScale = Vector3.one * (state == State.Hidden ? 1f : selectedScale);
+            ApplyScale();
+        }
+
+        /// <summary>
+        /// Where this arm is on the ring: back-half arms sort behind the body, front-half arms in front, and the
+        /// optional depth cue shrinks and darkens arms towards the back of the ring (depth01: 0 back, 1 front).
+        /// </summary>
+        public void SetDepth(bool isBack, float depth01, ArmRingTuning ring)
+        {
+            art.sortingOrder = isBack ? ring.BackArtOrder : ring.FrontArtOrder;
+            halo.sortingOrder = isBack ? ring.BackHaloOrder : ring.FrontHaloOrder;
+            depthScale = ring.ScaleAt(depth01);
+            brightness = ring.BrightnessAt(depth01);
+            ApplyScale();
+            ApplyArtColor();
+        }
+
+        private void ApplyScale() =>
+            transform.localScale = Vector3.one * ((state == State.Hidden ? 1f : selectedScale) * depthScale);
+
+        private void ApplyArtColor()
+        {
+            Color color = artTint;
+            color.r *= brightness;
+            color.g *= brightness;
+            color.b *= brightness;
+            art.color = color;
         }
 
         private void ApplyData(WeaponArmData armData)

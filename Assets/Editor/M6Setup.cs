@@ -404,7 +404,7 @@ namespace BulletHell.EditorTools
             float height;
             Vector3 headgearPosition, capePosition, bodyScale;
             float headgearScale, capeScale;
-            float ringRadius = 0.45f;
+            float bodyCenterHeight = 0.38f;
             try
             {
                 var body = player.transform.Find("Body").GetComponent<SpriteRenderer>();
@@ -419,7 +419,7 @@ namespace BulletHell.EditorTools
                 capeScale = cape.localScale.x;
                 var data = AssetDatabase.LoadAssetAtPath<PlayerData>("Assets/Data/Player/PlayerData.asset");
                 if (data != null)
-                    ringRadius = data.ArmRingRadius;
+                    bodyCenterHeight = data.BodyCenterHeight;
             }
             finally
             {
@@ -448,14 +448,11 @@ namespace BulletHell.EditorTools
             for (int i = 0; i < armAssets.Length; i++)
             {
                 float compass = 45f + i * 90f;
-                float radians = compass * Mathf.Deg2Rad;
                 var armGo = new GameObject("Arm" + i);
                 armGo.transform.SetParent(root.transform, false);
-                armGo.transform.localPosition = new Vector3(Mathf.Sin(radians), Mathf.Cos(radians), 0f) * ringRadius;
-                armGo.transform.localRotation = Quaternion.Euler(0f, 0f, 90f - compass + armAssets[i].ArtRotation);
                 var renderer = armGo.AddComponent<SpriteRenderer>();
                 renderer.sprite = armAssets[i].Sprite;
-                renderer.sortingOrder = 1;
+                M77Setup.PlacePreviewArm(armGo.transform, renderer, compass, armAssets[i].ArtRotation, bodyCenterHeight);
                 armRenderers[i] = renderer;
             }
 
