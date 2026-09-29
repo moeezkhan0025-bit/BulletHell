@@ -25,6 +25,9 @@ Art rules (sizes, perspective, pivots, height classes, colors, naming): Docs/ART
   - Arms on the back half of the ellipse draw BEHIND the body; arms on the front half draw IN FRONT
     (sorted by their own ground Y, same rule as everything else).
   - Optional depth cue: back arms slightly smaller/darker, front arms slightly larger [tunable, subtle].
+  - Readability over realism: the ring radius must be wide enough that arms clear the body silhouette,
+    including the north (back) slot. When the selected/locked arm is hidden behind the body, draw an
+    occluded-outline silhouette of it through the body so it's always visible.
   - Soft select still uses the 8 slot directions; locked aim moves the arm smoothly around the ellipse
     to the stick angle (it slides along the ring rather than orbiting a circle) and the arm sprite
     points in the true aim direction. Optional short ring "spin" easing when switching slots [tunable].
@@ -171,7 +174,7 @@ PlayStation names below; Xbox = RB / RT / LS click / A B X Y, Switch = R / ZR / 
 - Arm loadout: an ArmLoadout asset holds 8 slots (N, NE, E, SE, S, SW, W, NW). Each slot is empty or
   references a WeaponArmData; the same arm type may be equipped in more than one slot.
   The player's arms are spawned from the loadout at runtime - no arm is hard-coded in the scene.
-  - StartingLoadout asset: ONE arm equipped (slot N by default). DebugLoadout asset: all 8 slots filled
+  - StartingLoadout asset: ONE arm equipped (slot E - to the player's right - by default). DebugLoadout asset: all 8 slots filled
     for testing. A field on the player (or a debug setting) chooses which loadout is used.
   - Equipping in-game happens in the Armory (M4); StartingLoadout defines a new run.
 - Arm instances: each filled loadout slot is a runtime ArmInstance = WeaponArmData + its armament slots.
@@ -300,13 +303,18 @@ PlayStation names below; Xbox = RB / RT / LS click / A B X Y, Switch = R / ZR / 
     Square toggles detailed stats. Mouse/touch works too.
 - Armory (after the Shop) - equip screen, two halves:
   - LEFT: the gladiator large, wearing its gear, with the 8 arm slots on the ellipse ring around the feet.
-    Selecting an arm slot shows that arm's armament slots (1-3, per arm) beneath it, plus its current stats.
+  - HOVERING ARMAMENT SLOTS: selecting an arm makes that arm's armament slots (1-3, per arm) pop up as
+    floating bubbles ABOVE the arm, fanned in a small arc, linked to it by a thin glowing tether, gently
+    bobbing. Empty bubble = "+" icon; filled bubble = armament icon with a rarity-colored rim; focused bubble
+    scales up with an outline. Arms with fewer slots show fewer bubbles. Bubbles tween in/out (pop + fade).
   - RIGHT: inventory panel with tabs: Arms / Armaments. Grid of item cards (same card style as the Shop).
     Items that can't go in the current selection are dimmed.
-  - Flow (controller): select a slot on the left, move to the right, pick an item, confirm to equip.
-    Before confirming, the left panel previews the result (stats before -> after, highlighted changes).
-    Swapping out an item returns it to inventory. Selecting an empty arm slot equips an arm from the Arms tab;
-    removing an arm returns it with its armaments attached.
+  - Flow (controller): left stick / d-pad cycles arms around the ring -> Cross selects an arm (bubbles appear)
+    -> left/right moves between bubbles -> Cross on a bubble jumps focus to the Armaments tab -> pick an
+    armament -> it flies into the bubble. Before confirming, the left panel previews stats before -> after.
+    Triangle on a filled bubble removes the armament back to inventory. Circle backs out one level
+    (bubble -> arm -> ring). Selecting an EMPTY arm slot jumps to the Arms tab to place an arm; removing an
+    arm returns it with its armaments attached. Mouse/touch: click an arm, click a bubble, click an item.
   - Shoulder buttons (L1/R1) switch tabs; Circle backs out one level; a "Fight!" button starts the round.
 - Bosses: multi-phase, each phase = list of attack patterns.
 
@@ -396,8 +404,9 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
       Homing, Auto-fire, Velocity, Pierce, Ricochet with documented interactions, generated descriptions.
 - [ ] M9b Shop screen: merchant + card layout, ShopPool/RarityTable random stock, crate (pick 1 of 3), reroll,
       scaling prices, tooltips with fit/comparison, buy animation + SOLD, controller-first navigation.
-- [ ] M9c Armory screen: gladiator + arm ring on the left, tabbed inventory grid on the right, slot -> item
-      equip flow with before/after preview, dimmed incompatible items, controller-first navigation.
+- [ ] M9c Armory screen: gladiator + arm ring on the left with hovering 1-3 armament bubbles above the selected
+      arm, tabbed inventory grid on the right, arm -> bubble -> item equip flow with before/after preview,
+      dimmed incompatible items, controller-first navigation.
 - [ ] M9d UI foundation + bug bash: shared UI components (card, tooltip, button, panel), consistent focus
       and navigation, screen transitions, UI sound hooks; work through Docs/BUGS.md.
 - [ ] M10 Bosses (round 3 first, then 5 and 7).

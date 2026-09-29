@@ -163,7 +163,9 @@ Armory:
 - [ ] [2] Armory background (e.g. a weapons tent or barracks)
 - [ ] [2] Gladiator pedestal
 - [ ] [2] Arm slot frame: empty / filled / selected
-- [ ] [2] Armament slot frame: empty / filled / locked (arms with fewer slots)
+- [ ] [2] Hovering armament slot BUBBLE (floats above the selected arm): empty (with "+"), filled
+  (holds an armament icon; rim tinted by rarity in code, so draw the rim white), focused (outline)
+- [ ] [2] Bubble tether: thin glowing line/strand linking bubble to arm (white, tinted in code)
 - [ ] [2] Inventory grid cell, stat up/down arrows (green/red), "Fight!" button
 
 Pause and Game Over:
