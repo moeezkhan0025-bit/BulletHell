@@ -27,6 +27,9 @@ namespace BulletHell.Input
 
         private void OnDestroy()
         {
+            if (input == null)
+                return; // destroyed before it ever woke up (a scene closed while this was inactive)
+
             input.Menu.Primary.performed -= OnPrimary;
             input.Dispose();
         }

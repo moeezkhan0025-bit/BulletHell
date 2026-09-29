@@ -233,7 +233,7 @@ Assets/
 - [x] M6 Front end: Main Menu (New Game/Continue/Settings/Quit), Settings screen + settings file,
       Gladiator customization screen with placeholder cosmetics + profile file, Round intro banner and
       countdown state. Skeleton UI, fully controller navigable.
-- [ ] M7 Arena: ArenaData, colosseum bounds, solid + breakable obstacles (block all bullets),
+- [x] M7 Arena: ArenaData, colosseum bounds, solid + breakable obstacles (block all bullets),
       3 starter traps (hurt player and enemies, telegraphed), one test arena layout.
 - [ ] M8 Enemy AI rework: flow-field navigation + separation, line of sight, Chaser / Skirmisher /
       Mobile Sentry, convert existing enemies, retune rounds 1-7 for the arena.

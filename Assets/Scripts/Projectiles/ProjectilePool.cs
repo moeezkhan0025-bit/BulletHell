@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BulletHell.Arena;
 using BulletHell.Player;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -15,6 +16,8 @@ namespace BulletHell.Projectiles
         [SerializeField] private Camera viewCamera;
         [Tooltip("The player: enemy bullets hurt only this.")]
         [SerializeField] private PlayerHealth playerTarget;
+        [Tooltip("The arena: enemy bullets are stopped by its obstacles and walls. Optional.")]
+        [SerializeField] private ArenaController arena;
         [Tooltip("Physics layers a projectile can hit.")]
         [SerializeField] private LayerMask hitMask;
         [SerializeField, Min(1)] private int prewarm = 128;
@@ -33,10 +36,14 @@ namespace BulletHell.Projectiles
         public Rect ViewBounds { get; private set; }
         public ContactFilter2D HitFilter => hitFilter;
         public PlayerHealth PlayerTarget => playerTarget;
+        public ArenaController Arena => arena;
+        /// <summary>Physics layer of arena obstacles (-1 if the layer does not exist). Ricochets never pick them as targets.</summary>
+        public int ObstacleLayer { get; private set; } = -1;
 
         private void Awake()
         {
             hitFilter = new ContactFilter2D { useLayerMask = true, layerMask = hitMask, useTriggers = true };
+            ObstacleLayer = LayerMask.NameToLayer("Obstacle");
             RefreshBounds();
 
             pool = new ObjectPool<Projectile>(Create, OnGet, OnRelease, OnDestroyItem, true, prewarm, maxSize);

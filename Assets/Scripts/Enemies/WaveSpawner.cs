@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BulletHell.Arena;
 using BulletHell.Core;
 using BulletHell.Pickups;
 using BulletHell.Player;
@@ -25,6 +26,8 @@ namespace BulletHell.Enemies
         [SerializeField] private PlayerHealth player;
         [SerializeField] private WaveBanner banner;
         [SerializeField] private Camera viewCamera;
+        [Tooltip("The arena: spawn gates, obstacle-free spawn spots, and its bounds. Optional (falls back to the camera view).")]
+        [SerializeField] private ArenaController arena;
 
         private readonly SpawnScheduler scheduler = new SpawnScheduler();
         private readonly List<SpawnRequest> due = new List<SpawnRequest>();
@@ -37,6 +40,7 @@ namespace BulletHell.Enemies
         private int roundNumber;
         private int waveIndex;
         private float breatherLeft;
+        private int gateCounter;
 
         /// <summary>1-based number of the wave being played (0 between rounds).</summary>
         public int WaveNumber => phase == Phase.Idle ? 0 : waveIndex + 1;
@@ -75,6 +79,7 @@ namespace BulletHell.Enemies
         private void OnRoundStarted(int number)
         {
             roundNumber = number;
+            gateCounter = 0;
 
             round = services.Config.GetRound(number);
             difficulty = services.Config.Difficulty != null ? services.Config.Difficulty.Evaluate(number) : new RoundDifficulty(1f, 1f, 1f, 1f);
@@ -140,10 +145,18 @@ namespace BulletHell.Enemies
 
         private void Spawn(in SpawnRequest request)
         {
-            Vector2 position = SpawnPlacement.Position(request.Pattern, request.Index, request.Count, Arena(), player.Position,
-                                                       tuning.MinSpawnDistanceFromPlayer, tuning.RingRadius, tuning.RowWidthFraction);
+            bool inArena = arena != null && arena.IsBuilt;
+            Vector2 position;
+            if (request.Pattern == SpawnPattern.Gates && inArena && arena.Gates.Count > 0)
+                position = SpawnPlacement.GatePosition(gateCounter++, arena.Gates, tuning.GateJitter);
+            else
+                position = SpawnPlacement.Position(request.Pattern, request.Index, request.Count, SpawnRect(), player.Position,
+                                                   tuning.MinSpawnDistanceFromPlayer, tuning.RingRadius, tuning.RowWidthFraction);
+            if (inArena)
+                position = arena.Grid.NearestFree(position, request.Enemy.Size * 0.5f);   // never inside an obstacle or wall
+
             Enemy enemy = enemyPool.Get();
-            enemy.Initialize(request.Enemy, position, difficulty, projectiles, player);
+            enemy.Initialize(request.Enemy, position, difficulty, projectiles, player, inArena ? arena : null);
             enemy.Defeated += OnEnemyDefeated;
             alive.Add(enemy);
         }
@@ -166,9 +179,16 @@ namespace BulletHell.Enemies
             alive.Clear();
         }
 
-        /// <summary>The playable rectangle, inset from the screen edges.</summary>
-        private Rect Arena()
+        /// <summary>The rectangle spawn patterns place enemies in: the arena's bounds (or, without one, the camera view), inset from the edges.</summary>
+        private Rect SpawnRect()
         {
+            if (arena != null && arena.IsBuilt)
+            {
+                Rect bounds = arena.Bounds;
+                float inset = tuning.SpawnEdgeMargin * 0.5f;
+                return new Rect(bounds.xMin + inset, bounds.yMin + inset, bounds.width - 2f * inset, bounds.height - 2f * inset);
+            }
+
             float halfHeight = viewCamera.orthographicSize - tuning.SpawnEdgeMargin;
             float halfWidth = viewCamera.orthographicSize * viewCamera.aspect - tuning.SpawnEdgeMargin;
             Vector2 center = viewCamera.transform.position;

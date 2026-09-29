@@ -12,6 +12,8 @@ namespace BulletHell.Enemies
         Row,
         /// <summary>Evenly spaced on a circle around the arena centre.</summary>
         Ring,
+        /// <summary>Out of the arena's spawn gates, one gate after another (falls back to Scatter with no arena).</summary>
+        Gates,
     }
 
     /// <summary>A batch of one enemy type inside a wave: how many, where, and how fast they arrive.</summary>

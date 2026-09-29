@@ -1,4 +1,5 @@
 using System;
+using BulletHell.Arena;
 using BulletHell.Core;
 using BulletHell.Player;
 using BulletHell.Projectiles;
@@ -46,7 +47,7 @@ namespace BulletHell.Enemies
 
         /// <summary>Makes this enemy a fresh, alive enemy of the given type at a position, scaled by the round's difficulty.</summary>
         public void Initialize(EnemyData enemyData, Vector2 position, in RoundDifficulty difficulty,
-                               ProjectilePool pool, PlayerHealth player)
+                               ProjectilePool pool, PlayerHealth player, ArenaController arena = null)
         {
             data = enemyData;
             transform.position = position;
@@ -56,7 +57,7 @@ namespace BulletHell.Enemies
             health.Initialize(data.MaxHealth * difficulty.HealthMultiplier);
             hitFlash.Configure(data.Color, data.HitFlashDuration);
             healthBar.Layout(Mathf.Max(0.6f, data.Size), data.Size * 0.5f + 0.25f);
-            patrol.Configure(position, data.MoveSpeed, data.MoveRange, data.MoveAxis);
+            patrol.Configure(position, data.MoveSpeed, data.MoveRange, data.MoveAxis, arena, data.Size * 0.5f);
             if (status != null)
                 status.Clear();
             SetAlive(true);

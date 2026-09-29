@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BulletHell.Arena;
 using BulletHell.Core;
 using BulletHell.Player;
 using BulletHell.Weapons;
@@ -120,6 +121,15 @@ namespace BulletHell.Projectiles
             Vector2 start = transform.position;
             Vector2 end = start + velocity * dt;
 
+            // Obstacles and walls stop every bullet; a breakable takes the hit.
+            ArenaController arena = pool.Arena;
+            if (arena != null && arena.SegmentBlocked(start, end, radius, out int owner))
+            {
+                arena.DamageObstacle(owner, damage);
+                ReleaseToPool();
+                return;
+            }
+
             PlayerHealth target = pool.PlayerTarget;
             if (target != null && target.CanBeHit)
             {
@@ -188,7 +198,8 @@ namespace BulletHell.Projectiles
             for (int i = 0; i < count; i++)
             {
                 Collider2D candidate = BounceBuffer[i];
-                if (WasHit(candidate) || !candidate.TryGetComponent(out IDamageable damageable) || !damageable.IsAlive)
+                if (WasHit(candidate) || candidate.gameObject.layer == pool.ObstacleLayer ||
+                    !candidate.TryGetComponent(out IDamageable damageable) || !damageable.IsAlive)
                     continue;
                 Vector2 toCandidate = (Vector2)candidate.bounds.center - origin;
                 float sqr = toCandidate.sqrMagnitude;

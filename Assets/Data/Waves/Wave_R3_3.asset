@@ -15,7 +15,7 @@ MonoBehaviour:
   groups:
   - Enemy: {fileID: 11400000, guid: e8d3a8b13da0b204f8c2d4b05dba665a, type: 2}
     Count: 1
-    Pattern: 1
+    Pattern: 3
     Delay: 0
     Interval: 0
   - Enemy: {fileID: 11400000, guid: 806b7881e9efdd342b59393f3f42ce26, type: 2}

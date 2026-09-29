@@ -87,6 +87,9 @@ namespace BulletHell.Input
 
         private void OnDestroy()
         {
+            if (input == null)
+                return; // destroyed before it ever woke up (a scene closed while this was inactive)
+
             lockToggleAction.performed -= OnLockToggle;
             input.Gameplay.Pause.performed -= OnPause;
             for (int i = 0; i < AmmoButtonCount; i++)

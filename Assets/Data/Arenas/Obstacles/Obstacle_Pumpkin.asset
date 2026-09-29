@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b932788560b8cac49b5db23ff90fa7da, type: 3}
+  m_Name: Obstacle_Pumpkin
+  m_EditorClassIdentifier: BulletHell::BulletHell.Arena.ObstacleData
+  kind: 1
+  shape: 1
+  size: {x: 1, y: 1}
+  sprite: {fileID: 0}
+  color: {r: 0.95, g: 0.5, b: 0.1, a: 1}
+  maxHealth: 40
+  stageTints:
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 0.85, g: 0.75, b: 0.7, a: 1}
+  - {r: 0.65, g: 0.5, b: 0.45, a: 1}
+  debrisColor: {r: 0.35, g: 0.3, b: 0.25, a: 0.8}
+  debrisScale: 0.6

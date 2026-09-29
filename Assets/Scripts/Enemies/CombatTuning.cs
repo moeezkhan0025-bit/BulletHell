@@ -20,6 +20,9 @@ namespace BulletHell.Enemies
         [Tooltip("How long the 'Wave X/Y' message stays on screen.")]
         [SerializeField, Min(0.2f)] private float bannerSeconds = 1.8f;
 
+        [Tooltip("Enemies coming out of a spawn gate are nudged by up to this much, so they do not stack exactly.")]
+        [SerializeField, Min(0f)] private float gateJitter = 0.3f;
+
         [Header("Round intro")]
         [Tooltip("How long the \"Round N\" / boss banner is shown before the countdown.")]
         [SerializeField, Min(0.2f)] private float introBannerSeconds = 1.6f;
@@ -38,6 +41,7 @@ namespace BulletHell.Enemies
         public float RingRadius => ringRadius;
         public float RowWidthFraction => rowWidthFraction;
         public float BannerSeconds => bannerSeconds;
+        public float GateJitter => gateJitter;
         public float IntroBannerSeconds => introBannerSeconds;
         public int CountdownSteps => countdownSteps;
         public float CountdownStepSeconds => countdownStepSeconds;

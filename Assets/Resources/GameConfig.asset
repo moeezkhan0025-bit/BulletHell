@@ -37,3 +37,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d6e163190d873484c89fe0dc60e265a5, type: 2}
   endlessLoopStartRound: 4
   difficulty: {fileID: 11400000, guid: 296fa2f0357a6c846a28bec910ee6e86, type: 2}
+  defaultArena: {fileID: 11400000, guid: 2bada0b4c7a7f674cbbfc9561e526544, type: 2}

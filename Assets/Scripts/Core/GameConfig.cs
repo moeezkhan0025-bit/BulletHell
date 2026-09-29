@@ -1,3 +1,4 @@
+using BulletHell.Arena;
 using BulletHell.Enemies;
 using BulletHell.Save;
 using BulletHell.Settings;
@@ -46,9 +47,19 @@ namespace BulletHell.Core
         [Tooltip("After the last authored round, play continues by repeating the authored rounds from this one (1-based) to the end.")]
         [SerializeField, Min(1)] private int endlessLoopStartRound = 4;
         [SerializeField] private DifficultyCurve difficulty;
+        [Tooltip("The arena for rounds that don't name one.")]
+        [SerializeField] private ArenaData defaultArena;
 
         public AssetRegistry Registry => registry;
         public DifficultyCurve Difficulty => difficulty;
+        public ArenaData DefaultArena => defaultArena;
+
+        /// <summary>The arena a round is fought in: the round's own, else the default. Null only if neither is set.</summary>
+        public ArenaData GetArena(int round)
+        {
+            RoundData data = GetRound(round);
+            return data != null && data.Arena != null ? data.Arena : defaultArena;
+        }
         public int StartingCurrency => startingCurrency;
         public ShopPool ShopPool => shopPool;
         public string SaveFileName => saveFileName;
@@ -83,6 +94,8 @@ namespace BulletHell.Core
             rounds = newRounds;
             endlessLoopStartRound = loopStartRound;
         }
+
+        public void SetDefaultArena(ArenaData arena) => defaultArena = arena;
 #endif
     }
 }

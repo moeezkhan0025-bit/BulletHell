@@ -19,6 +19,13 @@ namespace BulletHell.Enemies
             }
         }
 
+        /// <summary>The gate for the nth spawn (round-robin), nudged by up to jitter so enemies don't stack exactly.</summary>
+        public static Vector2 GatePosition(int counter, System.Collections.Generic.IReadOnlyList<Vector2> gates, float jitter)
+        {
+            Vector2 gate = gates[((counter % gates.Count) + gates.Count) % gates.Count];
+            return jitter > 0f ? gate + Random.insideUnitCircle * jitter : gate;
+        }
+
         private static Vector2 Row(int index, int count, Rect arena, float widthFraction)
         {
             float t = count <= 1 ? 0.5f : index / (count - 1f);
