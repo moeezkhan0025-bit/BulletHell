@@ -8,6 +8,7 @@ Project root: C:\Dev\BulletHell. Version control: Git (GitHub private repo), she
 
 ## Visual style and perspective
 Reference: Docs/Reference/concept_arena.png (target look - not a game asset).
+Art rules (sizes, perspective, pivots, height classes, colors, naming): Docs/ART_SPEC.md. Follow it when hooking up art.
 - 3/4 top-down (oblique) view: art is drawn at an angle, but GAMEPLAY STAYS ON THE FLAT 2D XY PLANE.
   No 3D, no height physics. Movement speed is the same in all directions.
 - Depth sorting: URP 2D Renderer Transparency Sort Mode = Custom Axis (0,1,0) - lower on screen draws in front.
@@ -19,7 +20,8 @@ Reference: Docs/Reference/concept_arena.png (target look - not a game asset).
   the movement footprint.
 - Arm ring (3/4 look): the 8 arm slots sit on a flattened ELLIPSE around the player's FEET (ground level),
   like a ring spinning around the base - not a flat clock face around the body center.
-  - Ellipse radii X/Y (default Y = ~0.5 x X) and a small vertical offset live in an ArmRingTuning asset.
+  - Ellipse radii X/Y (Y = X x the floor ratio F from ART_SPEC, default 0.6) and a small vertical offset
+    live in an ArmRingTuning asset.
   - Arms on the back half of the ellipse draw BEHIND the body; arms on the front half draw IN FRONT
     (sorted by their own ground Y, same rule as everything else).
   - Optional depth cue: back arms slightly smaller/darker, front arms slightly larger [tunable, subtle].
@@ -151,17 +153,32 @@ PlayStation names below; Xbox = RB / RT / LS click / A B X Y, Switch = R / ZR / 
   - StartingLoadout asset: ONE arm equipped (slot N by default). DebugLoadout asset: all 8 slots filled
     for testing. A field on the player (or a debug setting) chooses which loadout is used.
   - Equipping in-game happens in the Armory (M4); StartingLoadout defines a new run.
-- Arm instances: each filled loadout slot is a runtime ArmInstance = WeaponArmData + 3 armament slots.
+- Arm instances: each filled loadout slot is a runtime ArmInstance = WeaponArmData + its armament slots.
+  The NUMBER of armament slots depends on the arm (WeaponArmData.armamentSlots, 1-3; rarer arms get more).
   Armaments belong to the instance (two slots holding the same arm type can be kitted differently).
   Never modify ScriptableObject assets at runtime; all run state lives on instances.
 - Arm stats = damage, fire rate, projectile speed, projectiles per shot, spread (base values on WeaponArmData).
-- Armaments (arm upgrades): ArmamentData assets, each a list of stat modifiers (flat add or percent
-  multiply). Final stat = base, then all flat adds, then all percent multipliers (order documented in code).
-  3 armament slots per arm instance. Armaments are bought in the Shop into the armament inventory and
-  equipped in the Armory. Unequipping returns the armament to the inventory.
-- Arm effects: WeaponArmData can carry special effects beyond stats (e.g. pierce, burn, ricochet).
-  Built as a small effect interface so new effects are new classes/assets, not edits to firing code.
-  Start with 1-2 test effects.
+- Armaments: ArmamentData assets = name, icon, rarity (Common / Rare / Epic / Legendary), price tier,
+  tags (e.g. Speed, Homing, Pierce, Bounce, Auto), max stacks, and a list of EFFECTS:
+  - Stat modifiers (flat add or percent multiply). Final stat = base, then flat adds, then percent
+    multipliers (order documented in code).
+  - Behavior modifiers: small classes implementing a projectile/arm modifier interface, so new armaments
+    are new assets/classes, never edits to the firing code.
+  Descriptions and tooltips are generated from the effect data ("+25% bullet speed") so they never go stale.
+  Bought in the Shop into the armament inventory, equipped in the Armory. Unequipping returns them.
+- Starter armament catalog (more added as development goes on):
+  - Homing (auto-tracking): bullets steer toward the nearest enemy inside a forward cone; stacks raise
+    turn rate and cone size.
+  - Auto-fire: this arm also fires on its own at enemies inside its slot's arc when it is NOT selected,
+    at [DEFAULT 50%] fire rate. Heat still applies. When selected it fires normally.
+  - Velocity: +X% bullet speed.
+  - Pierce: bullets pass through +1 enemy per stack before despawning.
+  - Ricochet: bullets bounce off walls and obstacles up to 3 times before despawning (+1 per extra stack);
+    hitting an enemy still ends the bullet unless it has Pierce left.
+  - Interaction rules, fixed and documented: Pierce is used up before a bullet stops; Ricochet counts only
+    wall/obstacle bounces; Homing re-targets after each bounce or pierce.
+- Arm effects: WeaponArmData can carry built-in effects too (same interface as armament behaviors),
+  e.g. burn, pierce. Start with the existing test effects.
 - Ammo types: AmmoTypeData assets. Starter set: Basic, Shotgun (multiple pellets + spread),
   Laser (continuous beam, heat), Gatling (spin-up, heat). Later: Tracking, Automatic, more.
   Ammo type defines projectile behavior; the arm's (armament-modified) stats scale it.
@@ -190,9 +207,12 @@ PlayStation names below; Xbox = RB / RT / LS click / A B X Y, Switch = R / ZR / 
     [DEFAULT: air control 100%, tunable]. Firing and aiming work while airborne.
   - While airborne the player PASSES OVER: enemy bodies (no blocking, no contact damage), charger dashes,
     ground traps and hazard zones, pickups (collected on landing only if still overlapping).
-  - While airborne the player is STILL HIT BY: enemy bullets [DEFAULT - toggle jumpDodgesBullets = false,
-    keeps it a bullet hell], and still blocked by obstacles and arena walls (can't hop pillars or crates).
-    [TBD: a "low obstacle" flag for things that can be hopped]
+  - While airborne the player also PASSES OVER Low-class obstacles (low walls, low crates) - see Obstacles.
+  - While airborne the player is STILL HIT BY enemy bullets [DEFAULT - toggle jumpDodgesBullets = false,
+    keeps it a bullet hell], and is still blocked by Tall obstacles and the arena boundary walls.
+  - The jump apex must visibly clear Low obstacles (body lift >= 0.7 P, see ART_SPEC).
+  - Takeoff next to a Low obstacle that the player can't fully clear before landing: the landing push-out
+    moves them to the nearer free side.
   - Sorting: while airborne the player draws above enemies and ground objects near it, but still below
     the foreground layer. Sorting uses the ground (shadow) position, never the lifted sprite.
   - Landing on an enemy or inside an obstacle footprint: the player is pushed to the nearest free spot.
@@ -201,10 +221,15 @@ PlayStation names below; Xbox = RB / RT / LS click / A B X Y, Switch = R / ZR / 
     Enemy AI treats the shadow position as the player's position.
 - Arena: the vegetable colosseum. ArenaData defines bounds (walls), player spawn, enemy spawn gates,
   and placed obstacles/traps. Rounds can reference different ArenaData layouts. Placeholder art for now.
-- Obstacles (both block movement AND all bullets, player's and enemies'):
-  - Solid: permanent, indestructible (e.g. stone/giant veggie pillars).
-  - Breakable: has HP, takes damage from any bullets, shows damage stages, breaks into non-blocking debris
-    (e.g. cabbage crates, pumpkins). Breaking one updates enemy navigation.
+- Obstacles block ground movement AND all bullets (player's and enemies'). Each has a HEIGHT CLASS
+  (see ART_SPEC section 3) and is Solid or Breakable:
+  - Low (<= 0.5 P): low walls, crate rows, fences. The player can JUMP over them; they still block
+    bullets, so they work as cover. Enemies path around them (a jumping enemy type may come later).
+  - Tall (>= 1.5 P): pillars, statues, big pumpkins. Never jumpable. When a character is behind one
+    (sprite overlap + higher on screen), the obstacle fades to ~40% alpha so nothing is hidden.
+  - Solid = permanent. Breakable = HP, takes damage from any bullets, damage stages, breaks into flat
+    non-blocking debris; breaking updates enemy navigation.
+  - Arena boundary walls: never jumpable, block everything.
 - Traps: TrapData = shape/area, damage, telegraph time, active time, cooldown. Traps hurt ANYTHING inside
   them - the player and enemies - so luring enemies into traps is a valid tactic. Always telegraphed
   (visual warning before activating). Starter traps: periodic floor vent (area burst), a spike/skewer line,
@@ -226,27 +251,48 @@ PlayStation names below; Xbox = RB / RT / LS click / A B X Y, Switch = R / ZR / 
   RoundData = ordered list of waves. A round ends when its last wave is fully cleared.
   Authored RoundData for rounds 1-7; beyond the authored rounds, reuse the last ones with scaling.
   Boss rounds (3, 5, 7) use a tougher placeholder wave until bosses are built.
+- Arena progression: each RoundData picks an arena LAYOUT (ArenaLayoutData: obstacle and trap placements
+  on the same colosseum). Hazards ramp up over the run:
+  - Round 1: NO traps or hazard zones. A few obstacles for cover only.
+  - Each later round adds complexity via a HazardBudget on RoundData (trap count and types, Low walls,
+    breakables, Tall obstacles), introducing one new hazard type at a time.
+  - Boss rounds use their own layouts (usually more open, a few hazards the boss can use).
+  - Layouts must always leave a clear spawn area around the player and clear lanes from the enemy gates.
+  - Beyond authored rounds, layouts are reused with the difficulty scaling.
   Short breather (~2s, tunable) between waves with a "Wave X/Y" message.
 - Difficulty: DifficultyCurve asset scales enemy HP, enemy fire rate, enemy bullet speed and spawn count by
   round number (AnimationCurves or per-round multipliers).
 - Currency: enemies drop coins worth their currency value. Coins are attracted to the player within a
   magnet radius. At round end any remaining coins fly to the player automatically. Currency banks into
   the run state and shows on Round Results.
-- Shop (after each round): offers a few random items from pools - new arms (with effects) and armaments
-  (and later ammo types). Buying adds the item to the arm or armament inventory. Prices scale per round.
-  Skeleton first: fixed test stock, plain list UI, controller navigable.
-- Armory (after the Shop): shows the player with its 8 arm slots.
-  - Select an arm -> a panel shows its 3 armament slots -> pick a slot -> choose an armament from the
-    inventory (or remove the current one).
-  - Selecting an EMPTY arm slot lets the player place an arm from the arm inventory there.
-    Removing an arm from a slot returns it (with its armaments still attached) to the arm inventory.
-  - "Continue" starts the next round. Skeleton UI first; visual polish later.
+- Shop (after each round) - a proper shop screen, in the spirit of Balatro / Slay the Spire:
+  - Layout: a merchant NPC (e.g. a fig or olive Roman "mercator") and a stall/table. Items are CARDS laid out
+    in rows: top row = arms (2), bottom row = armaments (3), plus one "crate" (open to pick 1 of 3 armaments).
+    Currency top-right. Reroll button (price rises each reroll this visit). Leave button.
+  - Cards show icon, name, rarity frame color, price tag. The focused card lifts and shows a tooltip: full
+    effect text, tags, stacks, and a comparison ("fits: Red arm (1 free slot)", stat before -> after).
+  - Buying: the card animates into the inventory, its spot shows SOLD. Can't afford = price shown in red.
+  - Stock: random from ShopPool assets weighted by rarity and round; better rarities more likely later.
+    Prices scale with rarity and round. Stock doesn't refill except by reroll.
+  - Optional services later: sell an armament, remove/upgrade.
+  - Controller-first: stick/d-pad moves focus between cards, Cross buys, Triangle rerolls, Circle leaves,
+    Square toggles detailed stats. Mouse/touch works too.
+- Armory (after the Shop) - equip screen, two halves:
+  - LEFT: the gladiator large, wearing its gear, with the 8 arm slots on the ellipse ring around the feet.
+    Selecting an arm slot shows that arm's armament slots (1-3, per arm) beneath it, plus its current stats.
+  - RIGHT: inventory panel with tabs: Arms / Armaments. Grid of item cards (same card style as the Shop).
+    Items that can't go in the current selection are dimmed.
+  - Flow (controller): select a slot on the left, move to the right, pick an item, confirm to equip.
+    Before confirming, the left panel previews the result (stats before -> after, highlighted changes).
+    Swapping out an item returns it to inventory. Selecting an empty arm slot equips an arm from the Arms tab;
+    removing an arm returns it with its armaments attached.
+  - Shoulder buttons (L1/R1) switch tabs; Circle backs out one level; a "Fight!" button starts the round.
 - Bosses: multi-phase, each phase = list of attack patterns.
 
 ## Architecture rules (follow these strictly)
 - All tunable data lives in ScriptableObjects: WeaponArmData, AmmoTypeData, ArmamentData,
   EnemyData, WaveData, RoundData, BossData, DifficultyCurve, InputTuning, JumpTuning, ArmRingTuning, ArmLoadout, PickupTuning,
-  ShopPool, AssetRegistry, BulletPatternData, PlayerData, ArenaData, TrapData, CosmeticData, SettingsDefaults.
+  ShopPool, RarityTable, AssetRegistry, BulletPatternData, PlayerData, ArenaData, ArenaLayoutData, TrapData, CosmeticData, SettingsDefaults.
   No gameplay numbers hard-coded in MonoBehaviours.
 - ALL projectiles (player and enemy) use object pooling (UnityEngine.Pool.ObjectPool<T>).
   Never Instantiate/Destroy bullets during gameplay.
@@ -276,6 +322,9 @@ Docs/Reference/ (concept art and references, OUTSIDE Assets so Unity doesn't imp
 - Never touch Library/, Temp/, Logs/ or UserSettings/.
 - When testing in Play mode, back up run_save.json, settings.json and profile.json first and restore them
   afterwards. Delete test screenshots/artifacts when done. Use guarded paths in rm commands (${VAR:?}).
+- Bugs live in Docs/BUGS.md. Fix one bug at a time: reproduce it, fix it, verify, then mark it fixed there
+  with a one-line note of the cause. If you notice a new bug while working, add it to the list; don't fix
+  unrelated bugs silently.
 - If a request conflicts with these rules, say so instead of silently breaking them.
 
 ## Milestones
@@ -307,13 +356,24 @@ Docs/Reference/ (concept art and references, OUTSIDE Assets so Unity doesn't imp
       layered placeholder arena (floor/back wall/foreground), combat HUD (portrait, 5 hearts, heat bar, 4 ammo slots with glyphs).
 - [x] M7.6 Jump: R2 jump with fake height (arc, shadow, squash/stretch, dust), pass over enemies/contact damage/
       ground traps, still hit by bullets and blocked by obstacles, airborne sorting, landing push-out.
-- [x] M7.7 Arm ring: arms on a flattened ellipse around the feet, front/back sorting around the body,
+- [ ] M7.7 Arm ring: arms on a flattened ellipse around the feet, front/back sorting around the body,
       locked aim slides along the ellipse, muzzles/bullet spawn consistent, bullet height + damage-core
       position consistent with ground-plane collision, ArmRingTuning.
 - [x] M8 Enemy AI rework: flow-field navigation + separation, line of sight, Chaser / Skirmisher /
       Mobile Sentry, convert existing enemies, retune rounds 1-7 for the arena. Enemies account for the
       player's jump (chasers keep tracking the shadow; chargers can be jumped).
-- [ ] M9 Shop pools and pricing (random stock, scaling prices), more arms/armaments/effects.
+- [ ] M8.5 Arena progression + height classes: Low/Tall obstacle classes, jumping over Low obstacles,
+      Tall-obstacle fade when something is behind it, ArenaLayoutData per round with HazardBudget
+      (round 1 has no traps/hazards, ramping up after), clear spawn areas and lanes, retune rounds 1-7.
+- [ ] Art scale test (Docs/ART_SPEC.md section 9), then vertical slice art for one arena.
+- [ ] M9a Armament behaviors: effect interface, variable armament slots per arm, rarity/tags/stacks,
+      Homing, Auto-fire, Velocity, Pierce, Ricochet with documented interactions, generated descriptions.
+- [ ] M9b Shop screen: merchant + card layout, ShopPool/RarityTable random stock, crate (pick 1 of 3), reroll,
+      scaling prices, tooltips with fit/comparison, buy animation + SOLD, controller-first navigation.
+- [ ] M9c Armory screen: gladiator + arm ring on the left, tabbed inventory grid on the right, slot -> item
+      equip flow with before/after preview, dimmed incompatible items, controller-first navigation.
+- [ ] M9d UI foundation + bug bash: shared UI components (card, tooltip, button, panel), consistent focus
+      and navigation, screen transitions, UI sound hooks; work through Docs/BUGS.md.
 - [ ] M10 Bosses (round 3 first, then 5 and 7).
 - [ ] M11 Themed UI/visual pass: candy-colosseum style for menus, HUD, Shop, Armory, customization; final art.
 - [ ] M12 Polish: touch controls (incl. jump button), button glyphs, juice, announcer/audio, performance pass.
