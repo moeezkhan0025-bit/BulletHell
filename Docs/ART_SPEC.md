@@ -3,7 +3,7 @@
 Everything drawn for the game follows this sheet so it fits on the first try.
 Values marked (start) are starting points: confirm them in the scale test (section 9), then lock them.
 Keep this file at `Docs/ART_SPEC.md`. Claude reads it when hooking up art.
-Templates: `procreate_templates_4x.zip` (4x masters). The older 2x pack is retired.
+Templates: `procreate_templates_4x_P660.zip` (4x masters, P = 660). Older packs are retired.
 
 ---
 
@@ -18,16 +18,19 @@ Templates: `procreate_templates_4x.zip` (4x masters). The older 2x pack is retir
 | Draw at | 2x final size, export at 2x | 1x, never scale in the art program |
 | Unity filter | Bilinear, compression High Quality | Point (no filter), no compression |
 
-Chosen style: **A (painted HD)**. Player height in game: **110 px at 1920x1080**.
+Chosen style: **A (painted HD)**. **Character scale locked at 1.5x after the scale test:**
+player body height in game: **165 px at 1920x1080**. The arena keeps its original scale.
 
 **Resolution pipeline (Option A):**
 | | Scale | P (player height) | Arena / screen | Used for |
 |---|---|---|---|---|
-| Master (you draw here) | 4x | **440 px** | 7680 x 4320 | Procreate source art, kept in `ArtSource/` |
-| Game export | 2x | 220 px | 3840 x 2160 | PNGs in `Assets/Art/` (made from masters by a script) |
-| On screen at 1080p | 1x | 110 px | 1920 x 1080 | What players see; 4K screens show the 2x detail |
+| Master (you draw here) | 4x | **660 px** | 7680 x 4320 | Procreate source art, kept in `ArtSource/` |
+| Game export | 2x | 330 px | 3840 x 2160 | PNGs in `Assets/Art/` (made from masters by a script) |
+| On screen at 1080p | 1x | 165 px | 1920 x 1080 | What players see; 4K screens show the 2x detail |
 
-Use the 4x template pack (`procreate_templates_4x.zip`) for masters. Export PNGs at master size into
+Use the **P660 template pack (`procreate_templates_4x_P660.zip`)** for masters. Older packs are retired.
+Character art already drawn at P = 440 still works (the game scales it via import settings), but redraw
+final versions at P = 660 so they stay sharp on 4K screens. Export PNGs at master size into
 `ArtSource/<same folders as Assets/Art>`; Claude's `Tools/export_art` script downscales them by 50% into
 `Assets/Art/`. Never paint directly at 2x once masters exist.
 
@@ -176,6 +179,26 @@ diamond shapes with a bright core and dark outline, 2-3 frame pulse.
 ammo icons (one per ammo type), face-button glyph sets (PlayStation / Xbox / Nintendo / touch), portrait frame.
 
 ---
+
+## 6b. Modular player (Character Creation parts)
+
+The player is a paper doll of swappable parts, all drawn on **the same `tpl_character_1536` canvas** and in
+the same pose, so they stack perfectly with no offsets:
+
+| Part | Layer order (back to front) | Notes |
+|---|---|---|
+| Body | 1 | The base body. Every other part must fit over every body variant. |
+| Armor / body kit | 2 | Worn over the body; keep within the body's silhouette plus a little bulk. |
+| Head | 3 | Neck joins the body at the same spot on every variant. |
+| Accessory 1 | 4 | Head area (hats, horns, crests). Stay under the 1.3P line. |
+| Accessory 2 | 5 (or behind the body for capes) | Back/torso (capes, banners, badges). |
+
+- Make one "mannequin" canvas: the base body + a plain head. Draw every new part on its own layer over it,
+  hide the mannequin, and export each part as its own PNG (full 1536 canvas, transparency around it).
+- Names: `player_<part>_<variant>_<facing>.png`, e.g. `player_head_gummy_side.png`, `player_acc1_crown_side.png`.
+- Keep the **neck and shoulder joins identical** across variants so any head fits any body.
+- For the portrait, the same head + accessory 1 are reused, so no separate portrait drawings are needed.
+- Start with the side facing only; add down/up later.
 
 ## 7. Color and readability rules
 

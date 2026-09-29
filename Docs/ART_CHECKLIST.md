@@ -1,7 +1,7 @@
 # Art Checklist: Vertical Slice (Rounds 1-3 + Broccoli Emperor)
 
 Goal: everything needed so one full run from the Main Menu through the round 3 boss uses final art.
-Sizes use P = player body height (**440 px on 4x master canvases**). Templates: `procreate_templates_4x.zip`.
+Sizes use P = player body height (**660 px on 4x master canvases**, 1.5x character scale). Templates: `procreate_templates_4x_P660.zip`.
 Animation is HYBRID: draw key poses only; code does breathing, bobbing, squash, hit flash, windup tremble and deaths.
 Priority: **[1]** scale test / blocks gameplay feel, **[2]** vertical slice core, **[3]** slice polish.
 Tip marked "free" = fine to use a CC0/licensed pack instead of drawing it yourself.
@@ -12,24 +12,24 @@ Tip marked "free" = fine to use a CC0/licensed pack instead of drawing it yourse
 
 - [x] Player body (base look)
 - [x] Arms x4 (red, blue, green, yellow), pointing right, attach point on the pivot
-- [ ] [2] Player poses, facings down / side / up (template: character 1024):
+- [ ] [2] Player poses, facings down / side / up (template: character 1536):
   - [ ] idle (1)  - [ ] run cycle (4)  - [ ] jump takeoff (1)  - [ ] jump land (1)
   (hit, death, breathing, bounce: code)
-- [ ] [2] Damage-core marker: small glowing dot shown low on the body (bullet 256 template)
+- [ ] [2] Damage-core marker: small glowing dot shown low on the body (bullet 384 template)
 - [ ] [2] Soft-select outline and Locked outline for arms (or let code tint them: ask Claude first)
 
 ## B. Enemies (side-facing only for the slice; flipped in code)
 
-**Chaser** (0.8P, character 1024)
+**Chaser** (0.8P, character 1536)
 - [ ] [1] idle (1)  - [ ] [2] windup/crouch (1)  - [ ] [2] lunge (1-2)
 
-**Skirmisher** (1P, character 1024)
+**Skirmisher** (1P, character 1536)
 - [ ] [2] idle (1)  - [ ] aim windup (1)  - [ ] shoot (1-2)
 
-**Mobile Sentry** (1P tall, 1.2P wide, character 1024)
+**Mobile Sentry** (1P tall, 1.2P wide, character 1536)
 - [ ] [2] moving (1)  - [ ] planted (1)  - [ ] firing (1-2)  - [ ] overheat (1, vents glowing)
 
-**Broccoli Emperor, round 3 boss** (3.5P, boss 3072, drawn in PARTS for rigging)
+**Broccoli Emperor, round 3 boss** (3.5P, boss 4608, drawn in PARTS for rigging)
 - [ ] [2] Full body in separate PART layers (head, torso, arms, legs, scepter, cape), exported as PSD
 - [ ] [2] Phase 2 replacement parts (cracked head, missing florets, torn toga)
 - [ ] [3] 2-3 face/expression swaps (confident, angry, hurt)
@@ -37,7 +37,7 @@ Tip marked "free" = fine to use a CC0/licensed pack instead of drawing it yourse
 
 Later (not in the slice): Charger, Sniper, more enemy types, bosses for rounds 5 and 7.
 
-## C. Projectiles (bullet 256 template)
+## C. Projectiles (bullet 384 template)
 
 Player bullets: draw in WHITE / light gray so the game can tint them with the arm's color.
 - [ ] [1] Basic round
@@ -105,14 +105,14 @@ Tall (>= 1.5P, tall 512x768 template):
 
 - [ ] [2] Contact shadow sprite for each obstacle (separate `_shadow` file)
 
-## H. Traps (floor trap 1024x768 template; flat, x0.6)
+## H. Traps (floor trap 1536x1152 template; flat, x0.6)
 
 Each needs: idle, telegraph (2-4 frames, DANGER color), active (3-4), cooldown (2-3).
 - [ ] [1] Floor vent (e.g. steam grate)
 - [ ] [2] Spike line (e.g. kebab skewers popping up: upright parts drawn vertical)
 - [ ] [2] Hazard zone (e.g. bubbling hot sauce puddle that ticks damage)
 
-## I. Combat HUD (icon 512 template unless noted)
+## I. Combat HUD (icon 768 template unless noted)
 
 - [ ] [2] Portrait frame (the spiky badge from the concept) + gladiator portrait (base; cosmetics layered)
 - [ ] [2] Heart: full, empty, lose-heart animation (3)
@@ -128,7 +128,7 @@ Each needs: idle, telegraph (2-4 frames, DANGER color), active (3-4), cooldown (
 
 ## J. Menus and screens
 
-General UI kit (draw once, reused everywhere, 9-slice: keep borders even so Unity can stretch them):
+General UI kit (a FREE UI PACK can cover most of this; log it in Docs/CREDITS.md. If drawing: 9-slice, even borders):
 - [ ] [2] Panel frame (large + small)
 - [ ] [2] Button: normal / focused / pressed / disabled
 - [ ] [2] Slider: track, fill, handle  - [ ] Toggle: on/off  - [ ] Selector arrows (left/right)
@@ -140,12 +140,11 @@ Main Menu:
 - [ ] [2] Game logo / title art
 - [ ] [2] Menu background (key art or a wide arena shot)
 
-Gladiator customization:
-- [ ] [2] Preview pedestal/spotlight
-- [ ] [2] Cosmetics, 3-4 items per slot to start (draw on the character 1024 template, lined up with the player):
-  - [ ] Candy coating (body recolors/pattern overlays)  - [ ] Headgear  - [ ] Cape/trail
-  (Arm tint is done in code.) Tip: draw headgear/capes once per facing; Claude attaches them to an anchor
-  point that follows the animation, so you don't redraw them for every frame.
+Character Creation (modular paper doll, see ART_SPEC 6b; side facing first):
+- [ ] [2] Mannequin canvas (base body + plain head) on tpl_character_1536
+- [ ] [2] Body x3  - [ ] Armor/body kit x3  - [ ] Head x3  - [ ] Accessory 1 (head area) x3  - [ ] Accessory 2 (back/torso) x3
+- [ ] [2] Preview pedestal/spotlight  - [ ] slot selector arrows (or from the UI pack)
+- [ ] [3] Screen background (e.g. a gladiator locker room under the stands)
 
 Round Results:
 - [ ] [3] Results panel art (can reuse the UI kit panel)
