@@ -1,6 +1,8 @@
 using System;
 using BulletHell.Core;
+using BulletHell.Cosmetics;
 using BulletHell.Input;
+using BulletHell.Settings;
 using BulletHell.Weapons;
 using UnityEngine;
 
@@ -17,6 +19,8 @@ namespace BulletHell.Player
         [SerializeField] private PlayerData playerData;
         [SerializeField] private ArmVisual armPrefab;
         [SerializeField] private Transform armParent;
+        [Tooltip("Provides the arm tint cosmetic. Optional.")]
+        [SerializeField] private GladiatorCosmetics cosmetics;
 
         private readonly ArmVisual[] arms = new ArmVisual[ArmLoadout.SlotCount];
         private ArmSelector selector;
@@ -42,10 +46,13 @@ namespace BulletHell.Player
         public event Action ArmsRebuilt;
 
         private RunManager run;
+        private SettingsService settings;
 
         private void Awake()
         {
-            run = GameServices.Ensure().Run;
+            GameServices services = GameServices.Ensure();
+            run = services.Run;
+            settings = services.Settings;
             run.EnsureRun();
             BuildArms();
         }
@@ -54,18 +61,22 @@ namespace BulletHell.Player
         {
             input.LockTogglePressed += OnLockTogglePressed;
             run.Machine.StateChanged += OnStateChanged;
+            settings.Changed += ApplySensitivity;
         }
 
         private void OnDisable()
         {
             input.LockTogglePressed -= OnLockTogglePressed;
             run.Machine.StateChanged -= OnStateChanged;
+            settings.Changed -= ApplySensitivity;
         }
+
+        private void ApplySensitivity() => selector.Sensitivity = settings.Current.aimSensitivity;
 
         // The Armory is the only place the loadout changes: respawn the arms when the next round starts.
         private void OnStateChanged(GameState from, GameState to)
         {
-            if (from == GameState.Armory && to == GameState.Combat)
+            if (from == GameState.Armory && to == GameState.RoundIntro)
                 Rebuild();
         }
 
@@ -95,6 +106,7 @@ namespace BulletHell.Player
             ArmInstance[] loadout = run.State.Loadout;
 
             selector = new ArmSelector(tuning);
+            ApplySensitivity();
             for (int i = 0; i < ArmLoadout.SlotCount; i++)
             {
                 selector.SetOwned(i, loadout[i] != null);
@@ -103,6 +115,8 @@ namespace BulletHell.Player
                 arms[i] = Instantiate(armPrefab, armParent);
                 arms[i].name = $"Arm_{i}_{loadout[i].Data.name}";
                 arms[i].Setup(loadout[i]);
+                if (cosmetics != null)
+                    arms[i].SetArtTint(cosmetics.ArmTint);
                 PlaceArm(i, ArmSelector.HomeAngle(i));
             }
         }

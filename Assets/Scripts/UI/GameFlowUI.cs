@@ -18,6 +18,7 @@ namespace BulletHell.UI
         [SerializeField] private FlowPanel gameOver;
         [SerializeField] private ShopScreen shop;
         [SerializeField] private ArmoryScreen armory;
+        [SerializeField] private SettingsScreen settings;
 
         private readonly StringBuilder builder = new StringBuilder(128);
         private RunManager run;
@@ -33,6 +34,7 @@ namespace BulletHell.UI
             roundResults.MenuPressed += scene.QuitToMenu;
             pause.ContinuePressed += Resume;
             pause.MenuPressed += scene.QuitToMenu;
+            pause.SettingsPressed += OpenSettings;
             gameOver.MenuPressed += scene.QuitToMenu;
             shop.ContinuePressed += run.Advance;
             shop.MenuPressed += scene.QuitToMenu;
@@ -66,7 +68,7 @@ namespace BulletHell.UI
                     armory.Show(state);
                     break;
                 case GameState.Pause:
-                    pause.Show("Paused", $"Round {state.Round}");
+                    ShowPause();
                     break;
                 case GameState.GameOver:
                     gameOver.Show("GAME OVER", $"You reached round {state.Round}.\nThe run has ended and its save was deleted.", false);
@@ -76,6 +78,15 @@ namespace BulletHell.UI
 
         private void Resume() => run.SetPaused(false);
 
+        // Settings opens over the Pause screen; Back brings the Pause screen back.
+        private void OpenSettings()
+        {
+            pause.Hide();
+            settings.Open(ShowPause);
+        }
+
+        private void ShowPause() => pause.Show("Paused", $"Round {run.State.Round}");
+
         private void HideAll()
         {
             roundResults.Hide();
@@ -83,6 +94,8 @@ namespace BulletHell.UI
             gameOver.Hide();
             shop.Hide();
             armory.Hide();
+            if (settings.IsOpen)
+                settings.Close();
         }
     }
 }

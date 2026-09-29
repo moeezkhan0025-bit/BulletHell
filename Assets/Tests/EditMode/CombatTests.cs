@@ -96,6 +96,7 @@ namespace BulletHell.Tests
             var save = new FakeSave();
             RunManager run = NewRun(save);
             run.BeginGame();
+            run.BeginCombat();
             Assert.AreEqual(GameState.Combat, run.Machine.Current);
 
             run.GameOver();
@@ -114,6 +115,7 @@ namespace BulletHell.Tests
             var save = new FakeSave();
             RunManager run = NewRun(save);
             run.BeginGame();
+            run.BeginCombat();
             run.CombatCleared();
             Assert.AreEqual(GameState.RoundResults, run.Machine.Current);
 
@@ -128,6 +130,7 @@ namespace BulletHell.Tests
         {
             RunManager run = NewRun(new FakeSave());
             run.BeginGame();
+            run.BeginCombat();
 
             Assert.IsTrue(run.SetPaused(true));
             Assert.AreEqual(GameState.Pause, run.Machine.Current);

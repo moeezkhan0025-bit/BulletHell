@@ -1,5 +1,6 @@
 using BulletHell.Enemies;
 using BulletHell.Save;
+using BulletHell.Settings;
 using BulletHell.Shop;
 using BulletHell.Weapons;
 using UnityEngine;
@@ -18,6 +19,10 @@ namespace BulletHell.Core
         [Header("Services")]
         [SerializeField] private AssetRegistry registry;
         [SerializeField] private string saveFileName = "run_save.json";
+        [Tooltip("Settings and profile (chosen cosmetics) files. Separate from the run save; never deleted by Game Over or New Game.")]
+        [SerializeField] private string settingsFileName = "settings.json";
+        [SerializeField] private string profileFileName = "profile.json";
+        [SerializeField] private SettingsDefaults settingsDefaults;
 
         [Header("New run")]
         [Tooltip("Arms equipped when a new run starts. StartingLoadout for real runs, DebugLoadout for testing.")]
@@ -47,6 +52,9 @@ namespace BulletHell.Core
         public int StartingCurrency => startingCurrency;
         public ShopPool ShopPool => shopPool;
         public string SaveFileName => saveFileName;
+        public string SettingsFileName => settingsFileName;
+        public string ProfileFileName => profileFileName;
+        public SettingsDefaults SettingsDefaults => settingsDefaults;
         public ArmLoadout NewRunLoadout => newRunLoadout;
         public AmmoTypeData[] StartingAmmo => startingAmmo;
         public ArmamentData[] StartingArmaments => startingArmaments;

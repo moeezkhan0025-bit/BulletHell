@@ -51,16 +51,30 @@ namespace BulletHell.Enemies
             run = services.Run;
         }
 
-        private void OnEnable() => run.RoundStarted += OnRoundStarted;
+        private void OnEnable()
+        {
+            run.RoundIntroStarted += OnRoundIntroStarted;
+            run.RoundStarted += OnRoundStarted;
+        }
 
-        private void OnDisable() => run.RoundStarted -= OnRoundStarted;
+        private void OnDisable()
+        {
+            run.RoundIntroStarted -= OnRoundIntroStarted;
+            run.RoundStarted -= OnRoundStarted;
+        }
+
+        // The intro clears the field of the previous round; nothing spawns until combat begins.
+        private void OnRoundIntroStarted(int number)
+        {
+            phase = Phase.Idle;
+            projectiles.ReleaseAll();
+            coins.Clear();
+            ReleaseAllEnemies();
+        }
 
         private void OnRoundStarted(int number)
         {
             roundNumber = number;
-            projectiles.ReleaseAll();
-            coins.Clear();
-            ReleaseAllEnemies();
 
             round = services.Config.GetRound(number);
             difficulty = services.Config.Difficulty != null ? services.Config.Difficulty.Evaluate(number) : new RoundDifficulty(1f, 1f, 1f, 1f);

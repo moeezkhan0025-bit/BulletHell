@@ -14,14 +14,19 @@ namespace BulletHell.UI
         [SerializeField] private Text body;
         [SerializeField] private Button continueButton;
         [SerializeField] private Button menuButton;
+        [Tooltip("Optional (the Pause panel has one).")]
+        [SerializeField] private Button settingsButton;
 
         public event Action ContinuePressed;
         public event Action MenuPressed;
+        public event Action SettingsPressed;
 
         private void Awake()
         {
             continueButton.onClick.AddListener(() => ContinuePressed?.Invoke());
             menuButton.onClick.AddListener(() => MenuPressed?.Invoke());
+            if (settingsButton != null)
+                settingsButton.onClick.AddListener(() => SettingsPressed?.Invoke());
         }
 
         public void Show(string titleText, string bodyText, bool showContinue = true)

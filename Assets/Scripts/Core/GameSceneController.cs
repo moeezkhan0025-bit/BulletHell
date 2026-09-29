@@ -6,7 +6,7 @@ namespace BulletHell.Core
     /// <summary>
     /// Root of the Game scene. Makes sure the services and a run exist (so pressing Play directly in this scene works,
     /// as a fresh run), enters the run's start state once every scene object is ready, and lets the game run only during
-    /// Combat: outside it (results, shop, armory, pause, game over) input is off and time is frozen.
+    /// the round intro and Combat: outside them (results, shop, armory, pause, game over) input is off and time is frozen.
     /// </summary>
     [DefaultExecutionOrder(-100)] // before the player components read the RunState in their Awake
     public sealed class GameSceneController : MonoBehaviour
@@ -41,9 +41,10 @@ namespace BulletHell.Core
         private void OnStateChanged(GameState from, GameState to)
         {
             stateChangeFrame = Time.frameCount;
-            bool combat = to == GameState.Combat;
-            input.enabled = combat;
-            Time.timeScale = combat ? 1f : 0f;
+            // The round intro plays in real time and lets the player move; enemies and traps are idle until Combat.
+            bool live = to == GameState.Combat || to == GameState.RoundIntro;
+            input.enabled = live;
+            Time.timeScale = live ? 1f : 0f;
         }
 
         // The Start press that just left a menu screen (or paused) must not also pause the round it started.

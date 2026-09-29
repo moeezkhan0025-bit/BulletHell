@@ -242,6 +242,7 @@ namespace BulletHell.Tests
         {
             RunManager run = NewRun(out _);
             run.BeginGame();
+            run.BeginCombat();
             int before = run.State.Currency;
 
             run.AddEarnings(5);
@@ -262,6 +263,7 @@ namespace BulletHell.Tests
         {
             RunManager run = NewRun(out List<int> started);
             run.BeginGame();
+            run.BeginCombat();
             Assert.AreEqual(new[] { 1 }, started);
 
             run.AddEarnings(9);
@@ -270,6 +272,8 @@ namespace BulletHell.Tests
             run.Advance();   // shop -> armory
             run.AddEarnings(4);
             run.Advance();   // armory -> round 2
+            Assert.AreEqual(GameState.RoundIntro, run.Machine.Current);
+            run.BeginCombat();
 
             Assert.AreEqual(new[] { 1, 2 }, started);
             Assert.AreEqual(0, run.RoundEarnings);
@@ -280,12 +284,15 @@ namespace BulletHell.Tests
         {
             RunManager run = NewRun(out List<int> started);
             run.BeginGame();
+            run.BeginCombat();
             Assert.IsFalse(run.DebugSkipToRound(5));            // not paused
             Assert.AreEqual(1, run.State.Round);
 
             run.AddEarnings(30);
             run.SetPaused(true);
             Assert.IsTrue(run.DebugSkipToRound(6));
+            Assert.AreEqual(GameState.RoundIntro, run.Machine.Current);
+            run.BeginCombat();
 
             Assert.AreEqual(GameState.Combat, run.Machine.Current);
             Assert.AreEqual(6, run.State.Round);
@@ -298,6 +305,7 @@ namespace BulletHell.Tests
         {
             RunManager run = NewRun(out List<int> started);
             run.BeginGame();
+            run.BeginCombat();
             run.SetPaused(true);
             run.SetPaused(false);
             Assert.AreEqual(new[] { 1 }, started);

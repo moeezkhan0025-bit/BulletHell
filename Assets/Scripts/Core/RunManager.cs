@@ -16,14 +16,20 @@ namespace BulletHell.Core
 
         public RunState State { get; private set; }
         public GameStateMachine Machine { get; } = new GameStateMachine();
-        /// <summary>State the Game scene starts in: Combat for a new run, Shop for a continued one.</summary>
-        public GameState PendingStart { get; private set; } = GameState.Combat;
+        /// <summary>State the Game scene starts in: RoundIntro for a new run, Shop for a continued one.</summary>
+        public GameState PendingStart { get; private set; } = GameState.RoundIntro;
         /// <summary>Currency banked by the round that just ended (for the Round Results screen).</summary>
         public int LastReward { get; private set; }
         /// <summary>Currency picked up so far this round. It is banked into the RunState when the round is cleared.</summary>
         public int RoundEarnings { get; private set; }
 
-        /// <summary>Raised (with the round number) every time a round's combat begins: new run, next round, or a debug skip.</summary>
+        /// <summary>
+        /// Raised (with the round number) when a round's intro starts: new run, next round, or a debug skip. Listeners
+        /// reset for the round (clear bullets, enemies and coins, refill health); enemies and traps stay idle.
+        /// </summary>
+        public event System.Action<int> RoundIntroStarted;
+
+        /// <summary>Raised (with the round number) when the intro ends and the round's combat begins: waves start now.</summary>
         public event System.Action<int> RoundStarted;
 
         public bool HasRun => State != null;
@@ -39,7 +45,7 @@ namespace BulletHell.Core
         {
             Machine.Reset();
             State = RunState.NewRun(config);
-            PendingStart = GameState.Combat;
+            PendingStart = GameState.RoundIntro;
             LastReward = 0;
             RoundEarnings = 0;
         }
@@ -70,8 +76,17 @@ namespace BulletHell.Core
         public void BeginGame()
         {
             Machine.Reset();
-            if (Machine.TryEnter(PendingStart) && PendingStart == GameState.Combat)
-                StartRound();
+            if (Machine.TryEnter(PendingStart) && PendingStart == GameState.RoundIntro)
+                StartRoundIntro();
+        }
+
+        /// <summary>The intro's countdown is over: enter Combat and start the round's waves.</summary>
+        public bool BeginCombat()
+        {
+            if (Machine.Current != GameState.RoundIntro || !Machine.TryEnter(GameState.Combat))
+                return false;
+            RoundStarted?.Invoke(State.Round);
+            return true;
         }
 
         /// <summary>A coin was picked up: it counts toward this round's earnings.</summary>
@@ -101,16 +116,16 @@ namespace BulletHell.Core
             if (Machine.Current != GameState.Pause)
                 return false;
             State.Round = System.Math.Max(1, round);
-            if (!Machine.TryEnter(GameState.Combat))
+            if (!Machine.TryEnter(GameState.RoundIntro))
                 return false;
-            StartRound();
+            StartRoundIntro();
             return true;
         }
 
-        private void StartRound()
+        private void StartRoundIntro()
         {
             RoundEarnings = 0;
-            RoundStarted?.Invoke(State.Round);
+            RoundIntroStarted?.Invoke(State.Round);
         }
 
         /// <summary>The Continue button of the current between-rounds screen.</summary>
@@ -128,8 +143,8 @@ namespace BulletHell.Core
                 case GameState.Armory:
                     SaveRun();
                     State.Round++;
-                    if (Machine.TryEnter(GameState.Combat))
-                        StartRound();
+                    if (Machine.TryEnter(GameState.RoundIntro))
+                        StartRoundIntro();
                     break;
             }
         }

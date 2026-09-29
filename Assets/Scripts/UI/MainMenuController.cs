@@ -6,27 +6,38 @@ using UnityEngine.UI;
 namespace BulletHell.UI
 {
     /// <summary>
-    /// Main Menu: Start Game (asks before overwriting an existing save), Continue (disabled without a save) and Quit.
-    /// Fully navigable with the stick / D-pad; the confirm dialog opens with "No" selected.
+    /// Main Menu: New Game, Continue (disabled without a run save), Settings and Quit.
+    /// New Game asks before replacing an existing run save, then opens the Gladiator customization; confirming the look
+    /// starts the run (and only then deletes the old save, so backing out never loses it). Continue skips customization:
+    /// the look comes from the profile file. Fully navigable with the stick / D-pad; the confirm dialog opens with Cancel selected.
     /// </summary>
     public sealed class MainMenuController : MonoBehaviour
     {
-        [SerializeField] private Button startButton;
+        [SerializeField] private GameObject menuButtons;
+        [Tooltip("The game title: shown with the menu buttons, hidden while Settings or customization is open.")]
+        [SerializeField] private GameObject title;
+        [SerializeField] private Button newGameButton;
         [SerializeField] private Button continueButton;
+        [SerializeField] private Button settingsButton;
         [SerializeField] private Button quitButton;
         [SerializeField] private Text messageText;
         [Header("Overwrite confirmation")]
         [SerializeField] private GameObject confirmPanel;
         [SerializeField] private Button confirmYesButton;
         [SerializeField] private Button confirmNoButton;
+        [Header("Screens")]
+        [SerializeField] private SettingsScreen settingsScreen;
+        [SerializeField] private CustomizationScreen customizationScreen;
 
         private GameServices services;
+        private bool replacesSave;
 
         private void Awake()
         {
             services = GameServices.Ensure();
-            startButton.onClick.AddListener(OnStartPressed);
+            newGameButton.onClick.AddListener(OnNewGamePressed);
             continueButton.onClick.AddListener(OnContinuePressed);
+            settingsButton.onClick.AddListener(OnSettingsPressed);
             quitButton.onClick.AddListener(OnQuitPressed);
             confirmYesButton.onClick.AddListener(OnOverwriteConfirmed);
             confirmNoButton.onClick.AddListener(CloseConfirm);
@@ -37,14 +48,15 @@ namespace BulletHell.UI
         {
             Time.timeScale = 1f;
             messageText.text = "";
-            CloseConfirm();
+            ShowMenu();
         }
 
-        private void OnStartPressed()
+        private void OnNewGamePressed()
         {
             if (!services.Save.HasSave)
             {
-                StartNewRun();
+                replacesSave = false;
+                OpenCustomization();
                 return;
             }
 
@@ -55,21 +67,36 @@ namespace BulletHell.UI
 
         private void OnOverwriteConfirmed()
         {
-            services.Save.Delete();
-            StartNewRun();
+            replacesSave = true;
+            confirmPanel.SetActive(false);
+            OpenCustomization();
         }
 
         private void CloseConfirm()
         {
             confirmPanel.SetActive(false);
-            SetMenuInteractable(true);
-            UIFocusGuard.Focus((continueButton.interactable ? continueButton : startButton).gameObject);
+            ShowMenu();
         }
 
-        private void StartNewRun()
+        private void OpenCustomization()
         {
+            SetMenuVisible(false);
+            customizationScreen.Open(OnLookConfirmed, ShowMenu);
+        }
+
+        // The look is saved: now the old run (if any) really is replaced.
+        private void OnLookConfirmed()
+        {
+            if (replacesSave)
+                services.Save.Delete();
             services.Run.StartNewRun();
             services.Scenes.Load(SceneLoader.Game);
+        }
+
+        private void OnSettingsPressed()
+        {
+            SetMenuVisible(false);
+            settingsScreen.Open(ShowMenu);
         }
 
         private void OnContinuePressed()
@@ -82,7 +109,7 @@ namespace BulletHell.UI
 
             messageText.text = "The save could not be loaded.";
             SetMenuInteractable(true);
-            UIFocusGuard.Focus(startButton.gameObject);
+            UIFocusGuard.Focus(newGameButton.gameObject);
         }
 
         private void OnQuitPressed()
@@ -94,10 +121,26 @@ namespace BulletHell.UI
 #endif
         }
 
+        /// <summary>Shows the four menu buttons and focuses Continue (or New Game when there is nothing to continue).</summary>
+        private void ShowMenu()
+        {
+            SetMenuVisible(true);
+            SetMenuInteractable(true);
+            UIFocusGuard.Focus((continueButton.interactable ? continueButton : newGameButton).gameObject);
+        }
+
+        private void SetMenuVisible(bool visible)
+        {
+            menuButtons.SetActive(visible);
+            if (title != null)
+                title.SetActive(visible);
+        }
+
         private void SetMenuInteractable(bool interactable)
         {
-            startButton.interactable = interactable;
+            newGameButton.interactable = interactable;
             continueButton.interactable = interactable && services.Save.HasSave;
+            settingsButton.interactable = interactable;
             quitButton.interactable = interactable;
         }
     }

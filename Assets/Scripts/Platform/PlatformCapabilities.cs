@@ -5,6 +5,26 @@ namespace BulletHell.Platform
     /// <summary>The only place that asks "which platform is this". Everything else asks a capability question.</summary>
     public static class PlatformCapabilities
     {
+        /// <summary>True where the player can choose fullscreen/windowed and a resolution (desktop). The Editor counts, for testing.</summary>
+        public static bool SupportsDisplaySettings
+        {
+            get
+            {
+                switch (Application.platform)
+                {
+                    case RuntimePlatform.WindowsPlayer:
+                    case RuntimePlatform.WindowsEditor:
+                    case RuntimePlatform.OSXPlayer:
+                    case RuntimePlatform.OSXEditor:
+                    case RuntimePlatform.LinuxPlayer:
+                    case RuntimePlatform.LinuxEditor:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
+
         /// <summary>False where a Quit button is against platform rules (iOS, consoles).</summary>
         public static bool CanQuitApplication
         {

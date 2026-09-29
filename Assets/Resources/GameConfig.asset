@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: BulletHell::BulletHell.Core.GameConfig
   registry: {fileID: 11400000, guid: 8058fab5ba083a541a03ae8e3eb9f5f2, type: 2}
   saveFileName: run_save.json
+  settingsFileName: settings.json
+  profileFileName: profile.json
+  settingsDefaults: {fileID: 11400000, guid: b00634beca03da943bb60a91d85cc4ca, type: 2}
   newRunLoadout: {fileID: 11400000, guid: 43b9ca098e138b24bb5e06a0eb8de85c, type: 2}
   startingAmmo:
   - {fileID: 11400000, guid: ede6581f4c2de6b498087e5d7fd6d580, type: 2}

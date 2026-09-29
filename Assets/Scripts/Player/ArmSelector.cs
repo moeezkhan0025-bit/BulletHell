@@ -20,6 +20,9 @@ namespace BulletHell.Player
         private readonly InputTuning tuning;
         private readonly bool[] owned = new bool[ArmCount];
 
+        /// <summary>Player aim sensitivity setting (1 = the InputTuning values as authored).</summary>
+        public float Sensitivity { get; set; } = 1f;
+
         public int Selected { get; private set; } = None;
         public bool Locked { get; private set; }
 
@@ -86,7 +89,7 @@ namespace BulletHell.Player
         {
             if (Locked)
             {
-                if (stick.magnitude < tuning.LockedAimDeadzone)
+                if (stick.magnitude < AimThresholds.LockedDeadzone(tuning, Sensitivity))
                     return false;
 
                 float angle = CompassAngle(stick);
@@ -112,7 +115,7 @@ namespace BulletHell.Player
             if (!Locked)
             {
                 Locked = true;
-                if (stick.magnitude >= tuning.LockedAimDeadzone)
+                if (stick.magnitude >= AimThresholds.LockedDeadzone(tuning, Sensitivity))
                     AimAngle = CompassAngle(stick);
                 return true;
             }
@@ -130,10 +133,10 @@ namespace BulletHell.Player
 
             if (Selected == None)
             {
-                if (magnitude >= tuning.SelectThreshold)
+                if (magnitude >= AimThresholds.Select(tuning, Sensitivity))
                     next = NearestOwnedArm(CompassAngle(stick));
             }
-            else if (magnitude < tuning.DeselectThreshold)
+            else if (magnitude < AimThresholds.Deselect(tuning, Sensitivity))
             {
                 next = None;
             }

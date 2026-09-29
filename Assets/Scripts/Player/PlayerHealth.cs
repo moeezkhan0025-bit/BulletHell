@@ -38,13 +38,13 @@ namespace BulletHell.Player
 
         private void OnEnable()
         {
-            run.RoundStarted += OnRoundStarted;
+            run.RoundIntroStarted += OnRoundStarted;
             health.Died += OnDied;
         }
 
         private void OnDisable()
         {
-            run.RoundStarted -= OnRoundStarted;
+            run.RoundIntroStarted -= OnRoundStarted;
             health.Died -= OnDied;
         }
 

@@ -230,7 +230,7 @@ Assets/
       4 starter enemy types (Grunt, Spinner, Charger, Sniper), enemy test mode to spawn each type.
 - [x] M5b Rounds: WaveData/RoundData for rounds 1-7, wave spawner replacing the stub round,
       coin drops + magnet + round-end collection, DifficultyCurve scaling, currency on Round Results.
-- [ ] M6 Front end: Main Menu (New Game/Continue/Settings/Quit), Settings screen + settings file,
+- [x] M6 Front end: Main Menu (New Game/Continue/Settings/Quit), Settings screen + settings file,
       Gladiator customization screen with placeholder cosmetics + profile file, Round intro banner and
       countdown state. Skeleton UI, fully controller navigable.
 - [ ] M7 Arena: ArenaData, colosseum bounds, solid + breakable obstacles (block all bullets),

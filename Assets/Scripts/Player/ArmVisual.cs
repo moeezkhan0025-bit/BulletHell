@@ -40,6 +40,9 @@ namespace BulletHell.Player
             SetState(State.Hidden);
         }
 
+        /// <summary>The arm tint cosmetic: multiplies the arm art's colours. White = art as drawn.</summary>
+        public void SetArtTint(Color tint) => art.color = tint;
+
         public void SetState(State state)
         {
             art.enabled = state != State.Hidden;

@@ -20,6 +20,15 @@ namespace BulletHell.Enemies
         [Tooltip("How long the 'Wave X/Y' message stays on screen.")]
         [SerializeField, Min(0.2f)] private float bannerSeconds = 1.8f;
 
+        [Header("Round intro")]
+        [Tooltip("How long the \"Round N\" / boss banner is shown before the countdown.")]
+        [SerializeField, Min(0.2f)] private float introBannerSeconds = 1.6f;
+        [Tooltip("Countdown numbers shown before combat (3, 2, 1).")]
+        [SerializeField, Range(1, 9)] private int countdownSteps = 3;
+        [SerializeField, Min(0.2f)] private float countdownStepSeconds = 0.8f;
+        [Tooltip("How long \"Begin!\" stays on screen once combat has started.")]
+        [SerializeField, Min(0.1f)] private float beginSeconds = 0.8f;
+
         [Header("Pools")]
         [SerializeField, Min(1)] private int enemyPoolPrewarm = 32;
         [SerializeField, Min(1)] private int enemyPoolMax = 128;
@@ -29,6 +38,10 @@ namespace BulletHell.Enemies
         public float RingRadius => ringRadius;
         public float RowWidthFraction => rowWidthFraction;
         public float BannerSeconds => bannerSeconds;
+        public float IntroBannerSeconds => introBannerSeconds;
+        public int CountdownSteps => countdownSteps;
+        public float CountdownStepSeconds => countdownStepSeconds;
+        public float BeginSeconds => beginSeconds;
         public int EnemyPoolPrewarm => enemyPoolPrewarm;
         public int EnemyPoolMax => enemyPoolMax;
     }

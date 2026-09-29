@@ -1,11 +1,13 @@
 using System.IO;
+using BulletHell.Cosmetics;
 using BulletHell.Save;
+using BulletHell.Settings;
 using UnityEngine;
 
 namespace BulletHell.Core
 {
     /// <summary>
-    /// The persistent services (save system, run manager, scene loader, audio stub), created once on a
+    /// The persistent services (save system, settings, profile, run manager, scene loader, audio stub), created once on a
     /// DontDestroyOnLoad object. The Boot scene's Bootstrapper calls Ensure(); every other scene that needs the
     /// services calls it too, so pressing Play in any scene works without going through Boot.
     /// </summary>
@@ -15,6 +17,8 @@ namespace BulletHell.Core
 
         public GameConfig Config { get; private set; }
         public ISaveSystem Save { get; private set; }
+        public SettingsService Settings { get; private set; }
+        public ProfileService Profile { get; private set; }
         public RunManager Run { get; private set; }
         public SceneLoader Scenes { get; private set; }
         public AudioService Audio { get; private set; }
@@ -44,10 +48,25 @@ namespace BulletHell.Core
         private void Init(GameConfig config)
         {
             Config = config;
-            Save = new LocalFileSaveSystem(Path.Combine(Application.persistentDataPath, config.SaveFileName));
+            string folder = Application.persistentDataPath;
+            Save = new LocalFileSaveSystem(Path.Combine(folder, config.SaveFileName));
             Run = new RunManager(config, Save);
             Scenes = new SceneLoader();
             Audio = new AudioService();
+
+            SettingsDefaults defaults = config.SettingsDefaults != null
+                ? config.SettingsDefaults
+                : ScriptableObject.CreateInstance<SettingsDefaults>();
+            Settings = new SettingsService(defaults, new JsonFileStore<SettingsData>(Path.Combine(folder, config.SettingsFileName)), Audio);
+            Profile = new ProfileService(config.Registry, new JsonFileStore<ProfileData>(Path.Combine(folder, config.ProfileFileName)));
         }
+
+        private void OnApplicationPause(bool paused)
+        {
+            if (paused)
+                Settings?.Save();
+        }
+
+        private void OnApplicationQuit() => Settings?.Save();
     }
 }

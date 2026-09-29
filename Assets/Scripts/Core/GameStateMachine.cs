@@ -2,11 +2,11 @@ using System;
 
 namespace BulletHell.Core
 {
-    public enum GameState { None, Combat, RoundResults, Shop, Armory, Pause, GameOver }
+    public enum GameState { None, RoundIntro, Combat, RoundResults, Shop, Armory, Pause, GameOver }
 
     /// <summary>
-    /// The single state machine for the run loop: Combat -> RoundResults -> Shop -> Armory -> Combat (next round).
-    /// Pause and GameOver can only be entered from Combat. Pause returns to Combat; GameOver ends the run (the
+    /// The single state machine for the run loop: RoundIntro -> Combat -> RoundResults -> Shop -> Armory -> RoundIntro (next round).
+    /// Pause and GameOver can only be entered from Combat (the intro is short and has no enemies). Pause returns to Combat; GameOver ends the run (the
     /// RunManager resets the machine). Illegal transitions are refused, never silently accepted.
     /// </summary>
     public sealed class GameStateMachine
@@ -21,12 +21,13 @@ namespace BulletHell.Core
         {
             switch (from)
             {
-                case GameState.None: return to == GameState.Combat || to == GameState.Shop;
+                case GameState.None: return to == GameState.RoundIntro || to == GameState.Shop;
+                case GameState.RoundIntro: return to == GameState.Combat;
                 case GameState.Combat: return to == GameState.RoundResults || to == GameState.Pause || to == GameState.GameOver;
                 case GameState.RoundResults: return to == GameState.Shop;
                 case GameState.Shop: return to == GameState.Armory;
-                case GameState.Armory: return to == GameState.Combat;
-                case GameState.Pause: return to == GameState.Combat;
+                case GameState.Armory: return to == GameState.RoundIntro;
+                case GameState.Pause: return to == GameState.Combat || to == GameState.RoundIntro; // RoundIntro: the debug round skip
                 default: return false;
             }
         }

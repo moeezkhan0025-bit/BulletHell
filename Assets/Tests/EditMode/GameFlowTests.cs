@@ -11,22 +11,31 @@ namespace BulletHell.Tests
     {
         // ---- state machine
 
+        private static GameStateMachine InCombat()
+        {
+            var machine = new GameStateMachine();
+            machine.TryEnter(GameState.RoundIntro);
+            machine.TryEnter(GameState.Combat);
+            return machine;
+        }
+
         [Test]
         public void RunLoopFollowsTheDesignedOrder()
         {
             var machine = new GameStateMachine();
+            Assert.IsTrue(machine.TryEnter(GameState.RoundIntro));
             Assert.IsTrue(machine.TryEnter(GameState.Combat));
             Assert.IsTrue(machine.TryEnter(GameState.RoundResults));
             Assert.IsTrue(machine.TryEnter(GameState.Shop));
             Assert.IsTrue(machine.TryEnter(GameState.Armory));
+            Assert.IsTrue(machine.TryEnter(GameState.RoundIntro));
             Assert.IsTrue(machine.TryEnter(GameState.Combat));
         }
 
         [Test]
         public void IllegalTransitionsAreRefused()
         {
-            var machine = new GameStateMachine();
-            machine.TryEnter(GameState.Combat);
+            var machine = InCombat();
             Assert.IsFalse(machine.TryEnter(GameState.Shop));
             Assert.IsFalse(machine.TryEnter(GameState.Armory));
             Assert.AreEqual(GameState.Combat, machine.Current);
@@ -44,8 +53,7 @@ namespace BulletHell.Tests
         [Test]
         public void PauseAndGameOverOnlyFromCombat_PauseResumesToCombat()
         {
-            var machine = new GameStateMachine();
-            machine.TryEnter(GameState.Combat);
+            var machine = InCombat();
             Assert.IsTrue(machine.TryEnter(GameState.Pause));
             Assert.IsFalse(machine.TryEnter(GameState.GameOver));
             Assert.IsTrue(machine.TryEnter(GameState.Combat));
@@ -58,8 +66,7 @@ namespace BulletHell.Tests
         [Test]
         public void StateChangedReportsFromAndTo()
         {
-            var machine = new GameStateMachine();
-            machine.TryEnter(GameState.Combat);
+            var machine = InCombat();
             GameState from = GameState.None, to = GameState.None;
             machine.StateChanged += (f, t) => { from = f; to = t; };
 
