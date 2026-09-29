@@ -1,9 +1,38 @@
 # Project: Bullet Hell (working title)
 
 Roguelike arcade bullet hell, top-down 2D. Theme: the player is a CANDY GLADIATOR fighting food-based
-combatants in a VEGETABLE COLOSSEUM (arena, crowd, announcer vibe; bright, playful, readable). Developed and playtested on Windows with a PS5 DualSense.
+combatants in a VEGETABLE COLOSSEUM (arena, crowd, announcer vibe; bright, playful, readable).
+Developed and playtested on Windows with a PS5 DualSense.
 Unity 6.3 LTS (6000.3), 2D URP, new Input System. Solo developer. I playtest every change myself.
 Project root: C:\Dev\BulletHell. Version control: Git (GitHub private repo), shell: Git Bash.
+
+## Visual style and perspective
+Reference: Docs/Reference/concept_arena.png (target look - not a game asset).
+- 3/4 top-down (oblique) view: art is drawn at an angle, but GAMEPLAY STAYS ON THE FLAT 2D XY PLANE.
+  No 3D, no height physics. Movement speed is the same in all directions.
+- Depth sorting: URP 2D Renderer Transparency Sort Mode = Custom Axis (0,1,0) - lower on screen draws in front.
+  Characters/obstacles use Sprite Sort Point = Pivot with the pivot at their FEET/BASE.
+- Colliders are FOOTPRINTS, not the whole sprite: a flat ellipse/box at the base of pillars, crates,
+  enemies and the player. Tall sprites (pillars) visually overlap things behind them without blocking them.
+  Bullets are blocked by an obstacle's footprint plus a modest vertical allowance [tunable].
+- The player's damage hitbox stays a small core at the body's center (bullet-hell rule), separate from
+  the movement footprint.
+- Arena art is LAYERED, never one flattened image: floor (with decals like the crest/graffiti), back wall and
+  crowd, side walls, individual obstacle sprites (solid pillars, breakable crates/tomatoes), and a FOREGROUND
+  layer (front railing, front crowd) that draws over gameplay.
+- Readability beats decoration: enemy bullets must pop against the busy floor (bright core + dark outline,
+  never floor/splatter red). Floor decals stay lower-contrast than anything interactive.
+- Arena fits on one screen with a fixed camera for the main arena size; extra width/height on other aspect
+  ratios is filled with crowd/wall art, never gameplay space.
+
+## HUD (combat)
+- Bottom-left: gladiator portrait (reflects chosen cosmetics), 5 hearts = 5 HP (1 heart per hit),
+  and a heat bar under them showing the SELECTED arm's heat (fills while firing heat ammo, changes color and
+  flashes when overheated, drains while cooling). No arm selected -> bar shows the last selected arm, dimmed.
+- Bottom-right: 4 ammo slot icons in button order, each with its face-button glyph. Active slot highlighted,
+  empty slots shown as empty frames, hold-to-replace progress drawn around the slot being replaced.
+  AmmoTypeData gets an icon field.
+- HUD respects Safe Area, scales for phones, and never covers the arena's play space.
 
 ## Target platforms
 Steam (Windows first; Mac/Linux later), iOS, Android, Nintendo Switch, Xbox.
@@ -11,7 +40,7 @@ Consoles come later (need platform approval + Unity Pro), but the code must be c
 - Input bindings use GENERIC gamepad paths (<Gamepad>/rightShoulder, <Gamepad>/leftStickPress,
   <Gamepad>/buttonSouth...), never DualSense-only paths, so Xbox, Switch and PS controllers all work.
 - Button prompts go through a ButtonGlyph lookup (PlayStation / Xbox / Nintendo / touch sets), never hard-coded text.
-- A separate Touch control scheme for mobile: [TBD - designed at M8, e.g. virtual left stick for aim,
+- A separate Touch control scheme for mobile: [TBD - designed at M12, e.g. virtual left stick for aim,
   virtual right stick for movement, on-screen fire/lock/ammo buttons]. Keep gameplay logic independent of input device.
 - Performance budget set by the weakest target (mobile / Switch): pooled everything, no per-frame allocations
   in gameplay loops, target 60 fps with hundreds of bullets on screen. Log a warning if any pool grows unexpectedly.
@@ -63,7 +92,7 @@ Boot scene (bootstrapper) -> Main Menu scene -> Game scene.
   (an AssetRegistry maps IDs -> WeaponArmData / ArmamentData / AmmoTypeData).
 
 ## Controls (action map "Gameplay")
-PlayStation names below; Xbox = RB / LS click / A B X Y, Switch = R / L-stick click / B A Y X.
+PlayStation names below; Xbox = RB / RT / LS click / A B X Y, Switch = R / ZR / L-stick click / B A Y X.
 - Right stick: move the player.
 - Left stick + L3: select, lock and aim weapon arms. Two states:
 
@@ -90,11 +119,12 @@ PlayStation names below; Xbox = RB / LS click / A B X Y, Switch = R / L-stick cl
 
   All thresholds and speeds live in an InputTuning ScriptableObject.
 - R1: fire the selected arm. Hold R1 = continuous fire at the arm's fire rate. No arm selected = no fire.
+- R2 (<Gamepad>/rightTrigger, press point ~0.5): jump. See Jump in Systems.
 - Cross / Circle / Square / Triangle: equip ammo slot 1-4 (buttonSouth / buttonEast / buttonWest / buttonNorth).
 - Options: pause.
 - Keyboard/mouse bindings exist only as a debug fallback (mouse direction + left click stands in for
-  left stick + R1, WASD to move, L (or middle mouse) to lock, 1-4 for ammo slots, Esc to pause).
-- Controller haptics/light bar: not in scope until M8.
+  left stick + R1, WASD to move, L (or middle mouse) to lock, Space to jump, 1-4 for ammo slots, Esc to pause).
+- Controller haptics/light bar: not in scope until M12.
 
 ## Systems
 - Weapon arms: each arm TYPE is a WeaponArmData asset with its own sprite (drawn pointing right),
@@ -135,6 +165,24 @@ PlayStation names below; Xbox = RB / LS click / A B X Y, Switch = R / L-stick cl
 - Player health: [DEFAULT: 5 HP], small visible hitbox core (bullet-hell style - smaller than the sprite),
   ~1s invulnerability with flashing after a hit. HP 0 -> Game Over (run save deleted) -> Main Menu.
   Values on PlayerData.
+- Jump (fake height - gameplay stays 2D): the player root stays on the ground plane (XY); a "height" value
+  drives a child visual offset. Values in a JumpTuning asset.
+  - Visuals: body sprite rises and falls on an AnimationCurve arc; a ground shadow stays at the root and
+    shrinks/fades with height; slight scale-up at the apex; squash on takeoff and landing; small dust puff
+    on landing. Arms, cosmetics and HUD portrait follow the body.
+  - Defaults: airtime ~0.45s, no double jump, ~0.2s cooldown after landing, full steering in the air
+    [DEFAULT: air control 100%, tunable]. Firing and aiming work while airborne.
+  - While airborne the player PASSES OVER: enemy bodies (no blocking, no contact damage), charger dashes,
+    ground traps and hazard zones, pickups (collected on landing only if still overlapping).
+  - While airborne the player is STILL HIT BY: enemy bullets [DEFAULT - toggle jumpDodgesBullets = false,
+    keeps it a bullet hell], and still blocked by obstacles and arena walls (can't hop pillars or crates).
+    [TBD: a "low obstacle" flag for things that can be hopped]
+  - Sorting: while airborne the player draws above enemies and ground objects near it, but still below
+    the foreground layer. Sorting uses the ground (shadow) position, never the lifted sprite.
+  - Landing on an enemy or inside an obstacle footprint: the player is pushed to the nearest free spot.
+  - Implementation: a PlayerHeight/JumpController component exposes IsAirborne and Height; collision
+    rules use physics layers / layer masks switched while airborne, not per-object special cases.
+    Enemy AI treats the shadow position as the player's position.
 - Arena: the vegetable colosseum. ArenaData defines bounds (walls), player spawn, enemy spawn gates,
   and placed obstacles/traps. Rounds can reference different ArenaData layouts. Placeholder art for now.
 - Obstacles (both block movement AND all bullets, player's and enemies'):
@@ -177,15 +225,16 @@ PlayStation names below; Xbox = RB / LS click / A B X Y, Switch = R / L-stick cl
   - Selecting an EMPTY arm slot lets the player place an arm from the arm inventory there.
     Removing an arm from a slot returns it (with its armaments still attached) to the arm inventory.
   - "Continue" starts the next round. Skeleton UI first; visual polish later.
-- Difficulty: each round scales enemy count, HP, fire rate and bullet speed via a DifficultyCurve asset.
 - Bosses: multi-phase, each phase = list of attack patterns.
 
 ## Architecture rules (follow these strictly)
 - All tunable data lives in ScriptableObjects: WeaponArmData, AmmoTypeData, ArmamentData,
-  EnemyData, WaveData, BossData, DifficultyCurve, InputTuning, ArmLoadout, PickupTuning, ShopPool, AssetRegistry, BulletPatternData, RoundData, PlayerData, ArenaData, TrapData, CosmeticData, SettingsDefaults. No gameplay numbers hard-coded in MonoBehaviours.
+  EnemyData, WaveData, RoundData, BossData, DifficultyCurve, InputTuning, JumpTuning, ArmLoadout, PickupTuning,
+  ShopPool, AssetRegistry, BulletPatternData, PlayerData, ArenaData, TrapData, CosmeticData, SettingsDefaults.
+  No gameplay numbers hard-coded in MonoBehaviours.
 - ALL projectiles (player and enemy) use object pooling (UnityEngine.Pool.ObjectPool<T>).
   Never Instantiate/Destroy bullets during gameplay.
-- Run flow is a single GameStateMachine: Combat, RoundResults, Shop, Armory, Pause, GameOver.
+- Run flow is a single GameStateMachine: RoundIntro, Combat, RoundResults, Shop, Armory, Pause, GameOver.
 - Systems talk through C# events or ScriptableObject event channels, not FindObjectOfType.
 - Input only through the generated Input Actions class. No legacy Input Manager.
 - Sprites are referenced from data assets / prefabs so art can be swapped without code changes.
@@ -200,6 +249,7 @@ Assets/
   Scenes/ (Boot, MainMenu, Game)   (Shop and Armory are UI states inside Game)
   Scripts/ (Core, Save, Settings, Input, Player, Cosmetics, Weapons, Projectiles, Enemies, AI, Arena, Bosses, Shop, Armory, UI, Platform)
   Tests/
+Docs/Reference/ (concept art and references, OUTSIDE Assets so Unity doesn't import them)
 
 ## Working agreement
 - One milestone per session. Propose a plan first; wait for my OK before large changes.
@@ -208,6 +258,8 @@ Assets/
 - Don't refactor unrelated code. Don't rename or move my art assets.
 - Never commit or push without asking me. When I approve, commit with a message like "M1: <summary>".
 - Never touch Library/, Temp/, Logs/ or UserSettings/.
+- When testing in Play mode, back up run_save.json, settings.json and profile.json first and restore them
+  afterwards. Delete test screenshots/artifacts when done. Use guarded paths in rm commands (${VAR:?}).
 - If a request conflicts with these rules, say so instead of silently breaking them.
 
 ## Milestones
@@ -233,11 +285,16 @@ Assets/
 - [x] M6 Front end: Main Menu (New Game/Continue/Settings/Quit), Settings screen + settings file,
       Gladiator customization screen with placeholder cosmetics + profile file, Round intro banner and
       countdown state. Skeleton UI, fully controller navigable.
-- [x] M7 Arena: ArenaData, colosseum bounds, solid + breakable obstacles (block all bullets),
+- [x] M7 Arena (IN PROGRESS): ArenaData, colosseum bounds, solid + breakable obstacles (block all bullets),
       3 starter traps (hurt player and enemies, telegraphed), one test arena layout.
+- [ ] M7.5 Perspective + HUD (converts M7's arena): Y-sorting, feet pivots, footprint colliders on player/enemies/obstacles/traps,
+      layered placeholder arena (floor/back wall/foreground), combat HUD (portrait, 5 hearts, heat bar, 4 ammo slots with glyphs).
+- [ ] M7.6 Jump: R2 jump with fake height (arc, shadow, squash/stretch, dust), pass over enemies/contact damage/
+      ground traps, still hit by bullets and blocked by obstacles, airborne sorting, landing push-out.
 - [ ] M8 Enemy AI rework: flow-field navigation + separation, line of sight, Chaser / Skirmisher /
-      Mobile Sentry, convert existing enemies, retune rounds 1-7 for the arena.
+      Mobile Sentry, convert existing enemies, retune rounds 1-7 for the arena. Enemies account for the
+      player's jump (chasers keep tracking the shadow; chargers can be jumped).
 - [ ] M9 Shop pools and pricing (random stock, scaling prices), more arms/armaments/effects.
 - [ ] M10 Bosses (round 3 first, then 5 and 7).
 - [ ] M11 Themed UI/visual pass: candy-colosseum style for menus, HUD, Shop, Armory, customization; final art.
-- [ ] M12 Polish: touch controls, button glyphs, juice, announcer/audio, performance pass.
+- [ ] M12 Polish: touch controls (incl. jump button), button glyphs, juice, announcer/audio, performance pass.
