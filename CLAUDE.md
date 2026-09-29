@@ -17,6 +17,22 @@ Reference: Docs/Reference/concept_arena.png (target look - not a game asset).
   Bullets are blocked by an obstacle's footprint plus a modest vertical allowance [tunable].
 - The player's damage hitbox stays a small core at the body's center (bullet-hell rule), separate from
   the movement footprint.
+- Arm ring (3/4 look): the 8 arm slots sit on a flattened ELLIPSE around the player's FEET (ground level),
+  like a ring spinning around the base - not a flat clock face around the body center.
+  - Ellipse radii X/Y (default Y = ~0.5 x X) and a small vertical offset live in an ArmRingTuning asset.
+  - Arms on the back half of the ellipse draw BEHIND the body; arms on the front half draw IN FRONT
+    (sorted by their own ground Y, same rule as everything else).
+  - Optional depth cue: back arms slightly smaller/darker, front arms slightly larger [tunable, subtle].
+  - Soft select still uses the 8 slot directions; locked aim moves the arm smoothly around the ellipse
+    to the stick angle (it slides along the ring rather than orbiting a circle) and the arm sprite
+    points in the true aim direction. Optional short ring "spin" easing when switching slots [tunable].
+  - Aiming and bullets use the stick's true screen direction; the ellipse only changes where arms
+    are drawn and where muzzles sit.
+  - While jumping, the ring rises with the body visual; the shadow stays on the ground.
+- Bullet height: all bullets and hurtboxes live on the ground plane (collision at ground positions).
+  Bullets are drawn with a small visual lift and a tiny shadow so they read as flying, consistent for
+  player and enemy bullets. The player's visible damage-core marker sits low on the body, near the feet,
+  matching where collisions actually happen. Enemy hurtboxes are ground-plane footprints under them.
 - Arena art is LAYERED, never one flattened image: floor (with decals like the crest/graffiti), back wall and
   crowd, side walls, individual obstacle sprites (solid pillars, breakable crates/tomatoes), and a FOREGROUND
   layer (front railing, front crowd) that draws over gameplay.
@@ -229,7 +245,7 @@ PlayStation names below; Xbox = RB / RT / LS click / A B X Y, Switch = R / ZR / 
 
 ## Architecture rules (follow these strictly)
 - All tunable data lives in ScriptableObjects: WeaponArmData, AmmoTypeData, ArmamentData,
-  EnemyData, WaveData, RoundData, BossData, DifficultyCurve, InputTuning, JumpTuning, ArmLoadout, PickupTuning,
+  EnemyData, WaveData, RoundData, BossData, DifficultyCurve, InputTuning, JumpTuning, ArmRingTuning, ArmLoadout, PickupTuning,
   ShopPool, AssetRegistry, BulletPatternData, PlayerData, ArenaData, TrapData, CosmeticData, SettingsDefaults.
   No gameplay numbers hard-coded in MonoBehaviours.
 - ALL projectiles (player and enemy) use object pooling (UnityEngine.Pool.ObjectPool<T>).
@@ -285,12 +301,15 @@ Docs/Reference/ (concept art and references, OUTSIDE Assets so Unity doesn't imp
 - [x] M6 Front end: Main Menu (New Game/Continue/Settings/Quit), Settings screen + settings file,
       Gladiator customization screen with placeholder cosmetics + profile file, Round intro banner and
       countdown state. Skeleton UI, fully controller navigable.
-- [x] M7 Arena (IN PROGRESS): ArenaData, colosseum bounds, solid + breakable obstacles (block all bullets),
+- [x] M7 Arena: ArenaData, colosseum bounds, solid + breakable obstacles (block all bullets),
       3 starter traps (hurt player and enemies, telegraphed), one test arena layout.
-- [ ] M7.5 Perspective + HUD (converts M7's arena): Y-sorting, feet pivots, footprint colliders on player/enemies/obstacles/traps,
+- [x] M7.5 Perspective + HUD (converts M7's arena): Y-sorting, feet pivots, footprint colliders on player/enemies/obstacles/traps,
       layered placeholder arena (floor/back wall/foreground), combat HUD (portrait, 5 hearts, heat bar, 4 ammo slots with glyphs).
-- [ ] M7.6 Jump: R2 jump with fake height (arc, shadow, squash/stretch, dust), pass over enemies/contact damage/
+- [x] M7.6 Jump: R2 jump with fake height (arc, shadow, squash/stretch, dust), pass over enemies/contact damage/
       ground traps, still hit by bullets and blocked by obstacles, airborne sorting, landing push-out.
+- [ ] M7.7 Arm ring: arms on a flattened ellipse around the feet, front/back sorting around the body,
+      locked aim slides along the ellipse, muzzles/bullet spawn consistent, bullet height + damage-core
+      position consistent with ground-plane collision, ArmRingTuning.
 - [ ] M8 Enemy AI rework: flow-field navigation + separation, line of sight, Chaser / Skirmisher /
       Mobile Sentry, convert existing enemies, retune rounds 1-7 for the arena. Enemies account for the
       player's jump (chasers keep tracking the shadow; chargers can be jumped).
