@@ -90,7 +90,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!1 &4416202497225501376
 GameObject:
   m_ObjectHideFlags: 0
@@ -102,7 +102,8 @@ GameObject:
   - component: {fileID: 1558484728120919435}
   - component: {fileID: 3367048847168602539}
   - component: {fileID: 6890768714857304897}
-  - component: {fileID: 6448235476437347421}
+  - component: {fileID: 6763406697969877259}
+  - component: {fileID: 9029130358646258698}
   m_Layer: 7
   m_Name: Obstacle
   m_TagString: Untagged
@@ -140,7 +141,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: BulletHell::BulletHell.Arena.Obstacle
   art: {fileID: 6099893090729797074}
   boxCollider: {fileID: 6890768714857304897}
-  circleCollider: {fileID: 6448235476437347421}
+  ellipseCollider: {fileID: 6763406697969877259}
+  sortingGroup: {fileID: 9029130358646258698}
 --- !u!61 &6890768714857304897
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -187,8 +189,8 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!58 &6448235476437347421
-CircleCollider2D:
+--- !u!60 &6763406697969877259
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -222,4 +224,33 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0, y: 1}
+      - {x: -0.95105654, y: 0.30901697}
+      - {x: -0.5877852, y: -0.80901706}
+      - {x: 0.58778536, y: -0.80901694}
+      - {x: 0.9510565, y: 0.30901712}
+  m_UseDelaunayMesh: 1
+--- !u!210 &9029130358646258698
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4416202497225501376}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
+  m_Sort3DAs2D: 0

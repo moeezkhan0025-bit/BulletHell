@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75f57804c08f15840a9be668e81a9d65, type: 3}
+  m_Name: ButtonGlyphs
+  m_EditorClassIdentifier: BulletHell::BulletHell.UI.ButtonGlyphLibrary
+  sets:
+  - Family: 0
+    South:
+      Icon: {fileID: 21300000, guid: a1f158269e97cc04da62cddbeb2ca7f5, type: 3}
+      Label: 
+      Tint: {r: 1, g: 1, b: 1, a: 1}
+      LabelColor: {r: 1, g: 1, b: 1, a: 1}
+    East:
+      Icon: {fileID: 21300000, guid: c333ebe7284317e47a1c5240db160a70, type: 3}
+      Label: 
+      Tint: {r: 1, g: 1, b: 1, a: 1}
+      LabelColor: {r: 1, g: 1, b: 1, a: 1}
+    West:
+      Icon: {fileID: 21300000, guid: 5e73730c3a5ec9d4b9235fa90e7e2767, type: 3}
+      Label: 
+      Tint: {r: 1, g: 1, b: 1, a: 1}
+      LabelColor: {r: 1, g: 1, b: 1, a: 1}
+    North:
+      Icon: {fileID: 21300000, guid: 7018ecedf8049e5429732a0a125d55b9, type: 3}
+      Label: 
+      Tint: {r: 1, g: 1, b: 1, a: 1}
+      LabelColor: {r: 1, g: 1, b: 1, a: 1}
+  - Family: 1
+    South:
+      Icon: {fileID: 21300000, guid: 11c4928f02af55844a1163e83b44e67c, type: 3}
+      Label: A
+      Tint: {r: 0.35, g: 0.78, b: 0.35, a: 1}
+      LabelColor: {r: 0.08, g: 0.08, b: 0.1, a: 1}
+    East:
+      Icon: {fileID: 21300000, guid: 11c4928f02af55844a1163e83b44e67c, type: 3}
+      Label: B
+      Tint: {r: 0.9, g: 0.32, b: 0.3, a: 1}
+      LabelColor: {r: 0.08, g: 0.08, b: 0.1, a: 1}
+    West:
+      Icon: {fileID: 21300000, guid: 11c4928f02af55844a1163e83b44e67c, type: 3}
+      Label: X
+      Tint: {r: 0.32, g: 0.55, b: 0.95, a: 1}
+      LabelColor: {r: 0.08, g: 0.08, b: 0.1, a: 1}
+    North:
+      Icon: {fileID: 21300000, guid: 11c4928f02af55844a1163e83b44e67c, type: 3}
+      Label: Y
+      Tint: {r: 0.98, g: 0.82, b: 0.25, a: 1}
+      LabelColor: {r: 0.08, g: 0.08, b: 0.1, a: 1}
+  - Family: 2
+    South:
+      Icon: {fileID: 21300000, guid: 11c4928f02af55844a1163e83b44e67c, type: 3}
+      Label: B
+      Tint: {r: 0.85, g: 0.85, b: 0.88, a: 1}
+      LabelColor: {r: 0.08, g: 0.08, b: 0.1, a: 1}
+    East:
+      Icon: {fileID: 21300000, guid: 11c4928f02af55844a1163e83b44e67c, type: 3}
+      Label: A
+      Tint: {r: 0.85, g: 0.85, b: 0.88, a: 1}
+      LabelColor: {r: 0.08, g: 0.08, b: 0.1, a: 1}
+    West:
+      Icon: {fileID: 21300000, guid: 11c4928f02af55844a1163e83b44e67c, type: 3}
+      Label: Y
+      Tint: {r: 0.85, g: 0.85, b: 0.88, a: 1}
+      LabelColor: {r: 0.08, g: 0.08, b: 0.1, a: 1}
+    North:
+      Icon: {fileID: 21300000, guid: 11c4928f02af55844a1163e83b44e67c, type: 3}
+      Label: X
+      Tint: {r: 0.85, g: 0.85, b: 0.88, a: 1}
+      LabelColor: {r: 0.08, g: 0.08, b: 0.1, a: 1}
+  - Family: 3
+    South:
+      Icon: {fileID: 21300000, guid: 11c4928f02af55844a1163e83b44e67c, type: 3}
+      Label: 1
+      Tint: {r: 0.6, g: 0.75, b: 0.95, a: 1}
+      LabelColor: {r: 0.08, g: 0.08, b: 0.1, a: 1}
+    East:
+      Icon: {fileID: 21300000, guid: 11c4928f02af55844a1163e83b44e67c, type: 3}
+      Label: 2
+      Tint: {r: 0.6, g: 0.75, b: 0.95, a: 1}
+      LabelColor: {r: 0.08, g: 0.08, b: 0.1, a: 1}
+    West:
+      Icon: {fileID: 21300000, guid: 11c4928f02af55844a1163e83b44e67c, type: 3}
+      Label: 3
+      Tint: {r: 0.6, g: 0.75, b: 0.95, a: 1}
+      LabelColor: {r: 0.08, g: 0.08, b: 0.1, a: 1}
+    North:
+      Icon: {fileID: 21300000, guid: 11c4928f02af55844a1163e83b44e67c, type: 3}
+      Label: 4
+      Tint: {r: 0.6, g: 0.75, b: 0.95, a: 1}
+      LabelColor: {r: 0.08, g: 0.08, b: 0.1, a: 1}

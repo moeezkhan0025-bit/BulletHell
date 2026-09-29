@@ -14,6 +14,9 @@ namespace BulletHell.Player
         [Tooltip("Radius of the player's body against the arena walls and obstacles (not the bullet hitbox).")]
         [SerializeField, Min(0.05f)] private float bodyRadius = 0.35f;
 
+        [Tooltip("Height of the body's centre above the feet (the player's root). The visuals, arms ring and damage core sit here.")]
+        [SerializeField, Min(0f)] private float bodyCenterHeight = 0.38f;
+
         [Tooltip("How far inside the camera edges the player's center is kept.")]
         [SerializeField, Min(0f)] private float screenEdgePadding = 1.2f;
 
@@ -29,7 +32,9 @@ namespace BulletHell.Player
 
         public float MoveSpeed => moveSpeed;
         public float ArmRingRadius => armRingRadius;
+        /// <summary>Radius of the flat movement footprint at the feet.</summary>
         public float BodyRadius => bodyRadius;
+        public float BodyCenterHeight => bodyCenterHeight;
         public float ScreenEdgePadding => screenEdgePadding;
         public float MaxHealth => maxHealth;
         public float HitboxRadius => hitboxRadius;

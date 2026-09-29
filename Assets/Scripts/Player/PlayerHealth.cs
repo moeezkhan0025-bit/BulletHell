@@ -14,6 +14,8 @@ namespace BulletHell.Player
         [SerializeField] private PlayerData data;
         [Tooltip("Sprite that blinks while invulnerable. Only its tint is touched, never the art.")]
         [SerializeField] private SpriteRenderer body;
+        [Tooltip("Centre of the small damage hitbox, at the middle of the body (under the visuals). Empty = the root.")]
+        [SerializeField] private Transform core;
 
         private Health health;
         private RunManager run;
@@ -25,7 +27,10 @@ namespace BulletHell.Player
         public bool IsAlive => health.IsAlive;
         public bool IsInvulnerable => invulnerableLeft > 0f;
         public bool CanBeHit => health.IsAlive && invulnerableLeft <= 0f;
-        public Vector2 Position => transform.position;
+        /// <summary>Where enemy bullets aim and hit: the damage core at the body's centre.</summary>
+        public Vector2 Position => core != null ? core.position : transform.position;
+        /// <summary>Where the player stands on the floor (traps, coins, spawn distances use this).</summary>
+        public Vector2 FeetPosition => transform.position;
         public float HitRadius => data.HitboxRadius;
 
         private void Awake()

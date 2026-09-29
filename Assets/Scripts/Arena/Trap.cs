@@ -1,4 +1,5 @@
 using BulletHell.Core;
+using BulletHell.Enemies;
 using BulletHell.Player;
 using UnityEngine;
 
@@ -13,6 +14,7 @@ namespace BulletHell.Arena
     public sealed class Trap : MonoBehaviour
     {
         private const float IdleAlpha = 0.14f;
+        private const float CandidateMargin = 0.6f;
         private static readonly Collider2D[] EnemyBuffer = new Collider2D[64];
 
         [SerializeField] private SpriteRenderer art;
@@ -43,6 +45,7 @@ namespace BulletHell.Arena
 
             Sprite sprite = data.Sprite != null ? data.Sprite : (data.IsBox ? squareSprite : circleSprite);
             art.sprite = sprite;
+            art.sortingLayerID = SortingLayers.Id(SortingLayers.Ground);
             Vector2 spriteSize = sprite != null ? (Vector2)sprite.bounds.size : Vector2.one;
             Vector2 area = data.IsBox ? data.Size : new Vector2(data.Size.x * 2f, data.Size.x * 2f);
             art.transform.localScale = new Vector3(area.x / spriteSize.x, area.y / spriteSize.y, 1f);
@@ -78,24 +81,30 @@ namespace BulletHell.Arena
         {
             if (data.HurtsEnemies && data.DamageToEnemies > 0f)
             {
+                // The physics query only finds candidates (hurtboxes stand over the feet, so it is inflated a little);
+                // what counts is the enemy's footprint on the floor, like for the player.
                 Vector2 center = transform.position;
                 int count = data.IsBox
-                    ? Physics2D.OverlapBox(center, data.Size, angle, enemyFilter, EnemyBuffer)
-                    : Physics2D.OverlapCircle(center, data.Size.x, enemyFilter, EnemyBuffer);
+                    ? Physics2D.OverlapBox(center, data.Size + Vector2.one * CandidateMargin * 2f, angle, enemyFilter, EnemyBuffer)
+                    : Physics2D.OverlapCircle(center, data.Size.x + CandidateMargin, enemyFilter, EnemyBuffer);
                 for (int i = 0; i < count; i++)
                 {
-                    if (EnemyBuffer[i].TryGetComponent(out IDamageable target) && target.IsAlive)
-                        target.TakeDamage(data.DamageToEnemies);
+                    Collider2D candidate = EnemyBuffer[i];
+                    if (!candidate.TryGetComponent(out IDamageable target) || !target.IsAlive)
+                        continue;
+                    if (candidate.TryGetComponent(out Enemy enemy) && !FootprintInside(enemy.Position, enemy.FootprintRadius))
+                        continue;
+                    target.TakeDamage(data.DamageToEnemies);
                 }
             }
 
-            if (data.HurtsPlayer && player != null && player.CanBeHit && PlayerInside())
+            if (data.HurtsPlayer && player != null && player.CanBeHit && FootprintInside(player.FeetPosition, player.HitRadius))
                 player.TryHit(data.DamageToPlayer);
         }
 
-        private bool PlayerInside() => data.IsBox
-            ? TrapShape.CircleOverlapsBox(transform.position, data.Size, angle, player.Position, player.HitRadius)
-            : TrapShape.CircleOverlapsCircle(transform.position, data.Size.x, player.Position, player.HitRadius);
+        private bool FootprintInside(Vector2 feet, float radius) => data.IsBox
+            ? TrapShape.CircleOverlapsBox(transform.position, data.Size, angle, feet, radius)
+            : TrapShape.CircleOverlapsCircle(transform.position, data.Size.x, feet, radius);
 
         private void ApplyLook()
         {

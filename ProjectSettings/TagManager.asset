@@ -38,8 +38,20 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 7500
+    locked: 0
+  - name: Ground
+    uniqueID: 7501
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Bullets
+    uniqueID: 7503
+    locked: 0
+  - name: Foreground
+    uniqueID: 7504
     locked: 0
   m_RenderingLayers:
   - Default

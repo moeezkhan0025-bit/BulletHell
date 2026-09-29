@@ -1,35 +1,46 @@
 using System;
 using BulletHell.Core;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace BulletHell.Arena
 {
     /// <summary>
-    /// A placed obstacle. It blocks movement (through the arena grid) and every bullet: player bullets and beams hit its
-    /// collider (layer Obstacle), enemy bullets hit its grid cells. Solid ones are indestructible. Breakable ones are
-    /// damaged by any bullet, tint through damage stages, and on breaking turn into non-blocking debris.
-    /// The collider is on this object; the art is on the Art child so it can be scaled freely.
+    /// A placed obstacle. The object sits at the centre of its flat footprint, which is what blocks movement (through
+    /// the arena grid). Bullets are blocked by the footprint plus a vertical reach (the body above it): enemy bullets by
+    /// the bullet grid, player bullets and beams by this object's collider (layer Obstacle), which has the same shape.
+    /// Solid ones are indestructible. Breakable ones are damaged by any bullet, tint through damage stages, and on
+    /// breaking turn into non-blocking debris on the ground layer.
+    /// The art is a taller sprite on the Art child, hanging up from the footprint; a SortingGroup on this object sorts
+    /// it by the footprint (feet) position against everything else.
     /// </summary>
     public sealed class Obstacle : MonoBehaviour, IDamageable
     {
-        private const int ObstacleSortingOrder = 1;
-        private const int DebrisSortingOrder = -8;
+        private const int EllipseSegments = 24;
 
         [SerializeField] private SpriteRenderer art;
         [SerializeField] private BoxCollider2D boxCollider;
-        [SerializeField] private CircleCollider2D circleCollider;
+        [Tooltip("Bullet-blocking shape of ellipse footprints.")]
+        [SerializeField] private PolygonCollider2D ellipseCollider;
+        [SerializeField] private SortingGroup sortingGroup;
 
         private ObstacleData data;
         private Sprite sprite;
-        private Vector2 size;
-        private ArenaGrid grid;
+        private Vector2 footprint;
+        private Vector2 artSize;
+        private float reach;
+        private ArenaGrid moveGrid;
+        private ArenaGrid bulletGrid;
         private float health;
         private int stage;
+        private Vector2[] ellipsePath;
 
         public int Id { get; private set; }
         public bool IsBroken { get; private set; }
         public ObstacleData Data => data;
         public float Health => health;
+        /// <summary>The footprint on the floor: width x depth.</summary>
+        public Vector2 Footprint => footprint;
         /// <summary>The current damage stage (0 = undamaged).</summary>
         public int Stage => stage;
 
@@ -39,38 +50,55 @@ namespace BulletHell.Arena
         /// <summary>Raised once when a breakable breaks.</summary>
         public event Action<Obstacle> Broken;
 
-        /// <summary>Fills this (pooled) object in for a placement. Call Register to put it into the grid.</summary>
-        public void Setup(ObstacleData obstacleData, Vector2 position, Vector2 obstacleSize, int id, Sprite squareSprite, Sprite circleSprite)
+        private bool IsEllipse => data.Shape == ObstacleShape.Circle;
+
+        /// <summary>Fills this (pooled) object in for a placement. Call Register to put it into the grids.</summary>
+        /// <param name="footprintSize">Width x depth of the footprint on the floor.</param>
+        /// <param name="bulletReach">How far above the footprint bullets are still blocked (PerspectiveTuning).</param>
+        public void Setup(ObstacleData obstacleData, Vector2 position, Vector2 footprintSize, int id, Sprite squareSprite, Sprite circleSprite,
+                          float bulletReach = 0f)
         {
             data = obstacleData;
             Id = id;
-            size = obstacleSize;
-            sprite = data.Sprite != null ? data.Sprite : (data.Shape == ObstacleShape.Circle ? circleSprite : squareSprite);
+            footprint = footprintSize;
+            reach = Mathf.Max(0f, bulletReach);
+            artSize = data.ArtSizeFor(footprint);
+            sprite = data.Sprite != null ? data.Sprite : (IsEllipse ? circleSprite : squareSprite);
             transform.position = position;
             transform.rotation = Quaternion.identity;
 
-            bool circle = data.Shape == ObstacleShape.Circle;
-            boxCollider.size = size;
-            boxCollider.offset = Vector2.zero;
-            circleCollider.radius = size.x * 0.5f;
-            circleCollider.offset = Vector2.zero;
-            boxCollider.enabled = !circle;
-            circleCollider.enabled = circle;
+            // Player bullets: one collider that covers the footprint and the reach above it.
+            boxCollider.size = new Vector2(footprint.x, footprint.y + reach);
+            boxCollider.offset = new Vector2(0f, reach * 0.5f);
+            if (IsEllipse)
+                ellipseCollider.SetPath(0, BuildEllipsePath(footprint * 0.5f, reach));
             Restore();
         }
 
-        public void Register(ArenaGrid arenaGrid)
+        /// <param name="movement">Grid that blocks walking (the plain footprint).</param>
+        /// <param name="bullets">Grid that blocks enemy bullets (footprint plus reach). Null = none.</param>
+        public void Register(ArenaGrid movement, ArenaGrid bullets = null)
         {
-            grid = arenaGrid;
+            moveGrid = movement;
+            bulletGrid = bullets;
             if (IsBroken)
                 return;
-            if (data.Shape == ObstacleShape.Circle)
-                grid.AddCircle(transform.position, size.x * 0.5f, Id);
+
+            Vector2 center = transform.position;
+            Vector2 half = footprint * 0.5f;
+            if (IsEllipse)
+            {
+                movement.AddEllipse(center, half, Id);
+                bullets?.AddEllipseReachingUp(center, half, reach, Id);
+            }
             else
-                grid.AddBox(transform.position, size, Id);
+            {
+                movement.AddBox(center, footprint, Id);
+                bullets?.AddBox(center + new Vector2(0f, reach * 0.5f), new Vector2(footprint.x, footprint.y + reach), Id);
+            }
         }
 
-        /// <summary>Back to standing and undamaged (the start of a round). The caller re-registers it in a cleared grid.</summary>
+        /// <summary>Back to standing and undamaged (the start of a round). The caller re-registers it in cleared grids.</summary>
         public void Restore()
         {
             IsBroken = false;
@@ -104,16 +132,16 @@ namespace BulletHell.Arena
         {
             IsBroken = true;
             SetCollidersEnabled(false);
-            grid?.ClearOwner(Id);
+            moveGrid?.ClearOwner(Id);
+            bulletGrid?.ClearOwner(Id);
             ApplyLook();
             Broken?.Invoke(this);
         }
 
         private void SetCollidersEnabled(bool enabled)
         {
-            bool circle = data.Shape == ObstacleShape.Circle;
-            boxCollider.enabled = enabled && !circle;
-            circleCollider.enabled = enabled && circle;
+            boxCollider.enabled = enabled && !IsEllipse;
+            ellipseCollider.enabled = enabled && IsEllipse;
         }
 
         private void ApplyLook()
@@ -121,8 +149,19 @@ namespace BulletHell.Arena
             art.sprite = sprite;
             Vector2 spriteSize = sprite != null ? (Vector2)sprite.bounds.size : Vector2.one;
             float fraction = IsBroken ? data.DebrisScale : 1f;
-            art.transform.localScale = new Vector3(size.x / spriteSize.x * fraction, size.y / spriteSize.y * fraction, 1f);
-            art.sortingOrder = IsBroken ? DebrisSortingOrder : ObstacleSortingOrder;
+            Vector2 drawn = artSize * fraction;
+            var scale = new Vector2(drawn.x / spriteSize.x, drawn.y / spriteSize.y);
+            art.transform.localScale = new Vector3(scale.x, scale.y, 1f);
+
+            // The art's bottom edge rests on the front edge of the footprint, whatever the sprite's pivot is.
+            float bottom = sprite != null ? sprite.bounds.min.y : -0.5f;
+            art.transform.localPosition = new Vector3(0f, -footprint.y * 0.5f - bottom * scale.y, 0f);
+
+            if (sortingGroup != null)
+            {
+                sortingGroup.sortingLayerID = SortingLayers.Id(IsBroken ? SortingLayers.Ground : SortingLayers.Characters);
+                sortingGroup.sortingOrder = 0;
+            }
 
             Color color = data.Color;
             if (IsBroken)
@@ -135,6 +174,28 @@ namespace BulletHell.Arena
                 color = new Color(color.r * tint.r, color.g * tint.g, color.b * tint.b, color.a * tint.a);
             }
             art.color = color;
+        }
+
+        /// <summary>
+        /// Outline of an ellipse footprint that also covers the reach above it: the lower half of the ellipse at the
+        /// feet, the upper half moved up by the reach. Convex, in this object's local space.
+        /// </summary>
+        private Vector2[] BuildEllipsePath(Vector2 radii, float upReach)
+        {
+            int half = EllipseSegments / 2;
+            ellipsePath ??= new Vector2[EllipseSegments + 2];
+            int n = 0;
+            for (int i = 0; i <= half; i++)                  // upper half, moved up by the reach
+            {
+                float angle = i * (2f * Mathf.PI / EllipseSegments);
+                ellipsePath[n++] = new Vector2(Mathf.Cos(angle) * radii.x, Mathf.Sin(angle) * radii.y + upReach);
+            }
+            for (int i = half; i <= EllipseSegments; i++)    // lower half, at the feet
+            {
+                float angle = i * (2f * Mathf.PI / EllipseSegments);
+                ellipsePath[n++] = new Vector2(Mathf.Cos(angle) * radii.x, Mathf.Sin(angle) * radii.y);
+            }
+            return ellipsePath;
         }
     }
 }

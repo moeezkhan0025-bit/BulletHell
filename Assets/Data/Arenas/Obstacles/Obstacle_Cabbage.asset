@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: BulletHell::BulletHell.Arena.ObstacleData
   kind: 1
   shape: 1
-  size: {x: 0.9, y: 0.9}
-  sprite: {fileID: 0}
-  color: {r: 0.5, g: 0.8, b: 0.4, a: 1}
+  size: {x: 0.8, y: 0.5}
+  sprite: {fileID: 21300000, guid: 4d58ddcfe65351843b2e214eff9ee9c7, type: 3}
+  artSize: {x: 0.95, y: 0.9}
+  color: {r: 1, g: 1, b: 1, a: 1}
   maxHealth: 25
   stageTints:
   - {r: 1, g: 1, b: 1, a: 1}

@@ -3,6 +3,7 @@
     "rootNamespace": "BulletHell.Tests",
     "references": [
         "BulletHell",
+        "Unity.InputSystem",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

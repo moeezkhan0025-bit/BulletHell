@@ -75,7 +75,7 @@ namespace BulletHell.Pickups
             if (dt <= 0f || !player.IsAlive)
                 return;
 
-            Vector2 target = player.Position;
+            Vector2 target = player.FeetPosition;
             float collectSqr = tuning.CollectRadius * tuning.CollectRadius;
             float magnetSqr = tuning.MagnetRadius * tuning.MagnetRadius;
 

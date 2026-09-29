@@ -49,8 +49,11 @@ namespace BulletHell.Core
         [SerializeField] private DifficultyCurve difficulty;
         [Tooltip("The arena for rounds that don't name one.")]
         [SerializeField] private ArenaData defaultArena;
+        [Tooltip("How the 3/4 art sits over the flat gameplay plane (footprints, bullet reach, hurtboxes).")]
+        [SerializeField] private PerspectiveTuning perspective;
 
         public AssetRegistry Registry => registry;
+        public PerspectiveTuning Perspective => perspective != null ? perspective : PerspectiveTuning.Fallback;
         public DifficultyCurve Difficulty => difficulty;
         public ArenaData DefaultArena => defaultArena;
 

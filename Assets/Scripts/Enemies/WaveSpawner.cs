@@ -150,10 +150,10 @@ namespace BulletHell.Enemies
             if (request.Pattern == SpawnPattern.Gates && inArena && arena.Gates.Count > 0)
                 position = SpawnPlacement.GatePosition(gateCounter++, arena.Gates, tuning.GateJitter);
             else
-                position = SpawnPlacement.Position(request.Pattern, request.Index, request.Count, SpawnRect(), player.Position,
+                position = SpawnPlacement.Position(request.Pattern, request.Index, request.Count, SpawnRect(), player.FeetPosition,
                                                    tuning.MinSpawnDistanceFromPlayer, tuning.RingRadius, tuning.RowWidthFraction);
             if (inArena)
-                position = arena.Grid.NearestFree(position, request.Enemy.Size * 0.5f);   // never inside an obstacle or wall
+                position = arena.Grid.NearestFree(position, GameServices.Ensure().Config.Perspective.EnemyFootprintRadiusFor(request.Enemy.Size));   // never inside an obstacle or wall
 
             Enemy enemy = enemyPool.Get();
             enemy.Initialize(request.Enemy, position, difficulty, projectiles, player, inArena ? arena : null);

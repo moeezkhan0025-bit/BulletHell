@@ -4,23 +4,28 @@ namespace BulletHell.Arena
 {
     public enum ObstacleKind { Solid, Breakable }
 
+    /// <summary>Shape of the footprint on the floor. Circle is an ellipse when the footprint is wider than deep.</summary>
     public enum ObstacleShape { Box, Circle }
 
     /// <summary>
     /// One kind of obstacle. Both kinds block movement and every bullet. Solid ones are permanent and indestructible;
     /// breakable ones take damage from any bullet, look worse in stages, then break into non-blocking debris.
+    /// The gameplay shape is a flat footprint at the base (width x depth); the art is a separate, taller sprite with
+    /// its pivot at the base that overlaps whatever is behind it.
     /// </summary>
     [CreateAssetMenu(fileName = "Obstacle_", menuName = "BulletHell/Obstacle Data")]
     public sealed class ObstacleData : ScriptableObject
     {
         [SerializeField] private ObstacleKind kind = ObstacleKind.Solid;
         [SerializeField] private ObstacleShape shape = ObstacleShape.Box;
-        [Tooltip("Box: width x height. Circle: x is the diameter. A placement can override it.")]
+        [Tooltip("The footprint on the floor: width x depth (Circle = ellipse). A placement can override it.")]
         [SerializeField] private Vector2 size = Vector2.one;
 
         [Header("Look")]
-        [Tooltip("Optional art. Empty = the placeholder square / circle.")]
+        [Tooltip("Optional art, pivot at the base. Empty = the placeholder square / circle.")]
         [SerializeField] private Sprite sprite;
+        [Tooltip("Drawn size of the art: width x height (the tall body above the footprint). Zero = same as the footprint.")]
+        [SerializeField] private Vector2 artSize;
         [SerializeField] private Color color = new Color(0.55f, 0.5f, 0.45f);
 
         [Header("Breakable only")]
@@ -33,6 +38,7 @@ namespace BulletHell.Arena
 
         public ObstacleKind Kind => kind;
         public ObstacleShape Shape => shape;
+        /// <summary>The footprint: width x depth.</summary>
         public Vector2 Size => size;
         public Sprite Sprite => sprite;
         public Color Color => color;
@@ -41,6 +47,14 @@ namespace BulletHell.Arena
         public Color DebrisColor => debrisColor;
         public float DebrisScale => debrisScale;
         public bool IsBreakable => kind == ObstacleKind.Breakable;
+
+        /// <summary>Drawn size of the art for a placed footprint: width follows the footprint width, extra footprint depth adds to the height (the visible top face).</summary>
+        public Vector2 ArtSizeFor(Vector2 footprint)
+        {
+            if (artSize == Vector2.zero || size.x <= 0f)
+                return footprint;
+            return new Vector2(artSize.x * footprint.x / size.x, Mathf.Max(0.05f, artSize.y + footprint.y - size.y));
+        }
 
 #if UNITY_EDITOR
         /// <summary>Editor-only: used by the setup script and tests.</summary>
@@ -51,6 +65,14 @@ namespace BulletHell.Arena
             size = newSize;
             color = newColor;
             maxHealth = health;
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
+
+        /// <summary>Editor-only: the art and its drawn size.</summary>
+        public void ConfigureArt(Sprite newSprite, Vector2 newArtSize)
+        {
+            sprite = newSprite;
+            artSize = newArtSize;
             UnityEditor.EditorUtility.SetDirty(this);
         }
 #endif

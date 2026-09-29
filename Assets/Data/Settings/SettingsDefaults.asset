@@ -17,7 +17,7 @@ MonoBehaviour:
   sfxVolume: 0.8
   screenShake: 1
   vibration: 1
-  showDebugOverlay: 1
+  showDebugOverlay: 0
   fullscreen: 1
   aimSensitivity: 1
   minAimSensitivity: 0.6

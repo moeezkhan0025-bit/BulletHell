@@ -62,6 +62,30 @@ namespace BulletHell.Arena
             ForCells(center - extent, center + extent, (c, r) => DistanceSqrToCell(center, c, r) < radius * radius, owner);
         }
 
+        /// <summary>Marks every cell an axis-aligned ellipse (the flat footprint of a pillar or crate) touches as owned.</summary>
+        public void AddEllipse(Vector2 center, Vector2 radii, int owner)
+        {
+            radii = new Vector2(Mathf.Max(0.001f, radii.x), Mathf.Max(0.001f, radii.y));
+            ForCells(center - radii, center + radii, (c, r) =>
+            {
+                float minX = Bounds.xMin + c * CellSize, minY = Bounds.yMin + r * CellSize;
+                float dx = Mathf.Max(minX - center.x, 0f, center.x - (minX + CellSize)) / radii.x;
+                float dy = Mathf.Max(minY - center.y, 0f, center.y - (minY + CellSize)) / radii.y;
+                return dx * dx + dy * dy < 1f;
+            }, owner);
+        }
+
+        /// <summary>
+        /// Marks the area an ellipse covers while sliding up by reach (the footprint plus the body above it that bullets
+        /// can hit): the ellipse is stamped along the way in steps of half a cell.
+        /// </summary>
+        public void AddEllipseReachingUp(Vector2 center, Vector2 radii, float reach, int owner)
+        {
+            int steps = Mathf.Max(1, Mathf.CeilToInt(reach / (CellSize * 0.5f)));
+            for (int i = 0; i <= steps; i++)
+                AddEllipse(center + new Vector2(0f, reach * i / steps), radii, owner);
+        }
+
         /// <summary>Frees every cell owned by an obstacle (it broke).</summary>
         public void ClearOwner(int owner)
         {

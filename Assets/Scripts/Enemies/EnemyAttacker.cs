@@ -35,6 +35,9 @@ namespace BulletHell.Enemies
             enabled = false;
         }
 
+        /// <summary>Where bullets come out (the enemy's body centre). Empty = this object's own position.</summary>
+        public Transform Muzzle { get; set; }
+
         public void Bind(ProjectilePool bulletPool, PlayerHealth player)
         {
             pool = bulletPool;
@@ -84,7 +87,7 @@ namespace BulletHell.Enemies
 
         private void Fire(int index, AttackPattern pattern)
         {
-            Vector2 origin = transform.position;
+            Vector2 origin = Muzzle != null ? Muzzle.position : transform.position;
             Vector2 toPlayer = target.Position - origin;
             float aimAngle = Mathf.Atan2(toPlayer.y, toPlayer.x) * Mathf.Rad2Deg;
 

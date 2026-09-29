@@ -15,7 +15,7 @@ namespace BulletHell.Settings
         public bool screenShake = true;
         public bool vibration = true;
         public float aimSensitivity = 1f;
-        public bool showDebugOverlay = true;
+        public bool showDebugOverlay = false;
         public bool fullscreen = true;
         /// <summary>Window/screen size on PC. 0 x 0 = leave it as the platform has it.</summary>
         public int resolutionWidth;

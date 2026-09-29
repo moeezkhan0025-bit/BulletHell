@@ -229,14 +229,14 @@ namespace BulletHell.Tests
 
         private static Obstacle NewObstacle(ObstacleData data, ArenaGrid grid, int id)
         {
-            var go = new GameObject("test obstacle", typeof(BoxCollider2D), typeof(CircleCollider2D));
+            var go = new GameObject("test obstacle", typeof(BoxCollider2D), typeof(PolygonCollider2D));
             var art = new GameObject("Art", typeof(SpriteRenderer));
             art.transform.SetParent(go.transform, false);
             var obstacle = go.AddComponent<Obstacle>();
             var so = new UnityEditor.SerializedObject(obstacle);
             so.FindProperty("art").objectReferenceValue = art.GetComponent<SpriteRenderer>();
             so.FindProperty("boxCollider").objectReferenceValue = go.GetComponent<BoxCollider2D>();
-            so.FindProperty("circleCollider").objectReferenceValue = go.GetComponent<CircleCollider2D>();
+            so.FindProperty("ellipseCollider").objectReferenceValue = go.GetComponent<PolygonCollider2D>();
             so.ApplyModifiedPropertiesWithoutUndo();
             obstacle.Setup(data, Vector2.zero, Vector2.one, id, null, null);
             obstacle.Register(grid);

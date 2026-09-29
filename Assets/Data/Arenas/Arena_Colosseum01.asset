@@ -15,9 +15,8 @@ MonoBehaviour:
   size: {x: 16, y: 9}
   playerSpawn: {x: 0, y: -3.2}
   spawnGates:
-  - {x: -4, y: 3.7}
-  - {x: 0, y: 3.7}
-  - {x: 4, y: 3.7}
+  - {x: -5, y: 3.8}
+  - {x: 5, y: 3.8}
   - {x: -7.2, y: 0.5}
   - {x: 7.2, y: 0.5}
   obstacles:
@@ -68,6 +67,6 @@ MonoBehaviour:
     Position: {x: -6, y: -2}
     Rotation: 0
     ExtraStartDelay: 0
-  floorColor: {r: 0.86, g: 0.78, b: 0.55, a: 1}
-  wallColor: {r: 0.45, g: 0.3, b: 0.2, a: 1}
-  standsColor: {r: 0.25, g: 0.5, b: 0.25, a: 1}
+  floorColor: {r: 0.95, g: 0.72, b: 0.48, a: 1}
+  wallColor: {r: 0.85, g: 0.72, b: 0.55, a: 1}
+  standsColor: {r: 0.16, g: 0.1, b: 0.14, a: 1}

@@ -17,6 +17,8 @@ namespace BulletHell.Weapons
         [SerializeField] private string id;
         [SerializeField] private string displayName = "Basic";
         [SerializeField] private Sprite projectileSprite;
+        [Tooltip("HUD icon of the ammo slot. Empty = a plain square in the ammo colour.")]
+        [SerializeField] private Sprite icon;
         [Tooltip("Colour of the pickup and of the laser beam.")]
         [SerializeField] private Color tint = Color.white;
 
@@ -58,6 +60,7 @@ namespace BulletHell.Weapons
         public string Id => id;
         public string DisplayName => displayName;
         public Sprite ProjectileSprite => projectileSprite;
+        public Sprite Icon => icon;
         public Color Tint => tint;
         public AmmoBehavior Behavior => behavior;
         public float MaxLifetime => maxLifetime;

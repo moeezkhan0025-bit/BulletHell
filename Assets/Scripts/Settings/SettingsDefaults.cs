@@ -12,7 +12,7 @@ namespace BulletHell.Settings
         [SerializeField, Range(0f, 1f)] private float sfxVolume = 0.8f;
         [SerializeField] private bool screenShake = true;
         [SerializeField] private bool vibration = true;
-        [SerializeField] private bool showDebugOverlay = true;
+        [SerializeField] private bool showDebugOverlay = false;
         [SerializeField] private bool fullscreen = true;
 
         [Header("Aim sensitivity")]

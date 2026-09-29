@@ -155,6 +155,7 @@ namespace BulletHell.Weapons
             line.useWorldSpace = true;
             line.positionCount = 2;
             line.sharedMaterial = beamMaterial;
+            line.sortingLayerID = SortingLayers.Id(SortingLayers.Bullets);
             line.sortingOrder = beamSortingOrder;
             line.numCapVertices = 2;
             line.enabled = false;
