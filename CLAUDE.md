@@ -307,7 +307,7 @@ Docs/Reference/ (concept art and references, OUTSIDE Assets so Unity doesn't imp
       layered placeholder arena (floor/back wall/foreground), combat HUD (portrait, 5 hearts, heat bar, 4 ammo slots with glyphs).
 - [x] M7.6 Jump: R2 jump with fake height (arc, shadow, squash/stretch, dust), pass over enemies/contact damage/
       ground traps, still hit by bullets and blocked by obstacles, airborne sorting, landing push-out.
-- [ ] M7.7 Arm ring: arms on a flattened ellipse around the feet, front/back sorting around the body,
+- [x] M7.7 Arm ring: arms on a flattened ellipse around the feet, front/back sorting around the body,
       locked aim slides along the ellipse, muzzles/bullet spawn consistent, bullet height + damage-core
       position consistent with ground-plane collision, ArmRingTuning.
 - [ ] M8 Enemy AI rework: flow-field navigation + separation, line of sight, Chaser / Skirmisher /
