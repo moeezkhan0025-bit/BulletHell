@@ -23,6 +23,8 @@ namespace BulletHell.Player
         [Header("Air rules")]
         [Tooltip("Move speed while airborne, as a multiple of the ground speed (1 = full steering).")]
         [SerializeField, Range(0f, 1f)] private float airControl = 1f;
+        [Tooltip("The body must be at least this high (world units) to pass over Low obstacles. ART_SPEC: the apex lifts the body >= 0.7 P; this must stay below Max Height.")]
+        [SerializeField, Min(0f)] private float lowClearHeight = 0.45f;
         [Tooltip("On: enemy bullets pass through the player while airborne. Off (default): still hit, it stays a bullet hell.")]
         [SerializeField] private bool jumpDodgesBullets;
 
@@ -59,6 +61,7 @@ namespace BulletHell.Player
         public float CooldownAfterLanding => cooldownAfterLanding;
         public float AirControl => airControl;
         public bool JumpDodgesBullets => jumpDodgesBullets;
+        public float LowClearHeight => Mathf.Min(lowClearHeight, maxHeight * 0.95f);
         public float ApexScale => apexScale;
         public Vector2 TakeoffSquash => takeoffSquash;
         public float TakeoffSquashSeconds => takeoffSquashSeconds;

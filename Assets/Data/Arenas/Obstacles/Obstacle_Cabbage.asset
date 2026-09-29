@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BulletHell::BulletHell.Arena.ObstacleData
   kind: 1
   shape: 1
+  heightClass: 0
   size: {x: 0.8, y: 0.5}
   sprite: {fileID: 21300000, guid: 4d58ddcfe65351843b2e214eff9ee9c7, type: 3}
   artSize: {x: 0.95, y: 0.9}

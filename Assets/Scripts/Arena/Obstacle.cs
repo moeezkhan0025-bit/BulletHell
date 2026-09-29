@@ -31,6 +31,8 @@ namespace BulletHell.Arena
         private float reach;
         private ArenaGrid moveGrid;
         private ArenaGrid bulletGrid;
+        private ArenaGrid tallGrid;
+        private float fade = 1f;
         private float health;
         private int stage;
         private Vector2[] ellipsePath;
@@ -38,6 +40,10 @@ namespace BulletHell.Arena
         public int Id { get; private set; }
         public bool IsBroken { get; private set; }
         public ObstacleData Data => data;
+        public bool IsLow => data != null && data.IsLow;
+        /// <summary>Drawn size of the art (width x height); the fade uses it to know what "behind" means.</summary>
+        public Vector2 ArtSize => artSize;
+        public SpriteRenderer Art => art;
         public float Health => health;
         /// <summary>The footprint on the floor: width x depth.</summary>
         public Vector2 Footprint => footprint;
@@ -77,24 +83,31 @@ namespace BulletHell.Arena
 
         /// <param name="movement">Grid that blocks walking (the plain footprint).</param>
         /// <param name="bullets">Grid that blocks enemy bullets (footprint plus reach). Null = none.</param>
-        public void Register(ArenaGrid movement, ArenaGrid bullets = null)
+        /// <param name="tall">Grid of what still blocks a player high enough to clear Low obstacles: only Tall ones are added. Null = none.</param>
+        public void Register(ArenaGrid movement, ArenaGrid bullets = null, ArenaGrid tall = null)
         {
             moveGrid = movement;
             bulletGrid = bullets;
+            tallGrid = tall;
             if (IsBroken)
                 return;
 
             Vector2 center = transform.position;
             Vector2 half = footprint * 0.5f;
+            bool inTall = tall != null && !IsLow;
             if (IsEllipse)
             {
                 movement.AddEllipse(center, half, Id);
                 bullets?.AddEllipseReachingUp(center, half, reach, Id);
+                if (inTall)
+                    tall.AddEllipse(center, half, Id);
             }
             else
             {
                 movement.AddBox(center, footprint, Id);
                 bullets?.AddBox(center + new Vector2(0f, reach * 0.5f), new Vector2(footprint.x, footprint.y + reach), Id);
+                if (inTall)
+                    tall.AddBox(center, footprint, Id);
             }
         }
 
@@ -104,6 +117,7 @@ namespace BulletHell.Arena
             IsBroken = false;
             health = data.MaxHealth;
             stage = 0;
+            fade = 1f;
             SetCollidersEnabled(true);
             ApplyLook();
         }
@@ -134,6 +148,7 @@ namespace BulletHell.Arena
             SetCollidersEnabled(false);
             moveGrid?.ClearOwner(Id);
             bulletGrid?.ClearOwner(Id);
+            tallGrid?.ClearOwner(Id);
             ApplyLook();
             Broken?.Invoke(this);
         }
@@ -163,17 +178,39 @@ namespace BulletHell.Arena
                 sortingGroup.sortingOrder = 0;
             }
 
+            ApplyColor();
+        }
+
+        private void ApplyColor()
+        {
             Color color = data.Color;
             if (IsBroken)
             {
                 color = data.DebrisColor;
             }
-            else if (data.IsBreakable && stage < data.StageTints.Length)
+            else
             {
-                Color tint = data.StageTints[stage];
-                color = new Color(color.r * tint.r, color.g * tint.g, color.b * tint.b, color.a * tint.a);
+                if (data.IsBreakable && stage < data.StageTints.Length)
+                {
+                    Color tint = data.StageTints[stage];
+                    color = new Color(color.r * tint.r, color.g * tint.g, color.b * tint.b, color.a * tint.a);
+                }
+                color.a *= fade;
             }
             art.color = color;
+        }
+
+        /// <summary>Opacity multiplier of the art (1 = opaque). A Tall obstacle fades while something stands behind it.</summary>
+        public float Fade => fade;
+
+        public void SetFade(float alpha)
+        {
+            alpha = Mathf.Clamp01(alpha);
+            if (Mathf.Approximately(alpha, fade))
+                return;
+            fade = alpha;
+            if (data != null)
+                ApplyColor();
         }
 
         /// <summary>

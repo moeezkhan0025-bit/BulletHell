@@ -17,5 +17,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7dd13a398efa3f9408d2afb21218510c, type: 2}
   - {fileID: 11400000, guid: f33b778c644eded4e90dc13c7b4ef966, type: 2}
   isBossRound: 0
-  arena: {fileID: 0}
+  layout: {fileID: 11400000, guid: 84f8c1a0493b641409d8a8cea7b1e647, type: 2}
+  hazardBudget:
+    Vents: 3
+    Skewers: 0
+    Zones: 0
+    LowObstacles: 3
+    TallObstacles: 4
+    Breakables: 2
   waveBreatherSeconds: 2.5

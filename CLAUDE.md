@@ -356,13 +356,13 @@ Docs/Reference/ (concept art and references, OUTSIDE Assets so Unity doesn't imp
       layered placeholder arena (floor/back wall/foreground), combat HUD (portrait, 5 hearts, heat bar, 4 ammo slots with glyphs).
 - [x] M7.6 Jump: R2 jump with fake height (arc, shadow, squash/stretch, dust), pass over enemies/contact damage/
       ground traps, still hit by bullets and blocked by obstacles, airborne sorting, landing push-out.
-- [ ] M7.7 Arm ring: arms on a flattened ellipse around the feet, front/back sorting around the body,
+- [x] M7.7 Arm ring: arms on a flattened ellipse around the feet, front/back sorting around the body,
       locked aim slides along the ellipse, muzzles/bullet spawn consistent, bullet height + damage-core
       position consistent with ground-plane collision, ArmRingTuning.
 - [x] M8 Enemy AI rework: flow-field navigation + separation, line of sight, Chaser / Skirmisher /
       Mobile Sentry, convert existing enemies, retune rounds 1-7 for the arena. Enemies account for the
       player's jump (chasers keep tracking the shadow; chargers can be jumped).
-- [ ] M8.5 Arena progression + height classes: Low/Tall obstacle classes, jumping over Low obstacles,
+- [x] M8.5 Arena progression + height classes: Low/Tall obstacle classes, jumping over Low obstacles,
       Tall-obstacle fade when something is behind it, ArenaLayoutData per round with HazardBudget
       (round 1 has no traps/hazards, ramping up after), clear spawn areas and lanes, retune rounds 1-7.
 - [ ] Art scale test (Docs/ART_SPEC.md section 9), then vertical slice art for one arena.

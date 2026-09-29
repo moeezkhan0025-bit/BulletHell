@@ -41,12 +41,12 @@ namespace BulletHell.EditorTools
             new[] { new[] { "G:3:Gates" }, new[] { "G:3:Gates", "W:1:Scatter:1.5" } },                                          // 1
             new[] { new[] { "G:4:Gates" }, new[] { "W:2:Gates", "G:2:Scatter" }, new[] { "W:2:Gates", "G:3:Scatter" } },         // 2
             new[] { new[] { "G:4:Gates", "W:1:Scatter:2" }, new[] { "W:2:Gates", "C:1:Gates:1" }, new[] { "B:1:Gates", "G:2:Scatter:2" } }, // 3 boss
-            new[] { new[] { "G:3:Gates", "W:2:Scatter" }, new[] { "R:1:Gates", "G:3:Scatter:1" }, new[] { "C:2:Gates", "W:2:Scatter" } },   // 4
+            new[] { new[] { "G:3:Gates", "W:2:Scatter" }, new[] { "R:1:Gates", "G:3:Scatter:1" }, new[] { "C:1:Gates", "G:2:Scatter", "W:1:Scatter" } },   // 4 (vents from here: one fewer Charger)
             new[] { new[] { "R:1:Gates", "C:1:Gates:1", "G:3:Scatter" }, new[] { "N:1:Gates", "W:3:Scatter" }, new[] { "B:1:Gates", "R:1:Ring:1" } }, // 5 boss
             new[] { new[] { "G:4:Gates", "N:1:Scatter:1" }, new[] { "S:1:Gates", "W:2:Scatter", "C:1:Gates:1.5" },
-                    new[] { "R:1:Gates", "N:2:Scatter", "G:3:Scatter:1" }, new[] { "S:1:Gates", "C:2:Gates", "W:2:Scatter" } },      // 6
+                    new[] { "R:1:Gates", "N:2:Scatter", "G:3:Scatter:1" }, new[] { "S:1:Gates", "C:1:Gates", "W:2:Scatter" } },      // 6 (skewer + zone: one fewer Charger)
             new[] { new[] { "S:1:Gates", "R:1:Gates", "C:1:Gates:1", "G:3:Scatter" }, new[] { "N:2:Scatter", "W:3:Gates", "C:1:Gates:1.5" },
-                    new[] { "R:1:Gates", "S:1:Gates", "C:2:Gates", "N:1:Scatter" }, new[] { "B:1:Gates", "S:1:Gates", "R:1:Ring:1" } }, // 7 boss
+                    new[] { "R:1:Gates", "S:1:Gates", "C:1:Gates", "G:2:Scatter", "N:1:Scatter" }, new[] { "B:1:Gates", "S:1:Gates", "R:1:Ring:1" } }, // 7 boss
         };
 
         private static readonly int[] BossRounds = { 3, 5, 7 };
@@ -187,7 +187,8 @@ namespace BulletHell.EditorTools
 
         // ---------------------------------------------------------------- Waves, rounds, difficulty
 
-        private static void CreateWavesAndRounds()
+        /// <summary>Also called by M8.5 setup after it retuned the tables above for the new layouts.</summary>
+        internal static void CreateWavesAndRounds()
         {
             for (int r = 0; r < Rounds.Length; r++)
             {

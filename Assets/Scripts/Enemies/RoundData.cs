@@ -9,21 +9,25 @@ namespace BulletHell.Enemies
     {
         [SerializeField] private WaveData[] waves = new WaveData[0];
         [SerializeField] private bool isBossRound;
-        [Tooltip("The colosseum layout this round is fought in. Empty = the GameConfig's default arena.")]
-        [SerializeField] private ArenaData arena;
+        [Tooltip("What stands in the colosseum this round (obstacles, traps, spawn, gates). Empty = the GameConfig's default layout.")]
+        [SerializeField] private ArenaLayoutData layout;
+        [Tooltip("The most hazards and obstacles this round's layout may hold. Checked by the layout validator.")]
+        [SerializeField] private HazardBudget hazardBudget;
         [Tooltip("Seconds of calm between the end of one wave and the start of the next.")]
         [SerializeField, Min(0f)] private float waveBreatherSeconds = 2.5f;
 
         public WaveData[] Waves => waves;
         public bool IsBossRound => isBossRound;
-        public ArenaData Arena => arena;
+        public ArenaLayoutData Layout => layout;
+        public HazardBudget HazardBudget => hazardBudget;
         public float WaveBreatherSeconds => waveBreatherSeconds;
 
 #if UNITY_EDITOR
         /// <summary>Editor-only: used by setup scripts and tests.</summary>
-        public void SetArena(ArenaData newArena)
+        public void SetLayout(ArenaLayoutData newLayout, HazardBudget budget)
         {
-            arena = newArena;
+            layout = newLayout;
+            hazardBudget = budget;
             UnityEditor.EditorUtility.SetDirty(this);
         }
 

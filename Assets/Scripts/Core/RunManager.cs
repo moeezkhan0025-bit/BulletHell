@@ -34,6 +34,9 @@ namespace BulletHell.Core
 
         public bool HasRun => State != null;
 
+        /// <summary>Debug: the current round was started as a layout preview - no waves spawn and traps stay idle.</summary>
+        public bool IsLayoutPreview { get; private set; }
+
         public RunManager(GameConfig gameConfig, ISaveSystem save)
         {
             config = gameConfig;
@@ -111,7 +114,15 @@ namespace BulletHell.Core
         /// Debug: restart combat at any round. Only allowed from Pause (it is the pause screen's debug option); the run's
         /// loadout and currency are untouched, this round's uncollected earnings are dropped.
         /// </summary>
-        public bool DebugSkipToRound(int round)
+        public bool DebugSkipToRound(int round) => DebugEnterRound(round, false);
+
+        /// <summary>
+        /// Debug: show any round's arena layout to walk and jump around in. Like <see cref="DebugSkipToRound"/> but no
+        /// enemies spawn and traps stay idle, and the round never ends; pause and skip again to leave.
+        /// </summary>
+        public bool DebugPreviewLayout(int round) => DebugEnterRound(round, true);
+
+        private bool DebugEnterRound(int round, bool preview)
         {
             if (Machine.Current != GameState.Pause)
                 return false;
@@ -119,11 +130,13 @@ namespace BulletHell.Core
             if (!Machine.TryEnter(GameState.RoundIntro))
                 return false;
             StartRoundIntro();
+            IsLayoutPreview = preview;   // after the intro event, which resets it
             return true;
         }
 
         private void StartRoundIntro()
         {
+            IsLayoutPreview = false;
             RoundEarnings = 0;
             RoundIntroStarted?.Invoke(State.Round);
         }

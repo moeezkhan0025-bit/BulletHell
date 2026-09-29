@@ -16,6 +16,8 @@ namespace BulletHell.UI
         [SerializeField] private Button lowerButton;
         [SerializeField] private Button raiseButton;
         [SerializeField] private Button goButton;
+        [Tooltip("Shows the round's arena layout with no enemies and idle traps (walk and jump around it).")]
+        [SerializeField] private Button previewButton;
 
         private RunManager run;
         private int round = 1;
@@ -32,6 +34,8 @@ namespace BulletHell.UI
             lowerButton.onClick.AddListener(() => Change(-1));
             raiseButton.onClick.AddListener(() => Change(1));
             goButton.onClick.AddListener(() => run.DebugSkipToRound(round));
+            if (previewButton != null)
+                previewButton.onClick.AddListener(() => run.DebugPreviewLayout(round));
         }
 
         // Starts at the round being played every time the pause screen opens.
@@ -49,6 +53,6 @@ namespace BulletHell.UI
             Refresh();
         }
 
-        private void Refresh() => label.text = $"DEBUG  skip to round {round}";
+        private void Refresh() => label.text = $"DEBUG  round {round}";
     }
 }

@@ -52,7 +52,7 @@ namespace BulletHell.Arena
         /// <summary>Total height of the foreground band below the floor (railing plus front crowd, minus the overlap).</summary>
         public float FrontBand => railHeight - railOverlap + frontCrowdHeight;
 
-        public void Rebuild(ArenaData data)
+        public void Rebuild(ArenaData data, Vector2[] gates)
         {
             if (root != null)
                 Destroy(root.gameObject);
@@ -70,7 +70,7 @@ namespace BulletHell.Arena
 
             BuildStands(b, side, top, crowdBottom);
             BuildFloor(data, b);
-            BuildWalls(data, b, side, top);
+            BuildWalls(data, gates, b, side, top);
             BuildTorches(b, side, top);
             BuildForeground(b, side, railTop, railBottom, crowdBottom);
         }
@@ -111,7 +111,7 @@ namespace BulletHell.Arena
             }
         }
 
-        private void BuildWalls(ArenaData data, Rect b, float side, float top)
+        private void BuildWalls(ArenaData data, Vector2[] gates, Rect b, float side, float top)
         {
             Transform group = Group("Walls");
             Color stone = data.WallColor;
@@ -124,7 +124,7 @@ namespace BulletHell.Arena
             Add(group, "BackWallCap", squareSprite, Rect.MinMaxRect(b.xMin - side, top - 0.18f, b.xMax + side, top), new Color(stone.r * 0.7f, stone.g * 0.7f, stone.b * 0.7f), SortingLayers.Background, 12, false);
 
             // Gates: an arch in the back wall (or a door in a side wall) for every spawn gate of the arena.
-            foreach (Vector2 gate in data.SpawnGates)
+            foreach (Vector2 gate in gates)
             {
                 if (gate.y >= b.yMax - 1.5f)
                     BuildArch(group, gate.x, b.yMax, stone);

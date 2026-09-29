@@ -8,6 +8,13 @@ namespace BulletHell.Arena
     public enum ObstacleShape { Box, Circle }
 
     /// <summary>
+    /// How tall an obstacle stands (ART_SPEC section 3). Both classes block every bullet. Low ones (low walls, crates)
+    /// can be jumped over by the player, enemies path around them. Tall ones (pillars, big pumpkins) never can, and
+    /// fade when a character stands behind them. The arena boundary is a third, separate case: it always blocks.
+    /// </summary>
+    public enum ObstacleHeightClass { Low, Tall }
+
+    /// <summary>
     /// One kind of obstacle. Both kinds block movement and every bullet. Solid ones are permanent and indestructible;
     /// breakable ones take damage from any bullet, look worse in stages, then break into non-blocking debris.
     /// The gameplay shape is a flat footprint at the base (width x depth); the art is a separate, taller sprite with
@@ -18,6 +25,8 @@ namespace BulletHell.Arena
     {
         [SerializeField] private ObstacleKind kind = ObstacleKind.Solid;
         [SerializeField] private ObstacleShape shape = ObstacleShape.Box;
+        [Tooltip("Low = the player can jump over it (bullets still stop). Tall = never jumpable, fades when something is behind it.")]
+        [SerializeField] private ObstacleHeightClass heightClass = ObstacleHeightClass.Tall;
         [Tooltip("The footprint on the floor: width x depth (Circle = ellipse). A placement can override it.")]
         [SerializeField] private Vector2 size = Vector2.one;
 
@@ -38,6 +47,8 @@ namespace BulletHell.Arena
 
         public ObstacleKind Kind => kind;
         public ObstacleShape Shape => shape;
+        public ObstacleHeightClass HeightClass => heightClass;
+        public bool IsLow => heightClass == ObstacleHeightClass.Low;
         /// <summary>The footprint: width x depth.</summary>
         public Vector2 Size => size;
         public Sprite Sprite => sprite;
@@ -65,6 +76,13 @@ namespace BulletHell.Arena
             size = newSize;
             color = newColor;
             maxHealth = health;
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
+
+        /// <summary>Editor-only: the height class.</summary>
+        public void ConfigureHeightClass(ObstacleHeightClass newClass)
+        {
+            heightClass = newClass;
             UnityEditor.EditorUtility.SetDirty(this);
         }
 

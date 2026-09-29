@@ -47,21 +47,22 @@ namespace BulletHell.Core
         [Tooltip("After the last authored round, play continues by repeating the authored rounds from this one (1-based) to the end.")]
         [SerializeField, Min(1)] private int endlessLoopStartRound = 4;
         [SerializeField] private DifficultyCurve difficulty;
-        [Tooltip("The arena for rounds that don't name one.")]
-        [SerializeField] private ArenaData defaultArena;
+        [Tooltip("The layout for rounds that don't name one.")]
+        [SerializeField] private ArenaLayoutData defaultLayout;
         [Tooltip("How the 3/4 art sits over the flat gameplay plane (footprints, bullet reach, hurtboxes).")]
         [SerializeField] private PerspectiveTuning perspective;
 
         public AssetRegistry Registry => registry;
         public PerspectiveTuning Perspective => perspective != null ? perspective : PerspectiveTuning.Fallback;
         public DifficultyCurve Difficulty => difficulty;
-        public ArenaData DefaultArena => defaultArena;
+        public ArenaLayoutData DefaultLayout => defaultLayout;
+        public int RoundCount => rounds != null ? rounds.Length : 0;
 
-        /// <summary>The arena a round is fought in: the round's own, else the default. Null only if neither is set.</summary>
-        public ArenaData GetArena(int round)
+        /// <summary>The layout a round is fought in: the round's own, else the default. Null only if neither is set.</summary>
+        public ArenaLayoutData GetLayout(int round)
         {
             RoundData data = GetRound(round);
-            return data != null && data.Arena != null ? data.Arena : defaultArena;
+            return data != null && data.Layout != null ? data.Layout : defaultLayout;
         }
         public int StartingCurrency => startingCurrency;
         public ShopPool ShopPool => shopPool;
@@ -98,7 +99,7 @@ namespace BulletHell.Core
             endlessLoopStartRound = loopStartRound;
         }
 
-        public void SetDefaultArena(ArenaData arena) => defaultArena = arena;
+        public void SetDefaultLayout(ArenaLayoutData layout) => defaultLayout = layout;
 #endif
     }
 }

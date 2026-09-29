@@ -144,12 +144,7 @@ namespace BulletHell.EditorTools
                 Debug.LogWarning("M7.5: the M7 arena asset is missing; run BulletHell/M7/Setup Everything first.");
                 return;
             }
-            var so = new SerializedObject(arena);
-            SerializedProperty gates = so.FindProperty("spawnGates");
-            var positions = new[] { new Vector2(-5f, 3.8f), new Vector2(5f, 3.8f), new Vector2(-7.2f, 0.5f), new Vector2(7.2f, 0.5f) };
-            gates.arraySize = positions.Length;
-            for (int i = 0; i < positions.Length; i++)
-                gates.GetArrayElementAtIndex(i).vector2Value = positions[i];
+            var so = new SerializedObject(arena);   // gates live in the layouts now (M8.5)
             so.FindProperty("floorColor").colorValue = new Color(0.95f, 0.72f, 0.48f);
             so.FindProperty("wallColor").colorValue = new Color(0.85f, 0.72f, 0.55f);
             so.FindProperty("standsColor").colorValue = new Color(0.16f, 0.1f, 0.14f);

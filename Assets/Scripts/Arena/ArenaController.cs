@@ -44,20 +44,27 @@ namespace BulletHell.Arena
         private ObjectPool<Trap> trapPool;
         private RunManager run;
         private GameConfig config;
+        private ArenaLayoutData currentLayout;
         private ArenaData current;
         private float lastAspect;
 
         /// <summary>Flat footprints: what blocks walking and spawning.</summary>
         public ArenaGrid Grid { get; private set; }
+        /// <summary>
+        /// Only the Tall obstacles and the walls: what still blocks a player who is high enough to clear Low obstacles.
+        /// Enemies and navigation never use it (they path around Low ones).
+        /// </summary>
+        public ArenaGrid TallGrid { get; private set; }
         /// <summary>Footprints plus their reach upwards, on a field extended up the back wall: what blocks enemy bullets.</summary>
         public ArenaGrid BulletGrid { get; private set; }
         public bool IsBuilt => Grid != null;
         public Rect Bounds => current != null ? current.Bounds : new Rect(-8f, -4.5f, 16f, 9f);
-        public Vector2 PlayerSpawn => current != null ? current.PlayerSpawn : Vector2.zero;
-        public IReadOnlyList<Vector2> Gates => current != null ? current.SpawnGates : Array.Empty<Vector2>();
+        public Vector2 PlayerSpawn => currentLayout != null ? currentLayout.PlayerSpawn : Vector2.zero;
+        public IReadOnlyList<Vector2> Gates => currentLayout != null ? currentLayout.SpawnGates : Array.Empty<Vector2>();
         public IReadOnlyList<Obstacle> Obstacles => obstacles;
         public IReadOnlyList<Trap> Traps => traps;
         public ArenaData Current => current;
+        public ArenaLayoutData CurrentLayout => currentLayout;
         /// <summary>What the fixed camera frames (floor, walls, railing, a bit of the stands).</summary>
         public Rect ViewRect => scenery != null ? scenery.ViewRect : new Rect(-9f, -5.5f, 18f, 11f);
 
@@ -96,7 +103,7 @@ namespace BulletHell.Arena
         private void Start()
         {
             if (!IsBuilt && run.State != null)
-                Build(config.GetArena(run.State.Round));
+                Build(config.GetLayout(run.State.Round));
         }
 
         private void Update()
@@ -109,16 +116,19 @@ namespace BulletHell.Arena
 
         private void OnRoundIntroStarted(int round)
         {
-            ArenaData data = config.GetArena(round);
-            if (data != current || !IsBuilt)
-                Build(data);
+            ArenaLayoutData layout = config.GetLayout(round);
+            if (layout != currentLayout || !IsBuilt)
+                Build(layout);
             else
                 ResetRound();
             PlacePlayer();
         }
 
+        // A layout preview (debug) shows the round's layout with everything idle: no waves, and the traps stay quiet.
         private void OnRoundStarted(int round)
         {
+            if (run.IsLayoutPreview)
+                return;
             foreach (Trap trap in traps)
                 trap.Begin();
         }
@@ -157,33 +167,35 @@ namespace BulletHell.Arena
 
         // ---- building
 
-        private void Build(ArenaData data)
+        private void Build(ArenaLayoutData layout)
         {
             Teardown();
-            current = data;
-            if (data == null)
+            currentLayout = layout;
+            current = layout != null ? layout.Arena : null;
+            if (current == null)
                 return;
 
             PerspectiveTuning perspective = Perspective;
-            Rect bounds = data.Bounds;
+            Rect bounds = current.Bounds;
             Grid = new ArenaGrid(bounds, cellSize);
+            TallGrid = new ArenaGrid(bounds, cellSize);
             BulletGrid = new ArenaGrid(BulletBounds(bounds), cellSize);
-            LayoutStatics(data);
+            LayoutStatics(current, layout.SpawnGates);
 
-            ObstaclePlacement[] placed = data.Obstacles;
+            ObstaclePlacement[] placed = layout.Obstacles;
             for (int i = 0; i < placed.Length; i++)
             {
                 if (placed[i].Data == null)
                     continue;
                 Obstacle obstacle = obstaclePool.Get();
                 obstacle.Setup(placed[i].Data, placed[i].Position, placed[i].Size, obstacles.Count, squareSprite, circleSprite,
-                               perspective.ObstacleBulletAllowance);
-                obstacle.Register(Grid, BulletGrid);
+                               perspective.BulletReachFor(placed[i].Data.HeightClass));
+                obstacle.Register(Grid, BulletGrid, TallGrid);
                 obstacle.Broken += OnObstacleBroken;
                 obstacles.Add(obstacle);
             }
 
-            foreach (TrapPlacement t in data.Traps)
+            foreach (TrapPlacement t in layout.Traps)
             {
                 if (t.Data == null)
                     continue;
@@ -210,6 +222,7 @@ namespace BulletHell.Arena
                 trapPool.Release(trap);
             traps.Clear();
             Grid = null;
+            TallGrid = null;
             BulletGrid = null;
         }
 
@@ -217,11 +230,12 @@ namespace BulletHell.Arena
         private void ResetRound()
         {
             Grid.Clear();
+            TallGrid.Clear();
             BulletGrid.Clear();
             foreach (Obstacle obstacle in obstacles)
             {
                 obstacle.Restore();
-                obstacle.Register(Grid, BulletGrid);
+                obstacle.Register(Grid, BulletGrid, TallGrid);
             }
             foreach (Trap trap in traps)
                 trap.ResetTrap();
@@ -234,16 +248,16 @@ namespace BulletHell.Arena
         {
             if (player == null || current == null)
                 return;
-            Vector2 spawn = Grid.NearestFree(current.PlayerSpawn, playerData != null ? playerData.BodyRadius : 0.35f);
+            Vector2 spawn = Grid.NearestFree(currentLayout.PlayerSpawn, playerData != null ? playerData.BodyRadius : 0.35f);
             player.transform.position = spawn;
         }
 
         // ---- look and camera
 
-        private void LayoutStatics(ArenaData data)
+        private void LayoutStatics(ArenaData data, Vector2[] gates)
         {
             if (scenery != null)
-                scenery.Rebuild(data);
+                scenery.Rebuild(data, gates);
 
             // Player bullets and beams stop at these. They enclose the same field as the bullet grid.
             Rect bounds = BulletBounds(data.Bounds);

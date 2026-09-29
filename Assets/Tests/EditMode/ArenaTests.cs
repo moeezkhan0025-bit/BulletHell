@@ -324,21 +324,21 @@ namespace BulletHell.Tests
         }
 
         [Test]
-        public void ARoundUsesItsOwnArenaElseTheDefault()
+        public void ARoundUsesItsOwnLayoutElseTheDefault()
         {
             var config = ScriptableObject.CreateInstance<GameConfig>();
-            var fallback = ScriptableObject.CreateInstance<ArenaData>();
-            var special = ScriptableObject.CreateInstance<ArenaData>();
-            config.SetDefaultArena(fallback);
+            var fallback = ScriptableObject.CreateInstance<ArenaLayoutData>();
+            var special = ScriptableObject.CreateInstance<ArenaLayoutData>();
+            config.SetDefaultLayout(fallback);
 
             var plain = ScriptableObject.CreateInstance<RoundData>();
             var themed = ScriptableObject.CreateInstance<RoundData>();
-            themed.SetArena(special);
+            themed.SetLayout(special, default);
             config.SetRounds(new[] { plain, themed }, 1);
 
-            Assert.AreSame(fallback, config.GetArena(1));
-            Assert.AreSame(special, config.GetArena(2));
-            Assert.AreSame(fallback, config.GetArena(3));   // rounds past the end loop back to round 1
+            Assert.AreSame(fallback, config.GetLayout(1));
+            Assert.AreSame(special, config.GetLayout(2));
+            Assert.AreSame(fallback, config.GetLayout(3));   // rounds past the end loop back to round 1
         }
     }
 }

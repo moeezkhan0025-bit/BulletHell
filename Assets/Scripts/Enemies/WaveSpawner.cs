@@ -81,6 +81,11 @@ namespace BulletHell.Enemies
 
         private void OnRoundStarted(int number)
         {
+            if (run.IsLayoutPreview)
+            {
+                phase = Phase.Idle;
+                return;
+            }
             roundNumber = number;
             gateCounter = 0;
 

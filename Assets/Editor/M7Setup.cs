@@ -42,8 +42,7 @@ namespace BulletHell.EditorTools
             TrapData skewer = MakeTrap("Skewer", TrapKind.Skewer, new Vector2(0.5f, 4f), 1f, 15f, 2.5f, 1f, 0.5f, 3.5f, 0f);
             TrapData zone = MakeTrap("Zone", TrapKind.Zone, new Vector2(1.3f, 1.3f), 1f, 3f, 2f, 1.5f, 4f, 3f, 0.5f);
 
-            ArenaData arena = CreateArena(pillar, wall, crate, pumpkin, cabbage, vent, skewer, zone);
-            AssignConfig(arena);
+            CreateArena();   // the shell only; layouts (obstacles, traps, gates) come from BulletHell/M8.5/Setup Everything
             MakeWavesUseGates();
             CreatePrefabs();
             SetupGame();
@@ -86,46 +85,12 @@ namespace BulletHell.EditorTools
             return asset;
         }
 
-        private static ArenaData CreateArena(ObstacleData pillar, ObstacleData wall, ObstacleData crate, ObstacleData pumpkin, ObstacleData cabbage,
-                                             TrapData vent, TrapData skewer, TrapData zone)
+        private static ArenaData CreateArena()
         {
             EnsureFolder(ArenaFolder);
             var arena = GetOrCreate<ArenaData>($"{ArenaFolder}/Arena_Colosseum01.asset");
-
-            ObstaclePlacement O(ObstacleData data, float x, float y, float w = 0f, float h = 0f) =>
-                new ObstaclePlacement { Data = data, Position = new Vector2(x, y), SizeOverride = new Vector2(w, h) };
-            TrapPlacement T(TrapData data, float x, float y, float rotation = 0f, float extraDelay = 0f) =>
-                new TrapPlacement { Data = data, Position = new Vector2(x, y), Rotation = rotation, ExtraStartDelay = extraDelay };
-
-            arena.Configure(
-                new Vector2(16f, 9f),
-                new Vector2(0f, -3.2f),
-                new[]
-                {
-                    new Vector2(-4f, 3.7f), new Vector2(0f, 3.7f), new Vector2(4f, 3.7f),   // top gates
-                    new Vector2(-7.2f, 0.5f), new Vector2(7.2f, 0.5f),                       // side gates
-                },
-                new[]
-                {
-                    O(pillar, -3.5f, 0.8f), O(pillar, 3.5f, 0.8f), O(pillar, -3.5f, -1.4f), O(pillar, 3.5f, -1.4f),
-                    O(wall, 0f, 1.9f, 2.6f, 0.5f), O(wall, 6f, -2.4f, 0.5f, 1.6f),
-                    O(crate, -1.8f, -0.2f), O(crate, 1.8f, -0.2f),
-                    O(pumpkin, -5.5f, 2.2f), O(cabbage, 5.5f, 2.2f),
-                },
-                new[]
-                {
-                    T(vent, -2f, -2.6f), T(vent, 2f, -2.6f, 0f, 1.5f),
-                    T(skewer, 0f, 0f),
-                    T(zone, -6f, -2f),
-                });
+            arena.Configure(new Vector2(16f, 9f));
             return arena;
-        }
-
-        private static void AssignConfig(ArenaData arena)
-        {
-            var config = AssetDatabase.LoadAssetAtPath<GameConfig>(ConfigPath);
-            config.SetDefaultArena(arena);
-            EditorUtility.SetDirty(config);
         }
 
         /// <summary>Rounds are properly retuned for the arena in M8; for now the top-row spawns simply come out of the gates.</summary>

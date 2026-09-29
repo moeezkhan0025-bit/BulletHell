@@ -14,6 +14,16 @@ namespace BulletHell.Arena
         [Tooltip("Bullets are blocked by an obstacle's footprint plus this much extra reach upwards (the obstacle's body). Movement uses the plain footprint.")]
         [SerializeField, Min(0f)] private float obstacleBulletAllowance = 0.35f;
 
+        [Tooltip("Same, for Low obstacles (low walls, crates): they are short, so bullets clear them sooner. Still blocks all bullets.")]
+        [SerializeField, Min(0f)] private float lowObstacleBulletAllowance = 0.2f;
+
+        [Tooltip("A Tall obstacle fades to this opacity while a character stands behind it.")]
+        [SerializeField, Range(0.1f, 1f)] private float tallFadeAlpha = 0.4f;
+        [Tooltip("Seconds to fade in / out.")]
+        [SerializeField, Min(0.01f)] private float tallFadeSeconds = 0.15f;
+        [Tooltip("A character counts as behind a Tall obstacle when it is this far (world units) past the sides of its art.")]
+        [SerializeField, Min(0f)] private float tallFadeSideMargin = 0.25f;
+
         [Tooltip("Bullets fly at body height, so they may travel this far past the back edge of the floor (up the back wall) before it stops them. Without it a character at the top edge could not be shot, or shoot.")]
         [SerializeField, Min(0f)] private float bulletHeadroom = 1f;
 
@@ -47,6 +57,13 @@ namespace BulletHell.Arena
         public float BulletShadowAlpha => bulletShadowAlpha;
         public float ObstacleBulletAllowance => obstacleBulletAllowance;
         public float BulletHeadroom => bulletHeadroom;
+        public float TallFadeAlpha => tallFadeAlpha;
+        public float TallFadeSeconds => tallFadeSeconds;
+        public float TallFadeSideMargin => tallFadeSideMargin;
+
+        /// <summary>How far above its footprint an obstacle of this class still blocks bullets.</summary>
+        public float BulletReachFor(ObstacleHeightClass heightClass) =>
+            heightClass == ObstacleHeightClass.Low ? lowObstacleBulletAllowance : obstacleBulletAllowance;
         public float EnemyFeetInset => enemyFeetInset;
         public Color ShadowColor => shadowColor;
         public float ShadowWidth => shadowWidth;

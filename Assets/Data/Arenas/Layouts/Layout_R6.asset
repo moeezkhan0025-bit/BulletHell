@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd599ffb5824fea46bbd914af9dbd401, type: 3}
+  m_Name: Layout_R6
+  m_EditorClassIdentifier: BulletHell::BulletHell.Arena.ArenaLayoutData
+  arena: {fileID: 11400000, guid: 2bada0b4c7a7f674cbbfc9561e526544, type: 2}
+  playerSpawn: {x: 0, y: -3.2}
+  spawnGates:
+  - {x: -5, y: 3.8}
+  - {x: 5, y: 3.8}
+  - {x: -7.2, y: 0.5}
+  - {x: 7.2, y: 0.5}
+  obstacles:
+  - Data: {fileID: 11400000, guid: e48e8df06d2c0c24091cb26fcda967a3, type: 2}
+    Position: {x: -3.5, y: 0.8}
+    SizeOverride: {x: 0, y: 0}
+  - Data: {fileID: 11400000, guid: e48e8df06d2c0c24091cb26fcda967a3, type: 2}
+    Position: {x: 3.5, y: 0.8}
+    SizeOverride: {x: 0, y: 0}
+  - Data: {fileID: 11400000, guid: e48e8df06d2c0c24091cb26fcda967a3, type: 2}
+    Position: {x: -3.5, y: -1.4}
+    SizeOverride: {x: 0, y: 0}
+  - Data: {fileID: 11400000, guid: e48e8df06d2c0c24091cb26fcda967a3, type: 2}
+    Position: {x: 3.5, y: -1.4}
+    SizeOverride: {x: 0, y: 0}
+  - Data: {fileID: 11400000, guid: dbbdca10504cdda4fa7928949d48003f, type: 2}
+    Position: {x: 0, y: 1.9}
+    SizeOverride: {x: 2.6, y: 0.5}
+  - Data: {fileID: 11400000, guid: bc94bcec0b7987441878fd07a0887edf, type: 2}
+    Position: {x: -5.5, y: 2.2}
+    SizeOverride: {x: 0, y: 0}
+  - Data: {fileID: 11400000, guid: a77b136a7d7e34744a8c0c5322c5990b, type: 2}
+    Position: {x: 5.5, y: 2.2}
+    SizeOverride: {x: 0, y: 0}
+  traps:
+  - Data: {fileID: 11400000, guid: 73bebcf2dbd3dcd4382ca54e9ac8f76d, type: 2}
+    Position: {x: -5.5, y: -2.6}
+    Rotation: 0
+    ExtraStartDelay: 0
+  - Data: {fileID: 11400000, guid: 73bebcf2dbd3dcd4382ca54e9ac8f76d, type: 2}
+    Position: {x: 5.5, y: -2.6}
+    Rotation: 0
+    ExtraStartDelay: 1.5
+  - Data: {fileID: 11400000, guid: 3a03d5ee2ae4ddd48b3001587004d003, type: 2}
+    Position: {x: -5.2, y: -0.3}
+    Rotation: 0
+    ExtraStartDelay: 0
+  - Data: {fileID: 11400000, guid: 4d7889076228c7540b7d4dc7cdd6668d, type: 2}
+    Position: {x: 0, y: 0.6}
+    Rotation: 90
+    ExtraStartDelay: 0.5

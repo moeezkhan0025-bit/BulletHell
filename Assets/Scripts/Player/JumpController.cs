@@ -56,6 +56,8 @@ namespace BulletHell.Player
         public float CooldownLeft => Mathf.Max(0f, timeline.CooldownLeft);
         public float Progress01 => timeline.Progress01;
         public bool JumpDodgesBullets => tuning.JumpDodgesBullets;
+        /// <summary>True while the body is high enough to pass over Low obstacles (Tall ones and the walls still block).</summary>
+        public bool ClearsLowObstacles => timeline.IsAirborne && Height >= tuning.LowClearHeight;
         /// <summary>Scales the walking speed: the air control while airborne, else 1.</summary>
         public float MoveMultiplier => timeline.IsAirborne ? tuning.AirControl : 1f;
 
