@@ -26,6 +26,15 @@ namespace BulletHell.Enemies
         /// <summary>Scales bullet speed (difficulty).</summary>
         public float BulletSpeedMultiplier { get; set; } = 1f;
 
+        /// <summary>
+        /// While true no volley is fired (no line of sight, still moving into position, overheated...). Timers stay
+        /// ready, so the enemy fires the moment it is let go.
+        /// </summary>
+        public bool HoldFire { get; set; }
+
+        /// <summary>Raised after every volley, so a Sentry can add heat.</summary>
+        public event System.Action Fired;
+
         public void Configure(AttackPattern[] attackPatterns)
         {
             patterns = attackPatterns ?? new AttackPattern[0];
@@ -52,6 +61,7 @@ namespace BulletHell.Enemies
                 timers[i] = patterns[i] != null ? patterns[i].InitialDelay : 0f;
                 spiralOffsets[i] = 0f;
             }
+            HoldFire = false;
             firing = true;
             enabled = true;
         }
@@ -76,12 +86,13 @@ namespace BulletHell.Enemies
                 if (pattern == null)
                     continue;
 
-                timers[i] -= dt;
-                if (timers[i] > 0f)
+                timers[i] = Mathf.Max(0f, timers[i] - dt);
+                if (timers[i] > 0f || HoldFire)
                     continue;
 
                 Fire(i, pattern);
                 timers[i] = pattern.FireInterval / Mathf.Max(0.05f, FireRateMultiplier);
+                Fired?.Invoke();
             }
         }
 

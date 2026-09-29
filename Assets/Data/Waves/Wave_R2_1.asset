@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BulletHell::BulletHell.Enemies.WaveData
   groups:
   - Enemy: {fileID: 11400000, guid: 806b7881e9efdd342b59393f3f42ce26, type: 2}
-    Count: 3
-    Pattern: 0
+    Count: 4
+    Pattern: 3
     Delay: 0
     Interval: 0.4

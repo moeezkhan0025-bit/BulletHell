@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7948270311cf6c7458ee5d6397a9ff37, type: 3}
+  m_Name: Enemy_Sniper
+  m_EditorClassIdentifier: BulletHell::BulletHell.Enemies.EnemyData
+  displayName: Sniper
+  color: {r: 0.4, g: 0.9, b: 0.5, a: 1}
+  size: 0.9
+  maxHealth: 12
+  hitFlashDuration: 0.08
+  coinValue: 10
+  attacks: []
+  behavior: 5
+  moveSpeed: 2.2
+  moveRange: 3
+  moveAxis: {x: 1, y: 0}
+  acceleration: 12
+  brake: 18
+  turnRate: 300
+  contactDamage: 1
+  preferredDistance: 8
+  distanceTolerance: 1.2
+  strafeSpeedFraction: 0.5
+  strafeSwitchSeconds: {x: 1.5, y: 3.5}
+  sentryRange: {x: 3, y: 7}
+  heatPerShot: 0.06
+  coolPerSecond: 0.25
+  restartHeat: 0.35
+  overheatedSpeedFraction: 0.35
+  chargeTriggerRange: 6
+  chargeMinRange: 2.5
+  telegraphSeconds: 0.9
+  telegraphLockSeconds: 0.3
+  dashSpeed: 11
+  dashDistance: 7
+  recoverSeconds: 1
+  chargeCooldown: 1.2
+  sniperShot: {fileID: 11400000, guid: c5939015ada9ac1499c09b005c7e79a0, type: 2}
+  aimSeconds: 1.3
+  aimLockSeconds: 0.4
+  sniperCooldown: 2.6

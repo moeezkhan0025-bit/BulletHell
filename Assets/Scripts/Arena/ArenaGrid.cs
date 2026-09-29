@@ -125,6 +125,34 @@ namespace BulletHell.Arena
             return false;
         }
 
+        /// <summary>Centre of a cell in world space.</summary>
+        public Vector2 CellCenter(int column, int row) =>
+            new Vector2(Bounds.xMin + (column + 0.5f) * CellSize, Bounds.yMin + (row + 0.5f) * CellSize);
+
+        /// <summary>The cell a position is in (clamped to the grid, so positions outside land on the nearest edge cell).</summary>
+        public void WorldToCell(Vector2 position, out int column, out int row) => ToCell(position.x, position.y, out column, out row);
+
+        /// <summary>
+        /// How far a circle can travel from a point along a direction before it hits a wall or an owned cell, up to
+        /// maxDistance (returned when nothing is in the way). Used for warning lines and shot previews.
+        /// </summary>
+        public float RayDistance(Vector2 from, Vector2 direction, float maxDistance, float radius)
+        {
+            if (direction.sqrMagnitude < 1e-8f)
+                return 0f;
+            direction.Normalize();
+            float step = CellSize * 0.5f;
+            float travelled = 0f;
+            while (travelled < maxDistance)
+            {
+                float next = Mathf.Min(maxDistance, travelled + step);
+                if (CircleBlocked(from + direction * next, radius))
+                    return travelled;
+                travelled = next;
+            }
+            return maxDistance;
+        }
+
         /// <summary>Sweeps a circle from a to b in half-cell steps. Returns true at the first blocked step, with its owner.</summary>
         public bool SegmentBlocked(Vector2 a, Vector2 b, float radius, out int owner)
         {

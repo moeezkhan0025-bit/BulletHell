@@ -2,6 +2,23 @@ using UnityEngine;
 
 namespace BulletHell.Enemies
 {
+    /// <summary>How an enemy moves and picks its moments to attack.</summary>
+    public enum EnemyBehavior
+    {
+        /// <summary>Walks back and forth along an axis (bosses, static shooters). No navigation.</summary>
+        Patrol,
+        /// <summary>Pursues the player along the flow field; hurts on contact.</summary>
+        Chaser,
+        /// <summary>Ranged: holds a preferred distance, strafes, backs off, repositions without line of sight.</summary>
+        Skirmisher,
+        /// <summary>Moves to a firing spot with line of sight, plants, streams bullets until it overheats.</summary>
+        Sentry,
+        /// <summary>Telegraphs, then dashes in a straight line; jump over it.</summary>
+        Charger,
+        /// <summary>Keeps far away with line of sight, shows a warning line, fires one fast shot.</summary>
+        Sniper,
+    }
+
     /// <summary>Tunable data for one enemy type. Real enemies (M4) extend this; movement fields are optional.</summary>
     [CreateAssetMenu(fileName = "Enemy_", menuName = "BulletHell/Enemy Data")]
     public sealed class EnemyData : ScriptableObject
@@ -24,11 +41,69 @@ namespace BulletHell.Enemies
         [Tooltip("Patterns this enemy fires (each on its own timer). Empty = never shoots.")]
         [SerializeField] private AttackPattern[] attacks = new AttackPattern[0];
 
-        [Header("Patrol (speed 0 = static)")]
+        [Header("Movement (speed 0 = static)")]
+        [SerializeField] private EnemyBehavior behavior = EnemyBehavior.Patrol;
+        [Tooltip("Top speed in world units per second (patrol speed for Patrol).")]
         [SerializeField, Min(0f)] private float moveSpeed;
-        [Tooltip("Distance from the start position it travels each way.")]
+        [Tooltip("Patrol only: distance from the start position it travels each way.")]
         [SerializeField, Min(0f)] private float moveRange = 3f;
+        [Tooltip("Patrol only.")]
         [SerializeField] private Vector2 moveAxis = Vector2.right;
+
+        [Header("Steering (all but Patrol)")]
+        [Tooltip("Speed gained per second while getting up to speed.")]
+        [SerializeField, Min(0.1f)] private float acceleration = 14f;
+        [Tooltip("Speed lost per second when braking or slowing down.")]
+        [SerializeField, Min(0.1f)] private float brake = 20f;
+        [Tooltip("Degrees per second its heading can turn. Low = wide, heavy turns.")]
+        [SerializeField, Min(10f)] private float turnRate = 360f;
+
+        [Header("Contact (Chaser, Charger)")]
+        [Tooltip("Hits taken by a grounded player it touches. An airborne player passes over.")]
+        [SerializeField, Min(0f)] private float contactDamage = 1f;
+
+        [Header("Ranged positioning (Skirmisher, Sniper)")]
+        [SerializeField, Min(0.5f)] private float preferredDistance = 5f;
+        [Tooltip("Slack around the preferred distance before it closes in or backs off.")]
+        [SerializeField, Min(0.1f)] private float distanceTolerance = 0.8f;
+        [Tooltip("Strafing speed as a fraction of top speed.")]
+        [SerializeField, Range(0.1f, 1f)] private float strafeSpeedFraction = 0.6f;
+        [Tooltip("Seconds between changes of strafing direction (min, max).")]
+        [SerializeField] private Vector2 strafeSwitchSeconds = new Vector2(1.5f, 3.5f);
+
+        [Header("Sentry")]
+        [Tooltip("Closest / furthest distance from the player it plants at.")]
+        [SerializeField] private Vector2 sentryRange = new Vector2(3f, 7f);
+        [Tooltip("Heat (fraction of full) added per volley. Full heat = overheated.")]
+        [SerializeField, Range(0.01f, 1f)] private float heatPerShot = 0.06f;
+        [SerializeField, Min(0.01f)] private float coolPerSecond = 0.25f;
+        [Tooltip("Heat it must cool to before firing again.")]
+        [SerializeField, Range(0f, 0.95f)] private float restartHeat = 0.35f;
+        [Tooltip("Top speed while overheated, as a fraction of normal (it crawls while cooling).")]
+        [SerializeField, Range(0f, 1f)] private float overheatedSpeedFraction = 0.35f;
+
+        [Header("Charger")]
+        [SerializeField, Min(1f)] private float chargeTriggerRange = 6f;
+        [Tooltip("Closer than this it backs off to get a run-up instead of charging point-blank.")]
+        [SerializeField, Min(0f)] private float chargeMinRange = 2.5f;
+        [Tooltip("Warning time before the dash (the warning line shows).")]
+        [SerializeField, Min(0.1f)] private float telegraphSeconds = 0.9f;
+        [Tooltip("The dash direction stops following the player this long before the dash starts.")]
+        [SerializeField, Min(0f)] private float telegraphLockSeconds = 0.3f;
+        [SerializeField, Min(1f)] private float dashSpeed = 11f;
+        [SerializeField, Min(1f)] private float dashDistance = 7f;
+        [Tooltip("Seconds it stays put and vulnerable after a dash.")]
+        [SerializeField, Min(0f)] private float recoverSeconds = 1f;
+        [Tooltip("Seconds after recovering before it can charge again.")]
+        [SerializeField, Min(0f)] private float chargeCooldown = 1.2f;
+
+        [Header("Sniper")]
+        [Tooltip("The single fast shot it fires (shape, speed, size, damage, colour).")]
+        [SerializeField] private AttackPattern sniperShot;
+        [SerializeField, Min(0.1f)] private float aimSeconds = 1.3f;
+        [Tooltip("The warning line stops following the player this long before the shot.")]
+        [SerializeField, Min(0f)] private float aimLockSeconds = 0.4f;
+        [SerializeField, Min(0.1f)] private float sniperCooldown = 2.6f;
 
         public string DisplayName => displayName;
         public AttackPattern[] Attacks => attacks;
@@ -37,8 +112,34 @@ namespace BulletHell.Enemies
         public float Size => size;
         public float MaxHealth => maxHealth;
         public float HitFlashDuration => hitFlashDuration;
+        public EnemyBehavior Behavior => behavior;
         public float MoveSpeed => moveSpeed;
         public float MoveRange => moveRange;
         public Vector2 MoveAxis => moveAxis;
+        public float Acceleration => acceleration;
+        public float Brake => brake;
+        public float TurnRate => turnRate;
+        public float ContactDamage => contactDamage;
+        public float PreferredDistance => preferredDistance;
+        public float DistanceTolerance => distanceTolerance;
+        public float StrafeSpeedFraction => strafeSpeedFraction;
+        public Vector2 StrafeSwitchSeconds => strafeSwitchSeconds;
+        public Vector2 SentryRange => sentryRange;
+        public float HeatPerShot => heatPerShot;
+        public float CoolPerSecond => coolPerSecond;
+        public float RestartHeat => restartHeat;
+        public float OverheatedSpeedFraction => overheatedSpeedFraction;
+        public float ChargeTriggerRange => chargeTriggerRange;
+        public float ChargeMinRange => chargeMinRange;
+        public float TelegraphSeconds => telegraphSeconds;
+        public float TelegraphLockSeconds => telegraphLockSeconds;
+        public float DashSpeed => dashSpeed;
+        public float DashDistance => dashDistance;
+        public float RecoverSeconds => recoverSeconds;
+        public float ChargeCooldown => chargeCooldown;
+        public AttackPattern SniperShot => sniperShot;
+        public float AimSeconds => aimSeconds;
+        public float AimLockSeconds => aimLockSeconds;
+        public float SniperCooldown => sniperCooldown;
     }
 }

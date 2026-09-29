@@ -20,6 +20,32 @@ MonoBehaviour:
   coinValue: 12
   attacks:
   - {fileID: 11400000, guid: e9aa2c7217021cf45bbec1e20037b456, type: 2}
-  moveSpeed: 1
+  behavior: 3
+  moveSpeed: 2
   moveRange: 2
   moveAxis: {x: 0, y: 1}
+  acceleration: 10
+  brake: 16
+  turnRate: 240
+  contactDamage: 1
+  preferredDistance: 5
+  distanceTolerance: 0.8
+  strafeSpeedFraction: 0.6
+  strafeSwitchSeconds: {x: 1.5, y: 3.5}
+  sentryRange: {x: 3, y: 7}
+  heatPerShot: 0.045
+  coolPerSecond: 0.2
+  restartHeat: 0.3
+  overheatedSpeedFraction: 0.4
+  chargeTriggerRange: 6
+  chargeMinRange: 2.5
+  telegraphSeconds: 0.9
+  telegraphLockSeconds: 0.3
+  dashSpeed: 11
+  dashDistance: 7
+  recoverSeconds: 1
+  chargeCooldown: 1.2
+  sniperShot: {fileID: 0}
+  aimSeconds: 1.3
+  aimLockSeconds: 0.4
+  sniperCooldown: 2.6

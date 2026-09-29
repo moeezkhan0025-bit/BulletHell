@@ -16,6 +16,8 @@ namespace BulletHell.Settings
         public bool vibration = true;
         public float aimSensitivity = 1f;
         public bool showDebugOverlay = false;
+        /// <summary>Development builds: draws the enemy flow field and line-of-sight rays.</summary>
+        public bool showAiDebug = false;
         public bool fullscreen = true;
         /// <summary>Window/screen size on PC. 0 x 0 = leave it as the platform has it.</summary>
         public int resolutionWidth;

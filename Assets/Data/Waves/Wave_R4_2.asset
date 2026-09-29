@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: BulletHell::BulletHell.Enemies.WaveData
   groups:
   - Enemy: {fileID: 11400000, guid: 377e64ac9866dce4787b463d2b3246e9, type: 2}
-    Count: 2
-    Pattern: 2
+    Count: 1
+    Pattern: 3
     Delay: 0
-    Interval: 0.4
+    Interval: 0
   - Enemy: {fileID: 11400000, guid: 806b7881e9efdd342b59393f3f42ce26, type: 2}
-    Count: 2
+    Count: 3
     Pattern: 0
-    Delay: 0
+    Delay: 1
     Interval: 0.4

@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7948270311cf6c7458ee5d6397a9ff37, type: 3}
+  m_Name: Enemy_Charger
+  m_EditorClassIdentifier: BulletHell::BulletHell.Enemies.EnemyData
+  displayName: Charger
+  color: {r: 0.75, g: 0.35, b: 0.2, a: 1}
+  size: 1.1
+  maxHealth: 24
+  hitFlashDuration: 0.08
+  coinValue: 10
+  attacks: []
+  behavior: 4
+  moveSpeed: 3
+  moveRange: 3
+  moveAxis: {x: 1, y: 0}
+  acceleration: 10
+  brake: 18
+  turnRate: 240
+  contactDamage: 1
+  preferredDistance: 5
+  distanceTolerance: 0.8
+  strafeSpeedFraction: 0.6
+  strafeSwitchSeconds: {x: 1.5, y: 3.5}
+  sentryRange: {x: 3, y: 7}
+  heatPerShot: 0.06
+  coolPerSecond: 0.25
+  restartHeat: 0.35
+  overheatedSpeedFraction: 0.35
+  chargeTriggerRange: 6.5
+  chargeMinRange: 2.5
+  telegraphSeconds: 0.9
+  telegraphLockSeconds: 0.3
+  dashSpeed: 11
+  dashDistance: 7.5
+  recoverSeconds: 1
+  chargeCooldown: 1.2
+  sniperShot: {fileID: 0}
+  aimSeconds: 1.3
+  aimLockSeconds: 0.4
+  sniperCooldown: 2.6

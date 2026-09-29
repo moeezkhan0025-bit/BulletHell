@@ -19,12 +19,12 @@ MonoBehaviour:
     Delay: 0
     Interval: 0
   - Enemy: {fileID: 11400000, guid: c6a42a85cd06f244c8ff443f5e17fef5, type: 2}
-    Count: 2
-    Pattern: 0
+    Count: 1
+    Pattern: 3
     Delay: 0
-    Interval: 0.4
+    Interval: 0
   - Enemy: {fileID: 11400000, guid: 377e64ac9866dce4787b463d2b3246e9, type: 2}
-    Count: 2
+    Count: 1
     Pattern: 2
     Delay: 1
-    Interval: 0.4
+    Interval: 0

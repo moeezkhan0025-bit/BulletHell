@@ -73,8 +73,12 @@ namespace BulletHell.UI
                             v => settings.Current.aimSensitivity = v));
 
             if (Debug.isDebugBuild)
+            {
                 AddRow("Show debug overlay", () => OnOff(settings.Current.showDebugOverlay),
                     _ => Toggle(v => settings.Current.showDebugOverlay = v, settings.Current.showDebugOverlay));
+                AddRow("Show AI debug", () => OnOff(settings.Current.showAiDebug),
+                    _ => Toggle(v => settings.Current.showAiDebug = v, settings.Current.showAiDebug));
+            }
 
             if (PlatformCapabilities.SupportsDisplaySettings)
             {

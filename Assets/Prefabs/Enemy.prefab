@@ -496,6 +496,7 @@ GameObject:
   - component: {fileID: 6859631337615153813}
   - component: {fileID: 3399826400218559680}
   - component: {fileID: 4901844061941737072}
+  - component: {fileID: 3607617252094108553}
   m_Layer: 6
   m_Name: Enemy
   m_TagString: Untagged
@@ -591,6 +592,7 @@ MonoBehaviour:
   hitFlash: {fileID: 5908550554090874521}
   healthBar: {fileID: 2478527951018183151}
   patrol: {fileID: 2647023060197285167}
+  brain: {fileID: 3607617252094108553}
 --- !u!114 &5908550554090874521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -679,3 +681,15 @@ SortingGroup:
   m_SortingOrder: 0
   m_SortAtRoot: 0
   m_Sort3DAs2D: 0
+--- !u!114 &3607617252094108553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8422228227964243467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e483ae54e9d5dd849801bdda26b7f704, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BulletHell::BulletHell.Enemies.EnemyBrain

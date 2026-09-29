@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BulletHell.AI;
 using BulletHell.Arena;
 using BulletHell.Core;
 using BulletHell.Pickups;
@@ -28,6 +29,8 @@ namespace BulletHell.Enemies
         [SerializeField] private Camera viewCamera;
         [Tooltip("The arena: spawn gates, obstacle-free spawn spots, and its bounds. Optional (falls back to the camera view).")]
         [SerializeField] private ArenaController arena;
+        [Tooltip("Flow-field navigation and the enemy registry for the movement AI.")]
+        [SerializeField] private NavigationService navigation;
 
         private readonly SpawnScheduler scheduler = new SpawnScheduler();
         private readonly List<SpawnRequest> due = new List<SpawnRequest>();
@@ -156,7 +159,7 @@ namespace BulletHell.Enemies
                 position = arena.Grid.NearestFree(position, GameServices.Ensure().Config.Perspective.EnemyFootprintRadiusFor(request.Enemy.Size));   // never inside an obstacle or wall
 
             Enemy enemy = enemyPool.Get();
-            enemy.Initialize(request.Enemy, position, difficulty, projectiles, player, inArena ? arena : null);
+            enemy.Initialize(request.Enemy, position, difficulty, projectiles, player, inArena ? arena : null, navigation);
             enemy.Defeated += OnEnemyDefeated;
             alive.Add(enemy);
         }

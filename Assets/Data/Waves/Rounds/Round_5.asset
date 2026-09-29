@@ -17,4 +17,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c1cc6b6297f033f4da73832eaec1c6fe, type: 2}
   - {fileID: 11400000, guid: cbf8aeba0ac33474187bce90931ec4db, type: 2}
   isBossRound: 1
+  arena: {fileID: 0}
   waveBreatherSeconds: 3

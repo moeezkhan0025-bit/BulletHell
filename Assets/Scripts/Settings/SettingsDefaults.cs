@@ -13,6 +13,7 @@ namespace BulletHell.Settings
         [SerializeField] private bool screenShake = true;
         [SerializeField] private bool vibration = true;
         [SerializeField] private bool showDebugOverlay = false;
+        [SerializeField] private bool showAiDebug = false;
         [SerializeField] private bool fullscreen = true;
 
         [Header("Aim sensitivity")]
@@ -40,6 +41,7 @@ namespace BulletHell.Settings
             vibration = vibration,
             aimSensitivity = aimSensitivity,
             showDebugOverlay = showDebugOverlay,
+            showAiDebug = showAiDebug,
             fullscreen = fullscreen,
         };
 

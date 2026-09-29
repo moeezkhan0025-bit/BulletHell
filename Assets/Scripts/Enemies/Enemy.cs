@@ -1,4 +1,5 @@
 using System;
+using BulletHell.AI;
 using BulletHell.Arena;
 using BulletHell.Core;
 using BulletHell.Player;
@@ -27,12 +28,19 @@ namespace BulletHell.Enemies
         [SerializeField] private HitFlash hitFlash;
         [SerializeField] private HealthBar healthBar;
         [SerializeField] private PatrolMover patrol;
+        [Tooltip("Movement AI for the non-patrol behaviours (Chaser, Skirmisher, Sentry, Charger, Sniper).")]
+        [SerializeField] private EnemyBrain brain;
 
         private EnemyData data;
         private StatusEffects status;
         private EnemyAttacker attacker;
+        private NavigationService navigation;
 
         public EnemyData Data => data;
+        public EnemyBrain Brain => brain;
+        /// <summary>Draws the body in a different colour (telegraphs, overheating). ClearTint restores the enemy's own colour.</summary>
+        public void SetTint(Color tint) => body.color = tint;
+        public void ClearTint() => body.color = data.Color;
         public bool IsAlive => health.IsAlive && body.enabled;
         /// <summary>The enemy's feet: where it stands on the floor.</summary>
         public Vector2 Position => transform.position;
@@ -57,10 +65,21 @@ namespace BulletHell.Enemies
                 health.Died -= OnDied;
         }
 
+        // Recycled into the pool (round change, death): leave the navigation registry and stop the AI.
+        private void OnDisable()
+        {
+            if (navigation != null)
+                navigation.Unregister(this);
+            if (brain != null)
+                brain.Stop();
+        }
+
         /// <summary>Makes this enemy a fresh, alive enemy of the given type at a position, scaled by the round's difficulty.</summary>
         public void Initialize(EnemyData enemyData, Vector2 position, in RoundDifficulty difficulty,
-                               ProjectilePool pool, PlayerHealth player, ArenaController arena = null)
+                               ProjectilePool pool, PlayerHealth player, ArenaController arena = null,
+                               NavigationService navigationService = null)
         {
+            navigation = navigationService;
             data = enemyData;
             transform.position = position;
 
@@ -86,7 +105,9 @@ namespace BulletHell.Enemies
             health.Initialize(data.MaxHealth * difficulty.HealthMultiplier);
             hitFlash.Configure(data.Color, data.HitFlashDuration);
             healthBar.Layout(Mathf.Max(0.6f, size), size * 0.5f + 0.25f);
-            patrol.Configure(position, data.MoveSpeed, data.MoveRange, data.MoveAxis, arena, FootprintRadius);
+            body.color = data.Color;
+            bool patrols = data.Behavior == EnemyBehavior.Patrol;
+            patrol.Configure(position, patrols ? data.MoveSpeed : 0f, data.MoveRange, data.MoveAxis, arena, FootprintRadius);
             if (status != null)
                 status.Clear();
             SetAlive(true);
@@ -100,6 +121,13 @@ namespace BulletHell.Enemies
                 attacker.BulletSpeedMultiplier = difficulty.BulletSpeedMultiplier;
                 attacker.Begin();
             }
+
+            if (brain != null)
+            {
+                brain.Configure(this, data, difficulty, pool, player, arena, navigation, attacker, body.sharedMaterial);
+                if (navigation != null && brain.IsActive)
+                    navigation.Register(this);
+            }
         }
 
         private void OnDied()
@@ -108,6 +136,10 @@ namespace BulletHell.Enemies
                 status.Clear();
             if (attacker != null)
                 attacker.Stop();
+            if (brain != null)
+                brain.Stop();
+            if (navigation != null)
+                navigation.Unregister(this);
             SetAlive(false);
             Defeated?.Invoke(this);
         }

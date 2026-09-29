@@ -9,13 +9,16 @@ namespace BulletHell.Enemies
         public readonly float HealthMultiplier;
         public readonly float FireRateMultiplier;
         public readonly float BulletSpeedMultiplier;
+        /// <summary>Scales how fast enemies walk and dash.</summary>
+        public readonly float MoveSpeedMultiplier;
 
-        public RoundDifficulty(float count, float health, float fireRate, float bulletSpeed)
+        public RoundDifficulty(float count, float health, float fireRate, float bulletSpeed, float moveSpeed = 1f)
         {
             CountMultiplier = count;
             HealthMultiplier = health;
             FireRateMultiplier = fireRate;
             BulletSpeedMultiplier = bulletSpeed;
+            MoveSpeedMultiplier = moveSpeed;
         }
     }
 
@@ -54,12 +57,14 @@ namespace BulletHell.Enemies
         [SerializeField] private Axis enemyHealth;
         [SerializeField] private Axis fireRate;
         [SerializeField] private Axis bulletSpeed;
+        [Tooltip("How fast enemies move. Left empty it is 1 in every round.")]
+        [SerializeField] private Axis moveSpeed;
 
         public RoundDifficulty Evaluate(int round)
         {
             round = Mathf.Max(1, round);
             return new RoundDifficulty(enemyCount.Evaluate(round), enemyHealth.Evaluate(round),
-                                       fireRate.Evaluate(round), bulletSpeed.Evaluate(round));
+                                       fireRate.Evaluate(round), bulletSpeed.Evaluate(round), moveSpeed.Evaluate(round));
         }
 
 #if UNITY_EDITOR
@@ -70,6 +75,13 @@ namespace BulletHell.Enemies
             enemyHealth = health;
             fireRate = rate;
             bulletSpeed = speed;
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
+
+        /// <summary>Editor-only: the enemy move speed axis.</summary>
+        public void SetMoveSpeed(Axis axis)
+        {
+            moveSpeed = axis;
             UnityEditor.EditorUtility.SetDirty(this);
         }
 #endif

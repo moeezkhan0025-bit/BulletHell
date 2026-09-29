@@ -61,8 +61,11 @@ namespace BulletHell.Arena
         /// <summary>What the fixed camera frames (floor, walls, railing, a bit of the stands).</summary>
         public Rect ViewRect => scenery != null ? scenery.ViewRect : new Rect(-9f, -5.5f, 18f, 11f);
 
-        /// <summary>Raised when a breakable breaks. Navigation (M8) rebuilds its flow field from this.</summary>
+        /// <summary>Raised when a breakable breaks. Navigation rebuilds its flow field from this.</summary>
         public event Action<Obstacle> ObstacleBroken;
+
+        /// <summary>Raised after the grids were (re)built or reset for a round: anything derived from them must be rebuilt.</summary>
+        public event Action GridRebuilt;
 
         private PerspectiveTuning Perspective => config != null ? config.Perspective : PerspectiveTuning.Fallback;
 
@@ -141,6 +144,10 @@ namespace BulletHell.Arena
             return BulletGrid.SegmentBlocked(from, to, radius, out owner);
         }
 
+        /// <summary>How far a bullet can fly from a point along a direction before an obstacle or wall stops it.</summary>
+        public float BulletRayDistance(Vector2 from, Vector2 direction, float maxDistance, float radius) =>
+            BulletGrid == null ? maxDistance : BulletGrid.RayDistance(from, direction, maxDistance, radius);
+
         /// <summary>A bullet hit an obstacle's cells: solids ignore it, breakables take the damage.</summary>
         public void DamageObstacle(int owner, float damage)
         {
@@ -186,6 +193,7 @@ namespace BulletHell.Arena
             }
 
             FitCamera();
+            GridRebuilt?.Invoke();
         }
 
         private Rect BulletBounds(Rect floor) => new Rect(floor.xMin, floor.yMin, floor.width, floor.height + Perspective.BulletHeadroom);
@@ -217,6 +225,7 @@ namespace BulletHell.Arena
             }
             foreach (Trap trap in traps)
                 trap.ResetTrap();
+            GridRebuilt?.Invoke();
         }
 
         private void OnObstacleBroken(Obstacle obstacle) => ObstacleBroken?.Invoke(obstacle);
