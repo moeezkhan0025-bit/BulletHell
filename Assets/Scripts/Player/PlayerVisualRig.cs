@@ -28,6 +28,8 @@ namespace BulletHell.Player
 
         private void Awake()
         {
+            if (!TryGetComponent(out CharacterScaleApplier _))
+                gameObject.AddComponent<CharacterScaleApplier>();
             visuals.localPosition = new Vector3(0f, data.BodyCenterHeight, 0f);
             core.localPosition = new Vector3(0f, data.CoreFootOffset, 0f);
             PerspectiveTuning tuning = GameServices.Ensure().Config.Perspective;

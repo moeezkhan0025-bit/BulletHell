@@ -58,13 +58,16 @@ namespace BulletHell.Enemies
         /// <summary>Middle of the body, where its bullets come out.</summary>
         public Vector2 BodyCenter => rig.position;
         /// <summary>Radius of the flat movement footprint at the feet.</summary>
-        public float FootprintRadius { get; private set; }
+        public float FootprintRadius => baseFootprint * CharacterScale.Value;
+        private float baseFootprint;
 
         /// <summary>Raised when this enemy dies.</summary>
         public event Action<Enemy> Defeated;
 
         private void Awake()
         {
+            if (!TryGetComponent(out CharacterScaleApplier _))
+                gameObject.AddComponent<CharacterScaleApplier>();
             TryGetComponent(out status);
             TryGetComponent(out attacker);
             health.Died += OnDied;
@@ -113,7 +116,7 @@ namespace BulletHell.Enemies
             Vector2 hurtboxOffset;
             if (isPainted)
             {
-                FootprintRadius = data.PaintedFootprintRadius;
+                baseFootprint = data.PaintedFootprintRadius;
                 float top = data.PaintedHeight;
                 lift = top * 0.5f;
                 barHeight = top - lift + 0.2f;
@@ -124,7 +127,7 @@ namespace BulletHell.Enemies
             }
             else
             {
-                FootprintRadius = perspective.EnemyFootprintRadiusFor(size);
+                baseFootprint = perspective.EnemyFootprintRadiusFor(size);
                 lift = size * (0.5f - perspective.EnemyFeetInset);
                 barHeight = size * 0.5f + 0.25f;
                 body.transform.localPosition = Vector3.zero;
@@ -138,7 +141,7 @@ namespace BulletHell.Enemies
 
             if (shadow != null)
             {
-                float width = FootprintRadius * 2f * perspective.ShadowWidth;
+                float width = baseFootprint * 2f * perspective.ShadowWidth;
                 Vector2 native = shadow.sprite != null ? (Vector2)shadow.sprite.bounds.size : Vector2.one;
                 shadow.transform.localScale = new Vector3(width / native.x, width * perspective.ShadowFlatness / native.y, 1f);
                 shadow.color = perspective.ShadowColor;

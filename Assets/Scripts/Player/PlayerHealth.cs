@@ -38,9 +38,9 @@ namespace BulletHell.Player
         public Vector2 Position => core != null ? core.position : transform.position;
         /// <summary>Where the player stands on the floor (traps, coins, spawn distances use this).</summary>
         public Vector2 FeetPosition => transform.position;
-        public float HitRadius => data.HitboxRadius;
+        public float HitRadius => data.HitboxRadius * CharacterScale.Value;
         /// <summary>Radius of the flat body footprint at the feet (what enemies touch on contact).</summary>
-        public float BodyRadius => data.BodyRadius;
+        public float BodyRadius => data.BodyRadius * CharacterScale.Value;
 
         private void Awake()
         {

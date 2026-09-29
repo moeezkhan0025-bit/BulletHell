@@ -20,6 +20,9 @@ namespace BulletHell.Player
         [SerializeField] private SpriteRenderer halo;
         [SerializeField] private Transform muzzle;
         [SerializeField, Min(0f)] private float selectedScale = 1.15f;
+        [Tooltip("Flat-colour material for the see-through silhouette drawn over the body when this arm is behind it (Mat_SpriteCharacter: tint amount 1).")]
+        [SerializeField] private Material silhouetteMaterial;
+        [SerializeField, Range(0f, 1f)] private float silhouetteAlpha = 0.6f;
 
         [Tooltip("Editor only: arm shown when editing the prefab. Spawned arms get their data from the loadout.")]
         [SerializeField] private WeaponArmData previewData;
@@ -46,6 +49,11 @@ namespace BulletHell.Player
         private float brightness = 1f;
         private ArmRingTuning ring;
         private MaterialPropertyBlock block;
+        private SpriteRenderer silhouette;
+        private MaterialPropertyBlock silhouetteBlock;
+        private bool isBack;
+        private static readonly int TintColorId = Shader.PropertyToID("_TintColor");
+        private static readonly int TintAmountId = Shader.PropertyToID("_TintAmount");
         private static readonly int OutlineColorId = Shader.PropertyToID("_OutlineColor");
         private static readonly int OutlineWidthId = Shader.PropertyToID("_OutlineWidth");
 
@@ -60,6 +68,7 @@ namespace BulletHell.Player
         {
             state = newState;
             art.enabled = state != State.Hidden;
+            ApplySilhouette();
             if (halo != null)
                 halo.enabled = false;
             ApplyScale();
@@ -71,13 +80,15 @@ namespace BulletHell.Player
         /// Where this arm is on the ring: back-half arms sort behind the body, front-half arms in front, and the
         /// optional depth cue shrinks and darkens arms towards the back of the ring (depth01: 0 back, 1 front).
         /// </summary>
-        public void SetDepth(bool isBack, float depth01, ArmRingTuning ring)
+        public void SetDepth(bool back, float depth01, ArmRingTuning ring)
         {
             this.ring = ring;
-            art.sortingOrder = isBack ? ring.BackArtOrder : ring.FrontArtOrder;
+            isBack = back;
+            art.sortingOrder = back ? ring.BackArtOrder : ring.FrontArtOrder;
             depthScale = ring.ScaleAt(depth01);
             brightness = ring.BrightnessAt(depth01);
             ApplyScale();
+            ApplySilhouette();
             ApplyArtColor();
             ApplyOutline();
         }
@@ -113,6 +124,35 @@ namespace BulletHell.Player
             block.SetColor(OutlineColorId, color);
             block.SetFloat(OutlineWidthId, width);
             art.SetPropertyBlock(block);
+        }
+
+        // An arm behind the body is hidden by it, so while it is selected a flat ID-colour copy is drawn over the body: the
+        // chosen arm is always visible.
+        private void ApplySilhouette()
+        {
+            bool show = isBack && state != State.Hidden && silhouetteMaterial != null && ring != null;
+            if (silhouette == null)
+            {
+                if (!show)
+                    return;
+                var go = new GameObject("Occluded");
+                go.transform.SetParent(art.transform, false);
+                silhouette = go.AddComponent<SpriteRenderer>();
+                silhouette.sharedMaterial = silhouetteMaterial;
+                silhouetteBlock = new MaterialPropertyBlock();
+            }
+            silhouette.enabled = show;
+            if (!show)
+                return;
+            silhouette.sprite = art.sprite;
+            silhouette.sortingLayerID = art.sortingLayerID;
+            silhouette.sortingOrder = ring.FrontArtOrder + 2;
+            Color id = data != null ? data.IdColor : Color.white;
+            silhouette.color = new Color(1f, 1f, 1f, silhouetteAlpha);
+            silhouette.GetPropertyBlock(silhouetteBlock);
+            silhouetteBlock.SetColor(TintColorId, id);
+            silhouetteBlock.SetFloat(TintAmountId, 1f);
+            silhouette.SetPropertyBlock(silhouetteBlock);
         }
 
         private void ApplyScale() =>

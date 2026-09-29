@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BulletHell.Arena;
 using BulletHell.Core;
 using BulletHell.Player;
 using BulletHell.Feedback;
@@ -137,7 +138,11 @@ namespace BulletHell.Pickups
                 Debug.LogWarning($"CoinField pool grew past its prewarm size ({tuning.PoolPrewarm}): {created} created.", this);
 
             CoinPickup coin = Instantiate(prefab, transform);
-            coin.GetComponent<SpriteRenderer>().color = tuning.CoinColor;
+            var coinRenderer = coin.GetComponent<SpriteRenderer>();
+            PerspectiveTuning look = GameServices.Ensure().Config.Perspective;
+            coinRenderer.color = look.Muted(tuning.CoinColor);
+            PlaceholderLook.Outline(coinRenderer, look);
+            PlaceholderLook.ContactShadow(coinRenderer, look.ShadowSprite, new Vector2(0.03f, -0.32f), new Vector2(look.ContactShadowWidth * 0.85f, look.ContactShadowWidth * 0.85f * look.ShadowFlatness), look, -2);
             return coin;
         }
     }

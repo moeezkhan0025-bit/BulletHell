@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using BulletHell.Arena;
+using BulletHell.Core;
 using BulletHell.Weapons;
 using UnityEngine;
 
@@ -75,7 +77,11 @@ namespace BulletHell.Pickups
                 return;
             var spriteRenderer = GetComponent<SpriteRenderer>();
             spriteRenderer.sprite = ammo.ProjectileSprite;
-            spriteRenderer.color = ammo.Tint;
+            PerspectiveTuning look = GameServices.Ensure().Config.Perspective;
+            spriteRenderer.color = look.Muted(ammo.Tint);
+            PlaceholderLook.Outline(spriteRenderer, look);
+            // Local units: the root is scaled to the pickup size, so the shadow is a flat ellipse just under the disc.
+            PlaceholderLook.ContactShadow(spriteRenderer, look.ShadowSprite, new Vector2(0.04f, -0.34f), new Vector2(look.ContactShadowWidth, look.ContactShadowWidth * look.ShadowFlatness), look);
             if (tuning != null)
                 transform.localScale = Vector3.one * tuning.VisualSize;
         }

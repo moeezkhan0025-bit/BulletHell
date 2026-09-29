@@ -142,6 +142,7 @@ MonoBehaviour:
   halo: {fileID: 3041199218599093195}
   muzzle: {fileID: 1584286157169936493}
   selectedScale: 1.15
+  silhouetteMaterial: {fileID: 2100000, guid: 71412d8342c8c7c46a8c751ea2fa71ce, type: 2}
   previewData: {fileID: 11400000, guid: 73bc14a71f6add446b79b2dfd4f2305a, type: 2}
 --- !u!1 &7467787960146902892
 GameObject:

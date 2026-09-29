@@ -11,9 +11,9 @@ namespace BulletHell.Player
     {
         [Header("Ellipse (around the feet)")]
         [Tooltip("Horizontal radius of the ring.")]
-        [SerializeField, Min(0f)] private float radiusX = 0.55f;
+        [SerializeField, Min(0f)] private float radiusX = 0.85f;
         [Tooltip("Vertical radius as a fraction of the horizontal one (flattened for the 3/4 look).")]
-        [SerializeField, Range(0.1f, 1f)] private float radiusYRatio = 0.5f;
+        [SerializeField, Range(0.1f, 1f)] private float radiusYRatio = 0.6f;
         [Tooltip("Small lift of the whole ring above the feet.")]
         [SerializeField, Min(0f)] private float verticalOffset = 0.1f;
         [Tooltip("Degrees per second the ring 'spins' when the selection changes or a locked arm is aimed. 0 = instant.")]

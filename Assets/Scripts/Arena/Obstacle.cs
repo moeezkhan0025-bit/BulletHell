@@ -178,12 +178,23 @@ namespace BulletHell.Arena
                 sortingGroup.sortingOrder = 0;
             }
 
+            ApplyContactShadow();
             ApplyColor();
+        }
+
+        // A soft ellipse under the footprint so the placeholder sits on the painted floor; broken debris is flat and has none.
+        private void ApplyContactShadow()
+        {
+            PerspectiveTuning look = GameServices.Ensure().Config.Perspective;
+            SpriteRenderer shadow = PlaceholderLook.ContactShadow(art, look.ShadowSprite, Vector2.zero,
+                new Vector2(footprint.x * look.ContactShadowWidth, footprint.y * 1.05f), look, -1, transform);
+            if (shadow != null)
+                shadow.enabled = !IsBroken;
         }
 
         private void ApplyColor()
         {
-            Color color = data.Color;
+            Color color = GameServices.Ensure().Config.Perspective.Muted(data.Color);
             if (IsBroken)
             {
                 color = data.DebrisColor;

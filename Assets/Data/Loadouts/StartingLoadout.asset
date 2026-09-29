@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: StartingLoadout
   m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.ArmLoadout
   slots:
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 11400000, guid: 73bc14a71f6add446b79b2dfd4f2305a, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}

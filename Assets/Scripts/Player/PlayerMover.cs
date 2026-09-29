@@ -1,4 +1,5 @@
 using BulletHell.Arena;
+using BulletHell.Core;
 using BulletHell.Input;
 using UnityEngine;
 
@@ -27,7 +28,7 @@ namespace BulletHell.Player
             {
                 // High enough in the air: only Tall obstacles and the walls block, Low ones are passed over.
                 ArenaGrid blocking = jump != null && jump.ClearsLowObstacles && arena.TallGrid != null ? arena.TallGrid : arena.Grid;
-                transform.position = blocking.Move(transform.position, delta, playerData.BodyRadius);
+                transform.position = blocking.Move(transform.position, delta, playerData.BodyRadius * CharacterScale.Value);
                 return;
             }
 

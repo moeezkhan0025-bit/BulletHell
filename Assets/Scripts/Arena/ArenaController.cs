@@ -47,6 +47,7 @@ namespace BulletHell.Arena
         private ArenaLayoutData currentLayout;
         private ArenaData current;
         private float lastAspect;
+        private CameraLetterbox letterbox;
 
         /// <summary>Flat footprints: what blocks walking and spawning.</summary>
         public ArenaGrid Grid { get; private set; }
@@ -81,6 +82,9 @@ namespace BulletHell.Arena
             GameServices services = GameServices.Ensure();
             run = services.Run;
             config = services.Config;
+            letterbox = viewCamera.GetComponent<CameraLetterbox>();
+            if (letterbox == null)
+                letterbox = viewCamera.gameObject.AddComponent<CameraLetterbox>();
             obstaclePool = new ObjectPool<Obstacle>(CreateObstacle, o => o.gameObject.SetActive(true), o => o.gameObject.SetActive(false), Destroy, true, 16, 64);
             trapPool = new ObjectPool<Trap>(CreateTrap, t => t.gameObject.SetActive(true), t => t.gameObject.SetActive(false), Destroy, true, 8, 32);
         }
@@ -285,7 +289,7 @@ namespace BulletHell.Arena
             viewCamera.backgroundColor = data.StandsColor;
         }
 
-        /// <summary>Frames the whole view rectangle (walls, railing, a bit of stands) at any aspect ratio; extra width or height shows more of the stands.</summary>
+        /// <summary>Frames the whole view rectangle (the painted arena) exactly; CameraLetterbox keeps the viewport at the view's aspect so nothing is cropped or stretched at any window shape.</summary>
         private void FitCamera()
         {
             lastAspect = viewCamera.aspect;
@@ -293,6 +297,7 @@ namespace BulletHell.Arena
                 return;
 
             Rect view = ViewRect;
+            letterbox.SetTargetAspect(view.width / view.height);
             viewCamera.orthographicSize = Mathf.Max(view.height * 0.5f, view.width * 0.5f / Mathf.Max(0.1f, viewCamera.aspect));
             Vector3 position = viewCamera.transform.position;
             viewCamera.transform.position = new Vector3(view.center.x, view.center.y, position.z);

@@ -44,6 +44,18 @@ namespace BulletHell.Arena
         [Tooltip("Shadow height / width: flat, because it lies on the floor.")]
         [SerializeField, Range(0.1f, 1f)] private float shadowFlatness = 0.45f;
 
+        [Header("Placeholder look (until final art)")]
+        [Tooltip("Soft ellipse used for the contact shadows (the circle placeholder sprite).")]
+        [SerializeField] private Sprite shadowSprite;
+        [Tooltip("Placeholder pickups, coins and obstacles: colour saturation and brightness multipliers, so they sit in the painted backdrop's palette.")]
+        [SerializeField, Range(0.2f, 1f)] private float placeholderSaturation = 0.7f;
+        [SerializeField, Range(0.5f, 1f)] private float placeholderValue = 0.92f;
+        [SerializeField] private Color placeholderOutline = new Color(0.14f, 0.09f, 0.07f, 0.95f);
+        [Tooltip("Outline thickness as a multiple of the sprite size (1.2 = 10% each side).")]
+        [SerializeField, Range(1f, 1.6f)] private float placeholderOutlineScale = 1.22f;
+        [Tooltip("Contact shadow size on placeholder pickups and obstacles: width as a multiple of the footprint.")]
+        [SerializeField, Range(0.5f, 2.5f)] private float contactShadowWidth = 1.35f;
+
         [Header("Bullets (player and enemy)")]
         [Tooltip("Bullets collide on the ground plane but are drawn this far above it, with a tiny shadow on the ground, so they read as flying.")]
         [SerializeField, Min(0f)] private float bulletVisualLift = 0.25f;
@@ -66,6 +78,19 @@ namespace BulletHell.Arena
             heightClass == ObstacleHeightClass.Low ? lowObstacleBulletAllowance : obstacleBulletAllowance;
         public float EnemyFeetInset => enemyFeetInset;
         public Color ShadowColor => shadowColor;
+        public Sprite ShadowSprite => shadowSprite;
+        public Color PlaceholderOutline => placeholderOutline;
+        public float PlaceholderOutlineScale => placeholderOutlineScale;
+        public float ContactShadowWidth => contactShadowWidth;
+
+        /// <summary>A placeholder colour pulled towards the backdrop palette: less saturated and a touch darker.</summary>
+        public Color Muted(Color color)
+        {
+            Color.RGBToHSV(color, out float h, out float s, out float v);
+            Color muted = Color.HSVToRGB(h, s * placeholderSaturation, v * placeholderValue);
+            muted.a = color.a;
+            return muted;
+        }
         public float ShadowWidth => shadowWidth;
         public float ShadowFlatness => shadowFlatness;
 

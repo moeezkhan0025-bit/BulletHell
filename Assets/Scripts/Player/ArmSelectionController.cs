@@ -38,7 +38,7 @@ namespace BulletHell.Player
         /// How far below a muzzle's world position the ground point is: the ring's lift above the feet plus the
         /// jump height. Bullets and beams start on the ground plane at muzzle - GroundOffset.
         /// </summary>
-        public float GroundOffset => armParent.position.y - transform.position.y + Ring.VerticalOffset;
+        public float GroundOffset => armParent.position.y - transform.position.y + Ring.VerticalOffset * transform.lossyScale.y;
 
         /// <summary>The muzzle of an arm projected onto the ground plane: where its bullets really start.</summary>
         public Vector2 GroundMuzzle(ArmVisual arm) => (Vector2)arm.Muzzle.position - Vector2.up * GroundOffset;

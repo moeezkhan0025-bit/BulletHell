@@ -10,6 +10,22 @@ How to log a bug (one entry each, newest at the top of "Open"):
 
 ## Open
 
+### Scale test: magenta square and white shape next to the pillars
+- **Steps:** Game scene, round 1; look at the top corners of the two pillars
+- **Expected:** no stray shapes; every shader compiles for URP 2D
+- **Actual:** a bright magenta square right of the right pillar and a white circle left of the left pillar. Not a broken material: no shader errors, all 8 Shader Graphs are URP Sprite Unlit. They are the test ammo pickups (`Pickup_TestSpare` = magenta-tinted Square, `Pickup_Basic` = white Circle) placed beside the pillars.
+- **How often:** always
+- **Severity:** minor
+- **Fixed (2026-09-29):** pickups and coins now get a dark outline, a contact shadow and muted colours (`PlaceholderLook`, values in `PerspectiveTuning`). The test pickups still sit near the pillars; move them in the Game scene if that bothers you.
+
+### Scale test: painted backdrop framed with its dark bars, left/right HUD cut off in a small Game view
+- **Steps:** Game scene at 1920x1080, or any other window shape
+- **Expected:** the whole 16:9 painted arena, centred, and the whole HUD inside it
+- **Actual:** the imported image (3840x2160) has dark bars around the painted area (3269x1840 at x 273, y 54), which was framed too, so the arena sat off-centre with a big empty band on top. The HUD was anchored to the screen edges, not to the picture. On this machine Windows scaling is 150% (2560x1440), so a fixed 1920x1080 Game view is larger than its pane and Unity crops it unless the Game view's Scale slider is lowered.
+- **How often:** always
+- **Severity:** major for the art pass
+- **Fixed (2026-09-29):** `ScaleTestArt` crops the backdrop to the painted area; `CameraLetterbox` keeps the camera at the arena's aspect (bars cleared by a second camera); `SafeAreaFitter` keeps the HUD inside that rectangle. The Game view Scale slider is an editor setting: set it to fit (or use Free Aspect / a 1280x720 size) when the pane is small.
+
 ### Scale test: enemy bullets are the same red family as the painted floor
 - **Steps:** Game scene with `ScaleTestArt` backdrop on; enemies fire over the red carpet strips and crest ring
 - **Expected:** enemy bullets pop against the floor, also in grayscale (ART_SPEC section 7)
