@@ -405,9 +405,21 @@ Findings that change the attribution above:
 
 ### D1 - UI polish (art-independent)
 - Date: 2026-09-30
-- Commits: none yet (uncommitted at the time of writing)
+- Commits: `b76b5ee`
 - Model: Claude Sonnet 5.5
 - Built: `VoxD1Shots` (Play-mode capture of 16 screen states at 1920x1080, 2560x1440 and 2340x1080 into `Captures/before` and `Captures/after`, with long names and 5-digit numbers); fixes to the round / currency pills (autosize), boss name plate, HUD visibility in Pause, flow-panel prompt pills, Settings slider click and drag, scrim strength, and theme-driven transition and banner timings.
 - Problems and fixes: see `Docs/BUGS.md` Fixed, "D1 UI polish". The capture run first showed the Settings screen closing itself (the round intro kept running and changed state), so game time is frozen during captures. A regex replace with `|` as the delimiter inserted text at the top of `CombatHud.cs` (the agent used `||` inside an `s|...|...|` pattern); it was caught by reading the diff and repaired by hand. The slider first mapped the pointer wrongly because the track's pivot is at its left edge, not its centre; found by driving `OnPointerDown` from an eval.
 - Tests / verification: before/after PNGs compared by eye; the slider mapping was checked in Play mode (pointer at 0 / 30 / 50 / 100 % of the track gave 0 / 0.3 / 0.5 / 1). No automated tests were added or run [VERIFY].
 - Notes: hold-ring and heat-bar mock differences were reviewed and kept (see BUGS.md).
+
+## D2 - Onboarding
+
+### D2 - Round 1 onboarding
+- Date: 2026-09-30
+- Commits: none yet (uncommitted at the time of writing)
+- Model: Claude Sonnet 5.5
+- Built: `TutorialController` (steps finished by doing the action; spawner held until move, select and fire are done), `TutorialData` asset (six steps, text with {0} button names), `TutorialPanel` card in the VoxVegetallis look, `TutorialText` formatter, glyph labels for the gameplay controls on every controller family (`UiAction` extended, asset filled by `TutorialSetup`), new `SkipTutorial` input action (Select / Share / Tab), `ProfileData.tutorialDone`, `WaveSpawner.HoldSpawns`, Settings > Gameplay > Replay Tutorial, editor tool `BulletHell/D2/Build Tutorial`.
+- Problems and fixes: the builder wired the `TutorialData` reference before reopening the Game scene, so it came back null and the tutorial never started (caught by reading the state in Play mode; the builder now reloads the asset after opening the scene). Simulated gamepad input from the CLI never reached the actions (a real DualSense overwrites queued state), so the lessons that need the sticks were driven by invoking the controller events instead; the move lesson was driven with the reader's debug move. The real stick, R1 and R2 conditions were therefore checked by code reading and the events, not by a human press [VERIFY by playtest].
+- Tests / verification: 6 new EditMode tests (text per device, missing button, glyph labels on four families, tutorial data, profile flag round trip, old profile). Full EditMode run: 300 of 311 pass; the 11 failures are the known Obstacle contact-shadow ones in `Docs/BUGS.md`. Play-mode walk-through: hold released after the fire lesson and an enemy spawned, the six lessons ran in order, `tutorialDone` was written to `profile.json`.
+- Notes: the progress pips are square (the Circle placeholder sprite was missing).
+

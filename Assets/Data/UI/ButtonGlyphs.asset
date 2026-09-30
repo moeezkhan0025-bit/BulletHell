@@ -44,6 +44,16 @@ MonoBehaviour:
     - L1
     - R1
     - Options
+    - Right Stick
+    - Left Stick
+    - R1
+    - L3
+    - R2
+    - Cross
+    - Circle
+    - Square
+    - Triangle
+    - Create
   - Family: 1
     South:
       Icon: {fileID: 21300000, guid: 11c4928f02af55844a1163e83b44e67c, type: 3}
@@ -75,6 +85,16 @@ MonoBehaviour:
     - LB
     - RB
     - Menu
+    - Right Stick
+    - Left Stick
+    - RB
+    - LS Click
+    - RT
+    - A
+    - B
+    - X
+    - Y
+    - View
   - Family: 2
     South:
       Icon: {fileID: 21300000, guid: 11c4928f02af55844a1163e83b44e67c, type: 3}
@@ -106,6 +126,16 @@ MonoBehaviour:
     - L
     - R
     - +
+    - Right Stick
+    - Left Stick
+    - R
+    - L Stick Click
+    - ZR
+    - B
+    - A
+    - Y
+    - X
+    - '-'
   - Family: 3
     South:
       Icon: {fileID: 21300000, guid: 11c4928f02af55844a1163e83b44e67c, type: 3}
@@ -130,6 +160,16 @@ MonoBehaviour:
     ActionLabels:
     - Tap
     - Back
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
     - 
     - 
     - 
@@ -168,3 +208,13 @@ MonoBehaviour:
     - '['
     - ']'
     - 
+    - WASD
+    - Mouse
+    - Click
+    - L
+    - Space
+    - 1
+    - 2
+    - 3
+    - 4
+    - Tab

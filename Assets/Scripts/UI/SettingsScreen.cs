@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using BulletHell.Core;
+using BulletHell.Cosmetics;
 using BulletHell.Input;
 using BulletHell.Platform;
 using BulletHell.Settings;
@@ -102,6 +103,7 @@ namespace BulletHell.UI
                 return;
             built = true;
 
+            ProfileService profile = GameServices.Ensure().Profile;
             settings = GameServices.Ensure().Settings;
             SettingsDefaults defaults = settings.Defaults;
 
@@ -134,6 +136,9 @@ namespace BulletHell.UI
                             v => settings.Current.aimSensitivity = v),
                 sub: null, setFraction: f => SetByFraction(f, defaults.AimSensitivityStep, defaults.MinAimSensitivity, defaults.MaxAimSensitivity,
                                                            v => settings.Current.aimSensitivity = v));
+
+            AddRow(GameplayTab, "Replay Tutorial", () => OnOff(!profile.TutorialDone), SettingKind.Toggle, null,
+                _ => profile.SetTutorialDone(!profile.TutorialDone), "Plays in round 1 of a new run");
 
             if (Debug.isDebugBuild)
             {

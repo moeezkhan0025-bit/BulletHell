@@ -33,7 +33,7 @@ namespace BulletHell.UI
             public ButtonGlyph East;
             public ButtonGlyph West;
             public ButtonGlyph North;
-            [Tooltip("Prompt text per UiAction, in enum order (Confirm, Back, Randomize, Details, Reroll, Remove, TabPrev, TabNext, Start). Empty = this device has no button for it, the prompt is left out.")]
+            [Tooltip("Prompt text per UiAction, in enum order (Confirm, Back, Randomize, Details, Reroll, Remove, TabPrev, TabNext, Start, Move, Aim, Fire, Lock, Jump, Ammo1-4, SkipTutorial). Empty = this device has no button for it, the prompt is left out.")]
             public string[] ActionLabels = new string[0];
 
             public string LabelFor(UiAction action)

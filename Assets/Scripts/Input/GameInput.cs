@@ -191,6 +191,16 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""SkipTutorial"",
+                    ""type"": ""Button"",
+                    ""id"": ""0a1b2c0a-1111-4a0a-8b0a-0000000000aa"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -314,6 +324,28 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0b00000a-2222-4b0a-9c0a-0000000000ba"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""SkipTutorial"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0b00000b-2222-4b0b-9c0b-0000000000bb"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SkipTutorial"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -395,6 +427,16 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""name"": ""DebugStartStress"",
                     ""type"": ""Button"",
                     ""id"": ""1d000009-3333-4c09-8d09-0000000000c9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""DebugToggleTelemetry"",
+                    ""type"": ""Button"",
+                    ""id"": ""1d00000a-3333-4c0a-8d0a-0000000000ca"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -532,6 +574,17 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""DebugStartStress"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e00000f-4444-4d0f-9e0f-0000000000df"",
+                    ""path"": ""<Keyboard>/f9"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DebugToggleTelemetry"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -785,6 +838,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Gameplay_EquipAmmo3 = m_Gameplay.FindAction("EquipAmmo3", throwIfNotFound: true);
         m_Gameplay_EquipAmmo4 = m_Gameplay.FindAction("EquipAmmo4", throwIfNotFound: true);
         m_Gameplay_Pause = m_Gameplay.FindAction("Pause", throwIfNotFound: true);
+        m_Gameplay_SkipTutorial = m_Gameplay.FindAction("SkipTutorial", throwIfNotFound: true);
         // Debug
         m_Debug = asset.FindActionMap("Debug", throwIfNotFound: true);
         m_Debug_DebugAddArmament = m_Debug.FindAction("DebugAddArmament", throwIfNotFound: true);
@@ -795,6 +849,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Debug_DebugGiveCurrency = m_Debug.FindAction("DebugGiveCurrency", throwIfNotFound: true);
         m_Debug_DebugTogglePerfOverlay = m_Debug.FindAction("DebugTogglePerfOverlay", throwIfNotFound: true);
         m_Debug_DebugStartStress = m_Debug.FindAction("DebugStartStress", throwIfNotFound: true);
+        m_Debug_DebugToggleTelemetry = m_Debug.FindAction("DebugToggleTelemetry", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Primary = m_Menu.FindAction("Primary", throwIfNotFound: true);
@@ -896,6 +951,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_EquipAmmo3;
     private readonly InputAction m_Gameplay_EquipAmmo4;
     private readonly InputAction m_Gameplay_Pause;
+    private readonly InputAction m_Gameplay_SkipTutorial;
     /// <summary>
     /// Provides access to input actions defined in input action map "Gameplay".
     /// </summary>
@@ -947,6 +1003,10 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Gameplay/Pause".
         /// </summary>
         public InputAction @Pause => m_Wrapper.m_Gameplay_Pause;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/SkipTutorial".
+        /// </summary>
+        public InputAction @SkipTutorial => m_Wrapper.m_Gameplay_SkipTutorial;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1003,6 +1063,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @Pause.started += instance.OnPause;
             @Pause.performed += instance.OnPause;
             @Pause.canceled += instance.OnPause;
+            @SkipTutorial.started += instance.OnSkipTutorial;
+            @SkipTutorial.performed += instance.OnSkipTutorial;
+            @SkipTutorial.canceled += instance.OnSkipTutorial;
         }
 
         /// <summary>
@@ -1044,6 +1107,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @Pause.started -= instance.OnPause;
             @Pause.performed -= instance.OnPause;
             @Pause.canceled -= instance.OnPause;
+            @SkipTutorial.started -= instance.OnSkipTutorial;
+            @SkipTutorial.performed -= instance.OnSkipTutorial;
+            @SkipTutorial.canceled -= instance.OnSkipTutorial;
         }
 
         /// <summary>
@@ -1089,6 +1155,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Debug_DebugGiveCurrency;
     private readonly InputAction m_Debug_DebugTogglePerfOverlay;
     private readonly InputAction m_Debug_DebugStartStress;
+    private readonly InputAction m_Debug_DebugToggleTelemetry;
     /// <summary>
     /// Provides access to input actions defined in input action map "Debug".
     /// </summary>
@@ -1132,6 +1199,10 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Debug/DebugStartStress".
         /// </summary>
         public InputAction @DebugStartStress => m_Wrapper.m_Debug_DebugStartStress;
+        /// <summary>
+        /// Provides access to the underlying input action "Debug/DebugToggleTelemetry".
+        /// </summary>
+        public InputAction @DebugToggleTelemetry => m_Wrapper.m_Debug_DebugToggleTelemetry;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1182,6 +1253,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @DebugStartStress.started += instance.OnDebugStartStress;
             @DebugStartStress.performed += instance.OnDebugStartStress;
             @DebugStartStress.canceled += instance.OnDebugStartStress;
+            @DebugToggleTelemetry.started += instance.OnDebugToggleTelemetry;
+            @DebugToggleTelemetry.performed += instance.OnDebugToggleTelemetry;
+            @DebugToggleTelemetry.canceled += instance.OnDebugToggleTelemetry;
         }
 
         /// <summary>
@@ -1217,6 +1291,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @DebugStartStress.started -= instance.OnDebugStartStress;
             @DebugStartStress.performed -= instance.OnDebugStartStress;
             @DebugStartStress.canceled -= instance.OnDebugStartStress;
+            @DebugToggleTelemetry.started -= instance.OnDebugToggleTelemetry;
+            @DebugToggleTelemetry.performed -= instance.OnDebugToggleTelemetry;
+            @DebugToggleTelemetry.canceled -= instance.OnDebugToggleTelemetry;
         }
 
         /// <summary>
@@ -1502,6 +1579,13 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPause(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SkipTutorial" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSkipTutorial(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Debug" which allows adding and removing callbacks.
@@ -1566,6 +1650,13 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDebugStartStress(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DebugToggleTelemetry" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDebugToggleTelemetry(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Menu" which allows adding and removing callbacks.

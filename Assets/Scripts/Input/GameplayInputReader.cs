@@ -41,6 +41,9 @@ namespace BulletHell.Input
         /// <summary>Options / Start pressed (pause).</summary>
         public event Action PausePressed;
 
+        /// <summary>Select / Share / Tab pressed (skip the onboarding prompts).</summary>
+        public event Action SkipTutorialPressed;
+
         // Debug map (D-pad / F1-F4): add, remove, next and previous test armament.
         public event Action DebugAddArmamentPressed;
         public event Action DebugRemoveArmamentPressed;
@@ -64,6 +67,7 @@ namespace BulletHell.Input
             lockToggleAction.performed += OnLockToggle;
             gameplay.Pause.performed += OnPause;
             gameplay.Jump.performed += OnJump;
+            gameplay.SkipTutorial.performed += OnSkipTutorial;
             input.Debug.DebugAddArmament.performed += OnDebugAdd;
             input.Debug.DebugRemoveArmament.performed += OnDebugRemove;
             input.Debug.DebugNextArmament.performed += OnDebugNext;
@@ -121,6 +125,7 @@ namespace BulletHell.Input
             lockToggleAction.performed -= OnLockToggle;
             input.Gameplay.Pause.performed -= OnPause;
             input.Gameplay.Jump.performed -= OnJump;
+            input.Gameplay.SkipTutorial.performed -= OnSkipTutorial;
             for (int i = 0; i < AmmoButtonCount; i++)
                 ammoActions[i].performed -= ammoHandlers[i];
             input.Debug.DebugAddArmament.performed -= OnDebugAdd;
@@ -157,6 +162,8 @@ namespace BulletHell.Input
         private void OnLockToggle(InputAction.CallbackContext c) => InputDiagnostics.Raise(this, nameof(OnLockToggle), c, LockTogglePressed);
 
         private void OnPause(InputAction.CallbackContext c) => InputDiagnostics.Raise(this, nameof(OnPause), c, PausePressed);
+
+        private void OnSkipTutorial(InputAction.CallbackContext c) => InputDiagnostics.Raise(this, nameof(OnSkipTutorial), c, SkipTutorialPressed);
 
         private void OnJump(InputAction.CallbackContext c) => InputDiagnostics.Raise(this, nameof(OnJump), c, JumpPressed);
     }

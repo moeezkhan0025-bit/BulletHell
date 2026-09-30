@@ -46,6 +46,16 @@ namespace BulletHell.Cosmetics
 
         public void Save() => store.Save(Data);
 
+        /// <summary>The round 1 onboarding has been finished or skipped.</summary>
+        public bool TutorialDone => Data.tutorialDone;
+
+        /// <summary>Marks the onboarding finished (or, from Settings, queues it to play again) and saves the profile.</summary>
+        public void SetTutorialDone(bool done)
+        {
+            Data.tutorialDone = done;
+            Save();
+        }
+
         /// <summary>All items of a slot, in registry order (the first is the default). Empty when the registry has none.</summary>
         public IReadOnlyList<CosmeticPartData> Options(CosmeticSlot slot)
         {

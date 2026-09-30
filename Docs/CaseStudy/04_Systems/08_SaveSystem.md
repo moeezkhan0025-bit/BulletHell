@@ -6,7 +6,7 @@ Code: `Assets/Scripts/Save`, `Assets/Scripts/Core` (`RunManager`, `RunState`, `G
 
 A roguelike with a shop and armory between rounds needs to survive quitting: Continue must resume at the Shop for the saved round. CLAUDE.md fixes the rules up front:
 - Exactly ONE run save (single slot), JSON, written through an `ISaveSystem` interface so platform save APIs (Steam Cloud, iCloud, console save data) can plug in later.
-- Settings and profile (chosen cosmetics, future unlocks) live in separate files that Game Over and New Game never delete.
+- Settings and profile (chosen cosmetics, future unlocks) live in separate files that Game Over and New Game never delete. The profile also holds `tutorialDone` (D2): an older v2 profile without the field reads as not done, so no version bump was needed.
 - "Save data uses plain serializable classes and asset IDs, never direct ScriptableObject references (an AssetRegistry maps IDs -> WeaponArmData / ArmamentData / AmmoTypeData)."
 - Game Over deletes the run save (roguelike). Autosave when entering the Shop after each round, and after leaving the Armory.
 - Console-ready from day one: no platform-specific code outside `Scripts/Platform/`.
@@ -146,3 +146,4 @@ sequenceDiagram
 - Corruption handling beyond the temp-file swap: a backup copy (`.bak`) of the last good save?
 - Does saving during Combat (mid-round) ever become a requirement (mobile interruptions at M12)? Currently the save is only valid "at the Shop".
 - Security/cheating: plain JSON is editable; acceptable for a single-player game? [VERIFY intent]
+

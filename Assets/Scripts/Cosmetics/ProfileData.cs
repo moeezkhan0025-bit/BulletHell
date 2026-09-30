@@ -13,5 +13,8 @@ namespace BulletHell.Cosmetics
 
         public int version = CurrentVersion;
         public string[] cosmetics = new string[CosmeticSlots.Count];
+
+        /// <summary>The round 1 onboarding was finished or skipped. False on a fresh profile (and on a v2 file written before D2). Settings can clear it to replay.</summary>
+        public bool tutorialDone;
     }
 }

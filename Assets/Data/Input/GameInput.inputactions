@@ -94,6 +94,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "SkipTutorial",
+                    "type": "Button",
+                    "id": "0a1b2c0a-1111-4a0a-8b0a-0000000000aa",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -217,6 +226,28 @@
                     "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0b00000a-2222-4b0a-9c0a-0000000000ba",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "SkipTutorial",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0b00000b-2222-4b0b-9c0b-0000000000bb",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SkipTutorial",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -291,6 +322,15 @@
                     "name": "DebugStartStress",
                     "type": "Button",
                     "id": "1d000009-3333-4c09-8d09-0000000000c9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "DebugToggleTelemetry",
+                    "type": "Button",
+                    "id": "1d00000a-3333-4c0a-8d0a-0000000000ca",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -427,6 +467,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "DebugStartStress",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1e00000f-4444-4d0f-9e0f-0000000000df",
+                    "path": "<Keyboard>/f9",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DebugToggleTelemetry",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

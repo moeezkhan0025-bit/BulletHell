@@ -51,6 +51,8 @@ namespace BulletHell.Enemies
         public int WaveNumber => phase == Phase.Idle ? 0 : waveIndex + 1;
         public int WaveCount => round != null ? round.Waves.Length : 0;
         public int EnemiesAlive => alive.Count;
+        /// <summary>While true the round's spawn schedule is paused (the onboarding keeps round 1 empty until the basics are done).</summary>
+        public bool HoldSpawns { get; set; }
         public bool IsBreather => phase == Phase.Breather;
         public bool IsBossRound => round != null && round.IsBossRound;
 
@@ -75,6 +77,7 @@ namespace BulletHell.Enemies
         // The intro clears the field of the previous round; nothing spawns until combat begins.
         private void OnRoundIntroStarted(int number)
         {
+            HoldSpawns = false;
             phase = Phase.Idle;
             projectiles.ReleaseAll();
             coins.Clear();
@@ -123,6 +126,8 @@ namespace BulletHell.Enemies
                 return;
 
             float dt = Time.deltaTime;
+            if (phase == Phase.Fighting && HoldSpawns)
+                return;
             if (phase == Phase.Breather)
             {
                 breatherLeft -= dt;

@@ -125,10 +125,19 @@ Boot scene (bootstrapper) -> Main Menu scene -> Game scene.
   vibration on/off, aim sensitivity (scales the InputTuning thresholds within safe limits), show debug
   overlay (dev builds), and on PC fullscreen/windowed + resolution. Laid out on tabs (Audio, Video, Controls, Gameplay; L1/R1 switch) with sliders,
   toggles and arrow rows. Applied immediately, saved in the settings file, Back returns to wherever Settings was opened from.
+  The Gameplay tab always holds "Replay Tutorial" (a toggle: ON = the onboarding plays again in round 1 of the next new run; it clears the profile flag).
 - New Game -> Gladiator customization (cosmetics) -> Round intro -> Combat.
   Continue skips customization and resumes at the Shop for the saved round.
 - Round intro: every round starts with a banner/announcer moment ("Round 1 - Begin!", boss rounds get
   a special banner) and a short countdown; player can move during it but enemies and traps are idle.
+- Onboarding (round 1 of a profile that has not finished it; `TutorialController`, data in `Data/UI/Tutorial.asset`): starts when combat begins and
+  teaches one control at a time on a themed card under the round pill (lesson counter, instruction with the connected controller's button
+  names, progress pips, skip prompt): move (right stick), select an arm (left stick), fire (R1), lock (L3), jump (R2), swap ammo (face buttons).
+  Each lesson ends when the player does it ("Nice!" then the next). The ammo lesson waits for a second ammo type (shown as "walk over an ammo
+  pickup") and is left out when the arena has no ammo pickup. Enemies wait (`WaveSpawner.HoldSpawns`) until the first three lessons (move, select,
+  fire) are done; lock, jump and ammo are taught with the light round 1 wave running. Select / Share / Tab (`SkipTutorial` action) skips all of it.
+  Finished, skipped, or round 1 cleared = saved as done in the profile (`ProfileData.tutorialDone`); dying or quitting to the menu is not. Hidden in
+  Pause; not used on touch (M12 designs its controls). Button names come from the glyph library (`UiAction.Move..SkipTutorial`).
 - Run loop (Game scene, one GameStateMachine):
   RoundIntro -> Combat (waves) -> Round Results -> Shop -> Armory -> RoundIntro (round N+1, harder).
   Boss rounds: 3, 5, 7. After round 7: [TBD - e.g. boss every 2 rounds / endless scaling / game ends].
@@ -147,9 +156,17 @@ Boot scene (bootstrapper) -> Main Menu scene -> Game scene.
 
 ## Save system
 - Exactly ONE run save (single slot), JSON, written through ISaveSystem (platform save APIs plug in later).
-- Separate from the run save: a settings file and a profile file (chosen cosmetics, unlocks). These are
+- Separate from the run save: a settings file and a profile file (chosen cosmetics, unlocks, onboarding finished). These are
   never deleted by Game Over or New Game.
-- Autosave: on entering the Shop after each round, after every Shop purchase, reroll and crate pick, and after every Armory change (and on leaving the Armory). Code behavior; saves are cheap.
+- Playtest telemetry (local only, no network; `Scripts/Telemetry`): when a run ends (the player dies, or leaves it / closes the game) one row is appended to
+  `playtest_runs.csv` in the save folder (`%USERPROFILE%AppDataocallowdefaultcompanyvoxvegetallis`, name on gameconfig). columns: run id, start/end time, build
+  (editor/dev/release), continued, debug_used, result (died/quit), cause of death (what hit last: "tomato (contact)", "enemy bullet", "pumpking smash",
+  "trap: ..."), round reached and cleared, combat seconds and damage taken per round (";"-joined lists), currency earned / spent / at the end, items bought
+  (arms, armaments, rerolls, crates, item names), armaments equipped and the final loadout, boss reached, highest boss phase, boss defeated. runs that used a
+  debug tool (round skip, currency grant, god mode) are flagged and left out of the averages. a run quit before any fight is not logged. never deleted by
+  game over or new game. debug summary screen (development builds and the editor): f9, or the stats button on the pause screen's debug row; averages, round
+  histogram, cause of death, boss phase and per-round time / damage, read fresh from the csv.
+- autosave: on entering the shop after each round, after every Shop purchase, reroll and crate pick, and after every Armory change (and on leaving the Armory). Code behavior; saves are cheap.
 - Saved: round number, currency, arm inventory, armament inventory, loadout (8 slots of arm instances
   with their equipped armaments), 4 ammo slots, save version number.
 - Continue loads the save and resumes at the Shop for the saved round.
@@ -501,7 +518,7 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
 - [x] D1 UI polish (art-independent, done 2026-09-30; before/after shots in Captures/, tool `VoxD1Shots`): spacing, alignment, text overflow (long names, 5-digit numbers), focus states, motion timings from the VoxKit
       manifest, and layouts checked at 1920x1080, 2560x1440 and a phone resolution. Screens: HUD, Settings, Round Results, Pause, Game Over, round
       banner, boss bar. The Shop merchant panel and the Character Creation preview wait for art.
-- [ ] D2 Onboarding: skippable, action-driven control prompts in round 1 (move, select arm, fire, L3 lock, R2 jump, ammo swap), glyphs for the
+- [x] D2 Onboarding (done 2026-09-30; shots in Captures/d2): skippable, action-driven control prompts in round 1 (move, select arm, fire, L3 lock, R2 jump, ammo swap), glyphs for the
       connected controller, completion saved in the profile, replay option in Settings.
 - [ ] D3 Playtest telemetry + balance tools: local-only CSV per run (round reached, cause of death, time and damage taken per round, currency
       earned/spent, items bought, armaments equipped, boss phase reached) and a debug summary screen.
