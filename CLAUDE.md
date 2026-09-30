@@ -148,7 +148,7 @@ Boot scene (bootstrapper) -> Main Menu scene -> Game scene.
 - Exactly ONE run save (single slot), JSON, written through ISaveSystem (platform save APIs plug in later).
 - Separate from the run save: a settings file and a profile file (chosen cosmetics, unlocks). These are
   never deleted by Game Over or New Game.
-- Autosave when entering the Shop after each round, and after leaving the Armory.
+- Autosave: on entering the Shop after each round, after every Shop purchase, reroll and crate pick, and after every Armory change (and on leaving the Armory). Code behavior; saves are cheap.
 - Saved: round number, currency, arm inventory, armament inventory, loadout (8 slots of arm instances
   with their equipped armaments), 4 ammo slots, save version number.
 - Continue loads the save and resumes at the Shop for the saved round.
@@ -169,7 +169,7 @@ PlayStation names below; Xbox = RB / RT / LS click / A B X Y, Switch = R / ZR / 
   - Stick drops out of the outer threshold -> arm deselects.
   - Select threshold: magnitude >= 0.85. Deselect threshold: magnitude < 0.65 (hysteresis).
   - Angle hysteresis: ~8 degrees past a slice boundary before switching arms (no jitter on boundaries).
-  - Directions whose loadout slot is empty select nothing.
+  - Pie split: the stick direction selects the nearest EQUIPPED arm (empty slots are skipped), so the ring has no dead zones. (Earlier wording "empty slots select nothing" no longer matches the code.)
 
   LOCKED (after pressing L3) - for committing to one arm and aiming it freely:
   - Pressing L3 while an arm is soft-selected locks that arm.
@@ -209,7 +209,7 @@ PlayStation names below; Xbox = RB / RT / LS click / A B X Y, Switch = R / ZR / 
   tags (e.g. Speed, Homing, Pierce, Bounce, Auto), max stacks, and a list of EFFECTS:
   - Stat modifiers (flat add or percent multiply). Final stat = base, then flat adds, then percent
     multipliers (order documented in code).
-  - Behavior modifiers: small classes implementing a projectile/arm modifier interface, so new armaments
+  - Behavior modifiers: small ArmEffect ScriptableObject subclasses (an abstract base class, not an interface), so new armaments
     are new assets/classes, never edits to the firing code.
   Descriptions and tooltips are generated from the effect data ("+25% bullet speed") so they never go stale.
   Bought in the Shop into the armament inventory, equipped in the Armory. Unequipping returns them.
@@ -264,7 +264,7 @@ PlayStation names below; Xbox = RB / RT / LS click / A B X Y, Switch = R / ZR / 
     the foreground layer. Sorting uses the ground (shadow) position, never the lifted sprite.
   - Landing on an enemy or inside an obstacle footprint: the player is pushed to the nearest free spot.
   - Implementation: a PlayerHeight/JumpController component exposes IsAirborne and Height; collision
-    rules use physics layers / layer masks switched while airborne, not per-object special cases.
+    the physics layer is switched while airborne (enemy bodies); traps, pickups, contact damage and obstacles use IsGrounded flags or separate grids (Grid / TallGrid / BulletGrid).
     Enemy AI treats the shadow position as the player's position.
 - Arena: the vegetable colosseum. ArenaData defines bounds (walls), player spawn, enemy spawn gates,
   and placed obstacles/traps. Rounds can reference different ArenaData layouts. Placeholder art for now.
@@ -371,7 +371,7 @@ PlayStation names below; Xbox = RB / RT / LS click / A B X Y, Switch = R / ZR / 
 ## Architecture rules (follow these strictly)
 - All tunable data lives in ScriptableObjects: WeaponArmData, AmmoTypeData, ArmamentData,
   EnemyData, WaveData, RoundData, BossData, DifficultyCurve, InputTuning, JumpTuning, ArmRingTuning, ArmLoadout, PickupTuning,
-  ShopPool, RarityTable, AssetRegistry, BulletPatternData, PlayerData, ArenaData, ArenaLayoutData, TrapData, CosmeticData, SettingsDefaults.
+  ShopPool, RarityTable, AssetRegistry, AttackPattern, PlayerData, ArenaData, ArenaLayoutData, TrapData, CosmeticData, SettingsDefaults.
   No gameplay numbers hard-coded in MonoBehaviours.
 - ALL projectiles (player and enemy) use object pooling (UnityEngine.Pool.ObjectPool<T>).
   Never Instantiate/Destroy bullets during gameplay.
@@ -409,6 +409,7 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
   with a one-line note of the cause. If you notice a new bug while working, add it to the list; don't fix
   unrelated bugs silently.
 - Claude maintains the project docs. When a task changes the design, adds or renames something, or finishes art or milestones, update CLAUDE.md, Docs/ART_SPEC.md, Docs/ART_CHECKLIST.md and Docs/BUGS.md directly as part of the task: keep existing checkmarks and notes, edit only the relevant sections, and end the task with a short 'Docs updated' list of what changed. The user no longer swaps in doc files manually; design changes arrive as prompts.
+- At the end of every milestone, update Docs/CaseStudy: add a DevLog entry, update Architecture and GameFlow diagrams if structure changed, update the relevant Systems deep dive, update the Roadmap and Metrics. Note which model was used and anything the agent got wrong.
 - If a request conflicts with these rules, say so instead of silently breaking them.
 
 ## Milestones
@@ -427,7 +428,7 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
       GameStateMachine with a stub round (ends when test enemies are cleared), Round Results -> Shop
       (fixed test stock) -> Armory (select arm -> 3 slots -> equip from inventory; place arms in empty
       slots) -> next round. Autosave + Continue working. Plain skeleton UI, fully controller navigable.
-- [x] M5a Combat: player health/hitbox/i-frames/Game Over, BulletPatternData, pooled enemy bullets,
+- [x] M5a Combat: player health/hitbox/i-frames/Game Over, AttackPattern (was planned as BulletPatternData), pooled enemy bullets,
       4 starter enemy types (Grunt, Spinner, Charger, Sniper), enemy test mode to spawn each type.
 - [x] M5b Rounds: WaveData/RoundData for rounds 1-7, wave spawner replacing the stub round,
       coin drops + magnet + round-end collection, DifficultyCurve scaling, currency on Round Results.
@@ -492,6 +493,9 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
       arms), dev-build run + CSV analysis (worst spikes and causes reported before any fix), fixes for the top offenders
       (per-frame allocations, unpooled objects, flow-field / line-of-sight / physics query costs, SRP batching warning, overdraw
       and shaders, frame pacing, hitstop stutter), before/after numbers. Target: steady 60 fps, no visible hitches in the stress test.
+- [ ] PF1 Case study documentation system: Docs/CaseStudy (narrative, architecture, game flow, system deep dives, dev log, roadmap, agentic workflow,
+      art pipeline, metrics, reflections template), backfilled from git history, CLAUDE.md history, BUGS.md and the code; inferences marked [VERIFY].
+      From now on it is updated at the end of every milestone (see the Working agreement).
 - [ ] M11 Themed UI/visual pass: candy-colosseum style for menus, HUD, Shop, Armory, customization; final art.
 - [ ] M12 Polish: touch controls (incl. jump button), button glyphs, juice, announcer/audio, performance pass
       (the performance pass also covers the 2D SRP Batcher warning on Mat_SpriteCharacter / Mat_SpriteOutline: _TexelSize / _ST properties in the Sprite Unlit graphs).
