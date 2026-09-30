@@ -76,6 +76,7 @@ namespace BulletHell.Input
             input.Debug.DebugGiveCurrency.performed += OnDebugGiveCurrency;
             input.Debug.DebugTogglePerfOverlay.performed += OnDebugTogglePerfOverlay;
             input.Debug.DebugStartStress.performed += OnDebugStartStress;
+            input.Debug.DebugToggleTelemetry.performed += OnDebugToggleTelemetry;
 
             ammoActions[0] = gameplay.EquipAmmo1;
             ammoActions[1] = gameplay.EquipAmmo2;
@@ -136,6 +137,7 @@ namespace BulletHell.Input
             input.Debug.DebugGiveCurrency.performed -= OnDebugGiveCurrency;
             input.Debug.DebugTogglePerfOverlay.performed -= OnDebugTogglePerfOverlay;
             input.Debug.DebugStartStress.performed -= OnDebugStartStress;
+            input.Debug.DebugToggleTelemetry.performed -= OnDebugToggleTelemetry;
             input.Dispose();
         }
 
@@ -151,12 +153,18 @@ namespace BulletHell.Input
         private void OnDebugTogglePerfOverlay(InputAction.CallbackContext _) => Perf.PerfHost.ToggleOverlay();
         private void OnDebugStartStress(InputAction.CallbackContext _) => Perf.PerfHost.ToggleStress();
 
+        // F9: show / hide the playtest summary (development builds and the editor only).
+        private void OnDebugToggleTelemetry(InputAction.CallbackContext _) => Telemetry.TelemetryOverlay.Toggle();
+
         // F7: give yourself currency (the amount is on ShopTuning). Works in any run state; the Shop refreshes by itself.
         private void OnDebugGiveCurrency(InputAction.CallbackContext _)
         {
             Core.GameServices services = Core.GameServices.Ensure();
             if (services.Run.State != null)
+            {
+                services.Run.MarkDebug();   // the playtest log leaves such runs out of the averages
                 services.Run.State.Currency += services.Config.ShopTuning != null ? services.Config.ShopTuning.DebugCurrencyGrant : 100;
+            }
         }
 
         private void OnLockToggle(InputAction.CallbackContext c) => InputDiagnostics.Raise(this, nameof(OnLockToggle), c, LockTogglePressed);

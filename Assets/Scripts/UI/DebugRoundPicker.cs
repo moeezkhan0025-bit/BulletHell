@@ -27,6 +27,8 @@ namespace BulletHell.UI
         [Tooltip("Boss health down / up by 10% while a boss is alive. Optional.")]
         [SerializeField] private Button healthDownButton;
         [SerializeField] private Button healthUpButton;
+        [Tooltip("Opens the playtest summary (averages over the logged runs). Optional.")]
+        [SerializeField] private Button statsButton;
 
         private RunManager run;
         private GameConfig config;
@@ -54,6 +56,8 @@ namespace BulletHell.UI
                 healthDownButton.onClick.AddListener(() => NudgeBossHealth(-HealthStep));
             if (healthUpButton != null)
                 healthUpButton.onClick.AddListener(() => NudgeBossHealth(HealthStep));
+            if (statsButton != null)
+                statsButton.onClick.AddListener(BulletHell.Telemetry.TelemetryOverlay.Toggle);
         }
 
         // Starts at the round being played every time the pause screen opens.

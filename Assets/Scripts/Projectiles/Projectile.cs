@@ -46,6 +46,7 @@ namespace BulletHell.Projectiles
         private FeedbackTuning feedback;
         private bool released;
         private bool hostile;
+        private string source;   // what fired a hostile bullet (telemetry: cause of death)
         private SpriteRenderer fillLayer;
         private SpriteRenderer coreLayer;
         private SpriteRenderer glowLayer;
@@ -102,8 +103,9 @@ namespace BulletHell.Projectiles
 
         /// <summary>An enemy bullet: hurts only the player, ignores enemies, carries no arm effects.</summary>
         public void LaunchHostile(Vector2 position, Vector2 direction, float speed, float damageAmount,
-                                  BulletStyle style, float size, Sprite sprite, float maxLifetime)
+                                  BulletStyle style, float size, Sprite sprite, float maxLifetime, string sourceName = null)
         {
+            source = sourceName ?? "Enemy bullet";
             EnemyBulletPalette palette = GameServices.Ensure().Config.EnemyBulletPalette;
             EnemyBulletPalette.Look look = palette.LookOf(style);
             Launch(position, direction, speed, damageAmount, look.Outline, size, sprite, maxLifetime, default, null);
@@ -254,7 +256,7 @@ namespace BulletHell.Projectiles
                 float reach = radius + target.HitRadius;
                 if ((target.Position - (start + segment * t)).sqrMagnitude <= reach * reach)
                 {
-                    target.TryHit(damage, velocity);
+                    target.TryHit(damage, velocity, source);
                     ReleaseToPool();
                     return;
                 }

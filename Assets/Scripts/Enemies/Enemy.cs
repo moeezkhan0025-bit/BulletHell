@@ -173,6 +173,7 @@ namespace BulletHell.Enemies
             if (attacker != null)
             {
                 attacker.Configure(data.Attacks);
+                attacker.SourceName = data.DisplayName;
                 attacker.Muzzle = rig;
                 attacker.Bind(pool, player);
                 attacker.FireRateMultiplier = difficulty.FireRateMultiplier;

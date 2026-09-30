@@ -1,4 +1,5 @@
 using BulletHell.Save;
+using BulletHell.Telemetry;
 
 namespace BulletHell.Core
 {
@@ -32,6 +33,17 @@ namespace BulletHell.Core
         /// <summary>Raised (with the round number) when the intro ends and the round's combat begins: waves start now.</summary>
         public event System.Action<int> RoundStarted;
 
+        /// <summary>A run began (false = New Game, true = Continue). The playtest telemetry starts its record here.</summary>
+        public event System.Action<bool> RunStarted;
+
+        /// <summary>The run ended: the player died, or left it (back to the menu, or the game closed). Raised once per run.</summary>
+        public event System.Action<RunState, RunEndReason> RunEnded;
+
+        /// <summary>A debug tool touched this run (round skip or preview, currency grant, god mode, a debug start round). Telemetry flags such runs.</summary>
+        public bool UsedDebug { get; private set; }
+
+        public void MarkDebug() => UsedDebug = true;
+
         public bool HasRun => State != null;
 
         /// <summary>Debug: the current round was started as a layout preview - no waves spawn and traps stay idle.</summary>
@@ -50,9 +62,11 @@ namespace BulletHell.Core
             State = RunState.NewRun(config);
             if (UnityEngine.Debug.isDebugBuild && config.DebugStartRound > 1)
                 State.Round = config.DebugStartRound;   // debug: skip ahead (e.g. straight to the boss)
+            UsedDebug = UnityEngine.Debug.isDebugBuild && config.DebugStartRound > 1;
             PendingStart = GameState.RoundIntro;
             LastReward = 0;
             RoundEarnings = 0;
+            RunStarted?.Invoke(false);
         }
 
         /// <summary>Loads the save and prepares to resume at its Shop. Returns false when there is no usable save.</summary>
@@ -69,6 +83,8 @@ namespace BulletHell.Core
             PendingStart = GameState.Shop;
             LastReward = 0;
             RoundEarnings = 0;
+            UsedDebug = false;
+            RunStarted?.Invoke(true);
             return true;
         }
 
@@ -130,6 +146,7 @@ namespace BulletHell.Core
         {
             if (Machine.Current != GameState.Pause)
                 return false;
+            UsedDebug = true;
             State.Round = System.Math.Max(1, round);
             if (!Machine.TryEnter(GameState.RoundIntro))
                 return false;
@@ -181,11 +198,14 @@ namespace BulletHell.Core
             if (!Machine.TryEnter(GameState.GameOver))
                 return;
             saveSystem.Delete();
+            RunEnded?.Invoke(State, RunEndReason.Died);
         }
 
         /// <summary>Leaves the run without touching the save (back to the menu).</summary>
         public void AbandonRun()
         {
+            if (State != null && Machine.Current != GameState.GameOver)
+                RunEnded?.Invoke(State, RunEndReason.Quit);
             Machine.Reset();
             State = null;
         }

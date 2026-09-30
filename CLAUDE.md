@@ -408,7 +408,7 @@ Assets/
   Data/ (Arms, Loadouts, Ammo, Armaments, Pickups, Shop, Cosmetics, Arenas, Traps, Settings, Enemies, Waves, Bosses, Input)
   Prefabs/
   Scenes/ (Boot, MainMenu, Game)   (Shop and Armory are UI states inside Game)
-  Scripts/ (Core, Save, Settings, Input, Player, Cosmetics, Weapons, Projectiles, Feedback, Enemies, AI, Arena, Bosses, Shop, Armory, UI, Platform)
+  Scripts/ (Core, Save, Settings, Input, Player, Cosmetics, Weapons, Projectiles, Feedback, Enemies, AI, Arena, Bosses, Telemetry, Shop, Armory, UI, Platform)
   Tests/
 Docs/Reference/ (concept art and references, OUTSIDE Assets so Unity doesn't import them)
 ArtSource/ (4x master PNGs from Procreate, mirrors Assets/Art folders; OUTSIDE Assets)
@@ -520,7 +520,7 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
       banner, boss bar. The Shop merchant panel and the Character Creation preview wait for art.
 - [x] D2 Onboarding (done 2026-09-30; shots in Captures/d2): skippable, action-driven control prompts in round 1 (move, select arm, fire, L3 lock, R2 jump, ammo swap), glyphs for the
       connected controller, completion saved in the profile, replay option in Settings.
-- [ ] D3 Playtest telemetry + balance tools: local-only CSV per run (round reached, cause of death, time and damage taken per round, currency
+- [x] D3 Playtest telemetry (done 2026-09-30; shots in Captures/d3) + balance tools: local-only CSV per run (round reached, cause of death, time and damage taken per round, currency
       earned/spent, items bought, armaments equipped, boss phase reached) and a debug summary screen.
 - [ ] D4 Audio: music per context with crossfades, SFX for combat, movement, pickups, UI and announcer stingers, mixer groups tied to the Settings
       volumes, CC0 placeholder sounds logged in Docs/CREDITS.md.

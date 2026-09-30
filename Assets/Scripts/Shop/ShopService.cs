@@ -1,4 +1,5 @@
 using BulletHell.Core;
+using BulletHell.Telemetry;
 using BulletHell.Weapons;
 
 namespace BulletHell.Shop
@@ -21,6 +22,11 @@ namespace BulletHell.Shop
                 state.SpareArms.Add(new ArmInstance(entry.Arm));
             else
                 state.Armaments.Add(entry.Armament);
+            TelemetryEvents.RaiseSpent(entry.Price, SpendKind.Item);
+            if (entry.Kind == ShopItemKind.Arm)
+                TelemetryEvents.RaiseItemAcquired(ItemKind.Arm, entry.Arm.DisplayName);
+            else
+                TelemetryEvents.RaiseItemAcquired(ItemKind.Armament, entry.Armament.DisplayName);
             return PurchaseResult.Bought;
         }
 
@@ -46,6 +52,7 @@ namespace BulletHell.Shop
                 return false;
             state.Currency -= cost;
             visit.NextStock();
+            TelemetryEvents.RaiseSpent(cost, SpendKind.Reroll);
             return true;
         }
 
@@ -63,6 +70,7 @@ namespace BulletHell.Shop
                 return PurchaseResult.NotEnoughCurrency;
             state.Currency -= crate.Price;
             visit.CratePending = true;
+            TelemetryEvents.RaiseSpent(crate.Price, SpendKind.Crate);
             return PurchaseResult.Bought;
         }
 
@@ -74,6 +82,7 @@ namespace BulletHell.Shop
             state.Armaments.Add(chosen);
             visit.CratePending = false;
             visit.MarkSold(crateOffer);
+            TelemetryEvents.RaiseItemAcquired(ItemKind.Armament, chosen.DisplayName);
             return true;
         }
     }

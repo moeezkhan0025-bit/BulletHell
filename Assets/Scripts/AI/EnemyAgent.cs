@@ -134,6 +134,6 @@ namespace BulletHell.AI
             Player.IsGrounded && Player.IsAlive && DistanceToPlayer < Radius + Player.BodyRadius;
 
         /// <summary>Contact damage to a grounded player that is touched. Returns true when a hit landed.</summary>
-        public bool TryContactHit() => TouchingPlayer && Player.TryHit(Data.ContactDamage);
+        public bool TryContactHit() => TouchingPlayer && Player.TryHit(Data.ContactDamage, default, Data.DisplayName + " (contact)");
     }
 }

@@ -147,3 +147,6 @@ sequenceDiagram
 - Does saving during Combat (mid-round) ever become a requirement (mobile interruptions at M12)? Currently the save is only valid "at the Shop".
 - Security/cheating: plain JSON is editable; acceptable for a single-player game? [VERIFY intent]
 
+## Playtest telemetry (D3)
+
+Not a save: a local CSV log, `playtest_runs.csv`, in the same folder as the saves. `TelemetryService` (owned by `GameServices`) listens to `RunManager.RunStarted` / `RunEnded`, the round events, `TelemetryEvents` (player damage with a source name, shop spending, items acquired) and `BossEvents`, and appends one row when a run ends (death, leaving the run, or the game closing). Combat seconds are counted per frame only while the state is Combat. Runs that touched a debug tool carry `debug_used=1` and are left out of the summary by default. `TelemetrySummary` computes the averages and distributions for the F9 screen (`TelemetryOverlay`); `TelemetryCsv` reads by column name so a column added later does not break older files.

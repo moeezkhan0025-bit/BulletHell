@@ -99,7 +99,7 @@ namespace BulletHell.AI
             if (shot == null || agent.Pool == null || aim == Vector2.zero)
                 return;
             agent.Pool.Get().LaunchHostile(origin, aim, shot.BulletSpeed * agent.Difficulty.BulletSpeedMultiplier,
-                                           shot.Damage, shot.BulletStyle, shot.BulletSize, shot.BulletSprite, shot.BulletLifetime);
+                                           shot.Damage, shot.BulletStyle, shot.BulletSize, shot.BulletSprite, shot.BulletLifetime, agent.Data.DisplayName);
         }
     }
 }

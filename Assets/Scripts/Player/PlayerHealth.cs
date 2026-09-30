@@ -1,5 +1,6 @@
 using BulletHell.Core;
 using BulletHell.Feedback;
+using BulletHell.Telemetry;
 using UnityEngine;
 
 namespace BulletHell.Player
@@ -25,7 +26,18 @@ namespace BulletHell.Player
         private HitFeedback hitFeedback;
 
         /// <summary>Development tools only (the stress test): hits still land (feedback, invulnerability) but health never runs out.</summary>
-        public bool DebugGodMode { get; set; }
+        public bool DebugGodMode
+        {
+            get => debugGodMode;
+            set
+            {
+                debugGodMode = value;
+                if (value && run != null)
+                    run.MarkDebug();   // telemetry leaves such runs out of the averages
+            }
+        }
+
+        private bool debugGodMode;
 
         public float Current => health.Current;
         public float Max => health.Max;
@@ -71,14 +83,15 @@ namespace BulletHell.Player
             dodgesBulletsInAir = dodgesBullets;
         }
 
-        /// <summary>An enemy bullet reached the player. Returns false when the player couldn't be hit (invulnerable or dead).</summary>
-        public bool TryHit(float damage, Vector2 travelDirection = default)
+        /// <summary>A hit reached the player (source names what did it, for the playtest telemetry). Returns false when the player could not be hit (invulnerable or dead).</summary>
+        public bool TryHit(float damage, Vector2 travelDirection = default, string source = null)
         {
             if (!CanBeHit)
                 return false;
 
             if (hitFeedback != null && travelDirection != Vector2.zero)
                 hitFeedback.OnHitFrom(travelDirection);
+            TelemetryEvents.RaisePlayerDamaged(damage, source);   // before the damage lands, so the death knows what killed it
             if (DebugGodMode && health.Current <= damage)
                 health.Revive();
             health.TakeDamage(damage);

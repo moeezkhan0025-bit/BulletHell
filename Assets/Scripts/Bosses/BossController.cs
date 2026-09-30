@@ -194,7 +194,7 @@ namespace BulletHell.Bosses
 
             if (player != null && smash.DamageToPlayer > 0f && player.IsGrounded && player.CanBeHit &&
                 TrapShape.CircleOverlapsCircle(at, smash.Radius, player.FeetPosition, player.HitRadius))
-                player.TryHit(smash.DamageToPlayer, (player.FeetPosition - at).normalized);
+                player.TryHit(smash.DamageToPlayer, (player.FeetPosition - at).normalized, data.DisplayName + " smash");
 
             ring.Flash();
             FeedbackHub.Play(VfxKind.Dust, at, smash.DustCount);

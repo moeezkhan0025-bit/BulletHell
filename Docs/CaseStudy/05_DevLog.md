@@ -423,3 +423,13 @@ Findings that change the attribution above:
 - Tests / verification: 6 new EditMode tests (text per device, missing button, glyph labels on four families, tutorial data, profile flag round trip, old profile). Full EditMode run: 300 of 311 pass; the 11 failures are the known Obstacle contact-shadow ones in `Docs/BUGS.md`. Play-mode walk-through: hold released after the fire lesson and an enemy spawned, the six lessons ran in order, `tutorialDone` was written to `profile.json`.
 - Notes: the progress pips are square (the Circle placeholder sprite was missing).
 
+## D3 - Playtest telemetry
+
+### D3 - Local playtest telemetry and summary screen
+- Date: 2026-09-30
+- Commits: none yet (uncommitted at the time of writing; D2 was also still uncommitted)
+- Model: Claude Sonnet 5.5
+- Built: `Scripts/Telemetry` (`RunRecord`, `TelemetryCsv`, `TelemetrySummary`, `TelemetryEvents`, `TelemetryService`, `TelemetryOverlay`); `RunManager.RunStarted/RunEnded/UsedDebug`; damage sources named at every `PlayerHealth.TryHit` call (enemy contact, bullets by enemy, traps, boss smash); shop events; F9 `DebugToggleTelemetry` input action; a Stats button on the Pause debug row (`BulletHell/D3/Add Stats Button To Pause`); `GameConfig.TelemetryFileName`.
+- Problems and fixes: the first overlay left the labels of the left column blank: the column was taller than its rect, the layout group squeezed the rows, and TextMeshPro's Ellipsis overflow mode dropped every character of a line that no longer fit the row height (found by reading `textInfo.characterCount`, 0). Labels now use Overflow, rows have a minimum height, and the screen has three columns. Adding the ninth button to the Pause debug row made every label wrap; the row was tightened. A regex with `|` as delimiter was avoided this time after the D2 slip.
+- Tests / verification: 8 new EditMode tests (CSV round trip with commas and quotes, old files still read, summary maths and debug exclusion, a death writes one row with the right numbers, quit versus an empty run, pause time not counted). Full EditMode run: 308 of 319 pass, the 11 failures are the known Obstacle contact-shadow ones. In Play mode a real death through `PlayerHealth.TryHit` wrote a correct row; 16 sample rows (fake, deleted afterwards) drove the screenshots in `Captures/d3`.
+- Notes: a run quit and later continued is logged twice (the first part as quit, the second with continued=1). There is no win state yet, so a row is always died or quit. Damage is logged in health points, one per hit today.

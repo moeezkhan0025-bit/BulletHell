@@ -99,7 +99,7 @@ namespace BulletHell.Arena
             }
 
             if (data.HurtsPlayer && player != null && player.IsGrounded && player.CanBeHit && FootprintInside(player.FeetPosition, player.HitRadius))
-                player.TryHit(data.DamageToPlayer);
+                player.TryHit(data.DamageToPlayer, default, "Trap: " + data.name);
         }
 
         private bool FootprintInside(Vector2 feet, float radius) => data.IsBox

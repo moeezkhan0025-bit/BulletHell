@@ -2,6 +2,7 @@ using System.IO;
 using BulletHell.Cosmetics;
 using BulletHell.Save;
 using BulletHell.Settings;
+using BulletHell.Telemetry;
 using UnityEngine;
 
 namespace BulletHell.Core
@@ -22,6 +23,8 @@ namespace BulletHell.Core
         public RunManager Run { get; private set; }
         public SceneLoader Scenes { get; private set; }
         public AudioService Audio { get; private set; }
+        /// <summary>Local-only playtest log (one CSV row per finished run).</summary>
+        public TelemetryService Telemetry { get; private set; }
 
         /// <summary>Creates the services if they don't exist yet and returns them.</summary>
         public static GameServices Ensure()
@@ -59,6 +62,7 @@ namespace BulletHell.Core
                 : ScriptableObject.CreateInstance<SettingsDefaults>();
             Settings = new SettingsService(defaults, new JsonFileStore<SettingsData>(Path.Combine(folder, config.SettingsFileName)), Audio);
             Profile = new ProfileService(config.Registry, new JsonFileStore<ProfileData>(Path.Combine(folder, config.ProfileFileName)));
+            Telemetry = new TelemetryService(Run, Path.Combine(folder, config.TelemetryFileName));
         }
 
         private void OnApplicationPause(bool paused)
@@ -67,6 +71,14 @@ namespace BulletHell.Core
                 Settings?.Save();
         }
 
-        private void OnApplicationQuit() => Settings?.Save();
+        private void Update() => Telemetry?.Tick(Time.deltaTime);
+
+        private void OnApplicationQuit()
+        {
+            Settings?.Save();
+            Telemetry?.FlushOnQuit();
+        }
+
+        private void OnDestroy() => Telemetry?.Dispose();
     }
 }

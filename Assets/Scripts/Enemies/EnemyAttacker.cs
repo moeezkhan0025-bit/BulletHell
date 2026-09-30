@@ -26,6 +26,9 @@ namespace BulletHell.Enemies
         /// <summary>Scales bullet speed (difficulty).</summary>
         public float BulletSpeedMultiplier { get; set; } = 1f;
 
+        /// <summary>Named in the playtest log when one of this enemy's bullets kills the player.</summary>
+        public string SourceName { get; set; }
+
         /// <summary>
         /// While true no volley is fired (no line of sight, still moving into position, overheated...). Timers stay
         /// ready, so the enemy fires the moment it is let go.
@@ -144,7 +147,7 @@ namespace BulletHell.Enemies
                 float radians = (Angles[i] + extraAngleDeg) * Mathf.Deg2Rad;
                 var direction = new Vector2(Mathf.Cos(radians), Mathf.Sin(radians));
                 pool.Get().LaunchHostile(origin, direction, speed, pattern.Damage, pattern.BulletStyle,
-                                         pattern.BulletSize, pattern.BulletSprite, pattern.BulletLifetime);
+                                         pattern.BulletSize, pattern.BulletSprite, pattern.BulletLifetime, SourceName);
             }
         }
     }

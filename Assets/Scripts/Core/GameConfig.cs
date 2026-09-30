@@ -25,6 +25,8 @@ namespace BulletHell.Core
         [Tooltip("Settings and profile (chosen cosmetics) files. Separate from the run save; never deleted by Game Over or New Game.")]
         [SerializeField] private string settingsFileName = "settings.json";
         [SerializeField] private string profileFileName = "profile.json";
+        [Tooltip("Local playtest log: one row per finished run (round reached, cause of death, time and damage per round, currency, purchases, boss phase). Never leaves the machine.")]
+        [SerializeField] private string telemetryFileName = "playtest_runs.csv";
         [SerializeField] private SettingsDefaults settingsDefaults;
 
         [Header("New run")]
@@ -100,6 +102,7 @@ namespace BulletHell.Core
         public string SaveFileName => saveFileName;
         public string SettingsFileName => settingsFileName;
         public string ProfileFileName => profileFileName;
+        public string TelemetryFileName => telemetryFileName;
         public SettingsDefaults SettingsDefaults => settingsDefaults;
         public ArmLoadout NewRunLoadout => newRunLoadout;
         public AmmoTypeData[] StartingAmmo => startingAmmo;
