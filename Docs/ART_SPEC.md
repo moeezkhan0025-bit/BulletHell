@@ -3,7 +3,7 @@
 Everything drawn for the game follows this sheet so it fits on the first try.
 Values marked (start) are starting points: confirm them in the scale test (section 9), then lock them.
 Keep this file at `Docs/ART_SPEC.md`. Claude reads it when hooking up art.
-Templates: `procreate_templates_4x_P660.zip` (4x masters, P = 660). Older packs are retired.
+Templates: `procreate_templates_4x_P506.zip` (4x masters, P = 506; the older P660 pack is retired, regenerate the templates at P = 506). Older packs are retired.
 
 ---
 
@@ -24,13 +24,13 @@ player body height in game: **126.5 px at 1920x1080**. The arena keeps its origi
 **Resolution pipeline (Option A):**
 | | Scale | P (player height) | Arena / screen | Used for |
 |---|---|---|---|---|
-| Master (you draw here) | 4x | **660 px** | 7680 x 4320 | Procreate source art, kept in `ArtSource/` |
-| Game export | 2x | 330 px | 3840 x 2160 | PNGs in `Assets/Art/` (made from masters by a script) |
-| On screen at 1080p | 1x | 165 px | 1920 x 1080 | What players see; 4K screens show the 2x detail |
+| Master (you draw here) | 4x | **506 px** | 7680 x 4320 | Procreate source art, kept in `ArtSource/` |
+| Game export | 2x | 253 px | 3840 x 2160 | PNGs in `Assets/Art/` (made from masters by a script) |
+| On screen at 1080p | 1x | ~127 px | 1920 x 1080 | What players see; 4K screens show the 2x detail |
 
-Use the **P660 template pack (`procreate_templates_4x_P660.zip`)** for masters. Older packs are retired.
+Use the **P506 template pack (`procreate_templates_4x_P506.zip`)** for masters. Older packs (including P660) are retired.
 Character art already drawn at P = 440 still works (the game scales it via import settings), but redraw
-final versions at P = 660 so they stay sharp on 4K screens. Export PNGs at master size into
+final versions at P = 506 so they stay sharp on 4K screens. Export PNGs at master size into
 `ArtSource/<same folders as Assets/Art>`; Claude's `Tools/export_art` script downscales them by 50% into
 `Assets/Art/`. Never paint directly at 2x once masters exist.
 

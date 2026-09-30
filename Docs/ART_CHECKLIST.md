@@ -1,7 +1,7 @@
 # Art Checklist: Vertical Slice (Rounds 1-3 + Broccoli Emperor)
 
 Goal: everything needed so one full run from the Main Menu through the round 3 boss uses final art.
-Sizes use P = player body height (**660 px on 4x master canvases**, 1.5x character scale). Templates: `procreate_templates_4x_P660.zip`.
+Sizes use P = player body height (**506 px on 4x master canvases**, 1.15x character scale). Templates: `procreate_templates_4x_P506.zip`.
 Animation is HYBRID: draw key poses only; code does breathing, bobbing, squash, hit flash, windup tremble and deaths.
 Priority: **[1]** scale test / blocks gameplay feel, **[2]** vertical slice core, **[3]** slice polish.
 Tip marked "free" = fine to use a CC0/licensed pack instead of drawing it yourself.
