@@ -12,12 +12,13 @@ namespace BulletHell.EditorTools
     public sealed class ScaleTestImport : AssetPostprocessor
     {
         private const string Folder = "Assets/Art/ScaleTest/";
+        private const string EnemiesFolder = "Assets/Art/Enemies/";
         private const float ArenaPixelsPerUnit = 220f;
         private const float CharacterScale = 1.15f;
 
         private void OnPreprocessTexture()
         {
-            if (!assetPath.StartsWith(Folder) || !assetImporter.importSettingsMissing)
+            if (!(assetPath.StartsWith(Folder) || assetPath.StartsWith(EnemiesFolder)) || !assetImporter.importSettingsMissing)
                 return;
 
             bool isCharacter = assetPath.Contains("enemy_");

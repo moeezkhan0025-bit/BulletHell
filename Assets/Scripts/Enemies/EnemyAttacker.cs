@@ -32,6 +32,19 @@ namespace BulletHell.Enemies
         /// </summary>
         public bool HoldFire { get; set; }
 
+        /// <summary>Seconds until the soonest pattern is ready to fire (0 = ready). Read-only; drives visual warnings.</summary>
+        public float SecondsUntilNextShot
+        {
+            get
+            {
+                float soonest = float.MaxValue;
+                for (int i = 0; i < patterns.Length; i++)
+                    if (patterns[i] != null && timers[i] < soonest)
+                        soonest = timers[i];
+                return soonest == float.MaxValue ? 0f : soonest;
+            }
+        }
+
         /// <summary>Raised after every volley, so a Sentry can add heat.</summary>
         public event System.Action Fired;
 

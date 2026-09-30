@@ -260,7 +260,8 @@ PlayStation names below; Xbox = RB / RT / LS click / A B X Y, Switch = R / ZR / 
   them - the player and enemies - so luring enemies into traps is a valid tactic. Always telegraphed
   (visual warning before activating). Starter traps: periodic floor vent (area burst), a spike/skewer line,
   and a hazard zone that ticks damage while you stand in it. Traps are idle during the Round intro.
-- Enemies: food-based combatants. EnemyData assets = HP, movement behavior, attack(s), fire rate,
+- Enemies: food-based combatants. All enemies are GROUND-BASED for now (no flying enemies): they walk on the flat XY plane,
+  sort by their feet, and are hit by ground-plane bullets. EnemyData assets = HP, movement behavior, attack(s), fire rate,
   contact damage, currency value, placeholder shape + color. Movement must feel ACTIVE and grounded:
   enemies pursue, reposition and flank with acceleration/turning limits - no floaty drifting.
   - Navigation: grid flow field toward the player over the arena (cheap for many enemies), rebuilt

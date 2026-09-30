@@ -15,8 +15,16 @@ MonoBehaviour:
   displayName: Weaver
   color: {r: 0.95, g: 0.65, b: 0.15, a: 1}
   size: 1.035
+  paintedSprite: {fileID: 21300000, guid: c8871ef80df9da641b36cc52f0888cd7, type: 3}
+  paintedHeight: 1.13
+  paintedFootprintRadius: 0.3
+  paintedHurtboxSize: {x: 1.05, y: 0.9}
+  paintedHurtboxOffsetX: 0
   maxHealth: 16
   hitFlashDuration: 0.08
+  motionOverride: {fileID: 0}
+  hitOverride: {fileID: 0}
+  lifeCycleOverride: {fileID: 0}
   coinValue: 8
   attacks:
   - {fileID: 11400000, guid: c24d44386a99baa4a848cc0c04b8690f, type: 2}
@@ -32,6 +40,7 @@ MonoBehaviour:
   distanceTolerance: 0.9
   strafeSpeedFraction: 0.6
   strafeSwitchSeconds: {x: 1.5, y: 3.5}
+  shotWarningSeconds: 0.3
   sentryRange: {x: 3, y: 7}
   heatPerShot: 0.06
   coolPerSecond: 0.25

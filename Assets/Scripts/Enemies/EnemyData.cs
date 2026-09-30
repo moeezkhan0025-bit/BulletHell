@@ -88,6 +88,8 @@ namespace BulletHell.Enemies
         [SerializeField, Range(0.1f, 1f)] private float strafeSpeedFraction = 0.6f;
         [Tooltip("Seconds between changes of strafing direction (min, max).")]
         [SerializeField] private Vector2 strafeSwitchSeconds = new Vector2(1.5f, 3.5f);
+        [Tooltip("Skirmisher: visual windup pulse during the last N seconds before each shot. 0 = off. Does not delay shots.")]
+        [SerializeField, Min(0f)] private float shotWarningSeconds;
 
         [Header("Sentry")]
         [Tooltip("Closest / furthest distance from the player it plants at.")]
@@ -158,6 +160,7 @@ namespace BulletHell.Enemies
         public float ChargeTriggerRange => chargeTriggerRange;
         public float ChargeMinRange => chargeMinRange;
         public float TelegraphSeconds => telegraphSeconds;
+        public float ShotWarningSeconds => shotWarningSeconds;
         public float TelegraphLockSeconds => telegraphLockSeconds;
         public float DashSpeed => dashSpeed;
         public float DashDistance => dashDistance;

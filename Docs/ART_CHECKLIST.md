@@ -24,7 +24,9 @@ Tip marked "free" = fine to use a CC0/licensed pack instead of drawing it yourse
 - [ ] [1] idle (1)  - [ ] [2] windup/crouch (1)  - [ ] [2] lunge (1-2)
 
 **Skirmisher** (1P, character 1536)
-- [ ] [2] idle (1)  - [ ] aim windup (1)  - [ ] shoot (1-2)
+- [x] [2] idle (1)  - [ ] aim windup (1)  - [ ] shoot (1-2)
+  (idle hooked up on `Enemy_Weaver` from `ArtSource/Enemies/Skirmisher`: mushroom, pivot at its base. Windup/shoot poses not drawn yet:
+  the toolkit's windup pulse plays on the idle pose in the last 0.3 s before each shot, visual only.)
 
 **Mobile Sentry** (1P tall, 1.2P wide, character 1536)
 - [ ] [2] moving (1)  - [ ] planted (1)  - [ ] firing (1-2)  - [ ] overheat (1, vents glowing)
