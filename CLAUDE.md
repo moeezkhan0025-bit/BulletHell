@@ -358,6 +358,7 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
 - Bugs live in Docs/BUGS.md. Fix one bug at a time: reproduce it, fix it, verify, then mark it fixed there
   with a one-line note of the cause. If you notice a new bug while working, add it to the list; don't fix
   unrelated bugs silently.
+- Claude maintains the project docs. When a task changes the design, adds or renames something, or finishes art or milestones, update CLAUDE.md, Docs/ART_SPEC.md, Docs/ART_CHECKLIST.md and Docs/BUGS.md directly as part of the task: keep existing checkmarks and notes, edit only the relevant sections, and end the task with a short 'Docs updated' list of what changed. The user no longer swaps in doc files manually; design changes arrive as prompts.
 - If a request conflicts with these rules, say so instead of silently breaking them.
 
 ## Milestones
