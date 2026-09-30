@@ -496,6 +496,20 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
 - [ ] PF1 Case study documentation system: Docs/CaseStudy (narrative, architecture, game flow, system deep dives, dev log, roadmap, agentic workflow,
       art pipeline, metrics, reflections template), backfilled from git history, CLAUDE.md history, BUGS.md and the code; inferences marked [VERIFY].
       From now on it is updated at the end of every milestone (see the Working agreement).
+- Demo readiness track (D1-D6): each milestone is its own session; none started yet.
+- [ ] D1 UI polish (art-independent): spacing, alignment, text overflow (long names, 5-digit numbers), focus states, motion timings from the VoxKit
+      manifest, and layouts checked at 1920x1080, 2560x1440 and a phone resolution. Screens: HUD, Settings, Round Results, Pause, Game Over, round
+      banner, boss bar. The Shop merchant panel and the Character Creation preview wait for art.
+- [ ] D2 Onboarding: skippable, action-driven control prompts in round 1 (move, select arm, fire, L3 lock, R2 jump, ammo swap), glyphs for the
+      connected controller, completion saved in the profile, replay option in Settings.
+- [ ] D3 Playtest telemetry + balance tools: local-only CSV per run (round reached, cause of death, time and damage taken per round, currency
+      earned/spent, items bought, armaments equipped, boss phase reached) and a debug summary screen.
+- [ ] D4 Audio: music per context with crossfades, SFX for combat, movement, pickups, UI and announcer stingers, mixer groups tied to the Settings
+      volumes, CC0 placeholder sounds logged in Docs/CREDITS.md.
+- [ ] D5 Settings completion: Video (resolution, fullscreen/windowed, VSync), Controls (button remapping via the Input System, arm-select
+      sensitivity), Gameplay and accessibility (screen shake intensity, bullet outline thickness, high-contrast bullets, HUD scale).
+- [ ] D6 Build pipeline: Windows and WebGL builds from one editor menu with version numbers, plus a WebGL test report (controller, saving, audio,
+      performance) and a verdict on an itch.io browser demo.
 - [ ] M11 Themed UI/visual pass: candy-colosseum style for menus, HUD, Shop, Armory, customization; final art.
 - [ ] M12 Polish: touch controls (incl. jump button), button glyphs, juice, announcer/audio, performance pass
       (the performance pass also covers the 2D SRP Batcher warning on Mat_SpriteCharacter / Mat_SpriteOutline: _TexelSize / _ST properties in the Sprite Unlit graphs).
