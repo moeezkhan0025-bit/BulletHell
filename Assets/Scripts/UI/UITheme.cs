@@ -88,6 +88,9 @@ namespace BulletHell.UI
         [SerializeField] private AudioClip focusSound;
         [SerializeField] private AudioClip submitSound;
         [SerializeField] private AudioClip cancelSound;
+        [SerializeField] private AudioClip buySound;
+        [SerializeField] private AudioClip equipSound;
+        [SerializeField] private AudioClip errorSound;
 
         private static UITheme current;
 
@@ -130,6 +133,20 @@ namespace BulletHell.UI
         public AudioClip FocusSound => focusSound;
         public AudioClip SubmitSound => submitSound;
         public AudioClip CancelSound => cancelSound;
+
+        /// <summary>The clip for a UI sound, or null when none is assigned (the hook stays silent).</summary>
+        public AudioClip GetSound(UiSoundKind kind)
+        {
+            switch (kind)
+            {
+                case UiSoundKind.Focus: return focusSound;
+                case UiSoundKind.Confirm: return submitSound;
+                case UiSoundKind.Back: return cancelSound;
+                case UiSoundKind.Buy: return buySound;
+                case UiSoundKind.Equip: return equipSound;
+                default: return errorSound;
+            }
+        }
 
         public Sprite GetSprite(ThemeRole role)
         {

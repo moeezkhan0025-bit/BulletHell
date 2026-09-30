@@ -9,7 +9,7 @@ namespace BulletHell.UI
     /// Main Menu: New Game, Continue (disabled without a run save), Settings and Quit.
     /// New Game asks before replacing an existing run save, then opens the Gladiator customization; confirming the look
     /// starts the run (and only then deletes the old save, so backing out never loses it). Continue skips customization:
-    /// the look comes from the profile file. Fully navigable with the stick / D-pad; the confirm dialog opens with Cancel selected.
+    /// the look comes from the profile file. Fully navigable with the stick / D-pad; the confirm dialogs (new game over a save, quit) open with Cancel selected.
     /// </summary>
     public sealed class MainMenuController : MonoBehaviour
     {
@@ -21,10 +21,10 @@ namespace BulletHell.UI
         [SerializeField] private Button settingsButton;
         [SerializeField] private Button quitButton;
         [SerializeField] private Text messageText;
-        [Header("Overwrite confirmation")]
-        [SerializeField] private GameObject confirmPanel;
-        [SerializeField] private Button confirmYesButton;
-        [SerializeField] private Button confirmNoButton;
+        [Tooltip("Optional: the button prompt line at the bottom.")]
+        [SerializeField] private Text hintLabel;
+        [Header("Confirmation")]
+        [SerializeField] private ConfirmDialog confirmDialog;
         [Header("Screens")]
         [SerializeField] private SettingsScreen settingsScreen;
         [SerializeField] private CustomizationScreen customizationScreen;
@@ -39,8 +39,6 @@ namespace BulletHell.UI
             continueButton.onClick.AddListener(OnContinuePressed);
             settingsButton.onClick.AddListener(OnSettingsPressed);
             quitButton.onClick.AddListener(OnQuitPressed);
-            confirmYesButton.onClick.AddListener(OnOverwriteConfirmed);
-            confirmNoButton.onClick.AddListener(CloseConfirm);
             quitButton.gameObject.SetActive(PlatformCapabilities.CanQuitApplication);
         }
 
@@ -61,20 +59,19 @@ namespace BulletHell.UI
             }
 
             SetMenuInteractable(false);
-            confirmPanel.SetActive(true);
-            UIFocusGuard.Focus(confirmNoButton.gameObject);
+            confirmDialog.Ask("Start a new run?",
+                "You have a run in progress. It is replaced once you confirm your gladiator; backing out keeps it.",
+                "New Game", "Cancel", OnOverwriteConfirmed, CloseConfirm);
         }
 
         private void OnOverwriteConfirmed()
         {
             replacesSave = true;
-            confirmPanel.SetActive(false);
             OpenCustomization();
         }
 
         private void CloseConfirm()
         {
-            confirmPanel.SetActive(false);
             ShowMenu();
         }
 
@@ -114,6 +111,11 @@ namespace BulletHell.UI
 
         private void OnQuitPressed()
         {
+            confirmDialog.Ask("Quit the game?", "Your run save stays where it is.", "Quit", "Cancel", QuitNow);
+        }
+
+        private static void QuitNow()
+        {
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
 #else
@@ -125,6 +127,8 @@ namespace BulletHell.UI
         private void ShowMenu()
         {
             SetMenuVisible(true);
+            ScreenTransition.In(menuButtons);
+            PromptHint.Show(hintLabel, PromptHint.P(UiAction.Confirm, "Select"));
             SetMenuInteractable(true);
             UIFocusGuard.Focus((continueButton.interactable ? continueButton : newGameButton).gameObject);
         }

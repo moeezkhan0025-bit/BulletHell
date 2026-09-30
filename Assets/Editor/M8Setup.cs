@@ -95,7 +95,7 @@ namespace BulletHell.EditorTools
             so.FindProperty("bulletSpeed").floatValue = 13f;
             so.FindProperty("bulletSize").floatValue = 0.34f;
             so.FindProperty("damage").floatValue = 1f;
-            so.FindProperty("bulletColor").colorValue = new Color(1f, 0.95f, 0.4f);
+            so.FindProperty("bulletStyle").enumValueIndex = (int)BulletHell.Enemies.BulletStyle.Special;
             so.FindProperty("bulletSprite").objectReferenceValue = circle;
             so.ApplyModifiedPropertiesWithoutUndo();
         }

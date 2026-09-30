@@ -13,10 +13,18 @@ MonoBehaviour:
   m_Name: Enemy_Spiraler
   m_EditorClassIdentifier: BulletHell::BulletHell.Enemies.EnemyData
   displayName: Spiraler
-  color: {r: 0.7, g: 0.4, b: 0.95, a: 1}
+  color: {r: 0.95, g: 0.65, b: 0.25, a: 1}
   size: 1.265
+  paintedSprite: {fileID: 0}
+  paintedHeight: 0.79
+  paintedFootprintRadius: 0.3
+  paintedHurtboxSize: {x: 1, y: 0.75}
+  paintedHurtboxOffsetX: 0
   maxHealth: 26
   hitFlashDuration: 0.08
+  motionOverride: {fileID: 0}
+  hitOverride: {fileID: 0}
+  lifeCycleOverride: {fileID: 0}
   coinValue: 12
   attacks:
   - {fileID: 11400000, guid: e9aa2c7217021cf45bbec1e20037b456, type: 2}

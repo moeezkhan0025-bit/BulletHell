@@ -331,7 +331,7 @@ namespace BulletHell.EditorTools
 
             RectTransform body = Rect("Body", rect);
             UiBuilder.Stretch(body);
-            Image ring = Circle("FocusRing", body, circle, new Color(1f, 0.92f, 0.4f, 0.9f));
+            Image ring = Circle("FocusRing", body, AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Placeholder/M75/Glyph_PS_Circle.png") ?? circle, new Color(1f, 0.92f, 0.4f, 1f));
             ring.rectTransform.anchorMin = Vector2.zero;
             ring.rectTransform.anchorMax = Vector2.one;
             ring.rectTransform.offsetMin = new Vector2(-8f, -8f);

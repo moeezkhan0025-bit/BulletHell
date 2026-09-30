@@ -8,6 +8,7 @@ namespace BulletHell.Input
     /// Owner of the "Menu" input map: the controller's Start / Options button as the menu's primary action, plus the
     /// extra face/shoulder buttons some screens use.
     /// Navigating and pressing buttons is the EventSystem's job (stick/D-pad + A/Cross); this adds the shortcuts.
+    /// Events go out through <see cref="InputDiagnostics"/>, which logs context if a subscriber throws.
     /// </summary>
     public sealed class MenuInputReader : MonoBehaviour
     {
@@ -46,9 +47,31 @@ namespace BulletHell.Input
             input.Menu.Remove.performed += OnRemove;
         }
 
-        private void OnEnable() => input.Menu.Enable();
+        private void OnEnable()
+        {
+            try
+            {
+                input.Menu.Enable();
+            }
+            catch (Exception exception)
+            {
+                InputDiagnostics.ReportLifecycle(this, nameof(OnEnable), exception);
+                throw;
+            }
+        }
 
-        private void OnDisable() => input.Menu.Disable();
+        private void OnDisable()
+        {
+            try
+            {
+                input.Menu.Disable();
+            }
+            catch (Exception exception)
+            {
+                InputDiagnostics.ReportLifecycle(this, nameof(OnDisable), exception);
+                throw;
+            }
+        }
 
         private void OnDestroy()
         {
@@ -65,18 +88,18 @@ namespace BulletHell.Input
             input.Dispose();
         }
 
-        private void OnPrimary(InputAction.CallbackContext _) => PrimaryPressed?.Invoke();
+        private void OnPrimary(InputAction.CallbackContext c) => InputDiagnostics.Raise(this, nameof(OnPrimary), c, PrimaryPressed);
 
-        private void OnRandomize(InputAction.CallbackContext _) => RandomizePressed?.Invoke();
+        private void OnRandomize(InputAction.CallbackContext c) => InputDiagnostics.Raise(this, nameof(OnRandomize), c, RandomizePressed);
 
-        private void OnReroll(InputAction.CallbackContext _) => RerollPressed?.Invoke();
+        private void OnReroll(InputAction.CallbackContext c) => InputDiagnostics.Raise(this, nameof(OnReroll), c, RerollPressed);
 
-        private void OnDetails(InputAction.CallbackContext _) => DetailsPressed?.Invoke();
+        private void OnDetails(InputAction.CallbackContext c) => InputDiagnostics.Raise(this, nameof(OnDetails), c, DetailsPressed);
 
-        private void OnTabPrev(InputAction.CallbackContext _) => TabPrevPressed?.Invoke();
+        private void OnTabPrev(InputAction.CallbackContext c) => InputDiagnostics.Raise(this, nameof(OnTabPrev), c, TabPrevPressed);
 
-        private void OnTabNext(InputAction.CallbackContext _) => TabNextPressed?.Invoke();
+        private void OnTabNext(InputAction.CallbackContext c) => InputDiagnostics.Raise(this, nameof(OnTabNext), c, TabNextPressed);
 
-        private void OnRemove(InputAction.CallbackContext _) => RemovePressed?.Invoke();
+        private void OnRemove(InputAction.CallbackContext c) => InputDiagnostics.Raise(this, nameof(OnRemove), c, RemovePressed);
     }
 }

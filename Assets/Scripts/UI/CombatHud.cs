@@ -33,8 +33,6 @@ namespace BulletHell.UI
         private RunManager run;
         private int lastArm = ArmSelector.None;
         private GlyphFamily family = (GlyphFamily)(-1);
-        private Gamepad shownPad;
-        private bool padChecked;
 
         private void Awake() => run = GameServices.Ensure().Run;
 
@@ -78,13 +76,7 @@ namespace BulletHell.UI
             if (!content.activeSelf)
                 return;
 
-            Gamepad pad = Gamepad.current;
-            if (!padChecked || pad != shownPad)
-            {
-                padChecked = true;
-                shownPad = pad;
-                ApplyGlyphs(GlyphFamilyDetector.Current());
-            }
+            ApplyGlyphs(GlyphFamilyDetector.Current());   // cheap: does nothing unless the device family changed
 
             hearts.Refresh(health.Current, health.Max);
             RefreshHeat();

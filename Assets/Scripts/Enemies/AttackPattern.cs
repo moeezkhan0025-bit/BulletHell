@@ -44,7 +44,8 @@ namespace BulletHell.Enemies
         [SerializeField, Min(0.05f)] private float bulletSize = 0.3f;
         [Tooltip("Damage to the player, in hits (the player has a few hits of health).")]
         [SerializeField, Min(0.1f)] private float damage = 1f;
-        [SerializeField] private Color bulletColor = new Color(1f, 0.35f, 0.35f);
+        [Tooltip("Standard = Electric Violet, Special = Hot Magenta (boss and special shots). The colours live in the EnemyBulletPalette asset.")]
+        [SerializeField] private BulletStyle bulletStyle = BulletStyle.Standard;
         [SerializeField] private Sprite bulletSprite;
         [Tooltip("Safety net: released after this long even if still on screen.")]
         [SerializeField, Min(0.5f)] private float bulletLifetime = 10f;
@@ -58,7 +59,7 @@ namespace BulletHell.Enemies
         public float BulletSpeed => bulletSpeed;
         public float BulletSize => bulletSize;
         public float Damage => damage;
-        public Color BulletColor => bulletColor;
+        public BulletStyle BulletStyle => bulletStyle;
         public Sprite BulletSprite => bulletSprite;
         public float BulletLifetime => bulletLifetime;
     }

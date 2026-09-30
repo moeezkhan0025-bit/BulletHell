@@ -26,7 +26,7 @@ MonoBehaviour:
     FirstRound: 1
     PriceMultiplier: 1.6
   - Rarity: 2
-    Color: {r: 0.72, g: 0.4, b: 0.95, a: 1}
+    Color: {r: 0.25, g: 0.85, b: 0.5, a: 1}
     BaseWeight: 8
     WeightPerRound: 4
     FirstRound: 3

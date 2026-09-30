@@ -46,6 +46,9 @@ namespace BulletHell.Projectiles
         private FeedbackTuning feedback;
         private bool released;
         private bool hostile;
+        private SpriteRenderer fillLayer;
+        private SpriteRenderer coreLayer;
+        private SpriteRenderer glowLayer;
 
         /// <summary>Index in the pool's list of active projectiles (managed by ProjectilePool).</summary>
         public int PoolIndex { get; set; } = -1;
@@ -62,6 +65,14 @@ namespace BulletHell.Projectiles
             shadowColor.a = perspective.BulletShadowAlpha;
             shadow.color = shadowColor;
             shadowFlatness = perspective.ShadowFlatness;
+
+            // Enemy bullets are drawn in layers (outline = body, then fill, core, glow). Built once here, with the pool, never during play.
+            if (fillLayer == null)
+            {
+                fillLayer = MakeLayer("Fill", 1);
+                coreLayer = MakeLayer("Core", 2);
+                glowLayer = MakeLayer("Glow", -1);
+            }
         }
 
         public void Launch(Vector2 position, Vector2 direction, float speed, float damageAmount,
@@ -83,6 +94,7 @@ namespace BulletHell.Projectiles
             homingTarget = null;
             hitEffects = effects;
             hostile = false;
+            fillLayer.enabled = coreLayer.enabled = glowLayer.enabled = false;
             recentCount = 0;
             recentNext = 0;
             released = false;
@@ -90,10 +102,45 @@ namespace BulletHell.Projectiles
 
         /// <summary>An enemy bullet: hurts only the player, ignores enemies, carries no arm effects.</summary>
         public void LaunchHostile(Vector2 position, Vector2 direction, float speed, float damageAmount,
-                                  Color color, float size, Sprite sprite, float maxLifetime)
+                                  BulletStyle style, float size, Sprite sprite, float maxLifetime)
         {
-            Launch(position, direction, speed, damageAmount, color, size, sprite, maxLifetime, default, null);
+            EnemyBulletPalette palette = GameServices.Ensure().Config.EnemyBulletPalette;
+            EnemyBulletPalette.Look look = palette.LookOf(style);
+            Launch(position, direction, speed, damageAmount, look.Outline, size, sprite, maxLifetime, default, null);
             hostile = true;
+
+            // The body sprite is the dark outline; the fill sits inside it by the outline thickness (pixels at 1080p to world units).
+            Camera view = Camera.main;
+            float pixelsPerUnit = view != null ? 540f / view.orthographicSize : 108f;
+            float inner = Mathf.Clamp01(1f - 2f * (palette.OutlinePixels / pixelsPerUnit) / size);
+            Layer(fillLayer, sprite, look.Body, inner);
+            Layer(coreLayer, sprite, look.Core, inner * palette.CoreScale);
+            if (palette.GlowOpacity > 0f)
+            {
+                Color glow = look.Body;
+                glow.a = palette.GlowOpacity;
+                Layer(glowLayer, sprite, glow, palette.GlowScale);
+            }
+        }
+
+        private SpriteRenderer MakeLayer(string name, int orderOffset)
+        {
+            var go = new GameObject(name);
+            go.transform.SetParent(body.transform, false);
+            var layer = go.AddComponent<SpriteRenderer>();
+            layer.sortingLayerID = body.sortingLayerID;
+            layer.sortingOrder = body.sortingOrder + orderOffset;
+            layer.sharedMaterial = body.sharedMaterial;
+            layer.enabled = false;
+            return layer;
+        }
+
+        private static void Layer(SpriteRenderer layer, Sprite sprite, Color color, float scale)
+        {
+            layer.sprite = sprite;
+            layer.color = color;
+            layer.transform.localScale = Vector3.one * scale;
+            layer.enabled = true;
         }
 
         private void Update()

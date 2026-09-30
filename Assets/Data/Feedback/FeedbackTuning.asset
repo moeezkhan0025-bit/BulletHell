@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 085354d49cae88e46a99fa011fd4a208, type: 3}
   m_Name: FeedbackTuning
   m_EditorClassIdentifier: BulletHell::BulletHell.Feedback.FeedbackTuning
-  dangerColor: {r: 1, g: 0.2, b: 0.55, a: 1}
+  dangerColor: {r: 1, g: 0.3, b: 0.2, a: 1}
   flashColor: {r: 1, g: 1, b: 1, a: 1}
   hitstopScale: 0
   shakeMaxOffset: 0.35
@@ -23,6 +23,11 @@ MonoBehaviour:
   enemyMotion: {fileID: 11400000, guid: e57137e1786e0784091e5c1f7974371f, type: 2}
   enemyHit: {fileID: 11400000, guid: b0ade2a7cfd3a0d4391670e1a8102a89, type: 2}
   enemyLifeCycle: {fileID: 11400000, guid: 5df044e68e3126e4c996cd90629a11c2, type: 2}
+  ricochetSparks: 6
+  ricochetShake: 0.04
+  pierceSparks: 4
+  pierceShake: 0.02
+  wallImpactDebris: 3
   ghostPoolSize: 16
   spark: {fileID: 3785815155309802259, guid: f4f32db6ec619d84f8fc0a74df6c6de4, type: 3}
   dust: {fileID: 4633274995839677876, guid: 43c1cb7992f90ef47a52ccd6b59b6126, type: 3}

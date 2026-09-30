@@ -61,6 +61,10 @@ namespace BulletHell.Core
         [SerializeField] private ArenaArt arenaArt;
         [Tooltip("Sprites, colors, font and sounds for every UI screen (roles, not pack files).")]
         [SerializeField] private UITheme uiTheme;
+        [Tooltip("Button prompt text and pictures per device family (PlayStation, Xbox, Nintendo, Touch, Keyboard).")]
+        [SerializeField] private BulletHell.UI.ButtonGlyphLibrary buttonGlyphs;
+        [Tooltip("Colours of every enemy bullet (Electric Violet / Hot Magenta family, outline, core, glow).")]
+        [SerializeField] private BulletHell.Enemies.EnemyBulletPalette enemyBulletPalette;
         [Tooltip("Off: the paper-doll parts (armor, head, accessories, alternate bodies) show only on the Character Creation screen; in gameplay the player is the original sprite. Turn on when real part sprites exist.")]
         [SerializeField] private bool showCustomizationInGame;
         [Tooltip("Procedural motion, hit feedback, hitstop, camera shake and particle presets.")]
@@ -71,6 +75,8 @@ namespace BulletHell.Core
         public PerspectiveTuning Perspective => perspective != null ? perspective : PerspectiveTuning.Fallback;
         public ArenaArt ArenaArt => arenaArt;
         public UITheme UITheme => uiTheme;
+        public BulletHell.UI.ButtonGlyphLibrary ButtonGlyphs => buttonGlyphs;
+        public BulletHell.Enemies.EnemyBulletPalette EnemyBulletPalette => enemyBulletPalette != null ? enemyBulletPalette : BulletHell.Enemies.EnemyBulletPalette.Fallback;
         public bool ShowCustomizationInGame => showCustomizationInGame;
         public DifficultyCurve Difficulty => difficulty;
         public ArenaLayoutData DefaultLayout => defaultLayout;

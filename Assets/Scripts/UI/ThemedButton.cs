@@ -10,6 +10,12 @@ namespace BulletHell.UI
     [ExecuteAlways, RequireComponent(typeof(Button), typeof(Image))]
     public sealed class ThemedButton : MonoBehaviour
     {
+        private void Awake()
+        {
+            if (Application.isPlaying)
+                GetComponent<Button>().onClick.AddListener(() => UiSound.Play(UiSoundKind.Confirm));
+        }
+
         private void OnEnable() => Apply();
 
         private void OnValidate() => Apply();

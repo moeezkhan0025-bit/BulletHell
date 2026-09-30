@@ -19,6 +19,7 @@ namespace BulletHell.UI
         [SerializeField] private ShopScreen shop;
         [SerializeField] private ArmoryScreen armory;
         [SerializeField] private SettingsScreen settings;
+        [SerializeField] private ConfirmDialog confirm;
 
         private readonly StringBuilder builder = new StringBuilder(128);
         private RunManager run;
@@ -29,15 +30,16 @@ namespace BulletHell.UI
             run = services.Run;
 
             roundResults.ContinuePressed += run.Advance;
-            roundResults.MenuPressed += scene.QuitToMenu;
+            roundResults.MenuPressed += RequestQuit;
             pause.ContinuePressed += Resume;
-            pause.MenuPressed += scene.QuitToMenu;
+            pause.MenuPressed += RequestQuit;
+            pause.CancelPressed += Resume;
             pause.SettingsPressed += OpenSettings;
             gameOver.MenuPressed += scene.QuitToMenu;
             shop.ContinuePressed += run.Advance;
-            shop.MenuPressed += scene.QuitToMenu;
+            shop.MenuPressed += RequestQuit;
             armory.ContinuePressed += run.Advance;
-            armory.MenuPressed += scene.QuitToMenu;
+            armory.MenuPressed += RequestQuit;
 
             HideAll();
         }
@@ -76,6 +78,14 @@ namespace BulletHell.UI
 
         private void Resume() => run.SetPaused(false);
 
+        // Leaving a run for the Main Menu always asks first (the save stays at the last checkpoint).
+        private void RequestQuit()
+        {
+            confirm.Ask("Back to the Main Menu?",
+                "Your run stays saved at its last checkpoint. Continue resumes it at the Shop.",
+                "Main Menu", "Stay", scene.QuitToMenu);
+        }
+
         // Settings opens over the Pause screen; Back brings the Pause screen back.
         private void OpenSettings()
         {
@@ -83,7 +93,7 @@ namespace BulletHell.UI
             settings.Open(ShowPause);
         }
 
-        private void ShowPause() => pause.Show("Paused", $"Round {run.State.Round}");
+        private void ShowPause() => pause.Show("Paused", $"Round {run.State.Round}", true, "Resume");
 
         private void HideAll()
         {

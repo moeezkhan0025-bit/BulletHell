@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.WeaponArmData
   id: Arm_Piercer
   displayName: Piercer Arm
-  idColor: {r: 1, g: 0.45, b: 0.9, a: 1}
+  idColor: {r: 0.55, g: 1, b: 0.85, a: 1}
   sprite: {fileID: 21300000, guid: 37cc3bd2df8ca1a4ca155623eca744d2, type: 3}
   artRotation: 41.7
   muzzleOffset: {x: 0.6883329, y: 0}

@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Spare
   projectileSprite: {fileID: 21300000, guid: 5e3b257e33faafd48822c73ccd1b8289, type: 3}
   icon: {fileID: 21300000, guid: eeceacb0bfb16174281bcdc767916b19, type: 3}
-  tint: {r: 1, g: 0.3, b: 0.8, a: 1}
+  tint: {r: 1, g: 0.6, b: 0.2, a: 1}
   behavior: 0
   maxLifetime: 6
   damageMultiplier: 1

@@ -140,6 +140,7 @@ namespace BulletHell.Shop
         /// <summary>The card icon flies to the inventory target, then the SOLD stamp lands.</summary>
         public void PlayBuy(RectTransform target)
         {
+            UiSound.Play(UiSoundKind.Buy);
             var canvas = GetComponentInParent<Canvas>();
             if (canvas == null || target == null || !icon.enabled)
             {
@@ -177,6 +178,7 @@ namespace BulletHell.Shop
         /// </summary>
         public void PlayFly(RectTransform target, Action onDone)
         {
+            UiSound.Play(UiSoundKind.Equip);
             var canvas = GetComponentInParent<Canvas>();
             if (canvas == null || target == null || !icon.enabled)
             {
@@ -228,6 +230,7 @@ namespace BulletHell.Shop
         /// <summary>A short shake: "you cannot buy this".</summary>
         public void Shake()
         {
+            UiSound.Play(UiSoundKind.Error);
             CacheRest();
             Tween.StopAll(body);
             body.anchoredPosition = restPosition;

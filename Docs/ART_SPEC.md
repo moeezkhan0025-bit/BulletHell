@@ -202,9 +202,12 @@ the same pose, so they stack perfectly with no offsets:
 
 ## 7. Color and readability rules
 
-- **Reserved enemy-bullet colors:** pick 2 colors that appear NOWHERE in the floor, walls or decals:
-  **[color 1] [color 2]**. Enemy bullets use only these.
-- **Reserved DANGER color** for trap telegraphs and enemy wind-ups: **[color]**. Not used decoratively.
+- **Reserved enemy-bullet colors** (data: `Assets/Data/Enemies/EnemyBulletPalette.asset`): **Electric Violet** for all enemy bullets
+  (white core #FFFFFF, body #B44BFF, solid outline #1B0730) and **Hot Magenta** for boss and special shots (white core, body #FF3DCB,
+  same outline). Outline about 2 px at 1080p (4 px on 2x painted art); optional soft glow at 30% opacity or less, normal blending, never
+  additive. No arm ID color, rarity color, ammo tint, telegraph color, enemy body or floor decal may sit within about 22 degrees of
+  these two hues (checked by `EnemyBulletPaletteTests` and the menu `BulletHell/Enemy Bullets/Audit Reserved Hues`).
+- **Reserved DANGER color** for trap telegraphs and enemy wind-ups: **#FF4D33 (orange-red)**. Not used decoratively.
 - **Player-owned colors:** the arm ID colors (red / blue / green / yellow). Enemies don't use them.
 - Floor and decals: lower saturation and contrast than characters, bullets and obstacles.
   Check: convert a screenshot to grayscale; characters and bullets should still pop.

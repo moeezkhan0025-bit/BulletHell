@@ -88,6 +88,8 @@ Consoles come later (need platform approval + Unity Pro), but the code must be c
   in gameplay loops, target 60 fps with hundreds of bullets on screen. Log a warning if any pool grows unexpectedly.
 - UI and camera must handle aspect ratios from 4:3 to 21:9 plus phone notches (use Safe Area).
 - Saving goes through an ISaveSystem interface (local file for now; platform save APIs plug in later).
+- Phones and tablets: LANDSCAPE ONLY (iOS and Android auto-rotate between Landscape Left and Right; portrait is not supported).
+  4:3 tablets keep the existing letterboxing (16:9 play area, crowd/wall art filling the rest).
 - No platform-specific code outside Scripts/Platform/.
 
 ## Game flow
@@ -418,8 +420,9 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
 - [x] M9c Armory screen: gladiator + arm ring on the left with hovering 1-3 armament bubbles above the selected
       arm, tabbed inventory grid on the right, arm -> bubble -> item equip flow with before/after preview,
       dimmed incompatible items, controller-first navigation.
-- [ ] M9d UI foundation + bug bash: shared UI components (card, tooltip, button, panel), consistent focus
+- [x] M9d UI foundation + bug bash: shared UI components (card, tooltip, button, panel), consistent focus
       and navigation, screen transitions, UI sound hooks; work through Docs/BUGS.md.
 - [ ] M10 Bosses (round 3 first, then 5 and 7).
 - [ ] M11 Themed UI/visual pass: candy-colosseum style for menus, HUD, Shop, Armory, customization; final art.
-- [ ] M12 Polish: touch controls (incl. jump button), button glyphs, juice, announcer/audio, performance pass.
+- [ ] M12 Polish: touch controls (incl. jump button), button glyphs, juice, announcer/audio, performance pass
+      (the performance pass also covers the 2D SRP Batcher warning on Mat_SpriteCharacter / Mat_SpriteOutline: _TexelSize / _ST properties in the Sprite Unlit graphs).

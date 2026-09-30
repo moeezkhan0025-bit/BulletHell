@@ -74,21 +74,37 @@ namespace BulletHell.Input
             for (int i = 0; i < AmmoButtonCount; i++)
             {
                 int slot = i;
-                ammoHandlers[i] = _ => AmmoPressed?.Invoke(slot);
+                ammoHandlers[i] = c => InputDiagnostics.Raise(this, "OnAmmoPressed", c, AmmoPressed, slot);
                 ammoActions[i].performed += ammoHandlers[i];
             }
         }
 
         private void OnEnable()
         {
-            input.Gameplay.Enable();
-            input.Debug.Enable();
+            try
+            {
+                input.Gameplay.Enable();
+                input.Debug.Enable();
+            }
+            catch (Exception exception)
+            {
+                InputDiagnostics.ReportLifecycle(this, nameof(OnEnable), exception);
+                throw;
+            }
         }
 
         private void OnDisable()
         {
-            input.Gameplay.Disable();
-            input.Debug.Disable();
+            try
+            {
+                input.Gameplay.Disable();
+                input.Debug.Disable();
+            }
+            catch (Exception exception)
+            {
+                InputDiagnostics.ReportLifecycle(this, nameof(OnDisable), exception);
+                throw;
+            }
         }
 
         private void OnDestroy()
@@ -110,10 +126,10 @@ namespace BulletHell.Input
             input.Dispose();
         }
 
-        private void OnDebugAdd(InputAction.CallbackContext _) => DebugAddArmamentPressed?.Invoke();
-        private void OnDebugRemove(InputAction.CallbackContext _) => DebugRemoveArmamentPressed?.Invoke();
-        private void OnDebugNext(InputAction.CallbackContext _) => DebugNextArmamentPressed?.Invoke();
-        private void OnDebugPrev(InputAction.CallbackContext _) => DebugPrevArmamentPressed?.Invoke();
+        private void OnDebugAdd(InputAction.CallbackContext c) => InputDiagnostics.Raise(this, nameof(OnDebugAdd), c, DebugAddArmamentPressed);
+        private void OnDebugRemove(InputAction.CallbackContext c) => InputDiagnostics.Raise(this, nameof(OnDebugRemove), c, DebugRemoveArmamentPressed);
+        private void OnDebugNext(InputAction.CallbackContext c) => InputDiagnostics.Raise(this, nameof(OnDebugNext), c, DebugNextArmamentPressed);
+        private void OnDebugPrev(InputAction.CallbackContext c) => InputDiagnostics.Raise(this, nameof(OnDebugPrev), c, DebugPrevArmamentPressed);
 
         // F6: show / hide the bullet path visualisation (works whether or not the debug overlay is showing).
         private void OnDebugToggleBulletPaths(InputAction.CallbackContext _) => Projectiles.BulletPathDebug.Toggle();
@@ -126,10 +142,10 @@ namespace BulletHell.Input
                 services.Run.State.Currency += services.Config.ShopTuning != null ? services.Config.ShopTuning.DebugCurrencyGrant : 100;
         }
 
-        private void OnLockToggle(InputAction.CallbackContext _) => LockTogglePressed?.Invoke();
+        private void OnLockToggle(InputAction.CallbackContext c) => InputDiagnostics.Raise(this, nameof(OnLockToggle), c, LockTogglePressed);
 
-        private void OnPause(InputAction.CallbackContext _) => PausePressed?.Invoke();
+        private void OnPause(InputAction.CallbackContext c) => InputDiagnostics.Raise(this, nameof(OnPause), c, PausePressed);
 
-        private void OnJump(InputAction.CallbackContext _) => JumpPressed?.Invoke();
+        private void OnJump(InputAction.CallbackContext c) => InputDiagnostics.Raise(this, nameof(OnJump), c, JumpPressed);
     }
 }

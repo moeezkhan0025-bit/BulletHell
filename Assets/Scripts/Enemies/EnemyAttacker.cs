@@ -109,7 +109,7 @@ namespace BulletHell.Enemies
             {
                 float radians = Angles[i] * Mathf.Deg2Rad;
                 var direction = new Vector2(Mathf.Cos(radians), Mathf.Sin(radians));
-                pool.Get().LaunchHostile(origin, direction, speed, pattern.Damage, pattern.BulletColor,
+                pool.Get().LaunchHostile(origin, direction, speed, pattern.Damage, pattern.BulletStyle,
                                          pattern.BulletSize, pattern.BulletSprite, pattern.BulletLifetime);
             }
 

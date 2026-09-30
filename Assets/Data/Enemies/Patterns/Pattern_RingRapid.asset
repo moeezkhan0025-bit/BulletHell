@@ -21,6 +21,6 @@ MonoBehaviour:
   bulletSpeed: 3.6
   bulletSize: 0.3
   damage: 1
-  bulletColor: {r: 1, g: 0.35, b: 0.35, a: 1}
+  bulletStyle: 0
   bulletSprite: {fileID: 21300000, guid: 6b794c9ce314a7a4fbe9cab037811ec0, type: 3}
   bulletLifetime: 10

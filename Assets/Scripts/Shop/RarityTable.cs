@@ -31,7 +31,7 @@ namespace BulletHell.Shop
         {
             new RarityEntry { Rarity = ArmamentRarity.Common, Color = new Color(0.78f, 0.78f, 0.8f), BaseWeight = 60f, WeightPerRound = 0f, FirstRound = 1, PriceMultiplier = 1f },
             new RarityEntry { Rarity = ArmamentRarity.Rare, Color = new Color(0.35f, 0.65f, 1f), BaseWeight = 25f, WeightPerRound = 5f, FirstRound = 1, PriceMultiplier = 1.6f },
-            new RarityEntry { Rarity = ArmamentRarity.Epic, Color = new Color(0.72f, 0.4f, 0.95f), BaseWeight = 8f, WeightPerRound = 4f, FirstRound = 3, PriceMultiplier = 2.5f },
+            new RarityEntry { Rarity = ArmamentRarity.Epic, Color = new Color(0.25f, 0.85f, 0.5f), BaseWeight = 8f, WeightPerRound = 4f, FirstRound = 3, PriceMultiplier = 2.5f },
             new RarityEntry { Rarity = ArmamentRarity.Legendary, Color = new Color(1f, 0.72f, 0.2f), BaseWeight = 1f, WeightPerRound = 2f, FirstRound = 5, PriceMultiplier = 4f },
         };
 

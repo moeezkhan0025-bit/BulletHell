@@ -33,6 +33,14 @@ namespace BulletHell.UI
             public ButtonGlyph East;
             public ButtonGlyph West;
             public ButtonGlyph North;
+            [Tooltip("Prompt text per UiAction, in enum order (Confirm, Back, Randomize, Details, Reroll, Remove, TabPrev, TabNext, Start). Empty = this device has no button for it, the prompt is left out.")]
+            public string[] ActionLabels = new string[0];
+
+            public string LabelFor(UiAction action)
+            {
+                int index = (int)action;
+                return ActionLabels != null && index < ActionLabels.Length ? ActionLabels[index] : "";
+            }
 
             public ButtonGlyph Get(GlyphButton button)
             {
@@ -57,6 +65,15 @@ namespace BulletHell.UI
                 if (sets[i].Family == family)
                     return sets[i].Get(button);
             return sets.Length > 0 ? sets[0].Get(button) : default;
+        }
+
+        /// <summary>The prompt text for an action on a device family ("Cross", "A", "Esc"); empty when the device has no such button.</summary>
+        public string LabelFor(GlyphFamily family, UiAction action)
+        {
+            for (int i = 0; i < sets.Length; i++)
+                if (sets[i].Family == family)
+                    return sets[i].LabelFor(action);
+            return "";
         }
 
         /// <summary>The face button that equips ammo slot 0-3 (Cross/Circle/Square/Triangle = South/East/West/North).</summary>

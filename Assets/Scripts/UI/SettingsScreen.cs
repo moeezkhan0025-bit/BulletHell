@@ -18,6 +18,8 @@ namespace BulletHell.UI
         [SerializeField] private SettingRow rowPrefab;
         [SerializeField] private Transform rowParent;
         [SerializeField] private Button backButton;
+        [Tooltip("Optional: the button prompt line.")]
+        [SerializeField] private Text hintLabel;
 
         private readonly List<SettingRow> rows = new List<SettingRow>();
         private readonly List<Vector2Int> resolutions = new List<Vector2Int>();
@@ -30,7 +32,8 @@ namespace BulletHell.UI
         /// <summary>Shows the screen. onClosed is called after Back.</summary>
         public void Open(Action closed)
         {
-            gameObject.SetActive(true);
+            ScreenTransition.In(gameObject);
+            PromptHint.Show(hintLabel, PromptHint.P(UiAction.Confirm, "Select"), PromptHint.P(UiAction.Back, "Back"));
             EnsureBuilt();
             onClosed = closed;
             foreach (SettingRow row in rows)

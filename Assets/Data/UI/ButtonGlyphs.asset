@@ -34,6 +34,16 @@ MonoBehaviour:
       Label: 
       Tint: {r: 1, g: 1, b: 1, a: 1}
       LabelColor: {r: 1, g: 1, b: 1, a: 1}
+    ActionLabels:
+    - Cross
+    - Circle
+    - Square
+    - Square
+    - Triangle
+    - Triangle
+    - L1
+    - R1
+    - Options
   - Family: 1
     South:
       Icon: {fileID: 21300000, guid: 11c4928f02af55844a1163e83b44e67c, type: 3}
@@ -55,6 +65,16 @@ MonoBehaviour:
       Label: Y
       Tint: {r: 0.98, g: 0.82, b: 0.25, a: 1}
       LabelColor: {r: 0.08, g: 0.08, b: 0.1, a: 1}
+    ActionLabels:
+    - A
+    - B
+    - X
+    - X
+    - Y
+    - Y
+    - LB
+    - RB
+    - Menu
   - Family: 2
     South:
       Icon: {fileID: 21300000, guid: 11c4928f02af55844a1163e83b44e67c, type: 3}
@@ -76,6 +96,16 @@ MonoBehaviour:
       Label: X
       Tint: {r: 0.85, g: 0.85, b: 0.88, a: 1}
       LabelColor: {r: 0.08, g: 0.08, b: 0.1, a: 1}
+    ActionLabels:
+    - B
+    - A
+    - Y
+    - Y
+    - X
+    - X
+    - L
+    - R
+    - +
   - Family: 3
     South:
       Icon: {fileID: 21300000, guid: 11c4928f02af55844a1163e83b44e67c, type: 3}
@@ -97,3 +127,44 @@ MonoBehaviour:
       Label: 4
       Tint: {r: 0.6, g: 0.75, b: 0.95, a: 1}
       LabelColor: {r: 0.08, g: 0.08, b: 0.1, a: 1}
+    ActionLabels:
+    - Tap
+    - Back
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+  - Family: 4
+    South:
+      Icon: {fileID: 0}
+      Label: 1
+      Tint: {r: 0.85, g: 0.85, b: 0.88, a: 1}
+      LabelColor: {r: 0.08, g: 0.08, b: 0.1, a: 1}
+    East:
+      Icon: {fileID: 0}
+      Label: 2
+      Tint: {r: 0.85, g: 0.85, b: 0.88, a: 1}
+      LabelColor: {r: 0.08, g: 0.08, b: 0.1, a: 1}
+    West:
+      Icon: {fileID: 0}
+      Label: 3
+      Tint: {r: 0.85, g: 0.85, b: 0.88, a: 1}
+      LabelColor: {r: 0.08, g: 0.08, b: 0.1, a: 1}
+    North:
+      Icon: {fileID: 0}
+      Label: 4
+      Tint: {r: 0.85, g: 0.85, b: 0.88, a: 1}
+      LabelColor: {r: 0.08, g: 0.08, b: 0.1, a: 1}
+    ActionLabels:
+    - Enter
+    - Esc
+    - R
+    - Q
+    - T
+    - X
+    - '['
+    - ']'
+    - 

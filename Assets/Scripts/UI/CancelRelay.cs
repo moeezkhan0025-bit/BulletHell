@@ -12,6 +12,10 @@ namespace BulletHell.UI
     {
         public event Action Cancelled;
 
-        public void OnCancel(BaseEventData eventData) => Cancelled?.Invoke();
+        public void OnCancel(BaseEventData eventData)
+        {
+            UiSound.Play(UiSoundKind.Back);
+            Cancelled?.Invoke();
+        }
     }
 }

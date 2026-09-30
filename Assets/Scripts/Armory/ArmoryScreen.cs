@@ -124,7 +124,7 @@ namespace BulletHell.Armory
 
         public void Show(RunState runState)
         {
-            gameObject.SetActive(true);
+            ScreenTransition.In(gameObject);
             EnsureBuilt();
             GameServices services = GameServices.Ensure();
             run = services.Run;
@@ -142,7 +142,6 @@ namespace BulletHell.Armory
             foreach (ArmoryTether t in tethers)
                 t.Unlink();
 
-            gameObject.SetActive(true);
             titleLabel.text = "Armory - round " + state.Round;
             messageLabel.text = "";
             tabs.SetActive(ArmoryTabs.Armaments);
@@ -579,9 +578,11 @@ namespace BulletHell.Armory
                 string name = state.Loadout[slot].Data.DisplayName;
                 if (ArmoryActions.RemoveArm(state, slot) == ArmoryResult.LastArm)
                 {
+                    UiSound.Play(UiSoundKind.Error);
                     Say("You must keep at least one arm equipped.");
                     return;
                 }
+                UiSound.Play(UiSoundKind.Equip);
                 Say(name + " moved to the arm inventory with its armaments.");
                 run.SaveRun();
                 RefreshAll();
@@ -594,6 +595,7 @@ namespace BulletHell.Armory
                 if (armament == null)
                     return;
                 arm.Unequip(bubbleIndex, state.Armaments);
+                UiSound.Play(UiSoundKind.Equip);
                 Say(armament.DisplayName + " returned to the inventory.");
                 run.SaveRun();
                 ShowBubbles(false);
@@ -670,7 +672,7 @@ namespace BulletHell.Armory
             ArmInstance arm = state.Loadout[slot];
             if (arm == null)
             {
-                builder.Append("<b>Slot ").Append(SlotNames[slot]).Append(" - empty</b>\nPress Cross to place a spare arm (")
+                builder.Append("<b>Slot ").Append(SlotNames[slot]).Append(" - empty</b>\nSelect it to place a spare arm (")
                        .Append(state.SpareArms.Count).Append(state.SpareArms.Count == 1 ? " spare)." : " spares).");
                 return;
             }
@@ -701,12 +703,12 @@ namespace BulletHell.Armory
             builder.Append("<b>").Append(arm.Data.DisplayName).Append(" - slot ").Append(index + 1).Append("</b>\n");
             if (armament == null)
             {
-                builder.Append("Empty. Press Cross to choose an armament.");
+                builder.Append("Empty. Select it to choose an armament.");
                 return;
             }
             foreach (string line in ItemDescriber.ArmamentLines(armament))
                 builder.Append(line).Append('\n');
-            builder.Append("Cross: replace   Triangle: return to inventory");
+            builder.Append("Select to replace it, or remove it to return it to the inventory.");
         }
 
         private void DescribeItem(int index)
@@ -774,31 +776,19 @@ namespace BulletHell.Armory
 
         private void ApplyHints()
         {
-            if (hintLabel == null)
-                return;
-            GlyphFamily family = GlyphFamilyDetector.Current();
-            string Button(GlyphButton b, string fallback)
-            {
-                if (glyphs == null)
-                    return fallback;
-                string label = glyphs.Get(family, b).Label;
-                return string.IsNullOrEmpty(label) ? fallback : label;
-            }
-            string shoulders = family == GlyphFamily.Xbox ? "LB/RB" : family == GlyphFamily.Nintendo ? "L/R" : "L1/R1";
-            string cross = Button(GlyphButton.South, "Cross");
-            string circle = Button(GlyphButton.East, "Circle");
-            string triangle = Button(GlyphButton.North, "Triangle");
-
             switch (level)
             {
                 case Level.Ring:
-                    hintLabel.text = "[" + cross + "] Select arm     [" + triangle + "] Remove arm     [" + shoulders + "] Tabs     [Start] Fight!";
+                    PromptHint.Show(hintLabel, PromptHint.P(UiAction.Confirm, "Select arm"), PromptHint.P(UiAction.Remove, "Remove arm"),
+                        PromptHint.P(UiAction.TabPrev, "Prev tab"), PromptHint.P(UiAction.TabNext, "Next tab"), PromptHint.P(UiAction.Start, "Fight!"));
                     break;
                 case Level.Bubbles:
-                    hintLabel.text = "[Left/Right] Slot     [" + cross + "] Choose armament     [" + triangle + "] Unequip     [" + circle + "] Back";
+                    PromptHint.Show(hintLabel, PromptHint.P(UiAction.Confirm, "Choose armament"), PromptHint.P(UiAction.Remove, "Unequip"),
+                        PromptHint.P(UiAction.Back, "Back"));
                     break;
                 default:
-                    hintLabel.text = "[" + cross + "] Confirm     [" + shoulders + "] Tabs     [" + circle + "] Back";
+                    PromptHint.Show(hintLabel, PromptHint.P(UiAction.Confirm, "Confirm"), PromptHint.P(UiAction.TabPrev, "Prev tab"),
+                        PromptHint.P(UiAction.TabNext, "Next tab"), PromptHint.P(UiAction.Back, "Back"));
                     break;
             }
         }

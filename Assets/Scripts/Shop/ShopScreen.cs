@@ -118,7 +118,7 @@ namespace BulletHell.Shop
             shownTooltipCard = null;
             tooltip.Hide();
 
-            gameObject.SetActive(true);
+            ScreenTransition.In(gameObject);
             titleLabel.text = "Shop - round " + state.Round;
             messageLabel.text = "";
             ApplyHints();
@@ -326,6 +326,7 @@ namespace BulletHell.Shop
             else
             {
                 Say("Not enough currency to reroll (" + ShopService.RerollCost(visit, tuning) + ").");
+                UiSound.Play(UiSoundKind.Error);
                 Tween.PunchLocalPosition(rerollButton.transform, new Vector3(12f, 0f, 0f), 0.3f, 10, useUnscaledTime: true);
             }
         }
@@ -477,18 +478,10 @@ namespace BulletHell.Shop
 
         private void ApplyHints()
         {
-            if (hintLabel == null)
-                return;
-            GlyphFamily family = GlyphFamilyDetector.Current();
-            string Name(GlyphButton button, string fallback)
-            {
-                if (glyphs == null)
-                    return fallback;
-                string label = glyphs.Get(family, button).Label;
-                return string.IsNullOrEmpty(label) ? fallback : label;
-            }
-            hintLabel.text = "[" + Name(GlyphButton.South, "Cross") + "] Buy     [" + Name(GlyphButton.North, "Triangle") + "] Reroll     [" +
-                             Name(GlyphButton.West, "Square") + "] Details     [" + Name(GlyphButton.East, "Circle") + "] Leave";
+            PromptHint.Show(hintLabel,
+                PromptHint.P(UiAction.Confirm, "Buy"), PromptHint.P(UiAction.Reroll, "Reroll"),
+                PromptHint.P(UiAction.Details, "Details"), PromptHint.P(UiAction.Back, "Leave"),
+                PromptHint.P(UiAction.Start, "Leave"));
         }
     }
 }

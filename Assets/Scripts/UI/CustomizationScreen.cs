@@ -21,6 +21,8 @@ namespace BulletHell.UI
         [SerializeField] private Button randomizeButton;
         [SerializeField] private Button confirmButton;
         [SerializeField] private Button backButton;
+        [Tooltip("Optional: the button prompt line.")]
+        [SerializeField] private Text hintLabel;
         [Tooltip("The whole preview (doll, arms, pedestal), shown while this screen is open.")]
         [SerializeField] private GameObject previewRoot;
         [Tooltip("The paper doll inside the preview; the look is applied to it.")]
@@ -37,7 +39,8 @@ namespace BulletHell.UI
         /// <summary>Shows the screen with the saved look. Confirmed runs after the profile was saved; back after the edits were dropped.</summary>
         public void Open(Action confirmed, Action back)
         {
-            gameObject.SetActive(true);
+            ScreenTransition.In(gameObject);
+            PromptHint.Show(hintLabel, PromptHint.P(UiAction.Confirm, "Select"), PromptHint.P(UiAction.Randomize, "Randomize"), PromptHint.P(UiAction.Back, "Back"));
             EnsureBuilt();
             onConfirmed = confirmed;
             onBack = back;

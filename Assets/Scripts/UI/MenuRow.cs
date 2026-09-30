@@ -50,6 +50,8 @@ namespace BulletHell.UI
         private void Lift(float scale)
         {
             Tween.StopAll(transform);
+            if (Mathf.Approximately(transform.localScale.x, scale))
+                return;   // PrimeTween warns when a tween ends where it already is
             Tween.Scale(transform, scale, 0.12f, Ease.OutQuad, useUnscaledTime: true);
         }
     }

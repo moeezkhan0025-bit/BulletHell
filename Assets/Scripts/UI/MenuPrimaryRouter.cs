@@ -54,6 +54,8 @@ namespace BulletHell.UI
 
         private void OnPrimary()
         {
+            if (ConfirmDialog.AnyOpen)
+                return;   // Start must never confirm a destructive dialog
             if (stateChangeFrame == Time.frameCount)
                 return;
 

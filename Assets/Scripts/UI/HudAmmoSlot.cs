@@ -61,7 +61,7 @@ namespace BulletHell.UI
             holdRing.enabled = holding;
             float targetScale = active && filled ? activeScale : 1f;
             Tween.StopAll(transform);
-            if (animate)
+            if (animate && !Mathf.Approximately(transform.localScale.x, targetScale))
                 Tween.Scale(transform, targetScale, 0.18f, Ease.OutBack, useUnscaledTime: true);
             else
                 transform.localScale = Vector3.one * targetScale;

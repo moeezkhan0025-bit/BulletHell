@@ -40,8 +40,11 @@ namespace BulletHell.Feedback
         {
             instance = null;
             quitting = false;
-            Application.quitting += () => quitting = true;
+            Application.quitting -= OnQuitting;   // Reload Domain is off: never stack a second handler
+            Application.quitting += OnQuitting;
         }
+
+        private static void OnQuitting() => quitting = true;
 
         private static FeedbackHub Instance
         {
