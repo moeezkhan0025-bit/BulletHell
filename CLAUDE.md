@@ -126,6 +126,15 @@ Boot scene (bootstrapper) -> Main Menu scene -> Game scene.
   overlay (dev builds), and on PC fullscreen/windowed + resolution. Laid out on tabs (Audio, Video, Controls, Gameplay; L1/R1 switch) with sliders,
   toggles and arrow rows. Applied immediately, saved in the settings file, Back returns to wherever Settings was opened from.
   The Gameplay tab always holds "Replay Tutorial" (a toggle: ON = the onboarding plays again in round 1 of the next new run; it clears the profile flag).
+  Tabs (the row list scrolls; L1/R1 switch tabs; everything is a theme-styled row you can drive with the controller):
+  Audio: master, music, SFX (the mixer volumes). Video (PC only): fullscreen / windowed, resolution, VSync. Controls: Arm Sensitivity (slider; scales the
+  InputTuning select / deselect / locked dead-zone thresholds, 0.6x to 1.5x), controller vibration, and button remapping with the Input System rebinding API:
+  Fire, Lock Arm, Jump, Ammo Slots 1-4 and Pause can each be put on any gamepad button or trigger (sticks and the d-pad are not offered); a press picks the button,
+  Esc or 6 s without a press cancels, choosing a button another action uses swaps the two, Reset Buttons restores the defaults. The overrides are saved as JSON in
+  the settings file (`bindingOverrides`) and applied to the live input at once; the Settings list, the tutorial prompts and the HUD ammo badges show the player's own
+  buttons. Gameplay: Screen Shake intensity (0-100 %), Bullet Outline thickness (0.5x-3x of the palette's 2 px), High Contrast bullets (white halo plus a thicker
+  outline), HUD Scale (80-130 %, corner-anchored so the HUD stays in the safe area), Replay Tutorial. Settings files from before D5 keep working (the old shake
+  switch becomes 0 or 100 %).
 - New Game -> Gladiator customization (cosmetics) -> Round intro -> Combat.
   Continue skips customization and resumes at the Shop for the saved round.
 - Round intro: every round starts with a banner/announcer moment ("Round 1 - Begin!", boss rounds get
@@ -535,7 +544,7 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
       earned/spent, items bought, armaments equipped, boss phase reached) and a debug summary screen.
 - [x] D4 Audio (done 2026-09-30): music per context with crossfades, SFX for combat, movement, pickups, UI and announcer stingers, mixer groups tied to the Settings
       volumes, CC0 placeholder sounds logged in Docs/CREDITS.md.
-- [ ] D5 Settings completion: Video (resolution, fullscreen/windowed, VSync), Controls (button remapping via the Input System, arm-select
+- [x] D5 Settings completion (done 2026-09-30; shots in Captures/d5): Video (resolution, fullscreen/windowed, VSync), Controls (button remapping via the Input System, arm-select
       sensitivity), Gameplay and accessibility (screen shake intensity, bullet outline thickness, high-contrast bullets, HUD scale).
 - [ ] D6 Build pipeline: Windows and WebGL builds from one editor menu with version numbers, plus a WebGL test report (controller, saving, audio,
       performance) and a verdict on an itch.io browser demo.

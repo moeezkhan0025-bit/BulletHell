@@ -49,6 +49,9 @@ namespace BulletHell.UI
         private SettingsService settings;
         private Action onClosed;
         private bool built;
+        private InputBindingService bindings;
+        private readonly Dictionary<RebindAction, SettingRow> remapRows = new Dictionary<RebindAction, SettingRow>();
+        private RebindAction? rebinding;
         private int activeTab;
 
         public bool IsOpen => gameObject.activeSelf;
@@ -75,6 +78,8 @@ namespace BulletHell.UI
         {
             if (!IsOpen)
                 return;
+            bindings?.CancelRebind();
+            rebinding = null;
             settings.Save();
             if (menuInput != null)
             {
@@ -107,6 +112,7 @@ namespace BulletHell.UI
             settings = GameServices.Ensure().Settings;
             SettingsDefaults defaults = settings.Defaults;
 
+            // ---- Audio
             AddRow(AudioTab, "Master Volume", () => Percent(settings.Current.masterVolume), SettingKind.Slider, () => settings.Current.masterVolume,
                 dir => Step(settings.Current.masterVolume, dir, defaults.VolumeStep, 0f, 1f, v => settings.Current.masterVolume = v),
                 sub: null, setFraction: f => SetByFraction(f, defaults.VolumeStep, 0f, 1f, v => settings.Current.masterVolume = v));
@@ -116,32 +122,61 @@ namespace BulletHell.UI
             AddRow(AudioTab, "Sound Effects", () => Percent(settings.Current.sfxVolume), SettingKind.Slider, () => settings.Current.sfxVolume,
                 dir => Step(settings.Current.sfxVolume, dir, defaults.VolumeStep, 0f, 1f, v => settings.Current.sfxVolume = v),
                 sub: null, setFraction: f => SetByFraction(f, defaults.VolumeStep, 0f, 1f, v => settings.Current.sfxVolume = v));
-            AddSection(AudioTab, "FEEL");
-            AddRow(AudioTab, "Screen Shake", () => OnOff(settings.Current.screenShake), SettingKind.Toggle, null,
-                _ => Toggle(v => settings.Current.screenShake = v, settings.Current.screenShake));
-            AddRow(AudioTab, "Controller Vibration", () => OnOff(settings.Current.vibration), SettingKind.Toggle, null,
-                _ => Toggle(v => settings.Current.vibration = v, settings.Current.vibration), "DualSense / Xbox");
 
+            // ---- Video (PC: a phone or console has no window to size)
             if (PlatformCapabilities.SupportsDisplaySettings)
             {
                 BuildResolutionList();
                 AddRow(VideoTab, "Fullscreen", () => OnOff(settings.Current.fullscreen), SettingKind.Toggle, null,
-                    _ => Toggle(v => settings.Current.fullscreen = v, settings.Current.fullscreen));
+                    _ => Toggle(v => settings.Current.fullscreen = v, settings.Current.fullscreen), "Off = windowed");
                 AddRow(VideoTab, "Resolution", ResolutionText, SettingKind.Choice, null, AdjustResolution);
+                AddRow(VideoTab, "VSync", () => OnOff(settings.Current.vsync), SettingKind.Toggle, null,
+                    _ => Toggle(v => settings.Current.vsync = v, settings.Current.vsync), "Matches the screen refresh");
             }
 
-            AddRow(ControlsTab, "Aim Sensitivity", () => settings.Current.aimSensitivity.ToString("0.0") + "x", SettingKind.Slider,
+            // ---- Controls
+            AddRow(ControlsTab, "Arm Sensitivity", () => settings.Current.aimSensitivity.ToString("0.0") + "x", SettingKind.Slider,
                 () => Mathf.InverseLerp(defaults.MinAimSensitivity, defaults.MaxAimSensitivity, settings.Current.aimSensitivity),
                 dir => Step(settings.Current.aimSensitivity, dir, defaults.AimSensitivityStep, defaults.MinAimSensitivity, defaults.MaxAimSensitivity,
                             v => settings.Current.aimSensitivity = v),
                 sub: null, setFraction: f => SetByFraction(f, defaults.AimSensitivityStep, defaults.MinAimSensitivity, defaults.MaxAimSensitivity,
                                                            v => settings.Current.aimSensitivity = v));
+            AddRow(ControlsTab, "Controller Vibration", () => OnOff(settings.Current.vibration), SettingKind.Toggle, null,
+                _ => Toggle(v => settings.Current.vibration = v, settings.Current.vibration), "DualSense / Xbox");
 
+            bindings = GameServices.Ensure().Bindings;
+            AddSection(ControlsTab, "BUTTONS");
+            foreach (RebindAction action in InputBindingService.All)
+            {
+                RebindAction captured = action;
+                SettingRow row = AddRow(ControlsTab, InputBindingService.DisplayName(action), () => RemapText(captured), SettingKind.Action, null,
+                                        _ => BeginRebind(captured));
+                remapRows[action] = row;
+            }
+            AddRow(ControlsTab, "Reset Buttons", () => "Reset", SettingKind.Action, null, _ => ResetBindings(), "Back to the default layout");
+
+            // ---- Gameplay
+            AddRow(GameplayTab, "Screen Shake", () => Percent(settings.Current.shakeIntensity) + "%", SettingKind.Slider, () => settings.Current.shakeIntensity,
+                dir => Step(settings.Current.shakeIntensity, dir, defaults.ShakeStep, 0f, 1f, SetShake),
+                sub: null, setFraction: f => SetByFraction(f, defaults.ShakeStep, 0f, 1f, SetShake));
+            AddRow(GameplayTab, "Bullet Outline", () => OutlineText(settings.Current.bulletOutlineScale, defaults), SettingKind.Slider,
+                () => Mathf.InverseLerp(defaults.MinBulletOutlineScale, defaults.MaxBulletOutlineScale, settings.Current.bulletOutlineScale),
+                dir => Step(settings.Current.bulletOutlineScale, dir, defaults.BulletOutlineStep, defaults.MinBulletOutlineScale, defaults.MaxBulletOutlineScale,
+                            v => settings.Current.bulletOutlineScale = v),
+                sub: null, setFraction: f => SetByFraction(f, defaults.BulletOutlineStep, defaults.MinBulletOutlineScale, defaults.MaxBulletOutlineScale,
+                                                           v => settings.Current.bulletOutlineScale = v));
+            AddRow(GameplayTab, "High Contrast", () => OnOff(settings.Current.highContrastBullets), SettingKind.Toggle, null,
+                _ => Toggle(v => settings.Current.highContrastBullets = v, settings.Current.highContrastBullets), "White halo on enemy bullets");
+            AddRow(GameplayTab, "HUD Scale", () => Percent(settings.Current.hudScale) + "%", SettingKind.Slider,
+                () => Mathf.InverseLerp(defaults.MinHudScale, defaults.MaxHudScale, settings.Current.hudScale),
+                dir => Step(settings.Current.hudScale, dir, defaults.HudScaleStep, defaults.MinHudScale, defaults.MaxHudScale, v => settings.Current.hudScale = v),
+                sub: null, setFraction: f => SetByFraction(f, defaults.HudScaleStep, defaults.MinHudScale, defaults.MaxHudScale, v => settings.Current.hudScale = v));
             AddRow(GameplayTab, "Replay Tutorial", () => OnOff(!profile.TutorialDone), SettingKind.Toggle, null,
                 _ => profile.SetTutorialDone(!profile.TutorialDone), "Plays in round 1 of a new run");
 
             if (Debug.isDebugBuild)
             {
+                AddSection(GameplayTab, "DEVELOPMENT");
                 AddRow(GameplayTab, "Show Debug Overlay", () => OnOff(settings.Current.showDebugOverlay), SettingKind.Toggle, null,
                     _ => Toggle(v => settings.Current.showDebugOverlay = v, settings.Current.showDebugOverlay));
                 AddRow(GameplayTab, "Show AI Debug", () => OnOff(settings.Current.showAiDebug), SettingKind.Toggle, null,
@@ -170,9 +205,17 @@ namespace BulletHell.UI
             return false;
         }
 
-        private void PreviousTab() => StepTab(-1);
+        private void PreviousTab()
+        {
+            if (!rebinding.HasValue)
+                StepTab(-1);
+        }
 
-        private void NextTab() => StepTab(1);
+        private void NextTab()
+        {
+            if (!rebinding.HasValue)
+                StepTab(1);
+        }
 
         private void StepTab(int direction)
         {
@@ -192,6 +235,8 @@ namespace BulletHell.UI
             if (!HasRows(tab))
                 tab = AudioTab;
             activeTab = tab;
+            if (rowParent is RectTransform list)
+                list.anchoredPosition = Vector2.zero;   // each tab opens scrolled to its top
             SettingRow first = null;
             foreach (Entry entry in entries)
             {
@@ -221,12 +266,21 @@ namespace BulletHell.UI
                 UIFocusGuard.Focus(first.gameObject);
         }
 
-        private void AddRow(int tab, string labelText, Func<string> value, SettingKind kind, Func<float> fraction, Action<int> adjust, string sub = null, Action<float> setFraction = null)
+        private SettingRow AddRow(int tab, string labelText, Func<string> value, SettingKind kind, Func<float> fraction, Action<int> adjust, string sub = null, Action<float> setFraction = null)
         {
             SettingRow row = Instantiate(rowPrefab, rowParent);
             row.Bind(labelText, value, adjust, kind, fraction, sub != null ? (Func<string>)(() => sub) : null, setFraction);
-            row.Cancelled += Close;
+            row.Cancelled += OnRowCancelled;
             entries.Add(new Entry { Tab = tab, Object = row.gameObject, Row = row });
+            return row;
+        }
+
+        // Circle can be the very button being chosen in a rebind: while one runs, it must not close the screen.
+        private void OnRowCancelled()
+        {
+            if (rebinding.HasValue)
+                return;
+            Close();
         }
 
         private void AddSection(int tab, string text)
@@ -245,6 +299,73 @@ namespace BulletHell.UI
             set(next);
             settings.Commit();
         }
+
+        // ---- button remapping
+
+        // The list names the gamepad buttons; with the keyboard or touch in use it still shows the PlayStation names.
+        private static GlyphFamily RemapFamily()
+        {
+            GlyphFamily family = GlyphFamilyDetector.Current();
+            return family == GlyphFamily.Keyboard || family == GlyphFamily.Touch ? GlyphFamily.PlayStation : family;
+        }
+
+        private string RemapText(RebindAction action)
+        {
+            if (rebinding.HasValue && rebinding.Value == action)
+                return "Press a button...";
+            return bindings.Label(action, RemapFamily());
+        }
+
+        private void BeginRebind(RebindAction action)
+        {
+            if (rebinding.HasValue)
+                return;
+            rebinding = action;
+            RefreshRemapRows();
+            StartCoroutine(StartRebindAfterRelease(action));
+        }
+
+        // Wait a moment so the press that opened the row is not the one that gets bound.
+        private System.Collections.IEnumerator StartRebindAfterRelease(RebindAction action)
+        {
+            yield return new WaitForSecondsRealtime(0.3f);
+            if (!rebinding.HasValue || !IsOpen || !bindings.StartRebind(action, OnRebound))
+            {
+                rebinding = null;
+                RefreshRemapRows();
+            }
+        }
+
+        private void OnRebound(RebindOutcome outcome)
+        {
+            rebinding = null;
+            RefreshRemapRows();
+            UiSound.Play(outcome == RebindOutcome.Cancelled ? UiSoundKind.Back : UiSoundKind.Equip);
+        }
+
+        private void ResetBindings()
+        {
+            if (rebinding.HasValue)
+                return;
+            bindings.ResetToDefaults();
+            RefreshRemapRows();
+            UiSound.Play(UiSoundKind.Equip);
+        }
+
+        private void RefreshRemapRows()
+        {
+            foreach (var pair in remapRows)
+                if (pair.Value != null)
+                    pair.Value.Refresh();
+        }
+
+        private void SetShake(float value)
+        {
+            settings.Current.shakeIntensity = value;
+            settings.Current.screenShake = value > 0.001f;   // the old on / off switch follows
+        }
+
+        private static string OutlineText(float scale, SettingsDefaults defaults) => (scale * 2f).ToString("0.#") + " px";
 
         // A slider pressed or dragged by pointer: 0..1 along the track, snapped to the setting's step.
         private void SetByFraction(float fraction, float step, float min, float max, Action<float> set)

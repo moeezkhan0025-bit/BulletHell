@@ -158,19 +158,28 @@ namespace BulletHell.UI
             ButtonGlyphLibrary library = services.Config.ButtonGlyphs;
             GlyphFamily family = GlyphFamilyDetector.Current();
             string template = step.Kind == TutorialStepKind.SwapAmmo && !ammoReady && !string.IsNullOrEmpty(step.WaitingText) ? step.WaitingText : step.Text;
-            string text = TutorialText.Format(library, family, template, step.Keys, KeyColor);
+            string text = TutorialText.Format(library, family, template, step.Keys, KeyColor, OwnLabel);
             if (newStep)
             {
                 string counter = string.Format(data.StepCounterFormat, index + 1, data.Steps.Length);
                 if (!string.IsNullOrEmpty(step.Title))
                     counter += "  -  " + step.Title;
-                string skip = TutorialText.Format(library, family, data.SkipText, new[] { UiAction.SkipTutorial }, KeyColor);
+                string skip = TutorialText.Format(library, family, data.SkipText, new[] { UiAction.SkipTutorial }, KeyColor, OwnLabel);
                 panel.ShowStep(counter, text, skip, index, data.Steps.Length);
             }
             else
             {
                 panel.SetInstruction(text, false);
             }
+        }
+
+        // The prompt names the button the player has really bound (Settings > Controls), not the default.
+        private string OwnLabel(UiAction action)
+        {
+            if (!BulletHell.Input.InputBindingService.TryFromUiAction(action, out BulletHell.Input.RebindAction rebind))
+                return null;
+            string label = services.Bindings.Label(rebind, GlyphFamilyDetector.Current());
+            return string.IsNullOrEmpty(label) ? null : label;
         }
 
         private void OnDeviceChanged(GlyphFamily _)

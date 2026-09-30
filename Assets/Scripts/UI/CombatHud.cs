@@ -33,6 +33,7 @@ namespace BulletHell.UI
         private RunManager run;
         private int lastArm = ArmSelector.None;
         private GlyphFamily family = (GlyphFamily)(-1);
+        private int bindingVersion = -1;
 
         private void Awake() => run = GameServices.Ensure().Run;
 
@@ -108,13 +109,36 @@ namespace BulletHell.UI
             }
         }
 
+        // The ammo slot pictures follow the controller in use and the player's own button choices (Settings > Controls).
         private void ApplyGlyphs(GlyphFamily newFamily)
         {
-            if (newFamily == family || glyphs == null)
+            var bindings = GameServices.Ensure().Bindings;
+            if ((newFamily == family && bindings.Version == bindingVersion) || glyphs == null)
                 return;
             family = newFamily;
+            bindingVersion = bindings.Version;
             for (int i = 0; i < slots.Length; i++)
-                slots[i].SetGlyph(glyphs.Get(family, ButtonGlyphLibrary.ForAmmoSlot(i)));
+                slots[i].SetGlyph(GlyphFor(bindings, i));
+        }
+
+        private ButtonGlyph GlyphFor(BulletHell.Input.InputBindingService bindings, int slot)
+        {
+            ButtonGlyph byPosition = glyphs.Get(family, ButtonGlyphLibrary.ForAmmoSlot(slot));
+            if (family == GlyphFamily.Keyboard || family == GlyphFamily.Touch)
+                return byPosition;
+
+            var action = (BulletHell.Input.RebindAction)((int)BulletHell.Input.RebindAction.Ammo1 + slot);
+            string path = bindings.PathOf(action);
+            GlyphButton? face = BulletHell.Input.ControlLabels.FaceButton(path);
+            if (face.HasValue)
+                return glyphs.Get(family, face.Value);   // still a face button: its round picture, wherever it moved to
+
+            // Moved to a shoulder button or trigger: a plain disc with the button's name on it.
+            ButtonGlyph disc = byPosition;
+            disc.Label = BulletHell.Input.ControlLabels.Name(family, path);
+            disc.Tint = new Color(0.85f, 0.85f, 0.88f, 1f);
+            disc.LabelColor = new Color(0.08f, 0.08f, 0.1f, 1f);
+            return disc;
         }
     }
 }

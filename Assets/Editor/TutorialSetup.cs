@@ -118,6 +118,7 @@ namespace BulletHell.EditorTools
             RectTransform root = VoxUi.R("TutorialPanel", safe);
             VoxUi.TopCenter(root, 0f, 112f, 900f, 168f);
             var group = root.gameObject.AddComponent<CanvasGroup>();
+            root.gameObject.AddComponent<HudScale>();   // Settings > Gameplay > HUD Scale
             root.SetSiblingIndex(safe.Find("BossHud") != null ? safe.Find("BossHud").GetSiblingIndex() + 1 : 1);
 
             RectTransform card = VoxUi.R("Card", root);

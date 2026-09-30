@@ -45,7 +45,7 @@ namespace BulletHell.Feedback
         private void AddTrauma(float amount)
         {
             GameServices services = GameServices.Ensure();
-            if (!services.Settings.Current.screenShake)
+            if (services.Settings.Current.shakeIntensity <= 0f)
                 return;
             trauma = Mathf.Clamp01(trauma + amount);
         }
@@ -64,9 +64,10 @@ namespace BulletHell.Feedback
             trauma = Mathf.Max(0f, trauma - tuning.ShakeDecay * dt);
 
             float strength = trauma * trauma;
+            float intensity = GameServices.Ensure().Settings.Current.shakeIntensity;   // Settings > Gameplay > Screen Shake (0 = none)
             float t = Time.unscaledTime * tuning.ShakeFrequency;
-            float x = (Mathf.PerlinNoise(seed, t) * 2f - 1f) * strength * tuning.ShakeMaxOffset;
-            float y = (Mathf.PerlinNoise(seed + 50f, t) * 2f - 1f) * strength * tuning.ShakeMaxOffset;
+            float x = (Mathf.PerlinNoise(seed, t) * 2f - 1f) * strength * tuning.ShakeMaxOffset * intensity;
+            float y = (Mathf.PerlinNoise(seed + 50f, t) * 2f - 1f) * strength * tuning.ShakeMaxOffset * intensity;
 
             cam.ResetProjectionMatrix();
             Matrix4x4 projection = cam.projectionMatrix;

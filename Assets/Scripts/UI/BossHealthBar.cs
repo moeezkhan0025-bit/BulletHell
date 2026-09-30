@@ -116,7 +116,8 @@ namespace BulletHell.UI
             fill.color = phase2Color;
             if (phaseTick != null)
                 Tween.Scale(phaseTick, Vector3.one * 1.8f, 0.18f, Ease.OutQuad, cycles: 2, cycleMode: CycleMode.Yoyo, useUnscaledTime: true);
-            Tween.Scale(transform, new Vector3(1.03f, 1.15f, 1f), 0.16f, Ease.OutQuad, cycles: 2, cycleMode: CycleMode.Yoyo, useUnscaledTime: true);
+            Vector3 rest = transform.localScale;   // not 1: the HUD scale setting resizes this bar
+            Tween.Scale(transform, Vector3.Scale(rest, new Vector3(1.03f, 1.15f, 1f)), 0.16f, Ease.OutQuad, cycles: 2, cycleMode: CycleMode.Yoyo, useUnscaledTime: true);
         }
 
         private void OnDefeated(BossController defeated)

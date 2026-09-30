@@ -82,6 +82,7 @@ namespace BulletHell.EditorTools
             // ---- bottom left: marble panel with hearts + heat, portrait ring on top
             RectTransform left = VoxUi.R("BottomLeft", content);
             VoxUi.BottomLeft(left, 20f, 20f, 580f, 190f);
+            left.gameObject.AddComponent<HudScale>();   // Settings > Gameplay > HUD Scale
 
             Image panel = VoxUi.Themed("Panel", left, ThemeRole.Panel);
             VoxUi.BottomLeft(panel.rectTransform, 96f, 0f, 480f, 152f);
@@ -132,6 +133,7 @@ namespace BulletHell.EditorTools
             // ---- bottom right: dark tray with four ammo slots
             RectTransform right = VoxUi.R("BottomRight", content);
             VoxUi.BottomRight(right, 20f, 20f, 580f, 172f);
+            right.gameObject.AddComponent<HudScale>();
             Image tray = VoxUi.Themed("Tray", right, ThemeRole.HintBar);
             tray.GetComponent<ThemedImage>().KeepColor = true;
             tray.color = new Color(1f, 1f, 1f, 0.88f);
@@ -219,6 +221,7 @@ namespace BulletHell.EditorTools
             // Round / wave pill (top center): ROUND n | Wave x / y, with checker ends
             Image pill = VoxUi.Themed("RoundPill", rect, ThemeRole.PillMarble);
             VoxUi.TopCenter(pill.rectTransform, 0f, 24f, 580f, 78f);
+            pill.gameObject.AddComponent<HudScale>();
             Image trimL = VoxUi.Trim("TrimL", pill.transform, TrimColor.Leaf);
             trimL.rectTransform.anchorMin = new Vector2(0f, 0f);
             trimL.rectTransform.anchorMax = new Vector2(0f, 1f);
@@ -249,6 +252,7 @@ namespace BulletHell.EditorTools
             // Currency pill (top right)
             Image coinPill = VoxUi.Themed("CoinPill", rect, ThemeRole.PillMarble);
             VoxUi.TopRight(coinPill.rectTransform, 28f, 26f, 340f, 76f);
+            coinPill.gameObject.AddComponent<HudScale>();
             Image coin = VoxUi.Img("Coin", coinPill.transform, theme.Coin, Image.Type.Simple);
             coin.preserveAspect = true;
             coin.rectTransform.anchorMin = coin.rectTransform.anchorMax = new Vector2(0f, 0.5f);
@@ -304,6 +308,8 @@ namespace BulletHell.EditorTools
                     VoxUi.Fit(label, 20f, 34f);
                 }
                 ((RectTransform)boss.transform).anchoredPosition = new Vector2(0f, -112f);   // below the round / wave pill
+                if (!boss.TryGetComponent<HudScale>(out _))
+                    boss.gameObject.AddComponent<HudScale>();
                 Transform bar = boss.transform.Find("Bar");
                 if (bar != null)
                 {

@@ -1,6 +1,7 @@
 using System.IO;
 using BulletHell.Audio;
 using BulletHell.Cosmetics;
+using BulletHell.Input;
 using BulletHell.Save;
 using BulletHell.Settings;
 using BulletHell.Telemetry;
@@ -17,10 +18,15 @@ namespace BulletHell.Core
     {
         private static GameServices instance;
 
+        /// <summary>True once the services exist (a disabling object may not want to create them just to unsubscribe).</summary>
+        public static bool HasInstance => instance != null;
+
         public GameConfig Config { get; private set; }
         public ISaveSystem Save { get; private set; }
         public SettingsService Settings { get; private set; }
         public ProfileService Profile { get; private set; }
+        /// <summary>Gamepad button remapping (Settings > Controls), saved in the settings file.</summary>
+        public InputBindingService Bindings { get; private set; }
         public RunManager Run { get; private set; }
         public SceneLoader Scenes { get; private set; }
         public AudioService Audio { get; private set; }
@@ -66,6 +72,7 @@ namespace BulletHell.Core
                 ? config.SettingsDefaults
                 : ScriptableObject.CreateInstance<SettingsDefaults>();
             Settings = new SettingsService(defaults, new JsonFileStore<SettingsData>(Path.Combine(folder, config.SettingsFileName)), Audio);
+            Bindings = new InputBindingService(Settings);
             Profile = new ProfileService(config.Registry, new JsonFileStore<ProfileData>(Path.Combine(folder, config.ProfileFileName)));
             Telemetry = new TelemetryService(Run, Path.Combine(folder, config.TelemetryFileName));
         }
@@ -87,6 +94,7 @@ namespace BulletHell.Core
         private void OnDestroy()
         {
             Telemetry?.Dispose();
+            Bindings?.Dispose();
             Director?.Dispose();
         }
     }

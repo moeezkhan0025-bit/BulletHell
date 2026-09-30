@@ -79,6 +79,7 @@ namespace BulletHell.Settings
         private void Apply()
         {
             audio.SetVolumes(Current.masterVolume, Current.musicVolume, Current.sfxVolume);   // also sets the master volume (mixer, or AudioListener without one)
+            QualitySettings.vSyncCount = Current.vsync ? 1 : 0;   // also in the Editor: it only affects the Game view
             ApplyDisplay();
         }
 

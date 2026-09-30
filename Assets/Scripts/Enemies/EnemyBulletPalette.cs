@@ -45,6 +45,14 @@ namespace BulletHell.Enemies
         [Tooltip("Glow diameter as a multiple of the bullet's size.")]
         [SerializeField, Range(1f, 3f)] private float glowScale = 1.6f;
 
+        [Header("High contrast (Settings > Gameplay)")]
+        [Tooltip("Smallest outline thickness, in pixels at 1080p, when high-contrast bullets are on.")]
+        [SerializeField, Min(0f)] private float highContrastOutlinePixels = 3.5f;
+        [Tooltip("The white ring around the dark outline that makes a bullet readable on any floor.")]
+        [SerializeField] private Color haloColor = Color.white;
+        [SerializeField, Range(0f, 1f)] private float haloOpacity = 0.95f;
+        [SerializeField, Range(1f, 2.5f)] private float haloScale = 1.4f;
+
         [Header("Reserved hues (for the colour-clash check)")]
         [Tooltip("How many degrees around each body colour no other game colour may use (when it is saturated and bright enough to read as that colour).")]
         [SerializeField, Range(5f, 40f)] private float reservedHueRange = 22f;
@@ -59,6 +67,10 @@ namespace BulletHell.Enemies
         public float CoreScale => coreScale;
         public float GlowOpacity => Mathf.Min(glowOpacity, 0.3f);
         public float GlowScale => glowScale;
+        public float HighContrastOutlinePixels => highContrastOutlinePixels;
+        public Color HaloColor => haloColor;
+        public float HaloOpacity => haloOpacity;
+        public float HaloScale => haloScale;
 
         /// <summary>True when a colour is in either family's hue band and vivid enough to be mistaken for an enemy bullet.</summary>
         public bool IsReservedHue(Color color)

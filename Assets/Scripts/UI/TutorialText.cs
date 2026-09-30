@@ -7,10 +7,12 @@ namespace BulletHell.UI
     public static class TutorialText
     {
         /// <summary>
+        /// labelOverride gives the player's own name for a control (null = use the library).
         /// {i} becomes "[label]" of keys[i] for the family (wrapped in a colour tag when keyColorHex is given). A control the
         /// device has no button for becomes nothing. Doubled spaces left behind are closed up.
         /// </summary>
-        public static string Format(ButtonGlyphLibrary library, GlyphFamily family, string template, UiAction[] keys, string keyColorHex = null)
+        public static string Format(ButtonGlyphLibrary library, GlyphFamily family, string template, UiAction[] keys, string keyColorHex = null,
+                                    System.Func<UiAction, string> labelOverride = null)
         {
             if (string.IsNullOrEmpty(template))
                 return "";
@@ -22,6 +24,12 @@ namespace BulletHell.UI
                 {
                     int index = template[i + 1] - '0';
                     string label = keys != null && index < keys.Length && library != null ? library.LabelFor(family, keys[index]) : "";
+                    if (keys != null && index < keys.Length && labelOverride != null)
+                    {
+                        string own = labelOverride(keys[index]);   // the player's own (remapped) button, when the action can be remapped
+                        if (own != null)
+                            label = own;
+                    }
                     if (!string.IsNullOrEmpty(label))
                     {
                         if (keyColorHex != null)

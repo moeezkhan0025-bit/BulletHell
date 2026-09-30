@@ -15,6 +15,8 @@ namespace BulletHell.UI
         Slider,
         /// <summary>A pill switch with an ON / OFF word.</summary>
         Toggle,
+        /// <summary>A button-like row: a caption on the right (a button name, "Reset"); Submit / click runs it, left / right do nothing.</summary>
+        Action,
     }
 
     /// <summary>
@@ -101,7 +103,9 @@ namespace BulletHell.UI
             subText = subSource;
             if (sliderGroup != null) sliderGroup.SetActive(kind == SettingKind.Slider);
             if (toggleGroup != null) toggleGroup.SetActive(kind == SettingKind.Toggle);
-            if (choiceGroup != null) choiceGroup.SetActive(kind == SettingKind.Choice);
+            if (choiceGroup != null) choiceGroup.SetActive(kind == SettingKind.Choice || kind == SettingKind.Action);
+            if (arrowLeft != null) arrowLeft.gameObject.SetActive(kind == SettingKind.Choice);
+            if (arrowRight != null) arrowRight.gameObject.SetActive(kind == SettingKind.Choice);
             ApplyLook();
             Refresh();
         }
@@ -232,6 +236,8 @@ namespace BulletHell.UI
 
         public void OnMove(AxisEventData eventData)
         {
+            if (kind == SettingKind.Action)
+                return;   // an action row runs on Submit, not on left / right
             if (eventData.moveDir == MoveDirection.Left)
                 Adjust(-1);
             else if (eventData.moveDir == MoveDirection.Right)

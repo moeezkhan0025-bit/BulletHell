@@ -59,6 +59,7 @@ namespace BulletHell.Input
         private void Awake()
         {
             input = new GameInput();
+            ApplyBindings();
             var gameplay = input.Gameplay;
             moveAction = gameplay.Move;
             aimAction = gameplay.Aim;
@@ -94,6 +95,8 @@ namespace BulletHell.Input
         {
             try
             {
+                Core.GameServices.Ensure().Settings.Changed += ApplyBindings;
+                ApplyBindings();   // the reader is disabled while a screen owns the input (Pause, Settings): catch up with changes made meanwhile
                 input.Gameplay.Enable();
                 input.Debug.Enable();
             }
@@ -108,6 +111,8 @@ namespace BulletHell.Input
         {
             try
             {
+                if (Core.GameServices.HasInstance)
+                    Core.GameServices.Ensure().Settings.Changed -= ApplyBindings;
                 input.Gameplay.Disable();
                 input.Debug.Disable();
             }
@@ -140,6 +145,9 @@ namespace BulletHell.Input
             input.Debug.DebugToggleTelemetry.performed -= OnDebugToggleTelemetry;
             input.Dispose();
         }
+
+        // The remapped buttons of Settings > Controls, applied when this reader wakes and whenever the settings change.
+        private void ApplyBindings() => InputBindingService.ApplyTo(input, Core.GameServices.Ensure().Settings.Current.bindingOverrides);
 
         private void OnDebugAdd(InputAction.CallbackContext c) => InputDiagnostics.Raise(this, nameof(OnDebugAdd), c, DebugAddArmamentPressed);
         private void OnDebugRemove(InputAction.CallbackContext c) => InputDiagnostics.Raise(this, nameof(OnDebugRemove), c, DebugRemoveArmamentPressed);

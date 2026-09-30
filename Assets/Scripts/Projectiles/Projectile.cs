@@ -114,10 +114,22 @@ namespace BulletHell.Projectiles
             // The body sprite is the dark outline; the fill sits inside it by the outline thickness (pixels at 1080p to world units).
             Camera view = Camera.main;
             float pixelsPerUnit = view != null ? 540f / view.orthographicSize : 108f;
-            float inner = Mathf.Clamp01(1f - 2f * (palette.OutlinePixels / pixelsPerUnit) / size);
+            // Settings > Gameplay: outline thickness scales the palette value; high contrast adds a white halo and a minimum thickness.
+            BulletHell.Settings.SettingsData options = GameServices.Ensure().Settings.Current;
+            bool highContrast = options.highContrastBullets;
+            float outlinePixels = palette.OutlinePixels * options.bulletOutlineScale;
+            if (highContrast)
+                outlinePixels = Mathf.Max(outlinePixels, palette.HighContrastOutlinePixels);
+            float inner = Mathf.Clamp01(1f - 2f * (outlinePixels / pixelsPerUnit) / size);
             Layer(fillLayer, sprite, look.Body, inner);
             Layer(coreLayer, sprite, look.Core, inner * palette.CoreScale);
-            if (palette.GlowOpacity > 0f)
+            if (highContrast)
+            {
+                Color halo = palette.HaloColor;
+                halo.a = palette.HaloOpacity;
+                Layer(glowLayer, sprite, halo, palette.HaloScale);
+            }
+            else if (palette.GlowOpacity > 0f)
             {
                 Color glow = look.Body;
                 glow.a = palette.GlowOpacity;

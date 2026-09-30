@@ -325,9 +325,29 @@ namespace BulletHell.EditorTools
             Badge("BadgeL1", panel.transform, "L1", false, 22f);
             Badge("BadgeR1", panel.transform, "R1", true, 22f);
 
-            RectTransform rows = VoxUi.R("Rows", panel.transform);
-            VoxUi.Stretch(rows, 48f, 28f, 48f, 100f);
+            // The rows scroll (the Controls tab lists every remappable button): a masked viewport, the row list inside it, and a component that
+            // keeps the controller-selected row in view.
+            RectTransform viewport = VoxUi.R("Viewport", panel.transform);
+            VoxUi.Stretch(viewport, 48f, 28f, 48f, 100f);
+            viewport.gameObject.AddComponent<RectMask2D>();
+            RectTransform rows = VoxUi.R("Rows", viewport);
+            rows.anchorMin = new Vector2(0f, 1f);
+            rows.anchorMax = new Vector2(1f, 1f);
+            rows.pivot = new Vector2(0.5f, 1f);
+            rows.anchoredPosition = Vector2.zero;
+            rows.sizeDelta = Vector2.zero;
+            rows.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            var scroll = viewport.gameObject.AddComponent<ScrollRect>();
+            scroll.content = rows;
+            scroll.viewport = viewport;
+            scroll.horizontal = false;
+            scroll.vertical = true;
+            scroll.movementType = ScrollRect.MovementType.Clamped;
+            scroll.inertia = false;
+            scroll.scrollSensitivity = 60f;
+            VoxUi.SetRef(viewport.gameObject.AddComponent<ScrollFollowSelection>(), "scroll", scroll);
             var rowsLayout = rows.gameObject.AddComponent<VerticalLayoutGroup>();
+            rowsLayout.padding = new RectOffset(14, 14, 14, 14);   // room for the gold focus ring, which the mask would otherwise clip
             rowsLayout.spacing = 26f;
             rowsLayout.childAlignment = TextAnchor.UpperCenter;
             rowsLayout.childControlWidth = rowsLayout.childControlHeight = true;
