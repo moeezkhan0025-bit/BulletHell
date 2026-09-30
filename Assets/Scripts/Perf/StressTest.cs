@@ -248,7 +248,9 @@ namespace BulletHell.Perf
         private void Finish()
         {
             stage = Stage.Finished;
+            string summary = host.Logger.SummaryJson(label + " " + Application.platform);
             string path = host.Logger.Stop();
+            Debug.Log("PERFSUMMARY " + summary);   // the one line a browser console can read back
             Restore();
             Debug.Log($"StressTest '{label}' finished: {path}");
             if (quitWhenDone)

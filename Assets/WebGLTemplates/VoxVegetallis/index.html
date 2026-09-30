@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no">
+    <title>{{{ PRODUCT_NAME }}}</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <style>
+      html, body { margin: 0; height: 100%; background: #1b1009; overflow: hidden; font-family: Georgia, 'Times New Roman', serif; }
+      /* The game is 16:9. The canvas takes the largest 16:9 box that fits the window (itch.io embeds it in an iframe of any shape). */
+      #unity-container { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+      #unity-canvas { width: min(100vw, calc(100vh * 16 / 9)); height: min(100vh, calc(100vw * 9 / 16)); background: #2e1f14; display: block; }
+      #unity-loading-bar { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; color: #f4eedc; }
+      #unity-title { font-size: clamp(28px, 6vw, 72px); letter-spacing: .08em; color: #e9b63a; text-shadow: 3px 3px 0 #2e1f14, 6px 6px 0 #5e9f3e; margin-bottom: 28px; }
+      #unity-progress-bar-empty { width: min(60vw, 520px); height: 22px; margin: 0 auto; border: 4px solid #2e1f14; border-radius: 14px; background: #6b604e; overflow: hidden; }
+      #unity-progress-bar-full { width: 0%; height: 100%; background: #5e9f3e; transition: width .15s ease-out; }
+      #unity-progress-text { margin-top: 14px; font-size: 18px; color: #e2d6bc; }
+      #unity-warning { position: absolute; left: 50%; top: 5%; transform: translateX(-50%); z-index: 10; }
+      #unity-fullscreen-button { position: absolute; right: 12px; top: 12px; width: 40px; height: 40px; cursor: pointer; opacity: .75;
+        background: url('TemplateData/fullscreen-button.png') no-repeat center / contain; }
+      #unity-fullscreen-button:hover { opacity: 1; }
+    </style>
+  </head>
+  <body>
+    <div id="unity-container">
+      <canvas id="unity-canvas" width="1920" height="1080" tabindex="-1"></canvas>
+      <div id="unity-loading-bar">
+        <div id="unity-title">VOX VEGETALLIS</div>
+        <div id="unity-progress-bar-empty"><div id="unity-progress-bar-full"></div></div>
+        <div id="unity-progress-text">Entering the colosseum...</div>
+      </div>
+      <div id="unity-warning"></div>
+      <div id="unity-fullscreen-button" title="Fullscreen"></div>
+    </div>
+    <script>
+      var canvas = document.querySelector("#unity-canvas");
+
+      function unityShowBanner(msg, type) {
+        var banner = document.querySelector("#unity-warning");
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        banner.appendChild(div);
+        if (type == 'error') div.style = 'background: #d8443a; color: #fff; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: #f4ce4a; padding: 10px;';
+          setTimeout(function () { if (div.parentNode) banner.removeChild(div); }, 5000);
+        }
+      }
+
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}";
+      var config = {
+        arguments: [],
+        dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}",
+        frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}",
+#if USE_THREADS
+        workerUrl: buildUrl + "/{{{ WORKER_FILENAME }}}",
+#endif
+#if USE_WASM
+        codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}",
+#endif
+#if MEMORY_FILENAME
+        memoryUrl: buildUrl + "/{{{ MEMORY_FILENAME }}}",
+#endif
+#if SYMBOLS_FILENAME
+        symbolsUrl: buildUrl + "/{{{ SYMBOLS_FILENAME }}}",
+#endif
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: {{{ JSON.stringify(COMPANY_NAME) }}},
+        productName: {{{ JSON.stringify(PRODUCT_NAME) }}},
+        productVersion: {{{ JSON.stringify(PRODUCT_VERSION) }}},
+        showBanner: unityShowBanner,
+        // Settings, the profile, the run save and the playtest log are files under Application.persistentDataPath.
+        // Without this line the browser forgets them when the tab closes (the default template leaves it off).
+        autoSyncPersistentDataPath: true,
+        matchWebGLToCanvasSize: true,
+      };
+
+      // Phones and tablets: the game is landscape only, so fill the screen.
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        document.querySelector("#unity-canvas").style.width = "100vw";
+        document.querySelector("#unity-canvas").style.height = "100vh";
+      }
+
+      var progressText = document.querySelector("#unity-progress-text");
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = function () {
+        window.voxLoadStart = performance.now();
+        createUnityInstance(canvas, config, function (progress) {
+          document.querySelector("#unity-progress-bar-full").style.width = (100 * progress) + "%";
+          progressText.textContent = progress < 0.9 ? "Downloading " + Math.round(100 * progress / 0.9) + "%" : "Starting...";
+        }).then(function (unityInstance) {
+          window.voxUnity = unityInstance;
+          window.voxLoadedMs = performance.now();   // time from page start to the first frame of the game
+          document.querySelector("#unity-loading-bar").style.display = "none";
+          document.querySelector("#unity-fullscreen-button").onclick = function () { unityInstance.SetFullscreen(1); };
+        }).catch(function (message) { alert(message); });
+      };
+      document.body.appendChild(script);
+    </script>
+  </body>
+</html>

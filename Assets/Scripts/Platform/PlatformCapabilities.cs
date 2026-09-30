@@ -32,6 +32,7 @@ namespace BulletHell.Platform
             {
                 switch (Application.platform)
                 {
+                    case RuntimePlatform.WebGLPlayer:      // a browser tab cannot be closed by the page
                     case RuntimePlatform.IPhonePlayer:
                     case RuntimePlatform.Switch:
                     case RuntimePlatform.GameCoreXboxOne:

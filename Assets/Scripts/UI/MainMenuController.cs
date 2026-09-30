@@ -22,6 +22,8 @@ namespace BulletHell.UI
         [SerializeField] private Button settingsButton;
         [SerializeField] private Button quitButton;
         [SerializeField] private TMP_Text messageText;
+        [Tooltip("Bottom-right version line; filled at run time from the build number (BuildInfo).")]
+        [SerializeField] private TMP_Text versionLabel;
         [Tooltip("Optional: the button prompt line at the bottom.")]
         [SerializeField] private TMP_Text hintLabel;
         [Header("Confirmation")]
@@ -48,6 +50,8 @@ namespace BulletHell.UI
             Time.timeScale = 1f;
             messageText.text = "";
             BulletHell.Core.GameServices.Ensure().Audio.PlayMusic(BulletHell.Audio.MusicContext.Menu);
+            if (versionLabel != null)
+                versionLabel.text = BulletHell.Core.BuildInfo.Display;
             ShowMenu();
         }
 

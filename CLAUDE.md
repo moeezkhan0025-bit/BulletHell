@@ -167,6 +167,12 @@ Boot scene (bootstrapper) -> Main Menu scene -> Game scene.
 - Exactly ONE run save (single slot), JSON, written through ISaveSystem (platform save APIs plug in later).
 - Separate from the run save: a settings file and a profile file (chosen cosmetics, unlocks, onboarding finished). These are
   never deleted by Game Over or New Game.
+- Builds (D6, `Assets/Editor/BuildMenu.cs`, menu BulletHell/Build): Windows, WebGL (release, zipped for itch.io) and WebGL development (needed for the stress test), or Windows + WebGL in one go. Every
+  successful run bumps the build number: the version is major.minor.build from `BuildVersion.json` (project root), written to Player Settings and shown bottom-right in the
+  Main Menu ("v1.0.4", plus " dev" and " web"; `BuildInfo`). Output goes to `Builds/<Platform>/<version>`, each build is logged in `Builds/build_log.csv`; a failed build does not use
+  up a number. WebGL uses the custom template `Assets/WebGLTemplates/VoxVegetallis` (responsive 16:9 canvas, persistent saves via `autoSyncPersistentDataPath`, loading bar).
+  Needs the Unity WebGL module (`unity editor module add 6000.3.25f1 -m webgl`; restart the Editor after installing it). The browser verdict and numbers are in `Docs/WEBGL_REPORT.md`;
+  the Chrome test tool is `Tools/WebTest/WebTest.cs`. The Quit button is hidden on WebGL.
 - Audio (`Scripts/Audio`, `AudioService` on GameServices, data in `Data/Audio`, clips in `Assets/Audio`; all placeholder sounds are CC0 and logged in Docs/CREDITS.md):
   gameplay and UI only call `Audio.Play(SfxId)` / `Audio.PlayMusic(MusicContext)`; clips, volumes, pitch ranges and limits are `SfxData` assets and the
   `AudioLibrary` on GameConfig (no sound is named in code). Sound effects play through a fixed pool of pre-built AudioSources (size on the library), and each cue
@@ -423,6 +429,7 @@ PlayStation names below; Xbox = RB / RT / LS click / A B X Y, Switch = R / ZR / 
 Assets/
   Art/ (Player, Arms, Placeholder, UI/VoxKit, UI/Backdrop)
   Audio/ (Music, Sfx, Stingers, VoxMixer.mixer)
+  WebGLTemplates/ (VoxVegetallis: the browser page)
   Fonts/ (Cinzel Decorative, Lilita One, Nunito: TTFs, TMP SDF font assets, OFL texts)
   TextMesh Pro/ (Unity's TMP Essential Resources)
   Data/ (Arms, Loadouts, Ammo, Armaments, Pickups, Shop, Cosmetics, Arenas, Traps, Settings, Enemies, Waves, Bosses, Input)
@@ -546,7 +553,7 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
       volumes, CC0 placeholder sounds logged in Docs/CREDITS.md.
 - [x] D5 Settings completion (done 2026-09-30; shots in Captures/d5): Video (resolution, fullscreen/windowed, VSync), Controls (button remapping via the Input System, arm-select
       sensitivity), Gameplay and accessibility (screen shake intensity, bullet outline thickness, high-contrast bullets, HUD scale).
-- [ ] D6 Build pipeline: Windows and WebGL builds from one editor menu with version numbers, plus a WebGL test report (controller, saving, audio,
+- [x] D6 Build pipeline (done 2026-09-30; report Docs/WEBGL_REPORT.md, shots Captures/d6): Windows and WebGL builds from one editor menu with version numbers, plus a WebGL test report (controller, saving, audio,
       performance) and a verdict on an itch.io browser demo.
 - [ ] M11 Themed UI/visual pass: candy-colosseum style for menus, HUD, Shop, Armory, customization; final art.
 - [ ] M12 Polish: touch controls (incl. jump button), button glyphs, juice, announcer/audio, performance pass

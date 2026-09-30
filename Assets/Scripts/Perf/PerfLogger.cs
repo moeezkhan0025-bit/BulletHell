@@ -163,6 +163,42 @@ namespace BulletHell.Perf
             frames++;
         }
 
+        /// <summary>One line of JSON with the run's frame-time statistics (after a 5 s warm-up), for builds where the CSV cannot be read back (WebGL).</summary>
+        public string SummaryJson(string notes)
+        {
+            var times = new List<float>(frames);
+            for (int f = 0; f < frames; f++)
+            {
+                int o = f * columns;
+                if (rows[o + 1] >= 5f)
+                    times.Add(rows[o + 2]);
+            }
+            if (times.Count == 0)
+                return "{\"frames\":0}";
+            float sum = 0f, max = 0f;
+            int over33 = 0, over50 = 0, over100 = 0;
+            foreach (float ms in times)
+            {
+                sum += ms;
+                max = Mathf.Max(max, ms);
+                if (ms > 33.4f) over33++;
+                if (ms > 50f) over50++;
+                if (ms > 100f) over100++;
+            }
+            times.Sort();
+            float avg = sum / times.Count;
+            float P(float q) => times[Mathf.Min(times.Count - 1, (int)(q * times.Count))];
+            return "{\"frames\":" + times.Count + ",\"seconds\":" + (sum / 1000f).ToString("0.0", CultureInfo.InvariantCulture)
+                   + ",\"avgFps\":" + (1000f / avg).ToString("0.0", CultureInfo.InvariantCulture)
+                   + ",\"avgMs\":" + avg.ToString("0.00", CultureInfo.InvariantCulture)
+                   + ",\"p50Ms\":" + P(0.5f).ToString("0.00", CultureInfo.InvariantCulture)
+                   + ",\"p95Ms\":" + P(0.95f).ToString("0.00", CultureInfo.InvariantCulture)
+                   + ",\"p99Ms\":" + P(0.99f).ToString("0.00", CultureInfo.InvariantCulture)
+                   + ",\"maxMs\":" + max.ToString("0.0", CultureInfo.InvariantCulture)
+                   + ",\"over33ms\":" + over33 + ",\"over50ms\":" + over50 + ",\"over100ms\":" + over100
+                   + ",\"notes\":\"" + notes + "\"}";
+        }
+
         private static float NanosToMs(ProfilerRecorder recorder) => recorder.Valid ? recorder.LastValue * 1e-6f : 0f;
 
         /// <summary>Stops and writes `PerfLogs/&lt;label&gt;_&lt;time&gt;.csv` and `..._meta.txt` into the persistent data folder. Returns the CSV path.</summary>

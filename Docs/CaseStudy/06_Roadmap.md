@@ -19,7 +19,7 @@ Priority key (suggestion): P1 = blocks the next milestone or the vertical slice;
 | D3 Playtest telemetry + balance tools | `[x]` (2026-09-30) | "local-only CSV per run ... and a debug summary screen" | demo track |
 | D4 Audio | `[x]` (2026-09-30) | "music per context with crossfades, SFX ..., mixer groups tied to Settings volumes, CC0 placeholder sounds logged in Docs/CREDITS.md" | demo track |
 | D5 Settings completion | `[x]` (2026-09-30) | "Video ..., Controls (button remapping via the Input System ...), Gameplay and accessibility ..." | demo track |
-| D6 Build pipeline | `[ ]` | "Windows and WebGL builds from one editor menu ..., WebGL test report ..., verdict on an itch.io browser demo" | demo track |
+| D6 Build pipeline | `[x]` (2026-09-30) | "Windows and WebGL builds from one editor menu ..., WebGL test report ..., verdict on an itch.io browser demo" | demo track |
 | M12 Polish | `[ ]` | "touch controls (incl. jump button), button glyphs, juice, announcer/audio, performance pass" | P2 to P3 |
 
 ## 2. Open design questions: every `[TBD]` in CLAUDE.md

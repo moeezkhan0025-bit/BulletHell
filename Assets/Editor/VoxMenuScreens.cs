@@ -591,12 +591,13 @@ namespace BulletHell.EditorTools
                     Object.DestroyImmediate(t.gameObject);
             }
             TMP_Text hint = VoxUi.HintPill("Hint", title, 36f, 28f, 420f, 62f);
-            TMP_Text version = VoxUi.Txt("Version", title, "v" + Application.version, 26, TextFont.BodyBold, TextTone.OnDark, TextAlignmentOptions.Right);
+            TMP_Text version = VoxUi.Txt("Version", title, BulletHell.Core.BuildInfo.Display, 26, TextFont.BodyBold, TextTone.OnDark, TextAlignmentOptions.Right);
             VoxUi.BottomRight(version.rectTransform, 36f, 34f, 300f, 40f);
 
             VoxUi.SetRef(controller, "title", title.gameObject);
             VoxUi.SetRef(controller, "messageText", message);
             VoxUi.SetRef(controller, "hintLabel", hint);
+            VoxUi.SetRef(controller, "versionLabel", version);
 
             // --- sub screens
             var settings = Object.FindFirstObjectByType<SettingsScreen>(FindObjectsInactive.Include);

@@ -20,6 +20,7 @@ Screenshots of the built screens: `Docs/Screenshots/VoxUI` (1920x1080). Mockups:
 - **Character Creation:** the preview keeps the eight placeholder arms around the doll (mock: one arm); the front arms overlap the Randomize button. A Main Menu button sits under the title (mock has only the hint). The spotlight is a soft glow (the kit's arch sprite at 75%).
 - **Settings:** (slider click-by-position fixed in D1); the Video tab only exists on PC (hidden elsewhere, like the settings it holds; D5 added VSync to it); the rows scroll inside a masked list since D5 (the Controls tab lists every button); a Back button sits top-left (mock has only the hint). The "Changes apply instantly" note is a fixed text.
 - **Fonts:** static atlases (no runtime glyph adding); arrows and other missing glyphs fall back to Liberation Sans. Nunito's static 600 / 800 come from the `@expo-google-fonts/nunito` package (the Google Fonts repo only has the variable font).
+- **WebGL (from D6, see Docs/WEBGL_REPORT.md):** the heaviest stress test (80 enemies + Pumpking + 8 arms) runs at about 22 fps in a browser (development build; Windows about 165 fps). A real DualSense in Chrome and a Continue across a reload were not tested by hand. Esc leaves browser fullscreen. No audio until the first click (browser rule).
 - **Old setup scripts:** `M4Setup..M9dSetup`, `Cc1Setup`, `M75Setup` still contain the old skeleton screen builders (TMP-converted but the old look). The screens are now built by `BulletHell/Vox/5..9`; do not re-run the old screen builders.
 - **Retired art in docs:** `Docs/Screenshots/UI1` and `UI1/theme_sheet.png` still show the removed Mega Cozy pack. Delete the folder when convenient.
 
@@ -69,6 +70,13 @@ Screenshots of the built screens: `Docs/Screenshots/VoxUI` (1920x1080). Mockups:
 
 ## Fixed
 <!-- Claude moves entries here with a one-line note of the cause and the fix -->
+### WebGL: settings, profile and saves were forgotten on reload (found in D6)
+- **Steps:** WebGL build on Unity's default page; change Master Volume, close Settings, reload the page
+- **Expected:** the value is still there
+- **Actual:** settings.json stayed in the in-memory file system and never reached IndexedDB
+- **Severity:** major for a browser demo
+- **Fixed (2026-09-30, D6):** the default template leaves `autoSyncPersistentDataPath` off. The custom template `Assets/WebGLTemplates/VoxVegetallis` turns it on; checked by reloading (the saved volume came back). Also on the WebGL list: the Quit button is hidden (a page cannot quit), and `PerfArgs` reads its switches from the page URL.
+
 ### D1 UI polish (HUD, Settings, Round Results, Pause, Game Over, banners, boss bar)
 - **Steps:** capture each screen at 1920x1080, 2560x1440 and 2340x1080 (phone landscape) with long names and 5-digit numbers (`VoxD1Shots`, before/after in `Captures/`)
 - **Fixed (2026-09-30, D1):** (1) round pill: "ROUND 12" collided with the divider and the coin pill cut off "99,999 +12,345": pills are wider and their text autosizes (`VoxUi.Fit`), earnings use thousands separators. (2) Boss name plate: a long name wrapped to two lines over the round pill and the bar: one line, autosized, ellipsis. (3) The HUD (hearts, heat, ammo, pills) and the boss bar stayed on screen under Pause and Settings-from-Pause, so the prompt pill and "Changes apply instantly" sat on top of them: `CombatHud` hides in Pause, `RunHud` only shows in RoundIntro and Combat, `BossHealthBar` steps aside while paused and returns on resume. (4) Flow panel prompt pills (Round Results, Pause, Game Over) were an older fixed-width pill with the text off-centre: rebuilt with the self-sizing pill, and `PromptHint` rebuilds the layout when the text changes. (5) Settings sliders only stepped: pressing or dragging on the track now sets the value by position (`SettingRow` `IPointerDown/Drag`, snapped to the setting's step; a click that set a value does not also step it). (6) In-game scrims: Settings over the paused arena dims to 0.8 (was 0.55) and the flow panels to 0.7 so the title and rows read. (7) Motion timings: screen transition, round banner pop and wave banner pop now read the theme (manifest: fade/slide 0.2 s, pop 0.25 s) instead of their own constants.
