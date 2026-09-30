@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69f04414deff6764cb026332c2603520, type: 3}
+  m_Name: Sfx_UiBuy
+  m_EditorClassIdentifier: BulletHell::BulletHell.Audio.SfxData
+  clips:
+  - {fileID: 8300000, guid: 574ed6a1bce6cc645a3ee2bde348e921, type: 3}
+  volume: 0.7
+  pitchRange: {x: 1, y: 1}
+  bus: 1
+  maxVoices: 2
+  minInterval: 0.1
+  priority: 2
+  duckMusicTo: 1
+  duckSeconds: 1.5

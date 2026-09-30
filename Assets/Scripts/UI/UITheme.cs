@@ -182,7 +182,7 @@ namespace BulletHell.UI
         [SerializeField] private Color textOnLight = new Color(0.18f, 0.12f, 0.078f);
         [SerializeField] private Color textOnDark = new Color(0.957f, 0.933f, 0.863f);
 
-        [Header("Sounds (empty until audio exists)")]
+        [Header("Sound overrides (empty = the AudioLibrary sound plays)")]
         [SerializeField] private AudioClip focusSound;
         [SerializeField] private AudioClip submitSound;
         [SerializeField] private AudioClip cancelSound;

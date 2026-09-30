@@ -1,3 +1,4 @@
+using BulletHell.Core;
 using BulletHell.Input;
 using BulletHell.Player;
 using BulletHell.Weapons;
@@ -58,7 +59,10 @@ namespace BulletHell.Pickups
             {
                 float sqr = ((Vector2)pickup.transform.position - position).sqrMagnitude;
                 if (sqr <= tuning.PickupRadius * tuning.PickupRadius && slots.TryAutoFill(pickup.Ammo))
+                {
                     pickup.Consume();
+                    GameServices.Ensure().Audio.Play(BulletHell.Audio.SfxId.PickupAmmo);
+                }
                 ResetHold(AnyHeld());
                 return;
             }
@@ -92,6 +96,7 @@ namespace BulletHell.Pickups
 
             AmmoTypeData replaced = slots.Replace(holdSlot, pickup.Ammo);
             pickup.Consume();
+            GameServices.Ensure().Audio.Play(BulletHell.Audio.SfxId.PickupAmmo);
             Drop(replaced);
             NearPickup = null;
             needRelease = true; // don't chain into swapping the ammo we just dropped

@@ -17,6 +17,7 @@ MonoBehaviour:
   projectileSprite: {fileID: 21300000, guid: 6b794c9ce314a7a4fbe9cab037811ec0, type: 3}
   icon: {fileID: 21300000, guid: cfc0d57d3bf800d4aa55dd7fd8fdff2a, type: 3}
   tint: {r: 0.3, g: 0.9, b: 1, a: 1}
+  fireSound: {fileID: 11400000, guid: 899dcfc28cce88a44b7f57ce90b176a5, type: 2}
   behavior: 1
   maxLifetime: 6
   damageMultiplier: 0.6

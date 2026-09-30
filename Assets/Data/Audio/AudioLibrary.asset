@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22aa3b00ea62ff341b0a4dc6754c6091, type: 3}
+  m_Name: AudioLibrary
+  m_EditorClassIdentifier: BulletHell::BulletHell.Audio.AudioLibrary
+  mixer: {fileID: 24100000, guid: 14fcd92ed7e9f3946a04f9f61b33787c, type: 2}
+  musicGroup: {fileID: -3468012804917547877, guid: 14fcd92ed7e9f3946a04f9f61b33787c, type: 2}
+  sfxGroup: {fileID: -1802635490566308942, guid: 14fcd92ed7e9f3946a04f9f61b33787c, type: 2}
+  uiGroup: {fileID: -371876333047415953, guid: 14fcd92ed7e9f3946a04f9f61b33787c, type: 2}
+  announcerGroup: {fileID: 3176945282339241729, guid: 14fcd92ed7e9f3946a04f9f61b33787c, type: 2}
+  sfx:
+  - Id: 1
+    Data: {fileID: 11400000, guid: 136d69f7630071e419520f337bf07e8d, type: 2}
+  - Id: 2
+    Data: {fileID: 11400000, guid: 2a38c816dcd7ac64f8da02e29dc6004e, type: 2}
+  - Id: 3
+    Data: {fileID: 11400000, guid: 27b40b95d2262e04a8fb02ae1ad4e987, type: 2}
+  - Id: 4
+    Data: {fileID: 11400000, guid: efb2d232e03d1474d88969eaf9714d92, type: 2}
+  - Id: 5
+    Data: {fileID: 11400000, guid: 8a8502d5a175ff04fa69efb686d3ada1, type: 2}
+  - Id: 6
+    Data: {fileID: 11400000, guid: a062ff2b90aa8de40b0af2ae46733b6a, type: 2}
+  - Id: 7
+    Data: {fileID: 11400000, guid: 75b3ca9a1421ce946ac5df5f43c0db3c, type: 2}
+  - Id: 8
+    Data: {fileID: 11400000, guid: b758210a91e802d4d9d78e8b36b9243a, type: 2}
+  - Id: 9
+    Data: {fileID: 11400000, guid: bed12c51e70e40742820bd3d6008210f, type: 2}
+  - Id: 10
+    Data: {fileID: 11400000, guid: d2ca2d9478f544c43828d2b8a2063707, type: 2}
+  - Id: 11
+    Data: {fileID: 11400000, guid: 9e283c1b8de688a4b95234936085f2bd, type: 2}
+  - Id: 12
+    Data: {fileID: 11400000, guid: 0436503064d11f24c92abdce16e1606e, type: 2}
+  - Id: 13
+    Data: {fileID: 11400000, guid: 097b1af64ab61a647a15d4675f6e530b, type: 2}
+  - Id: 14
+    Data: {fileID: 11400000, guid: 15fec7a34ee11bc4baf9d9ae3b00967d, type: 2}
+  - Id: 15
+    Data: {fileID: 11400000, guid: 77bd5398a40348b43b383fe0752ea76e, type: 2}
+  - Id: 16
+    Data: {fileID: 11400000, guid: 7755189a5de0a884dafc582d0db59740, type: 2}
+  - Id: 17
+    Data: {fileID: 11400000, guid: 07ed541864274994b9e98ef7360e66ea, type: 2}
+  - Id: 18
+    Data: {fileID: 11400000, guid: 5ccc997d827c68e45a8da3c5c685ce85, type: 2}
+  - Id: 19
+    Data: {fileID: 11400000, guid: 738d7b104db64aa4baad3088795e3785, type: 2}
+  music:
+  - Context: 1
+    Clips:
+    - {fileID: 8300000, guid: eef4052f86fd7fe44bbc97444b274298, type: 3}
+    Volume: 0.6
+  - Context: 2
+    Clips:
+    - {fileID: 8300000, guid: 52a20c78ecac96844aab306b5dba4240, type: 3}
+    - {fileID: 8300000, guid: 540b751620dff1d49bf3c24257c0c9c4, type: 3}
+    Volume: 0.55
+  - Context: 3
+    Clips:
+    - {fileID: 8300000, guid: 0e9dc41b739a87748adf596807795e11, type: 3}
+    Volume: 0.6
+  - Context: 4
+    Clips:
+    - {fileID: 8300000, guid: 9d3f6efb1e41a4c429e3427a7ba8512b, type: 3}
+    Volume: 0.5
+  crossfadeSeconds: 1.5
+  voicePool: 24
+  pausedMusicVolume: 0.35

@@ -1,4 +1,5 @@
 using System.IO;
+using BulletHell.Audio;
 using BulletHell.Cosmetics;
 using BulletHell.Save;
 using BulletHell.Settings;
@@ -23,6 +24,8 @@ namespace BulletHell.Core
         public RunManager Run { get; private set; }
         public SceneLoader Scenes { get; private set; }
         public AudioService Audio { get; private set; }
+        /// <summary>Music per part of the game and the round / boss / game over stingers, driven by the run state.</summary>
+        public AudioDirector Director { get; private set; }
         /// <summary>Local-only playtest log (one CSV row per finished run).</summary>
         public TelemetryService Telemetry { get; private set; }
 
@@ -56,6 +59,8 @@ namespace BulletHell.Core
             Run = new RunManager(config, Save);
             Scenes = new SceneLoader();
             Audio = new AudioService();
+            Audio.Initialize(config.AudioLibrary, gameObject);
+            Director = new AudioDirector(Audio, Run, config);
 
             SettingsDefaults defaults = config.SettingsDefaults != null
                 ? config.SettingsDefaults
@@ -79,6 +84,10 @@ namespace BulletHell.Core
             Telemetry?.FlushOnQuit();
         }
 
-        private void OnDestroy() => Telemetry?.Dispose();
+        private void OnDestroy()
+        {
+            Telemetry?.Dispose();
+            Director?.Dispose();
+        }
     }
 }

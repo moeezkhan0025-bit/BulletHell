@@ -74,12 +74,14 @@ namespace BulletHell.Enemies
             TryGetComponent(out attacker);
             TryGetComponent(out deathSequence);
             health.Died += OnDied;
+            health.Damaged += OnDamaged;
         }
 
         private void OnDestroy()
         {
             if (health != null)
                 health.Died -= OnDied;
+                health.Damaged -= OnDamaged;
         }
 
         // Recycled into the pool (round change, death): leave the navigation registry and stop the AI.
@@ -189,8 +191,11 @@ namespace BulletHell.Enemies
             }
         }
 
+        private void OnDamaged(float applied) => GameServices.Ensure().Audio.Play(BulletHell.Audio.SfxId.EnemyHit);
+
         private void OnDied()
         {
+            GameServices.Ensure().Audio.Play(BulletHell.Audio.SfxId.EnemyDeath);
             telegraph.ClearWindup();
             if (status != null)
                 status.Clear();

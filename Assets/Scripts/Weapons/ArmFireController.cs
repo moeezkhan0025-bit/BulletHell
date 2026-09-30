@@ -159,6 +159,7 @@ namespace BulletHell.Weapons
         // aimAngle: world angle to fire at; without it the shot follows the arm facing (a normal, selected shot).
         private void Fire(ArmVisual arm, AmmoTypeData ammo, float? aimAngle = null)
         {
+            GameServices.Ensure().Audio.Play(ammo.FireSound);
             WeaponArmData data = arm.Data;
             Vector2 origin = arms.GroundMuzzle(arm); // bullets live on the ground plane; the arm is drawn above it
             Vector3 facing = arm.transform.right;
@@ -184,6 +185,7 @@ namespace BulletHell.Weapons
 
         private void FireBeam(int slot, ArmVisual arm, AmmoTypeData ammo, float dt)
         {
+            GameServices.Ensure().Audio.Play(ammo.FireSound);   // every frame the beam is on; the sound's own minimum interval paces it
             Vector2 origin = arms.GroundMuzzle(arm);
             Vector2 direction = arm.transform.right;
             Vector2 end = origin + direction * ammo.BeamRange;

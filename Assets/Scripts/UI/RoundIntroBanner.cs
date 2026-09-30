@@ -117,6 +117,7 @@ namespace BulletHell.UI
         private void ShowNumber()
         {
             label.text = number.ToString();
+            GameServices.Ensure().Audio.Play(BulletHell.Audio.SfxId.Countdown);
             timeLeft = tuning.CountdownStepSeconds;
             PopIn(1.6f); // each number punches in big and settles
         }
@@ -124,6 +125,7 @@ namespace BulletHell.UI
         private void StartBegin()
         {
             label.text = "BEGIN!";
+            GameServices.Ensure().Audio.Play(BulletHell.Audio.SfxId.CountdownGo);
             phase = Phase.Begin;
             timeLeft = tuning.BeginSeconds;
             run.BeginCombat();

@@ -117,6 +117,7 @@ namespace BulletHell.Player
             squashFrom = tuning.TakeoffSquash;
             squashSeconds = tuning.TakeoffSquashSeconds;
             squashElapsed = 0f;
+            GameServices.Ensure().Audio.Play(BulletHell.Audio.SfxId.Jump);
             Jumped?.Invoke();
         }
 
@@ -147,6 +148,7 @@ namespace BulletHell.Player
             squashFrom = tuning.LandingSquash;
             squashSeconds = tuning.LandingSquashSeconds;
             squashElapsed = 0f;
+            GameServices.Ensure().Audio.Play(BulletHell.Audio.SfxId.Land);
             Landed?.Invoke(landed);
         }
 

@@ -16,6 +16,8 @@ MonoBehaviour:
   saveFileName: run_save.json
   settingsFileName: settings.json
   profileFileName: profile.json
+  telemetryFileName: playtest_runs.csv
+  audioLibrary: {fileID: 11400000, guid: 1ecd849fb71d6684783b3167d45bbd89, type: 2}
   settingsDefaults: {fileID: 11400000, guid: b00634beca03da943bb60a91d85cc4ca, type: 2}
   newRunLoadout: {fileID: 11400000, guid: 43b9ca098e138b24bb5e06a0eb8de85c, type: 2}
   startingAmmo:

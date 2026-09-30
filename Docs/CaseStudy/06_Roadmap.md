@@ -17,7 +17,7 @@ Priority key (suggestion): P1 = blocks the next milestone or the vertical slice;
 | D1 UI polish | `[x]` (2026-09-30) | "spacing, alignment, text overflow (long names, 5-digit numbers), focus states, motion timings from the VoxKit manifest, layouts at 1920x1080, 2560x1440 and a phone resolution" | demo track |
 | D2 Onboarding | `[x]` (2026-09-30) | "skippable, action-driven control prompts in round 1 ... completion saved in the profile, replay option in Settings" | demo track |
 | D3 Playtest telemetry + balance tools | `[x]` (2026-09-30) | "local-only CSV per run ... and a debug summary screen" | demo track |
-| D4 Audio | `[ ]` | "music per context with crossfades, SFX ..., mixer groups tied to Settings volumes, CC0 placeholder sounds logged in Docs/CREDITS.md" | demo track |
+| D4 Audio | `[x]` (2026-09-30) | "music per context with crossfades, SFX ..., mixer groups tied to Settings volumes, CC0 placeholder sounds logged in Docs/CREDITS.md" | demo track |
 | D5 Settings completion | `[ ]` | "Video ..., Controls (button remapping via the Input System ...), Gameplay and accessibility ..." | demo track |
 | D6 Build pipeline | `[ ]` | "Windows and WebGL builds from one editor menu ..., WebGL test report ..., verdict on an itch.io browser demo" | demo track |
 | M12 Polish | `[ ]` | "touch controls (incl. jump button), button glyphs, juice, announcer/audio, performance pass" | P2 to P3 |

@@ -22,6 +22,9 @@ namespace BulletHell.Weapons
         [Tooltip("Colour of the pickup and of the laser beam.")]
         [SerializeField] private Color tint = Color.white;
 
+        [Tooltip("Played when this ammo fires (limits on simultaneous copies live on the SfxData). Empty = silent.")]
+        [SerializeField] private BulletHell.Audio.SfxData fireSound;
+
         [Header("Behaviour")]
         [SerializeField] private AmmoBehavior behavior = AmmoBehavior.Projectile;
         [Tooltip("Safety net: a projectile that somehow never leaves the screen is released after this long.")]
@@ -59,6 +62,7 @@ namespace BulletHell.Weapons
 
         public string Id => id;
         public string DisplayName => displayName;
+        public BulletHell.Audio.SfxData FireSound => fireSound;
         public Sprite ProjectileSprite => projectileSprite;
         public Sprite Icon => icon;
         public Color Tint => tint;

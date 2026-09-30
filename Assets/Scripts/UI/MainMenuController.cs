@@ -47,6 +47,7 @@ namespace BulletHell.UI
         {
             Time.timeScale = 1f;
             messageText.text = "";
+            BulletHell.Core.GameServices.Ensure().Audio.PlayMusic(BulletHell.Audio.MusicContext.Menu);
             ShowMenu();
         }
 

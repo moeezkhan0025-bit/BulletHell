@@ -8,11 +8,10 @@ namespace BulletHell.UI
 
     /// <summary>
     /// Plays UI sounds. Focus, confirm (buttons) and back (Circle) are automatic through the shared components; the Shop and
-    /// Armory call Buy / Equip / Error. Everything is a no-op until clips exist, but the hooks and counters are live.
+    /// Armory call Buy / Equip / Error. The sounds come from the AudioLibrary (UI bus); a clip on the UITheme overrides one.
     /// </summary>
     public static class UiSound
     {
-        private static AudioSource source;
         private static float lastFocusTime = -1f;
 
         /// <summary>The last sound requested, whether or not a clip is assigned (for tests and the debug overlay).</summary>
@@ -22,10 +21,23 @@ namespace BulletHell.UI
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Reset()
         {
-            source = null;
             Last = null;
             RequestCount = 0;
             lastFocusTime = -1f;
+        }
+
+        /// <summary>The library sound of each UI event.</summary>
+        public static BulletHell.Audio.SfxId SfxFor(UiSoundKind kind)
+        {
+            switch (kind)
+            {
+                case UiSoundKind.Focus: return BulletHell.Audio.SfxId.UiFocus;
+                case UiSoundKind.Confirm: return BulletHell.Audio.SfxId.UiConfirm;
+                case UiSoundKind.Back: return BulletHell.Audio.SfxId.UiBack;
+                case UiSoundKind.Buy: return BulletHell.Audio.SfxId.UiBuy;
+                case UiSoundKind.Equip: return BulletHell.Audio.SfxId.UiEquip;
+                default: return BulletHell.Audio.SfxId.UiError;
+            }
         }
 
         public static void Play(UiSoundKind kind)
@@ -41,20 +53,17 @@ namespace BulletHell.UI
             Last = kind;
             RequestCount++;
 
-            UITheme theme = UITheme.Current;
-            AudioClip clip = theme != null ? theme.GetSound(kind) : null;
-            if (clip == null || !Application.isPlaying)
+            if (!Application.isPlaying)
                 return;
 
-            if (source == null)
-            {
-                var go = new GameObject("UiSound");
-                Object.DontDestroyOnLoad(go);
-                source = go.AddComponent<AudioSource>();
-                source.playOnAwake = false;
-                source.spatialBlend = 0f;
-            }
-            source.PlayOneShot(clip, GameServices.Ensure().Audio.SfxVolume);
+            // A clip assigned on the UITheme overrides the library sound (the look can ship its own); both go through the pooled, limited voices.
+            AudioService audio = GameServices.Ensure().Audio;
+            UITheme theme = UITheme.Current;
+            AudioClip clip = theme != null ? theme.GetSound(kind) : null;
+            if (clip != null)
+                audio.PlayClip(clip, BulletHell.Audio.AudioBus.Ui);
+            else
+                audio.Play(SfxFor(kind));
         }
     }
 }

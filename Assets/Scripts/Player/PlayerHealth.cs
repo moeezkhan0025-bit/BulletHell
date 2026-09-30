@@ -92,6 +92,7 @@ namespace BulletHell.Player
             if (hitFeedback != null && travelDirection != Vector2.zero)
                 hitFeedback.OnHitFrom(travelDirection);
             TelemetryEvents.RaisePlayerDamaged(damage, source);   // before the damage lands, so the death knows what killed it
+            GameServices.Ensure().Audio.Play(BulletHell.Audio.SfxId.PlayerHit);
             if (DebugGodMode && health.Current <= damage)
                 health.Revive();
             health.TakeDamage(damage);

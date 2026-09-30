@@ -158,6 +158,16 @@ Boot scene (bootstrapper) -> Main Menu scene -> Game scene.
 - Exactly ONE run save (single slot), JSON, written through ISaveSystem (platform save APIs plug in later).
 - Separate from the run save: a settings file and a profile file (chosen cosmetics, unlocks, onboarding finished). These are
   never deleted by Game Over or New Game.
+- Audio (`Scripts/Audio`, `AudioService` on GameServices, data in `Data/Audio`, clips in `Assets/Audio`; all placeholder sounds are CC0 and logged in Docs/CREDITS.md):
+  gameplay and UI only call `Audio.Play(SfxId)` / `Audio.PlayMusic(MusicContext)`; clips, volumes, pitch ranges and limits are `SfxData` assets and the
+  `AudioLibrary` on GameConfig (no sound is named in code). Sound effects play through a fixed pool of pre-built AudioSources (size on the library), and each cue
+  limits itself: at most N copies at once (the oldest is cut only if it has played >= 0.06 s, else the new one is dropped), a minimum repeat interval, and a
+  priority for stealing a busy voice. Music: Menu, Combat (a track per round, wrapping), Boss, Shop (Round Results, Shop, Armory) crossfade over 1.5 s on two
+  sources (`AudioDirector` decides from the run state; the Main Menu asks for its own track); music quietens while paused and ducks under the stingers
+  (round intro, boss intro, round cleared, game over) and the countdown sounds. Ammo types carry their own fire sound (`AmmoTypeData.FireSound`: Basic, Shotgun,
+  Laser beam tick, Gatling); also enemy hit / death, player damage, jump, landing, ammo and coin pickups, and the UI focus / confirm / back / buy / equip / error
+  sounds (a clip on the UITheme still overrides the library sound). The mixer `Assets/Audio/VoxMixer.mixer` has Master > Music, Sfx > (Ui, Announcer); the Settings
+  sliders set its exposed `MasterVolume` / `MusicVolume` / `SfxVolume` in dB (no mixer = they scale the AudioListener). Rebuild with `BulletHell/D4/Build Audio`.
 - Playtest telemetry (local only, no network; `Scripts/Telemetry`): when a run ends (the player dies, or leaves it / closes the game) one row is appended to
   `playtest_runs.csv` in the save folder (`%USERPROFILE%AppDataocallowdefaultcompanyvoxvegetallis`, name on gameconfig). columns: run id, start/end time, build
   (editor/dev/release), continued, debug_used, result (died/quit), cause of death (what hit last: "tomato (contact)", "enemy bullet", "pumpking smash",
@@ -403,12 +413,13 @@ PlayStation names below; Xbox = RB / RT / LS click / A B X Y, Switch = R / ZR / 
 ## Folder layout
 Assets/
   Art/ (Player, Arms, Placeholder, UI/VoxKit, UI/Backdrop)
+  Audio/ (Music, Sfx, Stingers, VoxMixer.mixer)
   Fonts/ (Cinzel Decorative, Lilita One, Nunito: TTFs, TMP SDF font assets, OFL texts)
   TextMesh Pro/ (Unity's TMP Essential Resources)
   Data/ (Arms, Loadouts, Ammo, Armaments, Pickups, Shop, Cosmetics, Arenas, Traps, Settings, Enemies, Waves, Bosses, Input)
   Prefabs/
   Scenes/ (Boot, MainMenu, Game)   (Shop and Armory are UI states inside Game)
-  Scripts/ (Core, Save, Settings, Input, Player, Cosmetics, Weapons, Projectiles, Feedback, Enemies, AI, Arena, Bosses, Telemetry, Shop, Armory, UI, Platform)
+  Scripts/ (Core, Save, Settings, Input, Player, Cosmetics, Weapons, Projectiles, Feedback, Enemies, AI, Arena, Audio, Bosses, Telemetry, Shop, Armory, UI, Platform)
   Tests/
 Docs/Reference/ (concept art and references, OUTSIDE Assets so Unity doesn't import them)
 ArtSource/ (4x master PNGs from Procreate, mirrors Assets/Art folders; OUTSIDE Assets)
@@ -522,7 +533,7 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
       connected controller, completion saved in the profile, replay option in Settings.
 - [x] D3 Playtest telemetry (done 2026-09-30; shots in Captures/d3) + balance tools: local-only CSV per run (round reached, cause of death, time and damage taken per round, currency
       earned/spent, items bought, armaments equipped, boss phase reached) and a debug summary screen.
-- [ ] D4 Audio: music per context with crossfades, SFX for combat, movement, pickups, UI and announcer stingers, mixer groups tied to the Settings
+- [x] D4 Audio (done 2026-09-30): music per context with crossfades, SFX for combat, movement, pickups, UI and announcer stingers, mixer groups tied to the Settings
       volumes, CC0 placeholder sounds logged in Docs/CREDITS.md.
 - [ ] D5 Settings completion: Video (resolution, fullscreen/windowed, VSync), Controls (button remapping via the Input System, arm-select
       sensitivity), Gameplay and accessibility (screen shake intensity, bullet outline thickness, high-contrast bullets, HUD scale).

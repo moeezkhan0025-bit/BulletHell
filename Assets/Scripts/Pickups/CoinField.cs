@@ -112,6 +112,7 @@ namespace BulletHell.Pickups
         private void Collect(CoinPickup coin, bool sparkle = true)
         {
             run.AddEarnings(coin.Value);
+            GameServices.Ensure().Audio.Play(BulletHell.Audio.SfxId.PickupCoin);
             if (sparkle)
                 FeedbackHub.Play(VfxKind.Coin, coin.transform.position, 4);
             Remove(coin);

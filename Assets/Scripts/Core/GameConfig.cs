@@ -1,4 +1,5 @@
 using BulletHell.Arena;
+using BulletHell.Audio;
 using BulletHell.Enemies;
 using BulletHell.Feedback;
 using BulletHell.Save;
@@ -27,6 +28,8 @@ namespace BulletHell.Core
         [SerializeField] private string profileFileName = "profile.json";
         [Tooltip("Local playtest log: one row per finished run (round reached, cause of death, time and damage per round, currency, purchases, boss phase). Never leaves the machine.")]
         [SerializeField] private string telemetryFileName = "playtest_runs.csv";
+        [Tooltip("Sounds, music, mixer and audio tuning (Data/Audio). Empty = the game is silent.")]
+        [SerializeField] private AudioLibrary audioLibrary;
         [SerializeField] private SettingsDefaults settingsDefaults;
 
         [Header("New run")]
@@ -103,6 +106,7 @@ namespace BulletHell.Core
         public string SettingsFileName => settingsFileName;
         public string ProfileFileName => profileFileName;
         public string TelemetryFileName => telemetryFileName;
+        public AudioLibrary AudioLibrary => audioLibrary;
         public SettingsDefaults SettingsDefaults => settingsDefaults;
         public ArmLoadout NewRunLoadout => newRunLoadout;
         public AmmoTypeData[] StartingAmmo => startingAmmo;

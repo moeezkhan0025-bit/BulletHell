@@ -78,8 +78,7 @@ namespace BulletHell.Settings
 
         private void Apply()
         {
-            AudioListener.volume = Current.masterVolume;
-            audio.SetVolumes(Current.musicVolume, Current.sfxVolume);
+            audio.SetVolumes(Current.masterVolume, Current.musicVolume, Current.sfxVolume);   // also sets the master volume (mixer, or AudioListener without one)
             ApplyDisplay();
         }
 
