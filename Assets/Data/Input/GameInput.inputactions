@@ -277,6 +277,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "DebugTogglePerfOverlay",
+                    "type": "Button",
+                    "id": "1d000008-3333-4c08-8d08-0000000000c8",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "DebugStartStress",
+                    "type": "Button",
+                    "id": "1d000009-3333-4c09-8d09-0000000000c9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -387,6 +405,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "DebugGiveCurrency",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1e00000d-4444-4d0d-9e0d-0000000000dd",
+                    "path": "<Keyboard>/f8",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DebugTogglePerfOverlay",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1e00000e-4444-4d0e-9e0e-0000000000de",
+                    "path": "<Keyboard>/f10",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DebugStartStress",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

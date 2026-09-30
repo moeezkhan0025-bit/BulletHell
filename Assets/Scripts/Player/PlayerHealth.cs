@@ -24,6 +24,9 @@ namespace BulletHell.Player
         private bool dodgesBulletsInAir;
         private HitFeedback hitFeedback;
 
+        /// <summary>Development tools only (the stress test): hits still land (feedback, invulnerability) but health never runs out.</summary>
+        public bool DebugGodMode { get; set; }
+
         public float Current => health.Current;
         public float Max => health.Max;
         public bool IsAlive => health.IsAlive;
@@ -76,6 +79,8 @@ namespace BulletHell.Player
 
             if (hitFeedback != null && travelDirection != Vector2.zero)
                 hitFeedback.OnHitFrom(travelDirection);
+            if (DebugGodMode && health.Current <= damage)
+                health.Revive();
             health.TakeDamage(damage);
             if (health.IsAlive)
                 invulnerableLeft = data.InvulnerabilitySeconds;

@@ -66,7 +66,8 @@ namespace BulletHell.Tests
             foreach (string guid in AssetDatabase.FindAssets("t:AttackPattern"))
             {
                 var pattern = AssetDatabase.LoadAssetAtPath<AttackPattern>(AssetDatabase.GUIDToAssetPath(guid));
-                bool special = pattern.name == "Pattern_BossBurst" || pattern.name == "Pattern_SniperShot";
+                // Boss shots (the placeholder burst, every Pumpking pattern) and the sniper shot are Hot Magenta.
+                bool special = pattern.name == "Pattern_BossBurst" || pattern.name == "Pattern_SniperShot" || pattern.name.StartsWith("Pattern_Pumpking");
                 Assert.AreEqual(special ? BulletStyle.Special : BulletStyle.Standard, pattern.BulletStyle, pattern.name);
             }
         }

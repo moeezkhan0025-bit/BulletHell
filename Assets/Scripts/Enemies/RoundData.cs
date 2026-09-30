@@ -22,6 +22,18 @@ namespace BulletHell.Enemies
         public HazardBudget HazardBudget => hazardBudget;
         public float WaveBreatherSeconds => waveBreatherSeconds;
 
+        /// <summary>The boss fought this round (the first wave group with a BossData), or null.</summary>
+        public BulletHell.Bosses.BossData FindBoss()
+        {
+            for (int i = 0; i < waves.Length; i++)
+            {
+                BulletHell.Bosses.BossData boss = waves[i] != null ? waves[i].FindBoss() : null;
+                if (boss != null)
+                    return boss;
+            }
+            return null;
+        }
+
 #if UNITY_EDITOR
         /// <summary>Editor-only: used by setup scripts and tests.</summary>
         public void SetLayout(ArenaLayoutData newLayout, HazardBudget budget)

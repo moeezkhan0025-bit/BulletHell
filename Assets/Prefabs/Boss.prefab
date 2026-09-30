@@ -1,0 +1,185 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &968562899469945326
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1532610592477388681, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1532610592477388681, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1532610592477388681, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1532610592477388681, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1532610592477388681, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1532610592477388681, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1532610592477388681, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1532610592477388681, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1532610592477388681, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1532610592477388681, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3279802382302041301, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8422228227964243467, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+      propertyPath: m_Name
+      value: Boss
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8422228227964243467, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4787606989739202448}
+    - targetCorrespondingSourceObject: {fileID: 8422228227964243467, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8006843765566559563}
+  m_SourcePrefab: {fileID: 100100000, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+--- !u!114 &572586686075507738 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 757513337312468468, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+  m_PrefabInstance: {fileID: 968562899469945326}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8759718016944752613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad4f6b4b7ee592b49aacba2f0553f92d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BulletHell::BulletHell.Feedback.TelegraphFx
+--- !u!114 &941533187438473390 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 27577543700101440, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+  m_PrefabInstance: {fileID: 968562899469945326}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8759718016944752613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 620e8061481d4c54c9ddb341334285c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BulletHell::BulletHell.Feedback.ProceduralMotion
+--- !u!4 &1342386086061580569 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2292362838794561783, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+  m_PrefabInstance: {fileID: 968562899469945326}
+  m_PrefabAsset: {fileID: 0}
+--- !u!70 &2476868514036776238 stripped
+CapsuleCollider2D:
+  m_CorrespondingSourceObject: {fileID: 3399826400218559680, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+  m_PrefabInstance: {fileID: 968562899469945326}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4587346328115150862 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3663821222396316128, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+  m_PrefabInstance: {fileID: 968562899469945326}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8759718016944752613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e967b0af4415faf40bee99a415368c23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BulletHell::BulletHell.Feedback.SpriteFx
+--- !u!210 &5293946071400214430 stripped
+SortingGroup:
+  m_CorrespondingSourceObject: {fileID: 4901844061941737072, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+  m_PrefabInstance: {fileID: 968562899469945326}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &5899336136843965238 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 6678732859944139480, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+  m_PrefabInstance: {fileID: 968562899469945326}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6924293588723468297 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7883848592751313383, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+  m_PrefabInstance: {fileID: 968562899469945326}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8759718016944752613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc7170590b685c4ba7384e391fa54e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BulletHell::BulletHell.Core.Health
+--- !u!114 &8582352011258487488 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8821326253940058926, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+  m_PrefabInstance: {fileID: 968562899469945326}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8759718016944752613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b9ab7535ae9f1247b8f6a81bd458fc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BulletHell::BulletHell.Enemies.Enemy
+--- !u!1 &8759718016944752613 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8422228227964243467, guid: 6c42de0c5aa231b49a48ef5b6aae4a01, type: 3}
+  m_PrefabInstance: {fileID: 968562899469945326}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4787606989739202448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8759718016944752613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 311717783be85654ab0d767bddd826e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BulletHell::BulletHell.Bosses.BossJump
+  rig: {fileID: 1342386086061580569}
+  shadow: {fileID: 5899336136843965238}
+  sortingGroup: {fileID: 5293946071400214430}
+  hitbox: {fileID: 2476868514036776238}
+  motion: {fileID: 941533187438473390}
+--- !u!114 &8006843765566559563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8759718016944752613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb7a57ade2063974d8edae3a489fade5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BulletHell::BulletHell.Bosses.BossController
+  health: {fileID: 6924293588723468297}
+  enemy: {fileID: 8582352011258487488}
+  fx: {fileID: 4587346328115150862}
+  motion: {fileID: 941533187438473390}
+  telegraph: {fileID: 572586686075507738}
+  jump: {fileID: 4787606989739202448}
+  hitbox: {fileID: 2476868514036776238}

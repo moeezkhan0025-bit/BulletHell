@@ -35,6 +35,9 @@ namespace BulletHell.Enemies
         [Header("Pools")]
         [SerializeField, Min(1)] private int enemyPoolPrewarm = 32;
         [SerializeField, Min(1)] private int enemyPoolMax = 128;
+        [Tooltip("The Boss prefab's own pool: one boss at a time.")]
+        [SerializeField, Min(1)] private int bossPoolPrewarm = 1;
+        [SerializeField, Min(1)] private int bossPoolMax = 2;
 
         public float SpawnEdgeMargin => spawnEdgeMargin;
         public float MinSpawnDistanceFromPlayer => minSpawnDistanceFromPlayer;
@@ -48,5 +51,7 @@ namespace BulletHell.Enemies
         public float BeginSeconds => beginSeconds;
         public int EnemyPoolPrewarm => enemyPoolPrewarm;
         public int EnemyPoolMax => enemyPoolMax;
+        public int BossPoolPrewarm => bossPoolPrewarm;
+        public int BossPoolMax => bossPoolMax;
     }
 }

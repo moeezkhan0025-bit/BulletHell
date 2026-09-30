@@ -1,0 +1,116 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4d189f75485e724c8d113c09c01d3c9, type: 3}
+  m_Name: Boss_Pumpking
+  m_EditorClassIdentifier: BulletHell::BulletHell.Bosses.BossData
+  displayName: Pumpking
+  maxHealth: 420
+  entrySettleSeconds: 1
+  preferredDistance: {x: 3, y: 5}
+  fastShotAimLockSeconds: 0.3
+  recoilPunch: 0.1
+  phases:
+  - EnterBelowHp01: 1
+    MoveSpeedMultiplier: 1
+    Attacks:
+    - Kind: 0
+      Pattern: {fileID: 11400000, guid: 362d7be1a5b1ac741b130e05fd4657b0, type: 2}
+      WindupSeconds: 0.9
+      Volleys: 2
+      VolleyInterval: 0.45
+      AngleOffsetStepDeg: 11.25
+      Cooldown: 1.6
+      Weight: 3
+    - Kind: 1
+      Pattern: {fileID: 11400000, guid: f3757fffa3edcfd47b8b5201833a1b1a, type: 2}
+      WindupSeconds: 1
+      Volleys: 1
+      VolleyInterval: 0.18
+      AngleOffsetStepDeg: 0
+      Cooldown: 1.4
+      Weight: 2
+    - Kind: 2
+      Pattern: {fileID: 11400000, guid: 362d7be1a5b1ac741b130e05fd4657b0, type: 2}
+      WindupSeconds: 0.8
+      Volleys: 1
+      VolleyInterval: 0
+      AngleOffsetStepDeg: 0
+      Cooldown: 2.2
+      Weight: 2
+    GlowColor: {r: 1, g: 0.55, b: 0.1, a: 1}
+    GlowAmount: 0
+    GlowPulseSpeed: 6
+  - EnterBelowHp01: 0.5
+    MoveSpeedMultiplier: 1.35
+    Attacks:
+    - Kind: 0
+      Pattern: {fileID: 11400000, guid: 52cbdba4abd32c44cb44bf5be06123b4, type: 2}
+      WindupSeconds: 0.75
+      Volleys: 3
+      VolleyInterval: 0.4
+      AngleOffsetStepDeg: 5
+      Cooldown: 1.3
+      Weight: 3
+    - Kind: 1
+      Pattern: {fileID: 11400000, guid: f3757fffa3edcfd47b8b5201833a1b1a, type: 2}
+      WindupSeconds: 0.9
+      Volleys: 3
+      VolleyInterval: 0.18
+      AngleOffsetStepDeg: 0
+      Cooldown: 1.4
+      Weight: 2
+    - Kind: 2
+      Pattern: {fileID: 11400000, guid: 52cbdba4abd32c44cb44bf5be06123b4, type: 2}
+      WindupSeconds: 0.7
+      Volleys: 2
+      VolleyInterval: 0
+      AngleOffsetStepDeg: 0
+      Cooldown: 2
+      Weight: 2
+    GlowColor: {r: 1.2, g: 0.6, b: 0.12, a: 1}
+    GlowAmount: 0.15
+    GlowPulseSpeed: 6
+  jumpTuning: {fileID: 11400000, guid: 32f33dd0875a35040a52fb0f659d3b9d, type: 2}
+  smash:
+    Radius: 1.9
+    DamageToPlayer: 1
+    DamageToEnemies: 6
+    TelegraphColor: {r: 1, g: 0.302, b: 0.2, a: 1}
+    RingSprite: {fileID: 21300000, guid: 508c82479992da04896e0e03181e9340, type: 3}
+    PostSpreads: 3
+    PostSpreadInterval: 0.25
+    PostSpreadAngleStepDeg: 7.5
+    SecondJumpWindup: 0.35
+    CrouchSquash: 0.3
+    Shake: 0.5
+    HitstopSeconds: 0.06
+    DustCount: 14
+    DebrisCount: 8
+    MaxJumpDistance: 7
+    HittableInAir: 1
+  transition:
+    Seconds: 1.6
+    Invulnerable: 1
+    RoarInflate: 0.35
+    FlashCycles: 3
+    Shake: 0.7
+    HitstopSeconds: 0.1
+  death:
+    StaggerSeconds: 0.9
+    SquashSeconds: 0.3
+    DissolveSeconds: 0.9
+    FlashCycles: 5
+    DebrisBursts: 6
+    DebrisPerBurst: 8
+    CoinBurst: 24
+    ShakePerStage: 0.35
+    HitstopSeconds: 0.12

@@ -40,6 +40,7 @@ namespace BulletHell.Arena
 
         private void LateUpdate()
         {
+            using var _ = BulletHell.Perf.PerfMarkers.ArenaFader.Auto();
             if (arena == null || !arena.IsBuilt)
                 return;
 

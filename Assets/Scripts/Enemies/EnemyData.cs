@@ -18,6 +18,8 @@ namespace BulletHell.Enemies
         Charger,
         /// <summary>Keeps far away with line of sight, shows a warning line, fires one fast shot.</summary>
         Sniper,
+        /// <summary>A boss: phases and attacks from its BossData (BossBehavior + BossController on the Boss prefab).</summary>
+        Boss,
     }
 
     /// <summary>Tunable data for one enemy type. Real enemies (M4) extend this; movement fields are optional.</summary>
@@ -125,6 +127,10 @@ namespace BulletHell.Enemies
         [SerializeField, Min(0f)] private float aimLockSeconds = 0.4f;
         [SerializeField, Min(0.1f)] private float sniperCooldown = 2.6f;
 
+        [Header("Boss")]
+        [Tooltip("Boss behaviour only: phases, attacks, jump, transition and death. Its Max Health replaces the one above.")]
+        [SerializeField] private BulletHell.Bosses.BossData boss;
+
         public string DisplayName => displayName;
         public AttackPattern[] Attacks => attacks;
         public int CoinValue => coinValue;
@@ -135,8 +141,13 @@ namespace BulletHell.Enemies
         public float PaintedFootprintRadius => paintedFootprintRadius;
         public Vector2 PaintedHurtboxSize => paintedHurtboxSize;
         public float PaintedHurtboxOffsetX => paintedHurtboxOffsetX;
-        public float MaxHealth => maxHealth;
+        public float MaxHealth => boss != null && boss.MaxHealth > 0f ? boss.MaxHealth : maxHealth;
         public float HitFlashDuration => hitFlashDuration;
+        public BulletHell.Bosses.BossData Boss => boss;
+
+        /// <summary>The movement footprint radius at the feet: the painted value, or the placeholder's from its size.</summary>
+        public float FootprintRadiusFor(BulletHell.Arena.PerspectiveTuning perspective) =>
+            paintedSprite != null ? paintedFootprintRadius : perspective.EnemyFootprintRadiusFor(size);
         public MotionTuning MotionOverride => motionOverride;
         public HitFeedbackTuning HitOverride => hitOverride;
         public LifeCycleTuning LifeCycleOverride => lifeCycleOverride;

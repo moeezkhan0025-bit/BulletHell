@@ -37,6 +37,9 @@ namespace BulletHell.Feedback
 
         public Transform Motion => motion;
 
+        /// <summary>Set by a non-player jump (BossJump): no hop-walk bob while it is in the air.</summary>
+        public bool HoldHop { get; set; }
+
         public void SetTuning(MotionTuning motionTuning) => tuning = motionTuning;
 
         /// <summary>Fresh start (spawn from the pool, round start): forgets all motion state.</summary>
@@ -86,6 +89,7 @@ namespace BulletHell.Feedback
 
         private void LateUpdate()
         {
+            using var _ = BulletHell.Perf.PerfMarkers.EnemyMotion.Auto();
             float dt = Time.deltaTime;
             if (tuning == null || motion == null || dt <= 0f)
                 return;
@@ -97,7 +101,7 @@ namespace BulletHell.Feedback
             hasLast = true;
 
             float speed = velocity.magnitude;
-            bool airborne = jump != null && jump.IsAirborne;
+            bool airborne = (jump != null && jump.IsAirborne) || HoldHop;
             float move01 = Mathf.Clamp01(speed / tuning.FullSpeed);
             bool moving = speed > tuning.MoveThreshold;
 

@@ -177,8 +177,22 @@ namespace BulletHell.Feedback
             g.Fx.ClearAll();
         }
 
+        /// <summary>Particles alive in all pooled systems (the performance overlay and logger; development use).</summary>
+        public static int CountLiveParticles()
+        {
+            FeedbackHub hub = instance;
+            if (hub == null || hub.rings == null)
+                return 0;
+            int total = 0;
+            for (int k = 0; k < hub.rings.Length; k++)
+                for (int i = 0; i < hub.rings[k].Length; i++)
+                    total += hub.rings[k][i].particleCount;
+            return total;
+        }
+
         private void Update()
         {
+            using var _ = BulletHell.Perf.PerfMarkers.FxHub.Auto();
             if (ghosts == null)
                 return;
             float dt = Time.deltaTime;

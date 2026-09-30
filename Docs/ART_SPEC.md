@@ -104,6 +104,8 @@ Every standing sprite (player, enemies, obstacles, rising traps) is set up the s
   Unity sorts by this point, so a wrong pivot = wrong overlap.
 - **Footprint** = the object's base shape on the floor, squashed by F. It becomes the collider.
   Draw it on a separate "guide" layer while working (a light ellipse or rectangle at the base), then hide it on export.
+- If the art does not reach the template's feet line (the Skirmisher's base sits at y~800 of 1024, the Pumpking's at y~2016 of
+  2560), the pivot goes at the art's REAL base, not the template line, so it stands on its shadow.
 - Leave **4 px transparent padding** on every side of every frame.
 - For animation frames, the **feet must stay on the same pixel row in every frame** and the canvas size must be
   identical for all frames of that character. Otherwise the character jitters.
@@ -123,7 +125,7 @@ Every standing sprite (player, enemies, obstacles, rising traps) is set up the s
 | Mobile Sentry | ~1 P tall, 1.2 P wide | Wheels/base, visible barrel, cooling vents that glow when overheated |
 | Charger | ~1.1 P tall | Heavy, forward-leaning silhouette |
 | Sniper | ~1 P tall | Long barrel, clear aiming pose |
-| Bosses | 2.5 - 5 P tall | Designed per boss |
+| Bosses | 2.5 - 5 P tall | Designed per boss, on the 2560 boss template (feet at x=1280, y=2400). The Pumpking is ~2.7 P as drawn |
 | Player bullets | 0.15 - 0.25 P | Tinted by arm ID color |
 | Enemy bullets | 0.2 - 0.3 P | Bright core + dark outline, reserved colors (section 7) |
 | Pickups (ammo, coins) | 0.3 - 0.4 P | Gentle bob + glow on the floor (glow ellipse xF) |
@@ -165,7 +167,10 @@ See CLAUDE.md "Animation approach".
   `jump_takeoff` (1), `jump_land` (1). No hit/death frames needed (code handles them).
 - Regular enemies (side-facing only for now): `idle` (1), `windup` (1, a clear telegraph silhouette),
   `attack` (1-2). Sentry adds `planted` (1) and `overheat` (1, vents glowing).
-- Bosses and the merchant: drawn in PARTS for rigging (see below), plus alternate parts for phase changes.
+- Bosses (for now): key poses on the 2560 boss template like enemies: `idle` (1, required), `windup` (1), `attack` (1-2).
+  Code does the jump, the smash, the phase 2 glow and the death, and falls back to `idle` for missing poses. Rigging bosses
+  in parts (and phase 2 replacement parts) is deferred to a later milestone.
+- The merchant: drawn in PARTS for rigging (see below).
 - Readable poses beat smooth motion in a bullet hell.
 
 **Rigged characters (bosses, merchant):** one body part per layer, named `head`, `torso`, `arm_L`, `arm_R`,

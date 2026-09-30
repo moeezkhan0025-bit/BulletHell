@@ -1,4 +1,4 @@
-# Art Checklist: Vertical Slice (Rounds 1-3 + Broccoli Emperor)
+# Art Checklist: Vertical Slice (Rounds 1-3 + Pumpking)
 
 Goal: everything needed so one full run from the Main Menu through the round 3 boss uses final art.
 Sizes use P = player body height (**506 px on 4x master canvases**, 1.15x character scale). Templates: `procreate_templates_4x_P506.zip`.
@@ -31,11 +31,11 @@ Tip marked "free" = fine to use a CC0/licensed pack instead of drawing it yourse
 **Mobile Sentry** (1P tall, 1.2P wide, character 1536)
 - [ ] [2] moving (1)  - [ ] planted (1)  - [ ] firing (1-2)  - [ ] overheat (1, vents glowing)
 
-**Broccoli Emperor, round 3 boss** (3.5P, boss 4608, drawn in PARTS for rigging)
-- [ ] [2] Full body in separate PART layers (head, torso, arms, legs, scepter, cape), exported as PSD
-- [ ] [2] Phase 2 replacement parts (cracked head, missing florets, torn toga)
-- [ ] [3] 2-3 face/expression swaps (confident, angry, hurt)
-  (walk, windups, slams, spin, phase transition and death are animated on the rig in Unity)
+**Pumpking, round 3 boss** (~2.7P as drawn, boss 2560 template, key poses like the enemies)
+- [x] [2] idle (1)  - [ ] [2] windup (1, a clear "about to attack" silhouette)  - [ ] [2] attack (1-2)
+  (idle hooked up in M10 from `ArtSource/Bosses/Pumpking`, pivot at the art's base; the jump, smash, phase 2 glow,
+  transition and death are code; missing poses fall back to idle)
+- Later (deferred): body in PART layers for rigging, phase 2 replacement parts, face swaps
 
 Later (not in the slice): Charger, Sniper, more enemy types, bosses for rounds 5 and 7.
 
@@ -86,7 +86,7 @@ group and export them separately. Match your concept_arena.png layout.
 
 - [ ] [1] Floor tiles: 2-3 variants, tileable (1P x 0.6P per tile, flat)
 - [ ] [2] Floor decals (flat, lower contrast): central crest, graffiti x3, cracks x3, splatter x3
-- [ ] [2] Back wall: stands with crowd, 2 enemy gates, royal box (the Emperor's seat)
+- [ ] [2] Back wall: stands with crowd, 2 enemy gates, royal box (the Pumpking's throne)
 - [ ] [2] Gates: closed / opening (3) / open (enemies spawn here)
 - [ ] [2] Side walls left + right, plus corner pieces
 - [ ] [2] Foreground: front railing + front crowd heads (keep it SHORT, it covers the play area)
@@ -181,7 +181,7 @@ Pause and Game Over:
 |---|---|
 | Player poses (3 facings) | ~20 |
 | Enemies (side only, key poses) | ~12 |
-| Boss (parts + phase 2 parts + faces) | ~25 parts |
+| Boss (Pumpking key poses) | ~4 |
 | Projectiles | ~15 |
 | VFX (particle textures + a few drawn effects) | ~25 |
 | Pickups | ~8 |
@@ -198,6 +198,6 @@ fonts and some VFX cut it further.
 
 1. **Scale test** (all [1] items, rough): player, Chaser idle, low wall, pillar, floor vent, floor tile, basic bullet, pea.
 2. **Combat look:** stadium floor + walls + foreground, obstacles, traps, Chaser/Skirmisher/Sentry, bullets, core VFX, HUD.
-3. **Boss:** Broccoli Emperor, shockwave, boss HUD.
+3. **Boss:** Pumpking windup/attack poses, shockwave, boss HUD.
 4. **Screens:** UI kit first (panels, buttons, cards), then Shop, Armory, Main Menu, customization.
 5. **Polish:** crowd/torch/banner animation, extra VFX, Game Over art.

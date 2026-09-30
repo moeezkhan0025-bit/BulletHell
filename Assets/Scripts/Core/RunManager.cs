@@ -48,6 +48,8 @@ namespace BulletHell.Core
         {
             Machine.Reset();
             State = RunState.NewRun(config);
+            if (UnityEngine.Debug.isDebugBuild && config.DebugStartRound > 1)
+                State.Round = config.DebugStartRound;   // debug: skip ahead (e.g. straight to the boss)
             PendingStart = GameState.RoundIntro;
             LastReward = 0;
             RoundEarnings = 0;

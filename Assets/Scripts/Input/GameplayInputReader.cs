@@ -20,8 +20,12 @@ namespace BulletHell.Input
 
         public const int AmmoButtonCount = 4;
 
+        /// <summary>Development tools only (the stress test): when set, Move returns DebugMove instead of the device.</summary>
+        public bool DebugOverride { get; set; }
+        public Vector2 DebugMove { get; set; }
+
         /// <summary>Right stick.</summary>
-        public Vector2 Move => moveAction.ReadValue<Vector2>();
+        public Vector2 Move => DebugOverride ? DebugMove : moveAction.ReadValue<Vector2>();
 
         /// <summary>Left stick.</summary>
         public Vector2 Aim => aimAction.ReadValue<Vector2>();
@@ -66,6 +70,8 @@ namespace BulletHell.Input
             input.Debug.DebugPrevArmament.performed += OnDebugPrev;
             input.Debug.DebugToggleBulletPaths.performed += OnDebugToggleBulletPaths;
             input.Debug.DebugGiveCurrency.performed += OnDebugGiveCurrency;
+            input.Debug.DebugTogglePerfOverlay.performed += OnDebugTogglePerfOverlay;
+            input.Debug.DebugStartStress.performed += OnDebugStartStress;
 
             ammoActions[0] = gameplay.EquipAmmo1;
             ammoActions[1] = gameplay.EquipAmmo2;
@@ -123,6 +129,8 @@ namespace BulletHell.Input
             input.Debug.DebugPrevArmament.performed -= OnDebugPrev;
             input.Debug.DebugToggleBulletPaths.performed -= OnDebugToggleBulletPaths;
             input.Debug.DebugGiveCurrency.performed -= OnDebugGiveCurrency;
+            input.Debug.DebugTogglePerfOverlay.performed -= OnDebugTogglePerfOverlay;
+            input.Debug.DebugStartStress.performed -= OnDebugStartStress;
             input.Dispose();
         }
 
@@ -133,6 +141,10 @@ namespace BulletHell.Input
 
         // F6: show / hide the bullet path visualisation (works whether or not the debug overlay is showing).
         private void OnDebugToggleBulletPaths(InputAction.CallbackContext _) => Projectiles.BulletPathDebug.Toggle();
+
+        // F8: show / hide the performance overlay. F10: start (or stop) the stress test. Development builds and the editor only.
+        private void OnDebugTogglePerfOverlay(InputAction.CallbackContext _) => Perf.PerfHost.ToggleOverlay();
+        private void OnDebugStartStress(InputAction.CallbackContext _) => Perf.PerfHost.ToggleStress();
 
         // F7: give yourself currency (the amount is on ShopTuning). Works in any run state; the Shop refreshes by itself.
         private void OnDebugGiveCurrency(InputAction.CallbackContext _)

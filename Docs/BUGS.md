@@ -10,6 +10,24 @@ How to log a bug (one entry each, newest at the top of "Open"):
 
 ## Open
 
+### P1 hitches: occasional 30-70 ms frames in the stress test, cause not yet attributed - TABLED FOR THE FINAL PERFORMANCE TEST
+- **Steps:** Development build, `-perfstress -perfvsync 0` (80-enemy swarm + Pumpking phase 2 + 8 arms firing, 90 s), analyse with `Tools/perf_analyze.ps1 -Csv <run.csv> -From 10`
+- **Expected:** steady 60 fps, no visible hitches
+- **Actual:** average ~165 fps uncapped (p99 13.5-14.2 ms), but 3-37 frames per 80 s run take over 20 ms (worst 27-74 ms); GPU < 1 ms. The BH profiler markers explain only ~1-3 ms per frame
+  (Enemy.Brain ~1.0, Nav.Separation ~0.5, Bullet.Update ~0.35, Physics2D ~0.17), so the hitch work is in main-thread phases not yet timed. About 180 GC allocations (~8 KB) happen in every frame (source unknown).
+  NOTE: the analyzer lists `wait_gfx_ms` as the top marker of the worst frames, but that stat is the render thread idling for the main thread, a symptom, not the cause.
+- **How often:** run 1: 37 frames over 20 ms; runs 2 and 3: 3-4 (unexplained variance)
+- **Severity:** minor (the user's own playtests feel fine); recheck at the final performance test
+- **Resume checklist:** (1) time the PlayerLoop phases (Update / LateUpdate / FixedUpdate / renderer update / canvas) and find the per-frame allocations; (2) then the suspects from the P1 survey: DebugOverlay 4 Hz throttle, bullet pool and 5-renderer bullets, `Separation` O(n^2) and per-frame LOS / path sweeps, homing scans, the SRP-batcher `_MainTex` property, frame pacing and the 70 ms player hitstop (design decisions: ask); (3) re-run 3x and compare with `-Compare`.
+- Minor tool bug: the PerfLogger `canvas_overlay_ms` column reports garbage (negative counter); ignore it.
+
+### 11 EditMode tests fail outside Play mode: Obstacle.ApplyContactShadow calls GameServices.Ensure()
+- **Steps:** run the EditMode tests from a fresh Editor (no Play session since the domain loaded), e.g. `unity command run_tests --mode EditMode`
+- **Expected:** all tests pass
+- **Actual:** `ArenaTests` (2), `LayoutTests` (6), `PerspectiveTests` (3) throw `InvalidOperationException: The following game object is invoking the DontDestroyOnLoad method: Services ... cannot be part of an editor script` from `GameServices.Ensure()` (GameServices.cs:38) via `Obstacle.ApplyContactShadow` (Obstacle.cs:188) <- `ApplyLook` <- `Restore` <- `Setup`. The tests build obstacles in edit mode and the contact-shadow look reaches for the live services (M9d added the shadow). Found while running the suite for M10; the failing code is untouched by M10.
+- **How often:** always in edit mode
+- **Severity:** minor (tests only; the game is unaffected). Fix idea: `Obstacle` takes its `PerspectiveTuning` from `Setup` (the ArenaController passes it) instead of `GameServices.Ensure()`, or `GameServices.Ensure()` skips `DontDestroyOnLoad` when `!Application.isPlaying`.
+
 ### Input System NullReferenceException in InputEvent.get_handled (Editor update) - CAN'T REPRODUCE - MONITORING
 - **Steps:** seen once (Console 2026-09-29 20:15:33 UTC, Input System 1.20.0). The Editor had been sitting in a PAUSED Play session for about 43 minutes with nothing else logged; the user then looked at the Editor. Enter Play Mode option "Reload Domain" is disabled.
 - **Expected:** no exception

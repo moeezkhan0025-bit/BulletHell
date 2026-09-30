@@ -145,6 +145,7 @@ namespace BulletHell.Projectiles
 
         private void Update()
         {
+            using var _ = BulletHell.Perf.PerfMarkers.BulletUpdate.Auto();
             float dt = Time.deltaTime;
             if (hostile)
             {

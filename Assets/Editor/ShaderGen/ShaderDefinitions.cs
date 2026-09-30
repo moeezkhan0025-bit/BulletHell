@@ -104,18 +104,24 @@ namespace BulletHell.EditorTools.ShaderGen
             AbstractMaterialNode dissolveAmount = b.FloatProperty("Dissolve Amount", "_DissolveAmount", 0f);
             AbstractMaterialNode noiseScale = b.FloatProperty("Noise Scale", "_NoiseScale", 30f);
             AbstractMaterialNode rimWidth = b.FloatProperty("Rim Width", "_RimWidth", 0.08f);
+            // M10: additive glow (boss phase 2). HDR so it can go brighter than the sprite.
+            AbstractMaterialNode glowColor = b.ColorProperty("Glow Color", "_GlowColor", new Color(1f, 0.55f, 0.1f), hdr: true);
+            AbstractMaterialNode glowAmount = b.FloatProperty("Glow Amount", "_GlowAmount", 0f);
 
             AbstractMaterialNode baseRgb = Rgb(b, b.Tinted, "Out");
             AbstractMaterialNode alpha = AlphaOf(b, b.Tinted, "Out");
             AbstractMaterialNode tintRgb = Rgb(b, tintColor, "*");
             AbstractMaterialNode dangerRgb = Rgb(b, dangerColor, "*");
             AbstractMaterialNode flashRgb = Rgb(b, flashColor, "*");
+            AbstractMaterialNode glowRgb = Rgb(b, glowColor, "*");
 
             AbstractMaterialNode tinted = Mix(b, baseRgb, "RGB", tintRgb, "RGB", tintAmount, "*");
             AbstractMaterialNode danger = Mix(b, tinted, "Out", dangerRgb, "RGB", dangerAmount, "*");
+            AbstractMaterialNode glowScaled = b.Math("Math/Basic/Multiply", glowRgb, "RGB", glowAmount, "*");
+            AbstractMaterialNode glowed = b.Math("Math/Basic/Add", danger, "Out", glowScaled, "Out");
 
             DissolveMask(b, dissolveAmount, noiseScale, rimWidth, out AbstractMaterialNode cut, out AbstractMaterialNode rim);
-            AbstractMaterialNode rimmed = Mix(b, danger, "Out", flashRgb, "RGB", rim, "Out");
+            AbstractMaterialNode rimmed = Mix(b, glowed, "Out", flashRgb, "RGB", rim, "Out");
             AbstractMaterialNode flashed = Mix(b, rimmed, "Out", flashRgb, "RGB", flashAmount, "*");
 
             AbstractMaterialNode outAlpha = b.Math("Math/Basic/Multiply", alpha, "A", cut, "Out");

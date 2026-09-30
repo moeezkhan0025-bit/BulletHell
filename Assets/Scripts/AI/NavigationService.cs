@@ -61,6 +61,7 @@ namespace BulletHell.AI
 
         private void Update()
         {
+            using var _ = BulletHell.Perf.PerfMarkers.NavUpdate.Auto();
             if (!arena.IsBuilt)
             {
                 field = null;
@@ -92,6 +93,7 @@ namespace BulletHell.AI
 
         private void Rebuild()
         {
+            using var _ = BulletHell.Perf.PerfMarkers.FlowBuild.Auto();
             field.Build(TargetPosition);
             sinceRebuild = 0f;
         }
@@ -114,6 +116,7 @@ namespace BulletHell.AI
         /// <summary>Sum of the pushes of nearby enemies on one enemy (each up to unit length, growing with overlap).</summary>
         public Vector2 Separation(Enemy self)
         {
+            using var _ = BulletHell.Perf.PerfMarkers.NavSeparation.Auto();
             float padding = Tuning.SeparationPadding;
             Vector2 push = Vector2.zero;
             Vector2 position = self.Position;

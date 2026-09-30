@@ -87,6 +87,7 @@ namespace BulletHell.Enemies
 
         private void Update()
         {
+            using var _ = BulletHell.Perf.PerfMarkers.EnemyAttacker.Auto();
             if (!firing || pool == null || target == null || !target.IsAlive)
                 return;
             if (status != null && status.IsStunned)
@@ -109,25 +110,42 @@ namespace BulletHell.Enemies
             }
         }
 
+        /// <summary>
+        /// Fires one volley of a pattern right now, outside the timers (a boss's scripted attacks). `angleOffsetDeg`
+        /// rotates the whole volley; `aimDirection` replaces the aim at the player when it is not zero (a shot along a
+        /// locked warning line). Ignored while stopped.
+        /// </summary>
+        public void FireVolley(AttackPattern pattern, float angleOffsetDeg = 0f, Vector2 aimDirection = default)
+        {
+            if (!firing || pattern == null || pool == null || target == null)
+                return;
+            Volley(pattern, 0f, angleOffsetDeg, aimDirection);
+            Fired?.Invoke();
+        }
+
         private void Fire(int index, AttackPattern pattern)
         {
+            Volley(pattern, spiralOffsets[index], 0f, Vector2.zero);
+            if (pattern.Shape == AttackShape.Spiral)
+                spiralOffsets[index] = Mathf.Repeat(spiralOffsets[index] + pattern.SpiralStep, 360f);
+        }
+
+        private void Volley(AttackPattern pattern, float spiralOffset, float extraAngleDeg, Vector2 aimDirection)
+        {
             Vector2 origin = Muzzle != null ? Muzzle.position : transform.position;
-            Vector2 toPlayer = target.Position - origin;
+            Vector2 toPlayer = aimDirection != Vector2.zero ? aimDirection : target.Position - origin;
             float aimAngle = Mathf.Atan2(toPlayer.y, toPlayer.x) * Mathf.Rad2Deg;
 
             int count = AttackPatternMath.FillAngles(pattern.Shape, pattern.BulletCount, pattern.SpreadAngle,
-                                                     aimAngle, spiralOffsets[index], Angles);
+                                                     aimAngle, spiralOffset, Angles);
             float speed = pattern.BulletSpeed * BulletSpeedMultiplier;
             for (int i = 0; i < count; i++)
             {
-                float radians = Angles[i] * Mathf.Deg2Rad;
+                float radians = (Angles[i] + extraAngleDeg) * Mathf.Deg2Rad;
                 var direction = new Vector2(Mathf.Cos(radians), Mathf.Sin(radians));
                 pool.Get().LaunchHostile(origin, direction, speed, pattern.Damage, pattern.BulletStyle,
                                          pattern.BulletSize, pattern.BulletSprite, pattern.BulletLifetime);
             }
-
-            if (pattern.Shape == AttackShape.Spiral)
-                spiralOffsets[index] = Mathf.Repeat(spiralOffsets[index] + pattern.SpiralStep, 360f);
         }
     }
 }

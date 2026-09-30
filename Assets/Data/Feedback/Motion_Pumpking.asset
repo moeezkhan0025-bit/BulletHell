@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ffcd61c0137a264688070d34417ffc6, type: 3}
+  m_Name: Motion_Pumpking
+  m_EditorClassIdentifier: BulletHell::BulletHell.Feedback.MotionTuning
+  breathAmount: 0.03
+  breathSpeed: 1.4
+  fullSpeed: 2.2
+  moveThreshold: 0.2
+  hopHeight: 0.16
+  hopsPerSecond: 1.4
+  tiltDegrees: 3
+  footDust: 1
+  leanDegrees: 4
+  leanFollow: 8
+  startStretch: 0.06
+  stopSquash: 0.12
+  springFrequency: 2.4
+  springDamping: 0.4
+  flipToFace: 0
+  flipSeconds: 0.12
+  windupInflate: 0.22
+  windupTremble: 0.06
+  trembleSpeed: 40
+  pulseSpeed: 20

@@ -33,6 +33,8 @@ namespace BulletHell.AI
         public RoundDifficulty Difficulty;
         public WarningLine Line;
         public Transform Transform;
+        /// <summary>The boss layer (jump, smash, phases); null on ordinary enemies.</summary>
+        public BulletHell.Bosses.BossController Boss;
         public Vector2 Velocity;
         /// <summary>Last line-of-sight answer, for the debug view.</summary>
         public bool LastLineClear;

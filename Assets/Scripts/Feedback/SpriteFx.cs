@@ -18,6 +18,8 @@ namespace BulletHell.Feedback
         private static readonly int TintColorId = Shader.PropertyToID("_TintColor");
         private static readonly int TintAmountId = Shader.PropertyToID("_TintAmount");
         private static readonly int DissolveAmountId = Shader.PropertyToID("_DissolveAmount");
+        private static readonly int GlowColorId = Shader.PropertyToID("_GlowColor");
+        private static readonly int GlowAmountId = Shader.PropertyToID("_GlowAmount");
 
         [SerializeField] private SpriteRenderer[] renderers = new SpriteRenderer[0];
 
@@ -28,6 +30,8 @@ namespace BulletHell.Feedback
         private float dissolve;
         private Color tint = Color.white;
         private float tintAmount;
+        private Color glow = Color.black;
+        private float glowAmount;
         private bool dirty = true;
 
         public SpriteRenderer[] Renderers => renderers;
@@ -55,9 +59,20 @@ namespace BulletHell.Feedback
             dirty = true;
         }
 
+        /// <summary>Additive glow (a boss phase, heat) by an amount 0..1 (0 = none). HDR colours glow brighter.</summary>
+        public void SetGlow(Color color, float amount)
+        {
+            amount = Mathf.Clamp01(amount);
+            if (glow == color && Mathf.Approximately(glowAmount, amount))
+                return;
+            glow = color;
+            glowAmount = amount;
+            dirty = true;
+        }
+
         public void ClearAll()
         {
-            flash = danger = dissolve = tintAmount = 0f;
+            flash = danger = dissolve = tintAmount = glowAmount = 0f;
             dirty = true;
             Apply();
         }
@@ -73,7 +88,11 @@ namespace BulletHell.Feedback
 
         private void Awake() => block = new MaterialPropertyBlock();
 
-        private void LateUpdate() => Apply();
+        private void LateUpdate()
+        {
+            using var _ = BulletHell.Perf.PerfMarkers.SpriteFx.Auto();
+            Apply();
+        }
 
         /// <summary>Pushes changed values to the renderers.</summary>
         public void Apply()
@@ -99,6 +118,8 @@ namespace BulletHell.Feedback
                 block.SetColor(TintColorId, tint);
                 block.SetFloat(TintAmountId, tintAmount);
                 block.SetFloat(DissolveAmountId, dissolve);
+                block.SetColor(GlowColorId, glow);
+                block.SetFloat(GlowAmountId, glowAmount);
                 r.SetPropertyBlock(block);
             }
         }

@@ -37,6 +37,15 @@ namespace BulletHell.Enemies
 
         public SpawnGroup[] Groups => groups;
 
+        /// <summary>The boss this wave spawns (the first group whose enemy carries a BossData), or null.</summary>
+        public BulletHell.Bosses.BossData FindBoss()
+        {
+            for (int i = 0; i < groups.Length; i++)
+                if (groups[i].Enemy != null && groups[i].Enemy.Boss != null)
+                    return groups[i].Enemy.Boss;
+            return null;
+        }
+
 #if UNITY_EDITOR
         /// <summary>Editor-only: used by setup scripts and tests.</summary>
         public void Set(params SpawnGroup[] newGroups)

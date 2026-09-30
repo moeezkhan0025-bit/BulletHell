@@ -48,7 +48,8 @@ Art rules (sizes, perspective, pivots, height classes, colors, naming): Docs/ART
 
 ## Animation approach (hybrid: draw key poses, let code do the motion)
 - Default for enemies/NPCs: 1-3 drawn key poses (idle, windup, attack) + procedural motion. Player: a short
-  drawn run cycle (4 frames) + procedural motion. Bosses/merchant: drawn in PARTS and rigged.
+  drawn run cycle (4 frames) + procedural motion. Bosses (for now): drawn key poses on the 2560 boss template
+  + procedural motion, like enemies (rigging bosses in parts is deferred to a later milestone). Merchant: drawn in PARTS and rigged.
 - Procedural toolkit (reusable components, values in data assets, all optional per character):
   - Motion: idle breathing (scale sine), hop-walk bob + tilt while moving, lean into movement,
     squash/stretch on start/stop/land, facing flip with a quick squash.
@@ -277,7 +278,7 @@ PlayStation names below; Xbox = RB / RT / LS click / A B X Y, Switch = R / ZR / 
 - Waves and rounds: WaveData = list of spawn entries (enemy, count, spawn edge/point, delay between spawns).
   RoundData = ordered list of waves. A round ends when its last wave is fully cleared.
   Authored RoundData for rounds 1-7; beyond the authored rounds, reuse the last ones with scaling.
-  Boss rounds (3, 5, 7) use a tougher placeholder wave until bosses are built.
+  Round 3 is the Pumpking alone (see Bosses); rounds 5 and 7 use a tougher placeholder wave until their bosses are built.
 - Arena progression: each RoundData picks an arena LAYOUT (ArenaLayoutData: obstacle and trap placements
   on the same colosseum). Hazards ramp up over the run:
   - Round 1: NO traps or hazard zones. A few obstacles for cover only.
@@ -319,7 +320,33 @@ PlayStation names below; Xbox = RB / RT / LS click / A B X Y, Switch = R / ZR / 
     (bubble -> arm -> ring). Selecting an EMPTY arm slot jumps to the Arms tab to place an arm; removing an
     arm returns it with its armaments attached. Mouse/touch: click an arm, click a bubble, click an item.
   - Shoulder buttons (L1/R1) switch tabs; Circle backs out one level; a "Fight!" button starts the round.
-- Bosses: multi-phase, each phase = list of attack patterns.
+- Bosses: multi-phase, each phase = list of attack patterns. See the Bosses section.
+
+## Bosses
+- A boss is an Enemy with `EnemyBehavior.Boss`: `BossBehavior` (Scripts/AI) picks and winds up attacks, `BossController` +
+  `BossJump` (Scripts/Bosses, on the `Boss.prefab` VARIANT of Enemy.prefab, spawned from its own small BossPool) do the jump,
+  the smash, the phase transition and the death sequence. All numbers live in a BossData asset (Data/Bosses) referenced by
+  the boss's EnemyData: HP (replaces the EnemyData's), settle time, distance band, phases (threshold, speed multiplier, attack
+  list with pattern preset / windup / volleys / interval / angle step / cooldown / weight, glow), jump (a JumpTuning asset),
+  smash, transition and death settings. Attack presets are AttackPattern assets; boss bullets use the Hot Magenta style.
+- Every attack has its own readable windup (toolkit inflate + tremble + DANGER pulse; the Fast Shot adds a warning line, the
+  jump a crouch and a DANGER landing ring). Bosses are ground-based; the jump is fake height like the player's (shadow stays
+  on the ground, body sorts on the Airborne layer while high). Bullets still hit the airborne boss [tunable, `HittableInAir`].
+- Screen-space boss health bar (name plate, fill, trail, phase tick) at the top of the combat HUD, driven by `BossEvents`.
+  The Boss Round intro banner names the boss. The boss's death is a multi-stage sequence (stagger + flashes + debris,
+  squash, dissolve, coin burst) that ends the round only when it finishes (`IDeathSequence` on Enemy).
+- **Pumpking (round 3, done):** ground boss, ~2.7 P tall as drawn (kept at the standard painted-character import, pivot at the
+  art's real base), one idle pose (`ArtSource/Bosses/Pumpking/boss_pumpking_idle.png`) + toolkit motion; windup/attack poses
+  fall back to idle until drawn. 420 HP (x the round's difficulty), footprint radius 0.7, hurtbox 3.0 x 2.6.
+  - Phase 1: Circle Spread (16-bullet ring x2, rotated), Fast Shot (1 aimed shot along a warning line), Jump & Smash (jumps
+    onto the player's spot, landing ring telegraph, radial ground damage r=1.9 that hurts grounded players AND enemies, then 3
+    quick rings).
+  - Phase 2 at 50% HP: 1.6 s transition (invulnerable, roar inflate, flash cycles, shake, persistent shader glow), then denser
+    offset rings (24 bullets x3), 3-shot Fast Shot bursts, Jump & Smash chains into a second jump, movement x1.35.
+  - Tuning: `Data/Bosses/Boss_Pumpking.asset` (+ `Jump_Pumpking`, `Motion/Hit/LifeCycle_Pumpking`, `Pattern_Pumpking*`).
+- Debug: Pause screen row has **Boss** (skip to the first boss round) and **HP- / HP+** (living boss's health in 10% steps);
+  `GameConfig.debugStartRound` (editor/dev builds) makes New Game start at that round (0 = off).
+- Rounds 5 and 7: still the placeholder boss wave. [TBD: their bosses.]
 
 ## Architecture rules (follow these strictly)
 - All tunable data lives in ScriptableObjects: WeaponArmData, AmmoTypeData, ArmamentData,
@@ -424,7 +451,21 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
       dimmed incompatible items, controller-first navigation.
 - [x] M9d UI foundation + bug bash: shared UI components (card, tooltip, button, panel), consistent focus
       and navigation, screen transitions, UI sound hooks; work through Docs/BUGS.md.
-- [ ] M10 Bosses (round 3 first, then 5 and 7).
+- [x] M10 (round 3) The Pumpking: BossData/BossBehavior/BossController/BossJump, Circle Spread / Fast Shot / Jump & Smash,
+      phase 2 at 50% with transition + glow, boss health bar + named intro banner, big death sequence, Boss prefab variant +
+      BossPool, debug Boss / HP buttons and debugStartRound. Painted idle hooked up (windup/attack poses pending).
+- [ ] M10 (rounds 5 and 7) Bosses.
+- [~] P1 Performance pass (before M11): PARTIAL. Tools built (overlay F8, stress test F10 / `-perfstress`, PerfLogger CSV, `Tools/perf_analyze.ps1`, `Scripts/Perf`),
+      baseline recorded (uncapped dev build, stress test: ~165 fps avg, p99 ~14 ms, occasional 30-70 ms hitches with the cause not yet attributed, ~180 GC allocs/frame);
+      fixes and the final test are tabled until content is near complete (see Docs/BUGS.md "P1 hitches"). Run: build a Development player to `Builds/Perf`, then
+      `BulletHell.exe -screen-width 1920 -screen-height 1080 -screen-fullscreen 0 -perfstress -perflabel X -perfseconds 90 -perfenemies 80 -perfvsync 0`; CSVs go to
+      `%USERPROFILE%\AppData\LocalLow\DefaultCompany\BulletHell_Meats&Sweets\PerfLogs`. Original scope:
+      measure first, then fix. Toggleable performance overlay (FPS, frame-time graph, GC alloc
+      per frame, active bullets/enemies/particles/pool counts), PerfLogger (frame time, GC alloc, top Profiler markers via
+      ProfilerRecorder -> CSV), debug stress test (max enemies, Pumpking's heaviest patterns, Ricochet + Pierce + Homing on all
+      arms), dev-build run + CSV analysis (worst spikes and causes reported before any fix), fixes for the top offenders
+      (per-frame allocations, unpooled objects, flow-field / line-of-sight / physics query costs, SRP batching warning, overdraw
+      and shaders, frame pacing, hitstop stutter), before/after numbers. Target: steady 60 fps, no visible hitches in the stress test.
 - [ ] M11 Themed UI/visual pass: candy-colosseum style for menus, HUD, Shop, Armory, customization; final art.
 - [ ] M12 Polish: touch controls (incl. jump button), button glyphs, juice, announcer/audio, performance pass
       (the performance pass also covers the 2D SRP Batcher warning on Mat_SpriteCharacter / Mat_SpriteOutline: _TexelSize / _ST properties in the Sprite Unlit graphs).

@@ -22,6 +22,8 @@ namespace BulletHell.Enemies
 
         [SerializeField] private CombatTuning tuning;
         [SerializeField] private EnemyPool enemyPool;
+        [Tooltip("The Boss prefab's pool; enemies whose data carries a BossData spawn from it. Optional.")]
+        [SerializeField] private EnemyPool bossPool;
         [SerializeField] private ProjectilePool projectiles;
         [SerializeField] private CoinField coins;
         [SerializeField] private PlayerHealth player;
@@ -110,7 +112,9 @@ namespace BulletHell.Enemies
             phase = Phase.Fighting;
 
             string sub = waveIndex == 0 ? (round.IsBossRound ? "BOSS ROUND" : $"Round {roundNumber}") : null;
-            banner.Show($"Wave {waveIndex + 1}/{round.Waves.Length}", sub, tuning.BannerSeconds);
+            BulletHell.Bosses.BossData boss = round.Waves[waveIndex].FindBoss();
+            string main = boss != null ? boss.DisplayName.ToUpperInvariant() : $"Wave {waveIndex + 1}/{round.Waves.Length}";
+            banner.Show(main, sub, tuning.BannerSeconds);
         }
 
         private void Update()
@@ -161,20 +165,34 @@ namespace BulletHell.Enemies
                 position = SpawnPlacement.Position(request.Pattern, request.Index, request.Count, SpawnRect(), player.FeetPosition,
                                                    tuning.MinSpawnDistanceFromPlayer, tuning.RingRadius, tuning.RowWidthFraction);
             if (inArena)
-                position = arena.Grid.NearestFree(position, GameServices.Ensure().Config.Perspective.EnemyFootprintRadiusFor(request.Enemy.Size));   // never inside an obstacle or wall
+                position = arena.Grid.NearestFree(position, request.Enemy.FootprintRadiusFor(GameServices.Ensure().Config.Perspective));   // never inside an obstacle or wall
 
-            Enemy enemy = enemyPool.Get();
+            Enemy enemy = PoolFor(request.Enemy).Get();
             enemy.Initialize(request.Enemy, position, difficulty, projectiles, player, inArena ? arena : null, navigation);
             enemy.Defeated += OnEnemyDefeated;
             alive.Add(enemy);
         }
+
+        /// <summary>
+        /// Development tools only (the stress test): spawns `count` enemies of a type at once, scattered in the arena, on top of
+        /// the round's waves. Does nothing outside a round's combat. They count as alive, so the wave waits for them.
+        /// </summary>
+        public void DebugSpawn(EnemyData enemy, int count)
+        {
+            if (enemy == null || phase == Phase.Idle)
+                return;
+            for (int i = 0; i < count; i++)
+                Spawn(new SpawnRequest(enemy, SpawnPattern.Scatter, i, count));
+        }
+
+        private EnemyPool PoolFor(EnemyData data) => data.Boss != null && bossPool != null ? bossPool : enemyPool;
 
         private void OnEnemyDefeated(Enemy enemy)
         {
             enemy.Defeated -= OnEnemyDefeated;
             alive.Remove(enemy);
             coins.Drop(enemy.Position, enemy.Data.CoinValue);
-            enemyPool.Release(enemy);
+            PoolFor(enemy.Data).Release(enemy);
         }
 
         private void ReleaseAllEnemies()
@@ -182,7 +200,7 @@ namespace BulletHell.Enemies
             for (int i = alive.Count - 1; i >= 0; i--)
             {
                 alive[i].Defeated -= OnEnemyDefeated;
-                enemyPool.Release(alive[i]);
+                PoolFor(alive[i].Data).Release(alive[i]);
             }
             alive.Clear();
         }

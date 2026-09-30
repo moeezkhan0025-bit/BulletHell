@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7948270311cf6c7458ee5d6397a9ff37, type: 3}
+  m_Name: Enemy_Pumpking
+  m_EditorClassIdentifier: BulletHell::BulletHell.Enemies.EnemyData
+  displayName: Pumpking
+  color: {r: 0.95, g: 0.55, b: 0.15, a: 1}
+  size: 2.76
+  paintedSprite: {fileID: 21300000, guid: b7fdb8babe80bec4d9c769166f7eccbb, type: 3}
+  paintedHeight: 3.55
+  paintedFootprintRadius: 0.7
+  paintedHurtboxSize: {x: 3, y: 2.6}
+  paintedHurtboxOffsetX: 0
+  maxHealth: 420
+  hitFlashDuration: 0.06
+  motionOverride: {fileID: 11400000, guid: efd2b6b4f17a0a5488fab073b9898d47, type: 2}
+  hitOverride: {fileID: 11400000, guid: c373a9ee026932f4e9d1f79b1ea2b874, type: 2}
+  lifeCycleOverride: {fileID: 11400000, guid: b2e0e3223e38ba84595162cddce368c9, type: 2}
+  coinValue: 120
+  attacks: []
+  behavior: 6
+  moveSpeed: 1.6
+  moveRange: 3
+  moveAxis: {x: 1, y: 0}
+  acceleration: 6
+  brake: 10
+  turnRate: 180
+  contactDamage: 1
+  preferredDistance: 5
+  distanceTolerance: 0.8
+  strafeSpeedFraction: 0.6
+  strafeSwitchSeconds: {x: 1.5, y: 3.5}
+  shotWarningSeconds: 0
+  sentryRange: {x: 3, y: 7}
+  heatPerShot: 0.06
+  coolPerSecond: 0.25
+  restartHeat: 0.35
+  overheatedSpeedFraction: 0.35
+  chargeTriggerRange: 6
+  chargeMinRange: 2.5
+  telegraphSeconds: 0.9
+  telegraphLockSeconds: 0.3
+  dashSpeed: 11
+  dashDistance: 7
+  recoverSeconds: 1
+  chargeCooldown: 1.2
+  sniperShot: {fileID: 0}
+  aimSeconds: 1.3
+  aimLockSeconds: 0.4
+  sniperCooldown: 2.6
+  boss: {fileID: 11400000, guid: db3b28fde01cbc7478fa3bd11deb8822, type: 2}

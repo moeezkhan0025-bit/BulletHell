@@ -19,10 +19,12 @@ namespace BulletHell.Enemies
         private readonly SentryBehavior sentry = new SentryBehavior();
         private readonly ChargerBehavior charger = new ChargerBehavior();
         private readonly SniperBehavior sniper = new SniperBehavior();
+        private readonly BossBehavior boss = new BossBehavior();
         private readonly EnemyAgent agent = new EnemyAgent();
 
         private IEnemyBehavior behavior;
         private StatusEffects status;
+        private BulletHell.Bosses.BossController bossController;   // only on the Boss prefab
         private WarningLine line;
 
         /// <summary>Movement state for the debug view; null-safe when the enemy patrols.</summary>
@@ -30,7 +32,11 @@ namespace BulletHell.Enemies
         public bool IsActive => behavior != null;
         public SentryBehavior Sentry => behavior == sentry ? sentry : null;
 
-        private void Awake() => TryGetComponent(out status);
+        private void Awake()
+        {
+            TryGetComponent(out status);
+            TryGetComponent(out bossController);
+        }
 
         private void OnDestroy() => line?.Destroy();
 
@@ -66,6 +72,7 @@ namespace BulletHell.Enemies
             agent.Difficulty = difficulty;
             agent.Line = line;
             agent.Transform = transform;
+            agent.Boss = bossController;
             agent.Velocity = Vector2.zero;
 
             behavior = chosen;
@@ -93,12 +100,14 @@ namespace BulletHell.Enemies
                 case EnemyBehavior.Sentry: return sentry;
                 case EnemyBehavior.Charger: return charger;
                 case EnemyBehavior.Sniper: return sniper;
+                case EnemyBehavior.Boss: return boss;
                 default: return null;
             }
         }
 
         private void Update()
         {
+            using var _ = BulletHell.Perf.PerfMarkers.EnemyBrain.Auto();
             if (behavior == null || !agent.Enemy.IsAlive)
                 return;
 

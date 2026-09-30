@@ -50,6 +50,7 @@ namespace BulletHell.UI
 
         private void Update()
         {
+            using var _ = BulletHell.Perf.PerfMarkers.DebugOverlay.Auto();
             Vector2 move = input.Move;
             Vector2 aim = arms.AimStick;
             int moveX = Mathf.RoundToInt(move.x * 100f);

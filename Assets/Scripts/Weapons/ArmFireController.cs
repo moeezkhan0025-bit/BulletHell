@@ -32,6 +32,9 @@ namespace BulletHell.Weapons
         private readonly SpinUp[] spins = new SpinUp[ArmLoadout.SlotCount];
         private readonly LineRenderer[] beams = new LineRenderer[ArmLoadout.SlotCount];
 
+        /// <summary>Development tools only (the stress test): every arm fires continuously whatever is selected.</summary>
+        public bool DebugFireAll { get; set; }
+
         /// <summary>Heat state of the arm in a slot (also valid for empty slots).</summary>
         public HeatComponent GetHeat(int slot) => heat[slot];
 
@@ -69,6 +72,7 @@ namespace BulletHell.Weapons
 
         private void Update()
         {
+            using var _ = BulletHell.Perf.PerfMarkers.ArmsFire.Auto();
             float dt = Time.deltaTime;
             int selected = arms.SelectedArm;
             bool held = input.FireHeld;
@@ -80,7 +84,7 @@ namespace BulletHell.Weapons
             {
                 ArmVisual arm = arms.GetArm(slot);
                 HeatComponent slotHeat = heat[slot];
-                bool firing = ammo != null && arm != null && held && slot == selected && !slotHeat.IsOverheated;
+                bool firing = ammo != null && arm != null && (DebugFireAll || (held && slot == selected)) && !slotHeat.IsOverheated;
                 bool beaming = firing && ammo.Behavior == AmmoBehavior.Beam;
 
                 float spin = spins[slot].Tick(dt, firing && !beaming, spinSettings);

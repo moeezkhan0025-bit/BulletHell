@@ -43,6 +43,7 @@ namespace BulletHell.Enemies
         private StatusEffects status;
         private EnemyAttacker attacker;
         private NavigationService navigation;
+        private IDeathSequence deathSequence;   // a boss plays its own death; null on ordinary enemies
 
         public EnemyData Data => data;
         public EnemyBrain Brain => brain;
@@ -71,6 +72,7 @@ namespace BulletHell.Enemies
         {
             TryGetComponent(out status);
             TryGetComponent(out attacker);
+            TryGetComponent(out deathSequence);
             health.Died += OnDied;
         }
 
@@ -136,6 +138,8 @@ namespace BulletHell.Enemies
                 hurtboxOffset = new Vector2(0f, -size * perspective.EnemyFeetInset + hurtbox.y * 0.5f);
             }
             rig.localPosition = new Vector3(0f, lift, 0f);
+            // A capsule wider than it is tall must lie sideways, or Unity collapses it to a circle of its height.
+            hitbox.direction = hurtbox.x > hurtbox.y ? CapsuleDirection2D.Horizontal : CapsuleDirection2D.Vertical;
             hitbox.size = hurtbox;
             hitbox.offset = hurtboxOffset;
 
@@ -187,9 +191,6 @@ namespace BulletHell.Enemies
         private void OnDied()
         {
             telegraph.ClearWindup();
-            FeedbackHub.SpawnGhost(body, transform, lifeCycle);
-            if (lifeCycle != null && lifeCycle.SplatParticles > 0)
-                FeedbackHub.Play(VfxKind.Debris, BodyCenter, lifeCycle.SplatParticles);
             if (status != null)
                 status.Clear();
             if (attacker != null)
@@ -198,6 +199,22 @@ namespace BulletHell.Enemies
                 brain.Stop();
             if (navigation != null)
                 navigation.Unregister(this);
+
+            // A boss plays its own death on its body and finishes later; it can't be hit meanwhile (IsAlive is already false).
+            if (deathSequence != null && deathSequence.TryBegin(FinishDeath))
+            {
+                hitbox.enabled = false;
+                return;
+            }
+
+            FeedbackHub.SpawnGhost(body, transform, lifeCycle);
+            if (lifeCycle != null && lifeCycle.SplatParticles > 0)
+                FeedbackHub.Play(VfxKind.Debris, BodyCenter, lifeCycle.SplatParticles);
+            FinishDeath();
+        }
+
+        private void FinishDeath()
+        {
             SetAlive(false);
             Defeated?.Invoke(this);
         }

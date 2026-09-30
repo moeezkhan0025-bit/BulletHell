@@ -70,7 +70,12 @@ namespace BulletHell.Core
         [Tooltip("Procedural motion, hit feedback, hitstop, camera shake and particle presets.")]
         [SerializeField] private FeedbackTuning feedback;
 
+        [Header("Debug (editor and development builds only)")]
+        [Tooltip("New runs start at this round (e.g. 3 to go straight to the first boss). 0 or 1 = off. Ignored in release builds.")]
+        [SerializeField, Min(0)] private int debugStartRound;
+
         public AssetRegistry Registry => registry;
+        public int DebugStartRound => debugStartRound;
         public FeedbackTuning Feedback => feedback;
         public PerspectiveTuning Perspective => perspective != null ? perspective : PerspectiveTuning.Fallback;
         public ArenaArt ArenaArt => arenaArt;

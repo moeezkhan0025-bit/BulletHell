@@ -30,6 +30,23 @@ namespace BulletHell.Core
             Changed?.Invoke();
         }
 
+        /// <summary>Sets the current value outright (debug). Dropping to 0 dies the ordinary way; nothing revives a dead thing.</summary>
+        public void SetCurrent(float value)
+        {
+            if (!IsAlive)
+                return;
+            value = Mathf.Clamp(value, 0f, Max);
+            if (Mathf.Approximately(value, Current))
+                return;
+            Current = value;
+            Changed?.Invoke();
+            if (Current <= 0f)
+            {
+                Current = 0f;
+                Died?.Invoke();
+            }
+        }
+
         public void TakeDamage(float amount)
         {
             if (!IsAlive || amount <= 0f)

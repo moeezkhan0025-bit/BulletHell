@@ -27,6 +27,8 @@ namespace BulletHell.Save
 
         /// <summary>Every registered armament (the debug tools give any of them).</summary>
         public IReadOnlyList<ArmamentData> Armaments => armaments;
+        /// <summary>Every registered arm type (the stress test builds a full loadout from them).</summary>
+        public IReadOnlyList<WeaponArmData> Arms => arms;
         public WeaponArmData GetArm(string id) => Find(ref armsById, arms, a => a.Id, id);
         public ArmamentData GetArmament(string id) => Find(ref armamentsById, armaments, a => a.Id, id);
         public AmmoTypeData GetAmmo(string id) => Find(ref ammoById, ammoTypes, a => a.Id, id);

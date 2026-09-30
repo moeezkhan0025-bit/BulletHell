@@ -31,16 +31,17 @@ namespace BulletHell.EditorTools
         private static readonly (string key, string asset)[] Roster =
         {
             ("G", "Enemy_Grunt"), ("W", "Enemy_Weaver"), ("R", "Enemy_Ringer"), ("S", "Enemy_Spiraler"),
-            ("C", "Enemy_Charger"), ("N", "Enemy_Sniper"), ("B", "Enemy_BossPlaceholder"),
+            ("C", "Enemy_Charger"), ("N", "Enemy_Sniper"), ("B", "Enemy_BossPlaceholder"), ("P", "Enemy_Pumpking"),
         };
 
-        // Each group: enemy key, count, spawn pattern, delay. Boss rounds (3, 5, 7) stay tougher placeholder rounds.
+        // Each group: enemy key, count, spawn pattern, delay. Round 3 is the Pumpking alone (M10; run M10 setup first so
+        // Enemy_Pumpking exists); rounds 5 and 7 stay tougher placeholder rounds until their bosses are built.
         // Round 1 chasers with one shooter; Skirmishers from round 2; Chargers from 3, Sentries from 4, Snipers from 5.
         private static readonly string[][][] Rounds =
         {
             new[] { new[] { "G:3:Gates" }, new[] { "G:3:Gates", "W:1:Scatter:1.5" } },                                          // 1
             new[] { new[] { "G:4:Gates" }, new[] { "W:2:Gates", "G:2:Scatter" }, new[] { "W:2:Gates", "G:3:Scatter" } },         // 2
-            new[] { new[] { "G:4:Gates", "W:1:Scatter:2" }, new[] { "W:2:Gates", "C:1:Gates:1" }, new[] { "B:1:Gates", "G:2:Scatter:2" } }, // 3 boss
+            new[] { new[] { "P:1:Row" } },                                                                                        // 3 boss: the Pumpking
             new[] { new[] { "G:3:Gates", "W:2:Scatter" }, new[] { "R:1:Gates", "G:3:Scatter:1" }, new[] { "C:1:Gates", "G:2:Scatter", "W:1:Scatter" } },   // 4 (vents from here: one fewer Charger)
             new[] { new[] { "R:1:Gates", "C:1:Gates:1", "G:3:Scatter" }, new[] { "N:1:Gates", "W:3:Scatter" }, new[] { "B:1:Gates", "R:1:Ring:1" } }, // 5 boss
             new[] { new[] { "G:4:Gates", "N:1:Scatter:1" }, new[] { "S:1:Gates", "W:2:Scatter", "C:1:Gates:1.5" },

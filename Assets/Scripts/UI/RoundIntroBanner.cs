@@ -57,8 +57,10 @@ namespace BulletHell.UI
         {
             RoundData data = config.GetRound(round);
             bool boss = data != null && data.IsBossRound;
+            BulletHell.Bosses.BossData bossData = data != null ? data.FindBoss() : null;
+            string challenger = bossData != null ? $"THE {bossData.DisplayName.ToUpperInvariant()} enters the colosseum!" : "A mighty challenger enters the colosseum!";
             label.text = boss
-                ? $"<color={BossColor}>BOSS ROUND {round}</color>\n<size=56>A mighty challenger enters the colosseum!</size>"
+                ? $"<color={BossColor}>BOSS ROUND {round}</color>\n<size=56>{challenger}</size>"
                 : $"ROUND {round}\n<size=56>Get ready, gladiator!</size>";
             phase = Phase.Title;
             timeLeft = tuning.IntroBannerSeconds;
