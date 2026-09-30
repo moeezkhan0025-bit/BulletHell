@@ -27,7 +27,10 @@ namespace BulletHell.UI
             for (int i = 0; i < hearts.Length; i++)
             {
                 hearts[i].gameObject.SetActive(i < total);
-                hearts[i].sprite = i < health ? fullHeart : emptyHeart;
+                UITheme theme = UITheme.Current;
+                Sprite full = theme != null && theme.HeartFull != null ? theme.HeartFull : fullHeart;
+                Sprite empty = theme != null && theme.HeartEmpty != null ? theme.HeartEmpty : emptyHeart;
+                hearts[i].sprite = i < health ? full : empty;
             }
 
             // Pop the hearts that just changed (lost or regained); the first draw is silent.

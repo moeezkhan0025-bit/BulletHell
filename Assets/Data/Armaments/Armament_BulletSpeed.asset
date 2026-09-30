@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.ArmamentData
   id: Armament_BulletSpeed
   displayName: Velocity
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: ee8fb7c46ba46684d85131dd5fb7d205, type: 3}
   rarity: 0
   priceTier: 1
   tags: 1

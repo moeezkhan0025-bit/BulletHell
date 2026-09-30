@@ -1,4 +1,6 @@
+using BulletHell.UI;
 using BulletHell.Weapons;
+using TMPro;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -22,8 +24,8 @@ namespace BulletHell.Armory
         [SerializeField] private Image rim;
         [SerializeField] private Image inner;
         [SerializeField] private Image icon;
-        [SerializeField] private Text iconLetter;
-        [SerializeField] private Text plus;
+        [SerializeField] private TMP_Text iconLetter;
+        [SerializeField] private TMP_Text plus;
         [SerializeField] private Color emptyRim = new Color(0.75f, 0.75f, 0.8f, 0.9f);
         [SerializeField, Min(1f)] private float focusScale = 1.25f;
         [SerializeField, Min(0f)] private float bobHeight = 7f;
@@ -46,7 +48,27 @@ namespace BulletHell.Armory
         public void Set(ArmamentData armament, Color rarityColor, Sprite placeholder)
         {
             bool filled = armament != null;
-            rim.color = filled ? rarityColor : emptyRim;
+            UITheme theme = UITheme.Current;
+            if (theme != null)
+            {
+                Sprite rimSprite = filled ? theme.BubbleFilledRim : theme.BubbleEmpty;
+                if (rimSprite != null)
+                {
+                    rim.sprite = rimSprite;
+                    rim.type = Image.Type.Simple;
+                    rim.preserveAspect = true;
+                }
+                if (outline != null && theme.BubbleFocused != null)
+                {
+                    outline.sprite = theme.BubbleFocused;
+                    outline.type = Image.Type.Simple;
+                    outline.preserveAspect = true;
+                }
+                if (inner != null)
+                    inner.enabled = false;
+                plus.color = theme.InkSoil;
+            }
+            rim.color = filled ? rarityColor : Color.white;
             plus.enabled = !filled;
             bool hasIcon = filled && armament.Icon != null;
             icon.enabled = filled && (hasIcon || placeholder != null);

@@ -4,6 +4,7 @@
     "references": [
         "Unity.InputSystem",
         "UnityEngine.UI",
+        "Unity.TextMeshPro",
         "PrimeTween.Runtime",
         "Unity.2D.Animation.Runtime"
     ],

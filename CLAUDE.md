@@ -1,10 +1,30 @@
-# Project: Bullet Hell (working title)
+# Project: VOX VEGETALLIS (formerly "Bullet Hell", the working title)
 
 Roguelike arcade bullet hell, top-down 2D. Theme: the player is a CANDY GLADIATOR fighting food-based
 combatants in a VEGETABLE COLOSSEUM (arena, crowd, announcer vibe; bright, playful, readable).
 Developed and playtested on Windows with a PS5 DualSense.
 Unity 6.3 LTS (6000.3), 2D URP, new Input System. Solo developer. I playtest every change myself.
 Project root: C:\Dev\BulletHell. Version control: Git (GitHub private repo), shell: Git Bash.
+Game title everywhere: VOX VEGETALLIS (Main Menu logo, window title). Unity Product Name: "VoxVegetallis" (saves live in
+`%USERPROFILE%\AppData\LocalLow\DefaultCompany\VoxVegetallis\`).
+
+## UI theme: VoxVegetallis (the ONLY UI theme)
+The UI has exactly one look, "VOX VEGETALLIS - Garden Colosseum": marble panels, soil-brown outlines with hard drop shadows, corn-gold focus,
+leaf-green checker trim strips, tomato hearts and rarity colors (common stone, rare leaf, epic carrot, legendary gold). There is no
+alternate theme and no toggle; restyling means editing the theme asset or the kit art.
+- Art kit: `Assets/Art/UI/VoxKit` (2x art, imported at PPU 200 so it draws at half size on the 1080p canvas; 9-slice borders and tokens come from
+  `vox_ui_kit_manifest.json`, applied by the editor tool `BulletHell/Vox/1 Import Kit Sprites`). Mockups to match: `Docs/Reference/UI` (Main Menu,
+  HUD, Shop, Armory, Character Creation, Settings). Screenshots of the built screens: `Docs/Screenshots/VoxUI`.
+- Theme asset: `Assets/Data/UI/VoxVegetallis.asset` (`UITheme`, on GameConfig). It maps roles to kit sprites, the palette and rarity colors,
+  fonts, heat colors (leaf -> carrot -> tomato), metrics (outline 6, shadow 9, focus lift 12 px / 0.12 s, buy 0.35 s, bubble pop 0.25 s / stagger 0.05 s,
+  screen transition 0.2 s) and UI sounds. Screens never reference kit sprites directly; `ThemedImage`, `ThemedTrim` (tiled checker), `ThemedText`,
+  `ThemedButton` and `FocusDecor` (trims, laurels, lift on focus) read the theme. Built by `BulletHell/Vox/4 Build Theme`.
+- Fonts (TextMeshPro, SIL OFL, see Docs/CREDITS.md): Cinzel Decorative 700/900 (titles, logo), Lilita One (buttons, numbers), Nunito 600/800
+  (body, small caps labels). All UI text is `TMP_Text`; never legacy `UnityEngine.UI.Text`. Outlines are shared material presets (`ThemedText`), not
+  TMP's per-label outline properties (those create per-label materials that go stale when the font changes).
+- Screens are built by the editor tools `BulletHell/Vox/5..9` (`VoxMenuScreens`, `VoxGameScreens`, `VoxShopArmory`, helpers in `VoxUi`); they rebuild the
+  screen contents and keep the root objects and wiring. Re-run them after changing a layout. Earlier setup scripts (M4..M9d, CC1) are history and
+  build the old look; do not re-run their screen builders. `VoxShots` renders any open scene to a PNG for checking against the mockups.
 
 ## Visual style and perspective
 Reference: Docs/Reference/concept_arena.png (target look - not a game asset).
@@ -69,9 +89,9 @@ Art rules (sizes, perspective, pivots, height classes, colors, naming): Docs/ART
   with a free tween library (PrimeTween or DOTween - pick one and use it everywhere).
 
 ## HUD (combat)
-- Bottom-left: gladiator portrait (reflects chosen cosmetics), 5 hearts = 5 HP (1 heart per hit),
-  and a heat bar under them showing the SELECTED arm's heat (fills while firing heat ammo, changes color and
-  flashes when overheated, drains while cooling). No arm selected -> bar shows the last selected arm, dimmed.
+- Bottom-left: gladiator portrait (reflects chosen cosmetics), 5 TOMATO hearts = 5 HP (1 heart per hit),
+  inside the checkered portrait ring, and a heat bar beside them showing the SELECTED arm's heat (fills while firing heat ammo, tinted leaf -> carrot -> tomato
+  as it rises, flashes tomato/marble when overheated, drains while cooling). Top center: round / wave pill; top right: currency pill. No arm selected -> bar shows the last selected arm, dimmed.
 - Bottom-right: 4 ammo slot icons in button order, each with its face-button glyph. Active slot highlighted,
   empty slots shown as empty frames, hold-to-replace progress drawn around the slot being replaced.
   AmmoTypeData gets an icon field.
@@ -102,8 +122,8 @@ Boot scene (bootstrapper) -> Main Menu scene -> Game scene.
   New Game with an existing run save asks to confirm overwriting it.
 - Settings (from Main Menu and Pause): master / music / SFX volume, screen shake on/off, controller
   vibration on/off, aim sensitivity (scales the InputTuning thresholds within safe limits), show debug
-  overlay (dev builds), and on PC fullscreen/windowed + resolution. Applied immediately, saved in the
-  settings file, Back returns to wherever Settings was opened from.
+  overlay (dev builds), and on PC fullscreen/windowed + resolution. Laid out on tabs (Audio, Video, Controls, Gameplay; L1/R1 switch) with sliders,
+  toggles and arrow rows. Applied immediately, saved in the settings file, Back returns to wherever Settings was opened from.
 - New Game -> Gladiator customization (cosmetics) -> Round intro -> Combat.
   Continue skips customization and resumes at the Shop for the saved round.
 - Round intro: every round starts with a banner/announcer moment ("Round 1 - Begin!", boss rounds get
@@ -364,7 +384,9 @@ PlayStation names below; Xbox = RB / RT / LS click / A B X Y, Switch = R / ZR / 
 
 ## Folder layout
 Assets/
-  Art/ (Player, Arms, Placeholder)
+  Art/ (Player, Arms, Placeholder, UI/VoxKit, UI/Backdrop)
+  Fonts/ (Cinzel Decorative, Lilita One, Nunito: TTFs, TMP SDF font assets, OFL texts)
+  TextMesh Pro/ (Unity's TMP Essential Resources)
   Data/ (Arms, Loadouts, Ammo, Armaments, Pickups, Shop, Cosmetics, Arenas, Traps, Settings, Enemies, Waves, Bosses, Input)
   Prefabs/
   Scenes/ (Boot, MainMenu, Game)   (Shop and Armory are UI states inside Game)
@@ -436,8 +458,12 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
       jump height, footprints and nav radius retuned. ScaleTestArt renamed ArenaArt (backdrop only).
 - [x] Scale lock: after playtesting 0.75x-1.5x, character scale locked at 1.15x of the original spec (player 315->273.9 PPU, arms 400->347.8,
       painted enemy 220->191.3, enemy sizes, muzzles, ring, jump, footprints, nav radius re-baked); temporary F5 scale test removed.
-- [x] UI1 UI theme: UITheme asset (roles -> sprites/colors/font/sounds) on GameConfig, ThemedImage/ThemedButton read it, dobo Mega Cozy
-      demo sprites copied to Assets/UI/DoboCozy with 9-slice, applied to all screens + HUD frames, Docs/CREDITS.md.
+- [x] UI1 UI theme: UITheme asset (roles -> sprites/colors/font/sounds) on GameConfig, ThemedImage/ThemedButton read it; its stand-in sprite pack was
+      replaced by the VoxVegetallis kit in UI2.
+- [x] UI2 VOX VEGETALLIS hot swap: the VoxVegetallis theme is the only UI theme (see "UI theme" above). Kit imported from its manifest, TMP fonts,
+      all legacy Text converted to TextMeshPro, Mega Cozy pack + theme removed, Main Menu / HUD / Shop / Armory / Character Creation / Settings rebuilt to
+      the mockups, game renamed to VOX VEGETALLIS, Product Name VoxVegetallis (save path changed, old saves not carried over).
+      Known differences from the mockups are logged in Docs/BUGS.md.
 - [x] CC1 Character Creation v2: paper-doll player (Body, Armor, Head, Accessory 1 head anchor, Accessory 2 back anchor) via 2D Animation
       Sprite Library + Sprite Resolver, CosmeticPartData assets (3 placeholder variants per slot, Playersprite = Body 1), new creation screen
       (live preview, slot cycling, Randomize on Square, "To the Arena!"), profile v2, HUD portrait from head + accessory 1.
@@ -459,7 +485,7 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
       baseline recorded (uncapped dev build, stress test: ~165 fps avg, p99 ~14 ms, occasional 30-70 ms hitches with the cause not yet attributed, ~180 GC allocs/frame);
       fixes and the final test are tabled until content is near complete (see Docs/BUGS.md "P1 hitches"). Run: build a Development player to `Builds/Perf`, then
       `BulletHell.exe -screen-width 1920 -screen-height 1080 -screen-fullscreen 0 -perfstress -perflabel X -perfseconds 90 -perfenemies 80 -perfvsync 0`; CSVs go to
-      `%USERPROFILE%\AppData\LocalLow\DefaultCompany\BulletHell_Meats&Sweets\PerfLogs`. Original scope:
+      `%USERPROFILE%\AppData\LocalLow\DefaultCompany\VoxVegetallis\PerfLogs`. Original scope:
       measure first, then fix. Toggleable performance overlay (FPS, frame-time graph, GC alloc
       per frame, active bullets/enemies/particles/pool counts), PerfLogger (frame time, GC alloc, top Profiler markers via
       ProfilerRecorder -> CSV), debug stress test (max enemies, Pumpking's heaviest patterns, Ricochet + Pierce + Homing on all

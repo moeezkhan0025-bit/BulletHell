@@ -1,4 +1,5 @@
 using System.Linq;
+using TMPro;
 using BulletHell.Core;
 using BulletHell.Input;
 using BulletHell.Save;
@@ -135,12 +136,12 @@ namespace BulletHell.EditorTools
             icon.preserveAspect = true;
             icon.raycastTarget = false;
 
-            Text letter = UiBuilder.CreateText("IconLetter", body, "?", 64, TextAnchor.MiddleCenter);
+            TMP_Text letter = UiBuilder.CreateText("IconLetter", body, "?", 64, TextAnchor.MiddleCenter);
             Place((RectTransform)letter.transform, new Vector2(0f, 20f), new Vector2(112f, 112f));
             letter.color = new Color(0.15f, 0.1f, 0.1f);
-            letter.fontStyle = FontStyle.Bold;
+            letter.fontStyle = FontStyles.Bold;
 
-            Text nameLabel = UiBuilder.CreateText("Name", body, "Name", 26, TextAnchor.MiddleCenter);
+            TMP_Text nameLabel = UiBuilder.CreateText("Name", body, "Name", 26, TextAnchor.MiddleCenter);
             var nameRect = (RectTransform)nameLabel.transform;
             nameRect.anchorMin = new Vector2(0f, 1f);
             nameRect.anchorMax = new Vector2(1f, 1f);
@@ -148,15 +149,15 @@ namespace BulletHell.EditorTools
             nameRect.anchoredPosition = new Vector2(0f, -8f);
             nameRect.sizeDelta = new Vector2(-24f, 56f);
             nameLabel.color = new Color(0.25f, 0.13f, 0.08f);
-            nameLabel.fontStyle = FontStyle.Bold;
-            nameLabel.horizontalOverflow = HorizontalWrapMode.Wrap;
-            nameLabel.resizeTextForBestFit = true;
-            nameLabel.resizeTextMinSize = 16;
-            nameLabel.resizeTextMaxSize = 26;
+            nameLabel.fontStyle = FontStyles.Bold;
+            nameLabel.textWrappingMode = TextWrappingModes.Normal;
+            nameLabel.enableAutoSizing = true;
+            nameLabel.fontSizeMin = 16;
+            nameLabel.fontSizeMax = 26;
 
-            Text rarityLabel = UiBuilder.CreateText("Rarity", body, "COMMON", 22, TextAnchor.MiddleCenter);
+            TMP_Text rarityLabel = UiBuilder.CreateText("Rarity", body, "COMMON", 22, TextAnchor.MiddleCenter);
             Place((RectTransform)rarityLabel.transform, new Vector2(0f, -50f), new Vector2(180f, 30f));
-            rarityLabel.fontStyle = FontStyle.Bold;
+            rarityLabel.fontStyle = FontStyles.Bold;
 
             RectTransform tagRect = Rect("PriceTag", body);
             tagRect.anchorMin = tagRect.anchorMax = new Vector2(0.5f, 0f);
@@ -167,9 +168,9 @@ namespace BulletHell.EditorTools
             tag.raycastTarget = false;
             var tagThemed = tagRect.gameObject.AddComponent<ThemedImage>();
             tagThemed.Role = ThemeRole.Tab;
-            Text price = UiBuilder.CreateText("PriceLabel", tagRect, "100", 32, TextAnchor.MiddleCenter);
+            TMP_Text price = UiBuilder.CreateText("PriceLabel", tagRect, "100", 32, TextAnchor.MiddleCenter);
             UiBuilder.Stretch((RectTransform)price.transform);
-            price.fontStyle = FontStyle.Bold;
+            price.fontStyle = FontStyles.Bold;
 
             RectTransform soldRect = Rect("Sold", body);
             UiBuilder.Stretch(soldRect);
@@ -178,11 +179,11 @@ namespace BulletHell.EditorTools
             soldImage.raycastTarget = false;
             var soldGroup = soldRect.gameObject.AddComponent<CanvasGroup>();
             soldGroup.blocksRaycasts = false;
-            Text soldText = UiBuilder.CreateText("SoldLabel", soldRect, "SOLD", 64, TextAnchor.MiddleCenter);
+            TMP_Text soldText = UiBuilder.CreateText("SoldLabel", soldRect, "SOLD", 64, TextAnchor.MiddleCenter);
             UiBuilder.Stretch((RectTransform)soldText.transform);
             soldText.color = new Color(1f, 0.25f, 0.2f);
-            soldText.fontStyle = FontStyle.Bold;
-            soldText.horizontalOverflow = HorizontalWrapMode.Overflow;
+            soldText.fontStyle = FontStyles.Bold;
+            soldText.textWrappingMode = TextWrappingModes.NoWrap;
             soldText.transform.localRotation = Quaternion.Euler(0f, 0f, 12f);
             soldRect.gameObject.SetActive(false);
 
@@ -245,10 +246,10 @@ namespace BulletHell.EditorTools
             header.sizeDelta = new Vector2(560f, 110f);
             header.gameObject.AddComponent<Image>();
             header.gameObject.AddComponent<ThemedImage>().Role = ThemeRole.Header;
-            Text title = UiBuilder.CreateText("Title", header, "Shop - round 1", 40, TextAnchor.MiddleCenter);
+            TMP_Text title = UiBuilder.CreateText("Title", header, "Shop - round 1", 40, TextAnchor.MiddleCenter);
             UiBuilder.Stretch((RectTransform)title.transform);
             title.color = new Color(0.16f, 0.32f, 0.06f);
-            title.fontStyle = FontStyle.Bold;
+            title.fontStyle = FontStyles.Bold;
 
             // Cards: 2 arms on top, 3 armaments below, the crate to the right of them.
             var armCards = new ShopCard[2];
@@ -261,7 +262,7 @@ namespace BulletHell.EditorTools
                 armamentCards[i] = Card(cardPrefab, stall, "ArmamentCard" + (i + 1), new Vector2(bottomX[i], -170f), CardSize);
             ShopCard crate = Card(cardPrefab, stall, "CrateCard", new Vector2(440f, -20f), new Vector2(240f, 330f));
 
-            Text message = UiBuilder.CreateText("Message", root, "", 30, TextAnchor.MiddleCenter);
+            TMP_Text message = UiBuilder.CreateText("Message", root, "", 30, TextAnchor.MiddleCenter);
             Place((RectTransform)message.transform, new Vector2(230f, -388f), new Vector2(1200f, 44f));
 
             // Currency (top-right)
@@ -272,15 +273,14 @@ namespace BulletHell.EditorTools
             currency.sizeDelta = new Vector2(340f, 96f);
             currency.gameObject.AddComponent<Image>();
             var currencyThemed = currency.gameObject.AddComponent<ThemedImage>();
-            currencyThemed.PixelScaleOverride = 4f;
             currencyThemed.Role = ThemeRole.Slot;
-            Text coinsLabel = UiBuilder.CreateText("Coins", currency, "Coins", 26, TextAnchor.MiddleLeft);
+            TMP_Text coinsLabel = UiBuilder.CreateText("Coins", currency, "Coins", 26, TextAnchor.MiddleLeft);
             Place((RectTransform)coinsLabel.transform, new Vector2(-70f, 0f), new Vector2(150f, 60f));
             coinsLabel.color = new Color(0.33f, 0.16f, 0.1f);
-            Text currencyValue = UiBuilder.CreateText("Value", currency, "0", 52, TextAnchor.MiddleRight);
+            TMP_Text currencyValue = UiBuilder.CreateText("Value", currency, "0", 52, TextAnchor.MiddleRight);
             Place((RectTransform)currencyValue.transform, new Vector2(70f, 0f), new Vector2(160f, 70f));
             currencyValue.color = new Color(0.33f, 0.16f, 0.1f);
-            currencyValue.fontStyle = FontStyle.Bold;
+            currencyValue.fontStyle = FontStyles.Bold;
 
             // Buttons
             Button reroll = UiBuilder.CreateButton("Reroll", root, "Reroll", 90f);
@@ -291,8 +291,8 @@ namespace BulletHell.EditorTools
             Place((RectTransform)menu.transform, new Vector2(-830f, 405f), new Vector2(240f, 64f));
             foreach (Button b in new[] { reroll, leave, menu })
                 b.gameObject.AddComponent<CancelRelay>();
-            Text rerollLabel = reroll.GetComponentInChildren<Text>();
-            foreach (Text t in new[] { rerollLabel, leave.GetComponentInChildren<Text>() })
+            TMP_Text rerollLabel = reroll.GetComponentInChildren<TMP_Text>();
+            foreach (TMP_Text t in new[] { rerollLabel, leave.GetComponentInChildren<TMP_Text>() })
                 t.fontSize = 40;
 
             // Inventory: where bought cards fly to
@@ -300,16 +300,15 @@ namespace BulletHell.EditorTools
             Place(inventory, new Vector2(-760f, -400f), new Vector2(150f, 150f));
             inventory.gameObject.AddComponent<Image>();
             var inventoryThemed = inventory.gameObject.AddComponent<ThemedImage>();
-            inventoryThemed.PixelScaleOverride = 5f;
             inventoryThemed.Role = ThemeRole.Slot;
-            Text bag = UiBuilder.CreateText("Bag", inventory, "BAG", 40, TextAnchor.MiddleCenter);
+            TMP_Text bag = UiBuilder.CreateText("Bag", inventory, "BAG", 40, TextAnchor.MiddleCenter);
             UiBuilder.Stretch((RectTransform)bag.transform);
             bag.color = new Color(0.33f, 0.16f, 0.1f);
-            bag.fontStyle = FontStyle.Bold;
-            Text inventoryLabel = UiBuilder.CreateText("InventoryLabel", root, "Arms 0   Armaments 0", 26, TextAnchor.MiddleCenter);
+            bag.fontStyle = FontStyles.Bold;
+            TMP_Text inventoryLabel = UiBuilder.CreateText("InventoryLabel", root, "Arms 0   Armaments 0", 26, TextAnchor.MiddleCenter);
             Place((RectTransform)inventoryLabel.transform, new Vector2(-760f, -500f), new Vector2(330f, 40f));
 
-            Text hint = UiBuilder.CreateText("Hint", root, "", 26, TextAnchor.MiddleCenter);
+            TMP_Text hint = UiBuilder.CreateText("Hint", root, "", 26, TextAnchor.MiddleCenter);
             Place((RectTransform)hint.transform, new Vector2(230f, -507f), new Vector2(1200f, 36f));
             hint.color = new Color(0.8f, 0.72f, 0.6f);
 
@@ -318,7 +317,7 @@ namespace BulletHell.EditorTools
             UiBuilder.Stretch(overlay);
             var overlayDim = overlay.gameObject.AddComponent<Image>();
             overlayDim.color = new Color(0f, 0f, 0f, 0.82f);
-            Text overlayTitle = UiBuilder.CreateText("Title", overlay, "The crate holds 3 armaments. Pick 1.", 48, TextAnchor.MiddleCenter);
+            TMP_Text overlayTitle = UiBuilder.CreateText("Title", overlay, "The crate holds 3 armaments. Pick 1.", 48, TextAnchor.MiddleCenter);
             Place((RectTransform)overlayTitle.transform, new Vector2(0f, 262f), new Vector2(1400f, 70f));
             var choices = new ShopCard[3];
             float[] choiceX = { -330f, 0f, 330f };
@@ -337,9 +336,9 @@ namespace BulletHell.EditorTools
             tipLayout.childForceExpandWidth = true;
             tipLayout.childForceExpandHeight = false;
             tip.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            Text tipText = UiBuilder.CreateText("Body", tip, "", 26, TextAnchor.UpperLeft);
-            tipText.supportRichText = true;
-            tipText.horizontalOverflow = HorizontalWrapMode.Wrap;
+            TMP_Text tipText = UiBuilder.CreateText("Body", tip, "", 26, TextAnchor.UpperLeft);
+            tipText.richText = true;
+            tipText.textWrappingMode = TextWrappingModes.Normal;
             var tooltip = root.gameObject.AddComponent<ShopTooltip>();
             var tipSo = new SerializedObject(tooltip);
             tipSo.FindProperty("panel").objectReferenceValue = tip;
@@ -407,9 +406,9 @@ namespace BulletHell.EditorTools
             Blob("EyeR", new Vector2(45f, 100f), new Vector2(30f, 38f), new Color(0.1f, 0.08f, 0.06f));
             Blob("Laurel", new Vector2(0f, 250f), new Vector2(210f, 60f), new Color(0.3f, 0.65f, 0.25f));
 
-            Text name = UiBuilder.CreateText("Nameplate", merchant, "Mercator Oliva", 34, TextAnchor.MiddleCenter);
+            TMP_Text name = UiBuilder.CreateText("Nameplate", merchant, "Mercator Oliva", 34, TextAnchor.MiddleCenter);
             Place((RectTransform)name.transform, new Vector2(0f, -300f), new Vector2(420f, 50f));
-            name.fontStyle = FontStyle.Bold;
+            name.fontStyle = FontStyles.Bold;
         }
 
         private static void RewireStartRoutes(GameObject oldRoot, GameObject newRoot, Button leave)

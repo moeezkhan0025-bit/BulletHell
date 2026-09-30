@@ -1,4 +1,5 @@
 using System.Linq;
+using TMPro;
 using BulletHell.Core;
 using BulletHell.Platform;
 using BulletHell.UI;
@@ -87,14 +88,14 @@ namespace BulletHell.EditorTools
             box.gameObject.AddComponent<Image>();
             box.gameObject.AddComponent<ThemedImage>().Role = ThemeRole.Panel;
 
-            Text title = UiBuilder.CreateText("Title", box, "Are you sure?", 44, TextAnchor.MiddleCenter);
+            TMP_Text title = UiBuilder.CreateText("Title", box, "Are you sure?", 44, TextAnchor.MiddleCenter);
             Place((RectTransform)title.transform, new Vector2(0f, 150f), new Vector2(780f, 70f));
-            title.fontStyle = FontStyle.Bold;
+            title.fontStyle = FontStyles.Bold;
             title.color = new Color(0.33f, 0.16f, 0.1f);
 
-            Text message = UiBuilder.CreateText("Message", box, "", 30, TextAnchor.MiddleCenter);
+            TMP_Text message = UiBuilder.CreateText("Message", box, "", 30, TextAnchor.MiddleCenter);
             Place((RectTransform)message.transform, new Vector2(0f, 30f), new Vector2(780f, 150f));
-            message.horizontalOverflow = HorizontalWrapMode.Wrap;
+            message.textWrappingMode = TextWrappingModes.Normal;
             message.color = new Color(0.33f, 0.16f, 0.1f);
 
             Button yes = UiBuilder.CreateButton("Yes", box, "Yes", 80f);
@@ -103,8 +104,8 @@ namespace BulletHell.EditorTools
             Place((RectTransform)no.transform, new Vector2(200f, -140f), new Vector2(340f, 84f));
             yes.gameObject.AddComponent<CancelRelay>();
             no.gameObject.AddComponent<CancelRelay>();
-            Text yesLabel = yes.GetComponentInChildren<Text>();
-            Text noLabel = no.GetComponentInChildren<Text>();
+            TMP_Text yesLabel = yes.GetComponentInChildren<TMP_Text>();
+            TMP_Text noLabel = no.GetComponentInChildren<TMP_Text>();
             yesLabel.fontSize = noLabel.fontSize = 38;
 
             var dialog = root.GetComponent<ConfirmDialog>();
@@ -190,7 +191,7 @@ namespace BulletHell.EditorTools
                 return;
 
             Transform existing = parent.Find("Hint");
-            Text hint = existing != null ? existing.GetComponent<Text>() : null;
+            TMP_Text hint = existing != null ? existing.GetComponent<TMP_Text>() : null;
             if (hint == null)
             {
                 hint = UiBuilder.CreateText("Hint", parent, "", 26, TextAnchor.MiddleCenter);

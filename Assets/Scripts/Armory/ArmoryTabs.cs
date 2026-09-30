@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using BulletHell.UI;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,8 +19,8 @@ namespace BulletHell.Armory
         [SerializeField] private Button armamentsButton;
         [SerializeField] private Image armsImage;
         [SerializeField] private Image armamentsImage;
-        [SerializeField] private Text armsLabel;
-        [SerializeField] private Text armamentsLabel;
+        [SerializeField] private TMP_Text armsLabel;
+        [SerializeField] private TMP_Text armamentsLabel;
 
         public int Active { get; private set; } = Armaments;
         public Button ArmsButton => armsButton;
@@ -43,8 +44,11 @@ namespace BulletHell.Armory
                 Skin(armsImage, theme, tab == Arms ? ThemeRole.TabSelected : ThemeRole.Tab);
                 Skin(armamentsImage, theme, tab == Armaments ? ThemeRole.TabSelected : ThemeRole.Tab);
             }
-            armsLabel.fontStyle = tab == Arms ? FontStyle.Bold : FontStyle.Normal;
-            armamentsLabel.fontStyle = tab == Armaments ? FontStyle.Bold : FontStyle.Normal;
+            if (theme != null)
+            {
+                armsLabel.color = tab == Arms ? theme.TextOnPanel : theme.FaintText;
+                armamentsLabel.color = tab == Armaments ? theme.TextOnPanel : theme.FaintText;
+            }
         }
 
         private static void Skin(Image image, UITheme theme, ThemeRole role)

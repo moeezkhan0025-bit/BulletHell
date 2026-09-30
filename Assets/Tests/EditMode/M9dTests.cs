@@ -1,4 +1,5 @@
 using System.Reflection;
+using TMPro;
 using BulletHell.Platform;
 using BulletHell.UI;
 using NUnit.Framework;
@@ -87,10 +88,10 @@ namespace BulletHell.Tests
                 var dialog = root.AddComponent<ConfirmDialog>();
                 Button yes = Child<Button>(root, "yes");
                 Button no = Child<Button>(root, "no");
-                Set(dialog, "titleLabel", Child<Text>(root, "t"));
-                Set(dialog, "messageLabel", Child<Text>(root, "m"));
-                Set(dialog, "yesLabel", Child<Text>(root, "yl"));
-                Set(dialog, "noLabel", Child<Text>(root, "nl"));
+                Set(dialog, "titleLabel", Child<TextMeshProUGUI>(root, "t"));
+                Set(dialog, "messageLabel", Child<TextMeshProUGUI>(root, "m"));
+                Set(dialog, "yesLabel", Child<TextMeshProUGUI>(root, "yl"));
+                Set(dialog, "noLabel", Child<TextMeshProUGUI>(root, "nl"));
                 Set(dialog, "yesButton", yes);
                 Set(dialog, "noButton", no);
                 typeof(ConfirmDialog).GetMethod("Awake", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(dialog, null);

@@ -15,7 +15,7 @@ MonoBehaviour:
   id: Ammo_Basic
   displayName: Basic
   projectileSprite: {fileID: 21300000, guid: 6b794c9ce314a7a4fbe9cab037811ec0, type: 3}
-  icon: {fileID: 21300000, guid: 3d63b9a83df292b46b413c33aa5ee2c4, type: 3}
+  icon: {fileID: 21300000, guid: daac1bf2bbf869342bebc01b1ec778cb, type: 3}
   tint: {r: 1, g: 1, b: 1, a: 1}
   behavior: 0
   maxLifetime: 6

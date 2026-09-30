@@ -1,4 +1,5 @@
 using BulletHell.Weapons;
+using TMPro;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,7 +14,7 @@ namespace BulletHell.UI
         [SerializeField] private Image highlight;
         [SerializeField] private Image holdRing;
         [SerializeField] private Image glyph;
-        [SerializeField] private Text glyphLabel;
+        [SerializeField] private TMP_Text glyphLabel;
         [SerializeField] private Color filledFrame = new Color(0.14f, 0.12f, 0.2f, 0.92f);
         [SerializeField] private Color emptyFrame = new Color(0.16f, 0.14f, 0.22f, 0.7f);
         [SerializeField, Min(1f)] private float activeScale = 1.12f;
@@ -48,14 +49,32 @@ namespace BulletHell.UI
             bool filled = ammo != null;
             UITheme theme = UITheme.Current;
             if (theme != null)
+            {
+                Sprite slotSprite = filled ? theme.SlotAmmo : theme.SlotAmmoEmpty;
+                if (slotSprite != null)
+                {
+                    frame.sprite = slotSprite;
+                    frame.type = Image.Type.Simple;
+                    frame.preserveAspect = true;
+                }
+                if (highlight != null && theme.SlotActiveRing != null)
+                {
+                    highlight.sprite = theme.SlotActiveRing;
+                    highlight.type = Image.Type.Simple;
+                    highlight.preserveAspect = true;
+                    highlight.color = Color.white;
+                }
                 frame.color = filled ? theme.HudSlotFilled : theme.HudSlotEmpty;
+            }
             else
+            {
                 frame.color = filled ? filledFrame : emptyFrame;
+            }
             icon.enabled = filled;
             if (filled)
             {
                 icon.sprite = ammo.Icon;
-                icon.color = ammo.Tint;
+                icon.color = ammo.Icon != null ? Color.white : ammo.Tint;
             }
             highlight.enabled = active && filled;
             holdRing.enabled = holding;

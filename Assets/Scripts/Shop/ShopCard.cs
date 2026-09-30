@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using BulletHell.UI;
 using BulletHell.Weapons;
 using PrimeTween;
@@ -23,20 +24,22 @@ namespace BulletHell.Shop
         [SerializeField] private Image focusRing;
         [SerializeField] private Image icon;
         [Tooltip("A letter drawn over placeholder icons (an item with no icon yet).")]
-        [SerializeField] private Text iconLetter;
-        [SerializeField] private Text nameLabel;
-        [SerializeField] private Text rarityLabel;
+        [SerializeField] private TMP_Text iconLetter;
+        [SerializeField] private TMP_Text nameLabel;
+        [SerializeField] private TMP_Text rarityLabel;
         [SerializeField] private Image priceTag;
-        [SerializeField] private Text priceLabel;
+        [SerializeField] private TMP_Text priceLabel;
         [SerializeField] private GameObject soldStamp;
+        [Tooltip("Checker strip shown on the crate card.")]
+        [SerializeField] private GameObject crateTrim;
         [SerializeField] private CanvasGroup soldGroup;
         [Header("Feel")]
         [SerializeField, Min(1f)] private float liftScale = 1.08f;
         [SerializeField, Min(0f)] private float liftHeight = 18f;
         [SerializeField, Min(0.01f)] private float liftSeconds = 0.12f;
         [SerializeField, Min(0.05f)] private float flySeconds = 0.45f;
-        [SerializeField] private Color priceColor = new Color(1f, 0.97f, 0.88f);
-        [SerializeField] private Color unaffordableColor = new Color(1f, 0.3f, 0.3f);
+        [SerializeField] private Color priceColor = new Color(0.18f, 0.12f, 0.078f);
+        [SerializeField] private Color unaffordableColor = new Color(0.847f, 0.267f, 0.227f);
 
         private Vector2 restPosition;
         private bool restCached;
@@ -58,11 +61,11 @@ namespace BulletHell.Shop
             UITheme theme = UITheme.Current;
             if (focusRing != null)
             {
-                if (theme != null && theme.HudFrameFocused != null)
+                if (theme != null && theme.CardFocusRing != null)
                 {
-                    focusRing.sprite = theme.HudFrameFocused;
-                    focusRing.type = Image.Type.Sliced;
-                    focusRing.pixelsPerUnitMultiplier = theme.BorderMultiplier;
+                    focusRing.sprite = theme.CardFocusRing;
+                    focusRing.type = Image.Type.Simple;
+                    focusRing.preserveAspect = false;
                 }
                 focusRing.enabled = false;
             }
@@ -88,9 +91,7 @@ namespace BulletHell.Shop
 
             gameObject.SetActive(true);
             nameLabel.text = entry.Name;
-            rarityLabel.text = rarityName;
-            rarityLabel.color = Color.Lerp(rarityColor, Color.black, 0.4f); // darker than the frame tint: it sits on the cream card body
-            frame.color = Color.Lerp(Color.white, rarityColor, 0.85f);
+            ApplyFrame(entry, rarityColor, rarityName);
 
             bool hasIcon = iconSprite != null;
             icon.sprite = hasIcon ? iconSprite : placeholder;
@@ -107,6 +108,37 @@ namespace BulletHell.Shop
                 priceTag.gameObject.SetActive(entry.Price > 0);
             SetAffordable(affordable);
             SetSold(isSold, false);
+        }
+
+        private void ApplyFrame(in ShopEntry entry, Color rarityColor, string rarityName)
+        {
+            UITheme theme = UITheme.Current;
+            bool crate = entry.Kind == ShopItemKind.Crate;
+            int rarity = entry.Kind == ShopItemKind.Arm && entry.Arm != null ? (int)entry.Arm.Rarity
+                       : entry.Kind == ShopItemKind.Armament && entry.Armament != null ? (int)entry.Armament.Rarity : 1;
+            string kind = entry.Kind == ShopItemKind.Arm ? "ARM" : entry.Kind == ShopItemKind.Armament ? "ARMAMENT" : "";
+            string tail = entry.Kind == ShopItemKind.Arm && entry.Arm != null ? " \u00B7 " + entry.Arm.ArmamentSlots + (entry.Arm.ArmamentSlots == 1 ? " SLOT" : " SLOTS") : "";
+            rarityLabel.text = crate ? "PICK 1 OF 3" : rarityName + " \u00B7 " + kind + tail;
+            if (theme != null)
+            {
+                Sprite sprite = crate ? theme.GetSprite(ThemeRole.PanelWood) : theme.GetCardFrame(rarity);
+                if (sprite != null)
+                {
+                    frame.sprite = sprite;
+                    frame.type = crate ? Image.Type.Sliced : Image.Type.Simple;
+                    frame.preserveAspect = false;
+                    frame.pixelsPerUnitMultiplier = theme.BorderMultiplier;
+                }
+                frame.color = Color.white;
+                nameLabel.color = crate ? theme.TextOnDark : theme.InkSoil;
+                rarityLabel.color = crate ? theme.FaintText : Color.Lerp(rarityColor, theme.InkSoil, 0.35f);
+                priceColor = crate ? theme.TextOnDark : theme.InkSoil;
+                unaffordableColor = theme.Tomato;
+            }
+            nameLabel.alignment = crate ? TextAlignmentOptions.Center : TextAlignmentOptions.Left;
+            rarityLabel.alignment = crate ? TextAlignmentOptions.Top : TextAlignmentOptions.TopLeft;
+            if (crateTrim != null)
+                crateTrim.SetActive(crate);
         }
 
         /// <summary>Price tag text turns red when the player cannot pay.</summary>

@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using System.Collections.Generic;
 using System.Text;
 using BulletHell.Core;
@@ -35,20 +36,20 @@ namespace BulletHell.Armory
         [SerializeField] private ArmoryBubble[] bubbles = new ArmoryBubble[ArmInstance.MaxArmamentSlots];
         [SerializeField] private ArmoryTether[] tethers = new ArmoryTether[ArmInstance.MaxArmamentSlots];
         [SerializeField, Min(50f)] private float bubbleRadius = 190f;
-        [SerializeField] private Text infoLabel;
+        [SerializeField] private TMP_Text infoLabel;
 
         [Header("Right: inventory")]
         [SerializeField] private ArmoryTabs tabs;
         [SerializeField] private ShopCard cardPrefab;
         [SerializeField] private RectTransform gridContent;
         [SerializeField] private ScrollRect gridScroll;
-        [SerializeField] private Text emptyLabel;
+        [SerializeField] private TMP_Text emptyLabel;
         [SerializeField] private Sprite placeholderIcon;
 
         [Header("Chrome")]
-        [SerializeField] private Text titleLabel;
-        [SerializeField] private Text messageLabel;
-        [SerializeField] private Text hintLabel;
+        [SerializeField] private TMP_Text titleLabel;
+        [SerializeField] private TMP_Text messageLabel;
+        [SerializeField] private TMP_Text hintLabel;
         [SerializeField] private Button removeButton;
         [SerializeField] private Button fightButton;
         [SerializeField] private Button menuButton;
@@ -142,7 +143,7 @@ namespace BulletHell.Armory
             foreach (ArmoryTether t in tethers)
                 t.Unlink();
 
-            titleLabel.text = "Armory - round " + state.Round;
+            titleLabel.text = "ARMORY";
             messageLabel.text = "";
             tabs.SetActive(ArmoryTabs.Armaments);
             RefreshAll();
@@ -779,16 +780,14 @@ namespace BulletHell.Armory
             switch (level)
             {
                 case Level.Ring:
-                    PromptHint.Show(hintLabel, PromptHint.P(UiAction.Confirm, "Select arm"), PromptHint.P(UiAction.Remove, "Remove arm"),
-                        PromptHint.P(UiAction.TabPrev, "Prev tab"), PromptHint.P(UiAction.TabNext, "Next tab"), PromptHint.P(UiAction.Start, "Fight!"));
+                    PromptHint.Show(hintLabel, PromptHint.P(UiAction.Confirm, "Select arm"), PromptHint.P(UiAction.Remove, "Remove"));
                     break;
                 case Level.Bubbles:
                     PromptHint.Show(hintLabel, PromptHint.P(UiAction.Confirm, "Choose armament"), PromptHint.P(UiAction.Remove, "Unequip"),
                         PromptHint.P(UiAction.Back, "Back"));
                     break;
                 default:
-                    PromptHint.Show(hintLabel, PromptHint.P(UiAction.Confirm, "Confirm"), PromptHint.P(UiAction.TabPrev, "Prev tab"),
-                        PromptHint.P(UiAction.TabNext, "Next tab"), PromptHint.P(UiAction.Back, "Back"));
+                    PromptHint.Show(hintLabel, PromptHint.P(UiAction.Confirm, "Equip"), PromptHint.P(UiAction.Remove, "Remove"), PromptHint.P(UiAction.Back, "Back"));
                     break;
             }
         }

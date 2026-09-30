@@ -15,7 +15,7 @@ MonoBehaviour:
   id: Ammo_Gatling
   displayName: Gatling
   projectileSprite: {fileID: 21300000, guid: 6b794c9ce314a7a4fbe9cab037811ec0, type: 3}
-  icon: {fileID: 21300000, guid: 644b44d4bae8e4648b13baefee023be2, type: 3}
+  icon: {fileID: 21300000, guid: c5721d1c6e4352f4f8f3f02c51f76a35, type: 3}
   tint: {r: 1, g: 0.9, b: 0.3, a: 1}
   behavior: 0
   maxLifetime: 6

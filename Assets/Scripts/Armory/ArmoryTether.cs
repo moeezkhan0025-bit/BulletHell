@@ -1,3 +1,4 @@
+using BulletHell.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,11 +13,11 @@ namespace BulletHell.Armory
     {
         [SerializeField] private Image strand;
         [SerializeField] private Image glow;
-        [SerializeField, Min(1f)] private float strandWidth = 5f;
+        [SerializeField, Min(1f)] private float strandWidth = 12f;
         [SerializeField, Min(1f)] private float glowWidth = 16f;
         [SerializeField, Min(0f)] private float pulseSpeed = 2.2f;
-        [SerializeField, Range(0f, 1f)] private float glowAlpha = 0.28f;
-        [SerializeField, Range(0f, 1f)] private float strandAlpha = 0.85f;
+        [SerializeField, Range(0f, 1f)] private float glowAlpha = 0f;
+        [SerializeField, Range(0f, 1f)] private float strandAlpha = 1f;
 
         private RectTransform from;
         private RectTransform to;
@@ -28,6 +29,13 @@ namespace BulletHell.Armory
             from = start;
             to = end;
             color = tint;
+            UITheme theme = UITheme.Current;
+            if (theme != null && theme.TetherVine != null)
+            {
+                strand.sprite = theme.TetherVine;
+                strand.type = Image.Type.Tiled;
+                strand.pixelsPerUnitMultiplier = theme.BorderMultiplier;
+            }
             gameObject.SetActive(true);
             Apply(1f);
         }
@@ -72,7 +80,7 @@ namespace BulletHell.Armory
             r.anchorMin = r.anchorMax = new Vector2(0.5f, 0.5f);
             r.sizeDelta = new Vector2(length, width);
             r.anchoredPosition = Vector2.zero;
-            Color c = color;
+            Color c = image == strand && strand.type == Image.Type.Tiled ? Color.white : color;
             c.a = alpha;
             image.color = c;
         }

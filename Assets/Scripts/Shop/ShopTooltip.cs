@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using System.Text;
 using BulletHell.UI;
 using UnityEngine;
@@ -13,13 +14,17 @@ namespace BulletHell.Shop
     public sealed class ShopTooltip : MonoBehaviour
     {
         [SerializeField] private RectTransform panel;
-        [SerializeField] private Text body;
+        [SerializeField] private TMP_Text body;
+        [Tooltip("Optional: the first line is shown here (large) and the rest in Body.")]
+        [SerializeField] private TMP_Text title;
+        [Tooltip("A fixed detail panel (Shop mockup): it stays where it is and is emptied instead of hidden.")]
+        [SerializeField] private bool persistent;
         [Tooltip("Space between the card and the tooltip, in canvas units.")]
         [SerializeField, Min(0f)] private float gap = 24f;
 
         private readonly StringBuilder builder = new StringBuilder(256);
 
-        public bool IsShown => panel != null && panel.gameObject.activeSelf;
+        public bool IsShown => panel != null && panel.gameObject.activeSelf && (!persistent || (body != null && body.text.Length > 0));
 
         private void Awake()
         {
@@ -33,6 +38,27 @@ namespace BulletHell.Shop
         public void Show(RectTransform card, IReadOnlyList<string> lines, bool below = false)
         {
             builder.Clear();
+            if (title != null)
+            {
+                title.text = lines.Count > 0 ? lines[0] : "";
+                for (int i = 1; i < lines.Count; i++)
+                {
+                    if (builder.Length > 0 || lines[i].Length > 0)
+                    {
+                        if (builder.Length > 0)
+                            builder.Append('\n');
+                        builder.Append(lines[i]);
+                    }
+                }
+                body.text = builder.ToString();
+                panel.gameObject.SetActive(true);
+                if (!persistent)
+                {
+                    LayoutRebuilder.ForceRebuildLayoutImmediate(panel);
+                    Place(card, below);
+                }
+                return;
+            }
             for (int i = 0; i < lines.Count; i++)
             {
                 if (i > 0)
@@ -48,6 +74,14 @@ namespace BulletHell.Shop
 
         public void Hide()
         {
+            if (persistent)
+            {
+                if (title != null)
+                    title.text = "";
+                if (body != null)
+                    body.text = "";
+                return;
+            }
             if (panel != null)
                 panel.gameObject.SetActive(false);
         }

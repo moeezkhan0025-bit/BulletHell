@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.ArmamentData
   id: Armament_AutoFire
   displayName: Auto-fire
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 557be5cfe162db049879e887900fffb4, type: 3}
   rarity: 2
   priceTier: 3
   tags: 16

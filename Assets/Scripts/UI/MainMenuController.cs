@@ -1,4 +1,5 @@
 using BulletHell.Core;
+using TMPro;
 using BulletHell.Platform;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,9 +21,9 @@ namespace BulletHell.UI
         [SerializeField] private Button continueButton;
         [SerializeField] private Button settingsButton;
         [SerializeField] private Button quitButton;
-        [SerializeField] private Text messageText;
+        [SerializeField] private TMP_Text messageText;
         [Tooltip("Optional: the button prompt line at the bottom.")]
-        [SerializeField] private Text hintLabel;
+        [SerializeField] private TMP_Text hintLabel;
         [Header("Confirmation")]
         [SerializeField] private ConfirmDialog confirmDialog;
         [Header("Screens")]

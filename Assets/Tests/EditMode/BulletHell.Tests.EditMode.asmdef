@@ -3,6 +3,8 @@
     "rootNamespace": "BulletHell.Tests",
     "references": [
         "BulletHell",
+        "UnityEngine.UI",
+        "Unity.TextMeshPro",
         "Unity.InputSystem",
         "Unity.2D.Animation.Runtime",
         "UnityEngine.TestRunner",

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using System.Linq;
 using BulletHell.Core;
 using BulletHell.Enemies;
@@ -269,9 +270,9 @@ namespace BulletHell.EditorTools
 
         private static WaveBanner CreateBanner(Transform safe)
         {
-            Text text = UiBuilder.CreateText("WaveBanner", safe, "", 96, TextAnchor.MiddleCenter);
-            text.fontStyle = FontStyle.Bold;
-            text.supportRichText = true;
+            TMP_Text text = UiBuilder.CreateText("WaveBanner", safe, "", 96, TextAnchor.MiddleCenter);
+            text.fontStyle = FontStyles.Bold;
+            text.richText = true;
             var outline = text.gameObject.AddComponent<Outline>();
             outline.effectColor = new Color(0f, 0f, 0f, 0.8f);
             outline.effectDistance = new Vector2(3f, -3f);
@@ -298,7 +299,7 @@ namespace BulletHell.EditorTools
             layout.childForceExpandHeight = false;
             row.gameObject.AddComponent<LayoutElement>().minHeight = 70f;
 
-            Text label = UiBuilder.CreateText("Label", row, "", 30, TextAnchor.MiddleLeft);
+            TMP_Text label = UiBuilder.CreateText("Label", row, "", 30, TextAnchor.MiddleLeft);
             label.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
             Button lower = UiBuilder.CreateButton("Lower", row, "-", 70f);
             Button raise = UiBuilder.CreateButton("Raise", row, "+", 70f);

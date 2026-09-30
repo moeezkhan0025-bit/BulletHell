@@ -1,0 +1,561 @@
+{
+ "scale_note": "All sprites are 2x game art (import like other Assets/Art: PPU consistent with 2x). Mockup px x3 = these px.",
+ "sprites": {
+  "panel_marble": {
+   "size": [
+    256,
+    256
+   ],
+   "nine_slice_border_LTRB": [
+    60,
+    60,
+    60,
+    78
+   ],
+   "note": "Marble panel with soil outline and hard drop shadow"
+  },
+  "panel_shade": {
+   "size": [
+    256,
+    256
+   ],
+   "nine_slice_border_LTRB": [
+    60,
+    60,
+    60,
+    78
+   ]
+  },
+  "panel_wood": {
+   "size": [
+    256,
+    256
+   ],
+   "nine_slice_border_LTRB": [
+    60,
+    60,
+    60,
+    78
+   ],
+   "note": "Shop stall table"
+  },
+  "pill_marble": {
+   "size": [
+    240,
+    138
+   ],
+   "nine_slice_border_LTRB": [
+    60,
+    60,
+    60,
+    78
+   ],
+   "note": "Round-ended pill (currency, round plaque)"
+  },
+  "pill_hintbar": {
+   "size": [
+    200,
+    84
+   ],
+   "nine_slice_border_LTRB": [
+    42,
+    42,
+    42,
+    42
+   ]
+  },
+  "button_normal": {
+   "size": [
+    256,
+    200
+   ],
+   "nine_slice_border_LTRB": [
+    54,
+    54,
+    54,
+    72
+   ]
+  },
+  "button_focused": {
+   "size": [
+    256,
+    200
+   ],
+   "nine_slice_border_LTRB": [
+    54,
+    54,
+    54,
+    72
+   ],
+   "note": "Pair with laurel sprites and checker trim strips on both ends"
+  },
+  "button_pressed": {
+   "size": [
+    256,
+    200
+   ],
+   "nine_slice_border_LTRB": [
+    54,
+    72,
+    54,
+    54
+   ],
+   "note": "Pressed: shifted down, no shadow"
+  },
+  "button_disabled": {
+   "size": [
+    256,
+    200
+   ],
+   "nine_slice_border_LTRB": [
+    54,
+    54,
+    54,
+    72
+   ]
+  },
+  "button_primary": {
+   "size": [
+    256,
+    200
+   ],
+   "nine_slice_border_LTRB": [
+    54,
+    54,
+    54,
+    72
+   ],
+   "note": "Fight! / confirm"
+  },
+  "tab_normal": {
+   "size": [
+    160,
+    120
+   ],
+   "nine_slice_border_LTRB": [
+    36,
+    36,
+    36,
+    10
+   ]
+  },
+  "tab_selected": {
+   "size": [
+    160,
+    120
+   ],
+   "nine_slice_border_LTRB": [
+    36,
+    36,
+    36,
+    10
+   ]
+  },
+  "trim_checker_leaf": {
+   "size": [
+    42,
+    42
+   ],
+   "note": "Tileable pattern (Wrap Mode: Repeat; use as tiled Image)"
+  },
+  "trim_checker_carrot": {
+   "size": [
+    42,
+    42
+   ],
+   "note": "Tileable pattern (Wrap Mode: Repeat; use as tiled Image)"
+  },
+  "trim_checker_tomato": {
+   "size": [
+    42,
+    42
+   ],
+   "note": "Tileable pattern (Wrap Mode: Repeat; use as tiled Image)"
+  },
+  "trim_checker_corn": {
+   "size": [
+    42,
+    42
+   ],
+   "note": "Tileable pattern (Wrap Mode: Repeat; use as tiled Image)"
+  },
+  "card_common": {
+   "size": [
+    414,
+    588
+   ],
+   "note": "Shop/Armory card frame. Icon area y 69-297px, text below. Focus = gold ring + lift (code)"
+  },
+  "card_rare": {
+   "size": [
+    414,
+    588
+   ],
+   "note": "Shop/Armory card frame. Icon area y 69-297px, text below. Focus = gold ring + lift (code)"
+  },
+  "card_epic": {
+   "size": [
+    414,
+    588
+   ],
+   "note": "Shop/Armory card frame. Icon area y 69-297px, text below. Focus = gold ring + lift (code)"
+  },
+  "card_legendary": {
+   "size": [
+    414,
+    588
+   ],
+   "note": "Shop/Armory card frame. Icon area y 69-297px, text below. Focus = gold ring + lift (code)"
+  },
+  "card_focus_ring": {
+   "size": [
+    450,
+    606
+   ],
+   "note": "Overlay centered on a focused card"
+  },
+  "stamp_sold": {
+   "size": [
+    384,
+    224
+   ],
+   "note": "Placeholder lettering; swap to Lilita One text in engine if preferred"
+  },
+  "slot_ammo": {
+   "size": [
+    198,
+    216
+   ],
+   "note": "Ammo slot; active = add slot_active_ring + lift"
+  },
+  "slot_active_ring": {
+   "size": [
+    234,
+    234
+   ]
+  },
+  "slot_ammo_empty": {
+   "size": [
+    198,
+    198
+   ],
+   "note": "Empty slot with dashed edge; add a '+' label in engine"
+  },
+  "bubble_empty": {
+   "size": [
+    198,
+    216
+   ],
+   "note": "Armament bubble, empty (add '+')"
+  },
+  "bubble_filled_rim_white": {
+   "size": [
+    222,
+    240
+   ],
+   "note": "Filled bubble: rim is WHITE, tint it with the armament's rarity color"
+  },
+  "bubble_focused": {
+   "size": [
+    264,
+    282
+   ],
+   "note": "Focused bubble (scale up ~1.15 with tween)"
+  },
+  "armslot_filled": {
+   "size": [
+    150,
+    168
+   ]
+  },
+  "armslot_selected": {
+   "size": [
+    216,
+    234
+   ]
+  },
+  "tether_vine_segment": {
+   "size": [
+    60,
+    24
+   ],
+   "note": "Tile along a line/curve (LineRenderer tiled texture)"
+  },
+  "heart_tomato_full": {
+   "size": [
+    90,
+    90
+   ]
+  },
+  "heart_tomato_empty": {
+   "size": [
+    90,
+    90
+   ]
+  },
+  "heatbar_track": {
+   "size": [
+    240,
+    48
+   ],
+   "nine_slice_border_LTRB": [
+    24,
+    24,
+    24,
+    24
+   ]
+  },
+  "heatbar_fill_white": {
+   "size": [
+    120,
+    30
+   ],
+   "nine_slice_border_LTRB": [
+    15,
+    15,
+    15,
+    15
+   ],
+   "note": "Tint in code: leaf -> carrot -> tomato as heat rises; flash on overheat"
+  },
+  "icon_coin_seed": {
+   "size": [
+    78,
+    78
+   ]
+  },
+  "laurel_right": {
+   "size": [
+    162,
+    120
+   ],
+   "note": "Mirror for the left side"
+  },
+  "icon_armament_homing": {
+   "size": [
+    144,
+    144
+   ]
+  },
+  "icon_armament_pierce": {
+   "size": [
+    144,
+    144
+   ]
+  },
+  "icon_armament_ricochet": {
+   "size": [
+    144,
+    144
+   ]
+  },
+  "icon_armament_velocity": {
+   "size": [
+    144,
+    144
+   ]
+  },
+  "icon_armament_autofire": {
+   "size": [
+    144,
+    144
+   ]
+  },
+  "icon_ammo_basic": {
+   "size": [
+    144,
+    144
+   ]
+  },
+  "icon_ammo_shotgun": {
+   "size": [
+    144,
+    144
+   ]
+  },
+  "icon_ammo_laser": {
+   "size": [
+    144,
+    144
+   ]
+  },
+  "icon_ammo_gatling": {
+   "size": [
+    144,
+    144
+   ]
+  },
+  "icon_harvest_crate": {
+   "size": [
+    144,
+    144
+   ]
+  },
+  "portrait_ring_leaf": {
+   "size": [
+    348,
+    366
+   ],
+   "note": "Portrait frame: place the head+accessory1 portrait behind it, centered in the 204px hole"
+  },
+  "panel_corn": {
+   "size": [
+    256,
+    256
+   ],
+   "nine_slice_border_LTRB": [
+    54,
+    54,
+    54,
+    72
+   ],
+   "note": "Focused list row (Character Creation parts, Settings rows)"
+  },
+  "row_focus_ring": {
+   "size": [
+    256,
+    256
+   ],
+   "nine_slice_border_LTRB": [
+    69,
+    69,
+    69,
+    69
+   ],
+   "note": "9-slice gold ring drawn around a focused row/panel"
+  },
+  "slider_track": {
+   "size": [
+    300,
+    66
+   ],
+   "nine_slice_border_LTRB": [
+    33,
+    33,
+    33,
+    33
+   ],
+   "note": "Slider track (9-slice horizontally)"
+  },
+  "slider_fill_white": {
+   "size": [
+    200,
+    42
+   ],
+   "nine_slice_border_LTRB": [
+    21,
+    21,
+    21,
+    21
+   ],
+   "note": "Tint with leaf green; sits inside the track's inner area"
+  },
+  "slider_handle": {
+   "size": [
+    102,
+    114
+   ],
+   "note": "Default handle"
+  },
+  "slider_handle_focused": {
+   "size": [
+    102,
+    114
+   ],
+   "note": "Handle when its row is focused (row turns corn)"
+  },
+  "toggle_track_on": {
+   "size": [
+    228,
+    120
+   ],
+   "note": "Knob sits left (off) or right (on), 9px inset at 2x; animate with a quick tween"
+  },
+  "toggle_track_off": {
+   "size": [
+    228,
+    120
+   ],
+   "note": "Knob sits left (off) or right (on), 9px inset at 2x; animate with a quick tween"
+  },
+  "toggle_knob": {
+   "size": [
+    84,
+    84
+   ]
+  },
+  "button_arrow_left": {
+   "size": [
+    132,
+    144
+   ],
+   "note": "Character Creation variant cycling; focused = add row_focus_ring or scale 1.1"
+  },
+  "button_arrow_right": {
+   "size": [
+    132,
+    144
+   ],
+   "note": "Character Creation variant cycling; focused = add row_focus_ring or scale 1.1"
+  },
+  "pedestal_marble": {
+   "size": [
+    1140,
+    306
+   ],
+   "note": "Character Creation / Armory stage. Character's feet sit at the pedestal's center"
+  },
+  "spotlight_arch": {
+   "size": [
+    1380,
+    1560
+   ],
+   "note": "Soft corn-gold glow behind the gladiator; place behind the pedestal, additive or normal at ~70%"
+  }
+ },
+ "tokens": {
+  "name": "VOX VEGETALLIS - Garden Colosseum",
+  "colors": {
+   "ink_soil": "#2E1F14",
+   "marble": "#F4EEDC",
+   "marble_shade": "#E2D6BC",
+   "gold": "#E9B63A",
+   "gold_dark": "#A7781A",
+   "tomato": "#D8443A",
+   "leaf": "#5E9F3E",
+   "carrot": "#E57A24",
+   "corn": "#F4CE4A",
+   "sage": "#A9C48A",
+   "faint_text": "#8E8370",
+   "muted_text": "#6B604E"
+  },
+  "rarity": {
+   "common": "#B9B09C",
+   "rare": "#5E9F3E",
+   "epic": "#E57A24",
+   "legendary": "#E9B63A"
+  },
+  "reserved_never_in_ui": [
+   "#B44BFF (enemy bullets)",
+   "#FF3DCB (boss bullets)"
+  ],
+  "fonts": {
+   "display_titles": "Cinzel Decorative 700/900 (Google Fonts, OFL)",
+   "buttons_numbers": "Lilita One (Google Fonts, OFL)",
+   "body": "Nunito 600/800 (Google Fonts, OFL)"
+  },
+  "metrics_at_1080p": {
+   "outline_px": 6,
+   "drop_shadow_px": 9,
+   "panel_radius_px": 27,
+   "button_radius_px": 24,
+   "card_radius_px": 21
+  },
+  "motion": {
+   "focus": "gold ring + lift 12px @1080p, 0.12s ease-out",
+   "card_buy": "fly to inventory 0.35s",
+   "bubble_in": "pop scale 0->1.1->1 0.25s, stagger 0.05s",
+   "screen_transition": "fade/slide 0.2s"
+  }
+ }
+}

@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,12 +14,12 @@ namespace BulletHell.UI
     /// </summary>
     public sealed class ConfirmDialog : MonoBehaviour
     {
-        [SerializeField] private Text titleLabel;
-        [SerializeField] private Text messageLabel;
+        [SerializeField] private TMP_Text titleLabel;
+        [SerializeField] private TMP_Text messageLabel;
         [SerializeField] private Button yesButton;
         [SerializeField] private Button noButton;
-        [SerializeField] private Text yesLabel;
-        [SerializeField] private Text noLabel;
+        [SerializeField] private TMP_Text yesLabel;
+        [SerializeField] private TMP_Text noLabel;
 
         private static int openCount;
         private Action onYes;

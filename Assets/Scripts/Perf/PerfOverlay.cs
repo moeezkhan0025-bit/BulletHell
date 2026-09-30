@@ -1,4 +1,5 @@
 using System.Text;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,7 +18,7 @@ namespace BulletHell.Perf
         private const float PixelsPerMs = 1.5f;
 
         private GameObject canvasRoot;
-        private Text label;
+        private TMP_Text label;
         private Texture2D texture;
         private Color32[] pixels;
         private readonly StringBuilder sb = new StringBuilder(384);
@@ -68,17 +69,15 @@ namespace BulletHell.Perf
 
             var textGo = new GameObject("Text", typeof(RectTransform));
             textGo.transform.SetParent(canvasRoot.transform, false);
-            label = textGo.AddComponent<Text>();
-            label.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            label = textGo.AddComponent<TextMeshProUGUI>();
             label.fontSize = 22;
-            label.alignment = TextAnchor.UpperRight;
+            label.alignment = TextAlignmentOptions.TopRight;
             label.color = Color.white;
             label.raycastTarget = false;
-            label.horizontalOverflow = HorizontalWrapMode.Overflow;
-            label.verticalOverflow = VerticalWrapMode.Overflow;
-            var outline = textGo.AddComponent<Outline>();
-            outline.effectColor = new Color(0f, 0f, 0f, 0.9f);
-            outline.effectDistance = new Vector2(1.5f, -1.5f);
+            label.textWrappingMode = TextWrappingModes.NoWrap;
+            label.overflowMode = TextOverflowModes.Overflow;
+            label.outlineWidth = 0.2f;
+            label.outlineColor = new Color32(0, 0, 0, 230);
             Anchor((RectTransform)textGo.transform, new Vector2(-12f, -12f), new Vector2(560f, 130f));
 
             texture = new Texture2D(Bins, GraphHeight, TextureFormat.RGBA32, false) { filterMode = FilterMode.Point, name = "PerfGraph" };

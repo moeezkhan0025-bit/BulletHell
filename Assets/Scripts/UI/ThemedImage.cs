@@ -4,8 +4,8 @@ using UnityEngine.UI;
 namespace BulletHell.UI
 {
     /// <summary>
-    /// Puts a UITheme role's sprite and color on the Image next to it (9-sliced, borders drawn at the theme's pixel
-    /// scale). Re-applied on enable, so editing the theme updates every screen.
+    /// Puts a UITheme role's sprite and color on the Image next to it (9-sliced, borders drawn at the theme's scale).
+    /// Re-applied on enable, so editing the theme updates every screen.
     /// </summary>
     [ExecuteAlways, RequireComponent(typeof(Image))]
     public sealed class ThemedImage : MonoBehaviour
@@ -13,7 +13,7 @@ namespace BulletHell.UI
         [SerializeField] private ThemeRole role = ThemeRole.Panel;
         [Tooltip("Keep the color already on the Image (for frames tinted at runtime, e.g. by arm color).")]
         [SerializeField] private bool keepColor;
-        [Tooltip("0 = the theme's pixel scale. Use a smaller value for small HUD frames so borders do not swallow them.")]
+        [Tooltip("0 = the theme's scale. Otherwise the sprite is drawn this many times smaller (larger value = smaller borders).")]
         [SerializeField, Min(0f)] private float pixelScaleOverride;
 
         public float PixelScaleOverride

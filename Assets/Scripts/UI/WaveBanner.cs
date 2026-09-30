@@ -1,4 +1,5 @@
 using PrimeTween;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +11,7 @@ namespace BulletHell.UI
         private const float FadeSeconds = 0.4f;
         private const float PopSeconds = 0.25f;
 
-        [SerializeField] private Text label;
+        [SerializeField] private TMP_Text label;
 
         private Color baseColor;
 

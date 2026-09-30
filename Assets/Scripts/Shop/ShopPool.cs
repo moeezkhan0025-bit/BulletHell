@@ -29,7 +29,7 @@ namespace BulletHell.Shop
                 {
                     case ShopItemKind.Arm: return Arm.DisplayName;
                     case ShopItemKind.Armament: return Armament.DisplayName;
-                    default: return "Mystery Crate";
+                    default: return "Harvest Crate";
                 }
             }
         }

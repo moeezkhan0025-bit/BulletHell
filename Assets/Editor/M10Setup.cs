@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using BulletHell.Bosses;
 using BulletHell.Enemies;
 using BulletHell.Feedback;
@@ -397,8 +398,8 @@ namespace BulletHell.EditorTools
             group.blocksRaycasts = false;
             group.interactable = false;
 
-            Text name = UiBuilder.CreateText("NamePlate", hud, "PUMPKING", 34, TextAnchor.MiddleCenter);
-            name.fontStyle = FontStyle.Bold;
+            TMP_Text name = UiBuilder.CreateText("NamePlate", hud, "PUMPKING", 34, TextAnchor.MiddleCenter);
+            name.fontStyle = FontStyles.Bold;
             name.color = gold;
             var outline = name.gameObject.AddComponent<Outline>();
             outline.effectColor = new Color(0f, 0f, 0f, 0.85f);

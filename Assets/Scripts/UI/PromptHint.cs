@@ -1,4 +1,5 @@
 using System.Text;
+using TMPro;
 using BulletHell.Core;
 using BulletHell.Platform;
 using UnityEngine;
@@ -9,9 +10,8 @@ namespace BulletHell.UI
     /// <summary>
     /// A line of button prompts ("[Cross] Buy   [Triangle] Reroll") that follows the device in use: it is rebuilt from the
     /// ButtonGlyphLibrary whenever the player switches between PlayStation / Xbox / Nintendo / keyboard. Prompts for
-    /// actions the current device has no button for are left out. Put on a Text; screens call <see cref="Show"/>.
+    /// actions the current device has no button for are left out. Put on a TMP_Text; screens call <see cref="Show"/>.
     /// </summary>
-    [RequireComponent(typeof(Text))]
     public sealed class PromptHint : MonoBehaviour
     {
         public readonly struct Prompt
@@ -28,11 +28,11 @@ namespace BulletHell.UI
 
         private static readonly StringBuilder Builder = new StringBuilder(160);
 
-        private Text text;
+        private TMP_Text text;
         private Prompt[] prompts = new Prompt[0];
 
-        /// <summary>Sets the prompts on a Text (adding the PromptHint component on first use) and renders them.</summary>
-        public static void Show(Text target, params Prompt[] prompts)
+        /// <summary>Sets the prompts on a TMP_Text (adding the PromptHint component on first use) and renders them.</summary>
+        public static void Show(TMP_Text target, params Prompt[] prompts)
         {
             if (target == null)
                 return;
@@ -60,7 +60,7 @@ namespace BulletHell.UI
             return Builder.ToString();
         }
 
-        private void Awake() => text = GetComponent<Text>();
+        private void Awake() => text = GetComponent<TMP_Text>();
 
         private void OnEnable()
         {
@@ -75,7 +75,7 @@ namespace BulletHell.UI
         private void Render()
         {
             if (text == null)
-                text = GetComponent<Text>();
+                text = GetComponent<TMP_Text>();
             var config = Resources.Load<GameConfig>(GameConfig.ResourcePath);
             text.text = Build(config != null ? config.ButtonGlyphs : null, GlyphFamilyDetector.Current(), prompts);
         }

@@ -1,4 +1,5 @@
 using System.Linq;
+using TMPro;
 using BulletHell.Core;
 using BulletHell.Enemies;
 using BulletHell.Input;
@@ -168,7 +169,7 @@ namespace BulletHell.EditorTools
             UiBuilder.Stretch(safe);
             safe.gameObject.AddComponent<SafeAreaFitter>();
 
-            Text title = UiBuilder.CreateText("Title", safe, "BULLET HELL", 110, TextAnchor.MiddleCenter);
+            TMP_Text title = UiBuilder.CreateText("Title", safe, "VOX VEGETALLIS", 110, TextAnchor.MiddleCenter);
             var titleRect = (RectTransform)title.transform;
             titleRect.anchorMin = new Vector2(0f, 0.68f);
             titleRect.anchorMax = new Vector2(1f, 0.92f);
@@ -187,7 +188,7 @@ namespace BulletHell.EditorTools
             Button cont = UiBuilder.CreateButton("Continue", buttons, "Continue", 100f);
             Button quit = UiBuilder.CreateButton("Quit", buttons, "Quit", 100f);
 
-            Text message = UiBuilder.CreateText("Message", safe, "", 32, TextAnchor.MiddleCenter);
+            TMP_Text message = UiBuilder.CreateText("Message", safe, "", 32, TextAnchor.MiddleCenter);
             var messageRect = (RectTransform)message.transform;
             messageRect.anchorMin = new Vector2(0f, 0.05f);
             messageRect.anchorMax = new Vector2(1f, 0.15f);
@@ -248,7 +249,7 @@ namespace BulletHell.EditorTools
             UiBuilder.Stretch(safe);
             safe.gameObject.AddComponent<SafeAreaFitter>();
 
-            Text hudText = UiBuilder.CreateText("RunHud", safe, "", 34, TextAnchor.UpperRight);
+            TMP_Text hudText = UiBuilder.CreateText("RunHud", safe, "", 34, TextAnchor.UpperRight);
             var hudRect = (RectTransform)hudText.transform;
             hudRect.anchorMin = hudRect.anchorMax = hudRect.pivot = new Vector2(1f, 1f);
             hudRect.sizeDelta = new Vector2(700f, 60f);
@@ -276,8 +277,8 @@ namespace BulletHell.EditorTools
         {
             RectTransform root = UiBuilder.CreateDimmer(name, parent);
             RectTransform box = UiBuilder.CreateVerticalBox("Box", root, new Vector2(900f, 640f), 26f, 44);
-            Text title = UiBuilder.CreateText("Title", box, "", 60, TextAnchor.MiddleCenter, 100f);
-            Text body = UiBuilder.CreateText("Body", box, "", 36, TextAnchor.UpperCenter);
+            TMP_Text title = UiBuilder.CreateText("Title", box, "", 60, TextAnchor.MiddleCenter, 100f);
+            TMP_Text body = UiBuilder.CreateText("Body", box, "", 36, TextAnchor.UpperCenter);
             body.gameObject.AddComponent<LayoutElement>().flexibleHeight = 1f;
             Button cont = UiBuilder.CreateButton("Continue", box, continueLabel, 100f);
             Button menu = UiBuilder.CreateButton("MainMenu", box, "Main Menu", 80f);

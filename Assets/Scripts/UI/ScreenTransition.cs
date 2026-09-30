@@ -10,7 +10,7 @@ namespace BulletHell.UI
     /// </summary>
     public sealed class ScreenTransition : MonoBehaviour
     {
-        public const float Seconds = 0.16f;
+        public const float Seconds = 0.2f;
         public const float SlidePixels = 26f;
 
         private CanvasGroup group;

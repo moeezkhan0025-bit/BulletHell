@@ -116,12 +116,12 @@ Each needs: idle, telegraph (2-4 frames, DANGER color), active (3-4), cooldown (
 
 ## I. Combat HUD (icon 768 template unless noted)
 
-- [ ] [2] Portrait frame (the spiky badge from the concept) + gladiator portrait (base; cosmetics layered)
-- [ ] [2] Heart: full, empty, lose-heart animation (3)
-- [ ] [2] Heat bar: frame, fill, overheat fill/flash (9-slice friendly: even borders)
-- [ ] [2] Ammo slot frame: normal, active, empty + hold-progress ring
-- [ ] [2] Ammo icons x4: Basic, Shotgun, Laser, Gatling
-- [ ] [2] Coin counter icon
+- [x] [2] Portrait frame (the spiky badge from the concept) + gladiator portrait (base; cosmetics layered)  (UI2: VoxKit checkered leaf ring, not the spiky badge)
+- [~] [2] Heart: full, empty, lose-heart animation (3)  (UI2: tomato hearts full/empty done; lose-heart pop is code)
+- [x] [2] Heat bar: frame, fill, overheat fill/flash (9-slice friendly: even borders)  (UI2: track + white fill tinted by code)
+- [~] [2] Ammo slot frame: normal, active, empty + hold-progress ring  (UI2: frames + active ring done; hold-progress ring still a placeholder)
+- [x] [2] Ammo icons x4: Basic, Shotgun, Laser, Gatling  (UI2: VoxKit)
+- [x] [2] Coin counter icon  (UI2: icon_coin_seed)
 - [ ] [2] Boss health bar frame + boss name plate
 - [ ] [2] Round banner frame ("Round 1 - Begin!") + Boss Round variant
 - [ ] [3] "Wave X/Y" banner
@@ -131,21 +131,21 @@ Each needs: idle, telegraph (2-4 frames, DANGER color), active (3-4), cooldown (
 ## J. Menus and screens
 
 General UI kit (a FREE UI PACK can cover most of this; log it in Docs/CREDITS.md. If drawing: 9-slice, even borders):
-- [ ] [2] Panel frame (large + small)
-- [ ] [2] Button: normal / focused / pressed / disabled
-- [ ] [2] Slider: track, fill, handle  - [ ] Toggle: on/off  - [ ] Selector arrows (left/right)
-- [ ] [2] Tab: normal / selected
-- [ ] [2] Tooltip panel
-- [ ] [2] Fonts: 1 display font (Roman/candy title style) + 1 very readable UI font. Buy/license, don't draw.
+- [x] [2] Panel frame (large + small)  (UI2: panel_marble / shade / wood / corn, pills)
+- [x] [2] Button: normal / focused / pressed / disabled  (UI2: + primary button)
+- [x] [2] Slider: track, fill, handle  - [x] Toggle: on/off  - [x] Selector arrows (left/right)
+- [x] [2] Tab: normal / selected
+- [x] [2] Tooltip panel  (UI2: panel_marble; the Shop detail panel)
+- [x] [2] Fonts: 1 display font (Roman/candy title style) + 1 very readable UI font. Buy/license, don't draw.  (UI2: Cinzel Decorative, Lilita One, Nunito, see Docs/CREDITS.md)
 
 Main Menu:
-- [ ] [2] Game logo / title art
-- [ ] [2] Menu background (key art or a wide arena shot)
+- [~] [2] Game logo / title art  (UI2: logo is live Cinzel Decorative text with corn/soil/leaf layers, no drawn art)
+- [~] [2] Menu background (key art or a wide arena shot)  (UI2: generated blur of the arena backdrop as a placeholder)
 
 Character Creation (modular paper doll, see ART_SPEC 6b; side facing first):
 - [ ] [2] Mannequin canvas (base body + plain head) on tpl_character_1536
 - [ ] [2] Body x3  - [ ] Armor/body kit x3  - [ ] Head x3  - [ ] Accessory 1 (head area) x3  - [ ] Accessory 2 (back/torso) x3
-- [ ] [2] Preview pedestal/spotlight  - [ ] slot selector arrows (or from the UI pack)
+- [x] [2] Preview pedestal/spotlight  - [x] slot selector arrows (or from the UI pack)  (UI2: pedestal_marble + spotlight_arch, arrow buttons)
 - [ ] [3] Screen background (e.g. a gladiator locker room under the stands)
 
 Round Results:

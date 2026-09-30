@@ -1,20 +1,36 @@
 using BulletHell.UI;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace BulletHell.EditorTools
 {
-    /// <summary>Helpers that build plain skeleton uGUI (legacy Text, no art) from editor setup scripts.</summary>
+    /// <summary>Helpers that build plain skeleton uGUI (legacy TMP_Text, no art) from editor setup scripts.</summary>
     public static class UiBuilder
     {
         public static readonly Color Dim = new Color(0f, 0f, 0f, 0.78f);
         public static readonly Color BoxColor = new Color(0.12f, 0.12f, 0.16f, 0.96f);
 
-        private static Font font;
-
+        
         private static UITheme Theme => UITheme.Current;
 
-        private static Font Font => Theme != null && Theme.Font != null ? Theme.Font : font != null ? font : font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        private static TMP_FontAsset Font => Theme != null ? Theme.BodyFont : null;
+
+        public static TextAlignmentOptions Align(TextAnchor a)
+        {
+            switch (a)
+            {
+                case TextAnchor.UpperLeft: return TextAlignmentOptions.TopLeft;
+                case TextAnchor.UpperCenter: return TextAlignmentOptions.Top;
+                case TextAnchor.UpperRight: return TextAlignmentOptions.TopRight;
+                case TextAnchor.MiddleLeft: return TextAlignmentOptions.Left;
+                case TextAnchor.MiddleRight: return TextAlignmentOptions.Right;
+                case TextAnchor.LowerLeft: return TextAlignmentOptions.BottomLeft;
+                case TextAnchor.LowerCenter: return TextAlignmentOptions.Bottom;
+                case TextAnchor.LowerRight: return TextAlignmentOptions.BottomRight;
+                default: return TextAlignmentOptions.Center;
+            }
+        }
 
         public static Canvas CreateCanvas(string name, int sortingOrder)
         {
@@ -79,17 +95,18 @@ namespace BulletHell.EditorTools
             return rect;
         }
 
-        public static Text CreateText(string name, Transform parent, string text, int size, TextAnchor anchor, float minHeight = 0f)
+        public static TMP_Text CreateText(string name, Transform parent, string text, int size, TextAnchor anchor, float minHeight = 0f)
         {
             RectTransform rect = CreateRect(name, parent);
-            var label = rect.gameObject.AddComponent<Text>();
-            label.font = Font;
+            var label = rect.gameObject.AddComponent<TextMeshProUGUI>();
+            if (Font != null)
+                label.font = Font;
             label.text = text;
             label.fontSize = size;
-            label.alignment = anchor;
+            label.alignment = Align(anchor);
             label.color = Theme != null ? Theme.TextOnPanel : Color.white;
-            label.horizontalOverflow = HorizontalWrapMode.Wrap;
-            label.verticalOverflow = VerticalWrapMode.Overflow;
+            label.textWrappingMode = TextWrappingModes.Normal;
+            label.overflowMode = TextOverflowModes.Overflow;
             label.raycastTarget = false;
             if (minHeight > 0f)
                 rect.gameObject.AddComponent<LayoutElement>().minHeight = minHeight;
@@ -100,8 +117,8 @@ namespace BulletHell.EditorTools
         public sealed class ListScreenParts
         {
             public RectTransform Root;
-            public Text Title;
-            public Text Info;
+            public TMP_Text Title;
+            public TMP_Text Info;
             public UIList List;
             public GameObject Footer;
             public Button Continue;
@@ -183,9 +200,9 @@ namespace BulletHell.EditorTools
             button.targetGraphic = image;
             rect.gameObject.AddComponent<LayoutElement>().minHeight = 64f;
 
-            Text label = CreateText("Label", rect, "", 28, TextAnchor.MiddleLeft);
+            TMP_Text label = CreateText("Label", rect, "", 28, TextAnchor.MiddleLeft);
             label.color = Theme != null ? Theme.TextOnButton : Color.black;
-            label.horizontalOverflow = HorizontalWrapMode.Overflow;
+            label.textWrappingMode = TextWrappingModes.NoWrap;
             Stretch((RectTransform)label.transform);
             ((RectTransform)label.transform).offsetMin = new Vector2(20f, 0f);
 
@@ -214,7 +231,7 @@ namespace BulletHell.EditorTools
             button.targetGraphic = image;
             rect.gameObject.AddComponent<LayoutElement>().minHeight = height;
 
-            Text text = CreateText("Label", rect, label, 36, TextAnchor.MiddleCenter);
+            TMP_Text text = CreateText("Label", rect, label, 36, TextAnchor.MiddleCenter);
             text.color = Theme != null ? Theme.TextOnButton : Color.black;
             Stretch((RectTransform)text.transform);
             rect.gameObject.AddComponent<ThemedButton>();

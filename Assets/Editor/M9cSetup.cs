@@ -1,4 +1,5 @@
 using System.Linq;
+using TMPro;
 using BulletHell.Armory;
 using BulletHell.Core;
 using BulletHell.Input;
@@ -73,15 +74,15 @@ namespace BulletHell.EditorTools
             Place(icon.rectTransform, Vector2.zero, new Vector2(64f, 64f));
             icon.preserveAspect = true;
 
-            Text letter = UiBuilder.CreateText("IconLetter", body, "?", 40, TextAnchor.MiddleCenter);
+            TMP_Text letter = UiBuilder.CreateText("IconLetter", body, "?", 40, TextAnchor.MiddleCenter);
             UiBuilder.Stretch((RectTransform)letter.transform);
-            letter.fontStyle = FontStyle.Bold;
+            letter.fontStyle = FontStyles.Bold;
             letter.color = new Color(0.1f, 0.08f, 0.08f);
             letter.raycastTarget = false;
 
-            Text plus = UiBuilder.CreateText("Plus", body, "+", 64, TextAnchor.MiddleCenter);
+            TMP_Text plus = UiBuilder.CreateText("Plus", body, "+", 64, TextAnchor.MiddleCenter);
             UiBuilder.Stretch((RectTransform)plus.transform);
-            plus.fontStyle = FontStyle.Bold;
+            plus.fontStyle = FontStyles.Bold;
             plus.color = new Color(0.9f, 0.86f, 0.8f);
             plus.raycastTarget = false;
 
@@ -125,10 +126,10 @@ namespace BulletHell.EditorTools
             UiBuilder.Stretch(backdrop);
             backdrop.gameObject.AddComponent<Image>().color = new Color(0.1f, 0.06f, 0.05f, 0.94f);
 
-            Text title = UiBuilder.CreateText("Title", root, "Armory", 48, TextAnchor.MiddleCenter);
+            TMP_Text title = UiBuilder.CreateText("Title", root, "Armory", 48, TextAnchor.MiddleCenter);
             Place((RectTransform)title.transform, new Vector2(-330f, 480f), new Vector2(900f, 70f));
-            title.fontStyle = FontStyle.Bold;
-            Text message = UiBuilder.CreateText("Message", root, "", 28, TextAnchor.MiddleCenter);
+            title.fontStyle = FontStyles.Bold;
+            TMP_Text message = UiBuilder.CreateText("Message", root, "", 28, TextAnchor.MiddleCenter);
             Place((RectTransform)message.transform, new Vector2(500f, 487f), new Vector2(900f, 44f));
             message.color = new Color(1f, 0.92f, 0.6f);
 
@@ -203,13 +204,13 @@ namespace BulletHell.EditorTools
             RectTransform infoPanel = Rect("InfoPanel", root);
             Place(infoPanel, new Vector2(-500f, -425f), new Vector2(840f, 160f));
             infoPanel.gameObject.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0.55f);
-            Text info = UiBuilder.CreateText("Info", infoPanel, "", 24, TextAnchor.UpperLeft);
+            TMP_Text info = UiBuilder.CreateText("Info", infoPanel, "", 24, TextAnchor.UpperLeft);
             UiBuilder.Stretch((RectTransform)info.transform);
             ((RectTransform)info.transform).offsetMin = new Vector2(24f, 12f);
             ((RectTransform)info.transform).offsetMax = new Vector2(-24f, -12f);
-            info.supportRichText = true;
-            info.horizontalOverflow = HorizontalWrapMode.Wrap;
-            info.verticalOverflow = VerticalWrapMode.Truncate;
+            info.richText = true;
+            info.textWrappingMode = TextWrappingModes.Normal;
+            info.overflowMode = TextOverflowModes.Truncate;
 
             // ---- right: tabs and the card grid
             RectTransform panel = Rect("Inventory", root);
@@ -220,8 +221,8 @@ namespace BulletHell.EditorTools
             RectTransform tabsRoot = Rect("Tabs", root);
             Place(tabsRoot, new Vector2(500f, 385f), new Vector2(900f, 80f));
             var tabs = tabsRoot.gameObject.AddComponent<ArmoryTabs>();
-            Button armsTab = BuildTab(tabsRoot, "ArmsTab", new Vector2(-220f, 0f), out Image armsImage, out Text armsLabel);
-            Button armamentsTab = BuildTab(tabsRoot, "ArmamentsTab", new Vector2(220f, 0f), out Image armamentsImage, out Text armamentsLabel);
+            Button armsTab = BuildTab(tabsRoot, "ArmsTab", new Vector2(-220f, 0f), out Image armsImage, out TMP_Text armsLabel);
+            Button armamentsTab = BuildTab(tabsRoot, "ArmamentsTab", new Vector2(220f, 0f), out Image armamentsImage, out TMP_Text armamentsLabel);
             var tabsSo = new SerializedObject(tabs);
             tabsSo.FindProperty("armsButton").objectReferenceValue = armsTab;
             tabsSo.FindProperty("armamentsButton").objectReferenceValue = armamentsTab;
@@ -261,7 +262,7 @@ namespace BulletHell.EditorTools
             followSo.FindProperty("scroll").objectReferenceValue = scroll;
             followSo.ApplyModifiedPropertiesWithoutUndo();
 
-            Text empty = UiBuilder.CreateText("Empty", panel, "", 30, TextAnchor.MiddleCenter);
+            TMP_Text empty = UiBuilder.CreateText("Empty", panel, "", 30, TextAnchor.MiddleCenter);
             UiBuilder.Stretch((RectTransform)empty.transform);
             empty.color = new Color(0.8f, 0.72f, 0.6f);
 
@@ -274,10 +275,10 @@ namespace BulletHell.EditorTools
             Place((RectTransform)menu.transform, new Vector2(-830f, 480f), new Vector2(240f, 64f));
             foreach (Button b in new[] { fight, remove, menu })
                 b.gameObject.AddComponent<CancelRelay>();
-            foreach (Text t in new[] { fight.GetComponentInChildren<Text>(), remove.GetComponentInChildren<Text>() })
+            foreach (TMP_Text t in new[] { fight.GetComponentInChildren<TMP_Text>(), remove.GetComponentInChildren<TMP_Text>() })
                 t.fontSize = 40;
 
-            Text hint = UiBuilder.CreateText("Hint", root, "", 24, TextAnchor.MiddleCenter);
+            TMP_Text hint = UiBuilder.CreateText("Hint", root, "", 24, TextAnchor.MiddleCenter);
             Place((RectTransform)hint.transform, new Vector2(0f, -522f), new Vector2(1800f, 36f));
             hint.color = new Color(0.8f, 0.72f, 0.6f);
 
@@ -338,9 +339,9 @@ namespace BulletHell.EditorTools
             ring.rectTransform.offsetMax = new Vector2(8f, 8f);
             Image frame = Circle("Frame", body, circle, new Color(0.2f, 0.14f, 0.12f, 0.55f));
             UiBuilder.Stretch(frame.rectTransform);
-            Text label = UiBuilder.CreateText("Label", body, "", 30, TextAnchor.MiddleCenter);
+            TMP_Text label = UiBuilder.CreateText("Label", body, "", 30, TextAnchor.MiddleCenter);
             UiBuilder.Stretch((RectTransform)label.transform);
-            label.fontStyle = FontStyle.Bold;
+            label.fontStyle = FontStyles.Bold;
             label.raycastTarget = false;
 
             var component = root.GetComponent<ArmorySlotButton>();
@@ -373,7 +374,7 @@ namespace BulletHell.EditorTools
             return tether;
         }
 
-        private static Button BuildTab(Transform parent, string name, Vector2 position, out Image image, out Text label)
+        private static Button BuildTab(Transform parent, string name, Vector2 position, out Image image, out TMP_Text label)
         {
             RectTransform rect = Rect(name, parent);
             Place(rect, position, new Vector2(400f, 76f));

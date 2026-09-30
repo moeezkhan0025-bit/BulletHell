@@ -10,6 +10,26 @@ How to log a bug (one entry each, newest at the top of "Open"):
 
 ## Open
 
+### UI2 mockup differences that could not be matched (VOX VEGETALLIS hot swap) - WORK THROUGH OVER TIME
+Screenshots of the built screens: `Docs/Screenshots/VoxUI` (1920x1080). Mockups: `Docs/Reference/UI`. Everything below is minor (looks only).
+- **Backdrop:** the mockups show the blurred arena with bokeh. Ours is a generated blur of `ScaleTest/arena01_backdrop.png` (`Assets/Art/UI/Backdrop/backdrop_blur.png`, rebuilt by `BulletHell/Vox/5`): softer, no detail, a little brighter and more orange at the edges than the mock. Main Menu, Settings and Character Creation draw it as a world sprite (`MenuBackdrop`), Shop and Armory as a UI image.
+- **Main Menu:** the focused button is the same size as the others (mock: slightly larger); the version label shows `v` + Application.version ("v1.0"); the hint pill uses text prompts ("[Cross] Select"), not glyph icons.
+- **HUD:** the heat bar is one tint that blends leaf -> carrot -> tomato as it fills (mock shows three fixed colour zones); the hold-to-replace ring on an ammo slot is still the old placeholder ring (tinted gold); button glyph badges on the ammo slots are the existing glyph discs, not the mock's round badges.
+- **Shop:** the detail panel shows the item text as a title plus plain lines. The mock's rarity / tag chips, the "Fits" box and the aligned stat rows (before -> after in green) are not built (the tooltip data is free text from `ShopDescriber`). The merchant is the old placeholder olive instead of the dashed "[MERCHANT ART]" arch. Cards are 0.92x the mock size so both rows fit without scrolling. Reroll / Leave / Main Menu / bag buttons are extra (mouse and touch); the mock only has the prompt pill.
+- **Armory:** the ring is smaller than the mock (radius 0.85 u x 285 px = 242 px vs about 380 px; the doll size is tied to the same scale). Filled slots show the big arm sprite beside a faint medallion instead of the arm inside the medallion. The stat strip is one text panel, not four cells with a highlighted change. Tabs show counts ("Arms (1)"). The card grid is 4 columns of portrait cards (mock: landscape cards in 3 columns). The "Slot 2 - choose an armament" line is the generic message label. The dashed ring is a generated texture (`Assets/Art/UI/Backdrop/ring_dashed.png`).
+- **Character Creation:** the preview keeps the eight placeholder arms around the doll (mock: one arm); the front arms overlap the Randomize button. A Main Menu button sits under the title (mock has only the hint). The spotlight is a soft glow (the kit's arch sprite at 75%).
+- **Settings:** a slider moves in steps (left / right, or a click steps it forward), not by where you click; the Video tab only exists on PC (hidden elsewhere, like the settings it holds); a Back button sits top-left (mock has only the hint). The "Changes apply instantly" note is a fixed text.
+- **Fonts:** static atlases (no runtime glyph adding); arrows and other missing glyphs fall back to Liberation Sans. Nunito's static 600 / 800 come from the `@expo-google-fonts/nunito` package (the Google Fonts repo only has the variable font).
+- **Old setup scripts:** `M4Setup..M9dSetup`, `Cc1Setup`, `M75Setup` still contain the old skeleton screen builders (TMP-converted but the old look). The screens are now built by `BulletHell/Vox/5..9`; do not re-run the old screen builders.
+- **Retired art in docs:** `Docs/Screenshots/UI1` and `UI1/theme_sheet.png` still show the removed Mega Cozy pack. Delete the folder when convenient.
+
+### "Destroy may not be called from edit mode" logged when leaving Play mode (seen while working on UI2)
+- **Steps:** enter Play mode (any scene that spawned enemies), then stop it
+- **Expected:** a clean Console
+- **Actual:** about 30 errors `Destroy may not be called from edit mode! Use DestroyImmediate instead.` from `UnityEngine.Object:Destroy` <- `ObjectPool<BulletHell.Enemies.Enemy>.Clear` <- `UnityEngine.Pool.PoolManager:Reset` <- `UnityEditor.ObjectPool.PoolManager:OnEditorStateChange` (Unity's pool manager clearing pools on the play-mode change). Not related to the UI swap; the Editor.log shows it at every Play stop in this session.
+- **How often:** always on stopping Play with live enemy pools
+- **Severity:** minor (Console noise). Idea: the pool clean-up should not call Destroy from edit mode: check the Enemy pool's `actionOnDestroy` / how the pool is reset on domain reload.
+
 ### P1 hitches: occasional 30-70 ms frames in the stress test, cause not yet attributed - TABLED FOR THE FINAL PERFORMANCE TEST
 - **Steps:** Development build, `-perfstress -perfvsync 0` (80-enemy swarm + Pumpking phase 2 + 8 arms firing, 90 s), analyse with `Tools/perf_analyze.ps1 -Csv <run.csv> -From 10`
 - **Expected:** steady 60 fps, no visible hitches

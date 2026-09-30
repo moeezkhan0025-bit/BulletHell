@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using System.Collections.Generic;
 using BulletHell.Core;
 using BulletHell.Input;
@@ -29,13 +30,13 @@ namespace BulletHell.Shop
         [SerializeField] private Sprite placeholderIcon;
 
         [Header("Labels and buttons")]
-        [SerializeField] private Text titleLabel;
-        [SerializeField] private Text currencyLabel;
-        [SerializeField] private Text messageLabel;
-        [SerializeField] private Text hintLabel;
-        [SerializeField] private Text inventoryLabel;
+        [SerializeField] private TMP_Text titleLabel;
+        [SerializeField] private TMP_Text currencyLabel;
+        [SerializeField] private TMP_Text messageLabel;
+        [SerializeField] private TMP_Text hintLabel;
+        [SerializeField] private TMP_Text inventoryLabel;
         [SerializeField] private Button rerollButton;
-        [SerializeField] private Text rerollLabel;
+        [SerializeField] private TMP_Text rerollLabel;
         [SerializeField] private Button leaveButton;
         [SerializeField] private Button menuButton;
         [Tooltip("Where a bought card flies to.")]
@@ -65,6 +66,7 @@ namespace BulletHell.Shop
         private int shownCurrency = int.MinValue;
         private GameObject lastSelected;
         private ShopCard shownTooltipCard;
+        private int shownRerollCost = -1;
 
         public event Action ContinuePressed;
         public event Action MenuPressed;
@@ -119,7 +121,7 @@ namespace BulletHell.Shop
             tooltip.Hide();
 
             ScreenTransition.In(gameObject);
-            titleLabel.text = "Shop - round " + state.Round;
+            titleLabel.text = "THE MERCATOR'S STALL";
             messageLabel.text = "";
             ApplyHints();
             BuildStock();
@@ -187,7 +189,7 @@ namespace BulletHell.Shop
             {
                 case ShopItemKind.Arm: return entry.Arm.Sprite;
                 case ShopItemKind.Armament: return entry.Armament.Icon;
-                default: return null;
+                default: return UITheme.Current != null ? UITheme.Current.HarvestCrateIcon : null;
             }
         }
 
@@ -197,9 +199,14 @@ namespace BulletHell.Shop
         private void RefreshLabels()
         {
             shownCurrency = state.Currency;
-            currencyLabel.text = state.Currency.ToString();
+            currencyLabel.text = state.Currency.ToString("N0");
             int rerollCost = ShopService.RerollCost(visit, tuning);
-            rerollLabel.text = "Reroll  " + rerollCost;
+            rerollLabel.text = "Reroll \u00B7 " + rerollCost;
+            if (rerollCost != shownRerollCost)
+            {
+                shownRerollCost = rerollCost;
+                ApplyHints();
+            }
             inventoryLabel.text = "Arms " + state.SpareArms.Count + "   Armaments " + state.Armaments.Count;
             foreach (ShopCard card in cards)
             {
@@ -479,9 +486,8 @@ namespace BulletHell.Shop
         private void ApplyHints()
         {
             PromptHint.Show(hintLabel,
-                PromptHint.P(UiAction.Confirm, "Buy"), PromptHint.P(UiAction.Reroll, "Reroll"),
-                PromptHint.P(UiAction.Details, "Details"), PromptHint.P(UiAction.Back, "Leave"),
-                PromptHint.P(UiAction.Start, "Leave"));
+                PromptHint.P(UiAction.Confirm, "Buy"), PromptHint.P(UiAction.Reroll, shownRerollCost >= 0 ? "Reroll \u00B7 " + shownRerollCost : "Reroll"),
+                PromptHint.P(UiAction.Details, "Details"), PromptHint.P(UiAction.Back, "Leave"));
         }
     }
 }

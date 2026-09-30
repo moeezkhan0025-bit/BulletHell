@@ -1,4 +1,5 @@
 using BulletHell.Core;
+using TMPro;
 using BulletHell.Enemies;
 using PrimeTween;
 using UnityEngine;
@@ -18,7 +19,7 @@ namespace BulletHell.UI
         private const string BossColor = "#ff5a3c";
 
         [SerializeField] private CombatTuning tuning;
-        [SerializeField] private Text label;
+        [SerializeField] private TMP_Text label;
 
         private RunManager run;
         private GameConfig config;

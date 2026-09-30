@@ -1,4 +1,5 @@
 using BulletHell.Bosses;
+using TMPro;
 using BulletHell.Core;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,7 +16,7 @@ namespace BulletHell.UI
         private const int MaxRound = 99;
         private const float HealthStep = 0.1f;
 
-        [SerializeField] private Text label;
+        [SerializeField] private TMP_Text label;
         [SerializeField] private Button lowerButton;
         [SerializeField] private Button raiseButton;
         [SerializeField] private Button goButton;

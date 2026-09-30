@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using BulletHell.Arena;
 using BulletHell.Core;
 using BulletHell.Player;
@@ -527,12 +528,12 @@ namespace BulletHell.EditorTools
                 rect.pivot = new Vector2(0f, 1f);
                 rect.anchoredPosition = new Vector2(24f, -16f);
                 rect.sizeDelta = new Vector2(760f, 44f);
-                var text = runHud.GetComponent<Text>();
+                var text = runHud.GetComponent<TMP_Text>();
                 text.fontSize = 26;
-                text.alignment = TextAnchor.UpperLeft;
+                text.alignment = TextAlignmentOptions.TopLeft;
                 text.raycastTarget = false;
-                if (text.GetComponent<Outline>() == null)
-                    text.gameObject.AddComponent<Outline>().effectColor = new Color(0f, 0f, 0f, 0.85f);
+                text.outlineWidth = 0.2f;
+                text.outlineColor = new Color32(0, 0, 0, 217);
             }
         }
 
@@ -552,8 +553,8 @@ namespace BulletHell.EditorTools
 
             RectTransform glyphRect = Anchored("Glyph", slot, new Vector2(1f, 0f), new Vector2(6f, -6f), new Vector2(40f, 40f));
             Image glyph = Pic(glyphRect, "Disc", null, Color.white, Vector2.zero, Vector2.zero, true, Image.Type.Simple);
-            Text label = UiBuilder.CreateText("Label", glyphRect, "", 24, TextAnchor.MiddleCenter);
-            label.fontStyle = FontStyle.Bold;
+            TMP_Text label = UiBuilder.CreateText("Label", glyphRect, "", 24, TextAnchor.MiddleCenter);
+            label.fontStyle = FontStyles.Bold;
             UiBuilder.Stretch(label.rectTransform);
 
             var component = slot.gameObject.AddComponent<HudAmmoSlot>();

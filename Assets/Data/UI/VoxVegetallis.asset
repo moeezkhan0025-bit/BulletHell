@@ -1,0 +1,115 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 288cd967b8ad49749888622349306ccb, type: 3}
+  m_Name: VoxVegetallis
+  m_EditorClassIdentifier: BulletHell::BulletHell.UI.UITheme
+  pixelScale: 1
+  palette:
+    inkSoil: {r: 0.18039216, g: 0.12156863, b: 0.078431375, a: 1}
+    marble: {r: 0.95686275, g: 0.93333334, b: 0.8627451, a: 1}
+    marbleShade: {r: 0.8862745, g: 0.8392157, b: 0.7372549, a: 1}
+    gold: {r: 0.9137255, g: 0.7137255, b: 0.22745098, a: 1}
+    goldDark: {r: 0.654902, g: 0.47058824, b: 0.101960786, a: 1}
+    tomato: {r: 0.84705883, g: 0.26666668, b: 0.22745098, a: 1}
+    leaf: {r: 0.36862746, g: 0.62352943, b: 0.24313726, a: 1}
+    carrot: {r: 0.8980392, g: 0.47843137, b: 0.14117648, a: 1}
+    corn: {r: 0.95686275, g: 0.80784315, b: 0.2901961, a: 1}
+    sage: {r: 0.6627451, g: 0.76862746, b: 0.5411765, a: 1}
+    faintText: {r: 0.5568628, g: 0.5137255, b: 0.4392157, a: 1}
+    mutedText: {r: 0.41960785, g: 0.3764706, b: 0.30588236, a: 1}
+  rarityCommon: {r: 0.7254902, g: 0.6901961, b: 0.6117647, a: 1}
+  rarityRare: {r: 0.36862746, g: 0.62352943, b: 0.24313726, a: 1}
+  rarityEpic: {r: 0.8980392, g: 0.47843137, b: 0.14117648, a: 1}
+  rarityLegendary: {r: 0.9137255, g: 0.7137255, b: 0.22745098, a: 1}
+  titleFont: {fileID: 11400000, guid: be93aa0791d72824abaf14a49f47457d, type: 2}
+  logoFont: {fileID: 11400000, guid: b1923e3c30a995f4591baa50a5bfe327, type: 2}
+  buttonFont: {fileID: 11400000, guid: 9b03ec1ef2daf924db51059416230225, type: 2}
+  bodyFont: {fileID: 11400000, guid: d18b13106e701a2428f71678d53c816e, type: 2}
+  bodyBoldFont: {fileID: 11400000, guid: 0d6c9e18e87d2464c8adf661cc714f64, type: 2}
+  panelMarble: {fileID: 21300000, guid: 1106bb2373f8b984dab6a5401c8214f1, type: 3}
+  panelShade: {fileID: 21300000, guid: be6e310ad4f7f0245b4cade716551f17, type: 3}
+  panelWood: {fileID: 21300000, guid: e36c67dca0816814ea770b5d5fb8e8a5, type: 3}
+  panelCorn: {fileID: 21300000, guid: c852f4ba7029ef94f8b573b820abfe40, type: 3}
+  pillMarble: {fileID: 21300000, guid: 1d04c85c8c83793408b8a2b4ae152bc9, type: 3}
+  pillHintbar: {fileID: 21300000, guid: 71472d46ec04639478cdb8dde622ee9b, type: 3}
+  rowFocusRing: {fileID: 21300000, guid: 45bdd3adec189714b822ac1867fe250c, type: 3}
+  button:
+    normal: {fileID: 21300000, guid: aedc67ae9fb3bfa498a61a60412117d3, type: 3}
+    highlighted: {fileID: 21300000, guid: 755c10c1f70518749a1fa1fe0e165533, type: 3}
+    selected: {fileID: 21300000, guid: 755c10c1f70518749a1fa1fe0e165533, type: 3}
+    pressed: {fileID: 21300000, guid: 87cfffb0322a46d49a06dccb031e9d63, type: 3}
+    disabled: {fileID: 21300000, guid: 07193c299bc67144c98083ebee702ed4, type: 3}
+  buttonPrimary: {fileID: 21300000, guid: dca7ee72ca247fa41ad9590cf8e95379, type: 3}
+  buttonArrowLeft: {fileID: 21300000, guid: 09c313a6fedc5e04fa93d2b778d4be9f, type: 3}
+  buttonArrowRight: {fileID: 21300000, guid: 743af08d733b99f4097e688b5951fd53, type: 3}
+  laurel: {fileID: 21300000, guid: 61c0137e40c6c104da0e8c2ecc676fe9, type: 3}
+  tab: {fileID: 21300000, guid: 8ea24bed8ac091045b31905f70fc8ab7, type: 3}
+  tabSelected: {fileID: 21300000, guid: 13e1dc888555e9941845af4239b8cbae, type: 3}
+  trimLeaf: {fileID: 21300000, guid: eb61f59cb38101b4f815b2b12850fa48, type: 3}
+  trimCarrot: {fileID: 21300000, guid: d2df7b21a98636e42a2faaa32c532fe4, type: 3}
+  trimTomato: {fileID: 21300000, guid: f289a756ec401004f801c4b3285c1bdc, type: 3}
+  trimCorn: {fileID: 21300000, guid: e2dfc2aa830c02d4281d5e26a0ef10c4, type: 3}
+  cardCommon: {fileID: 21300000, guid: f9d0078d69c52d547b1ed43e11fddc19, type: 3}
+  cardRare: {fileID: 21300000, guid: 0031cbbff5b0e4948b67c78bccca190a, type: 3}
+  cardEpic: {fileID: 21300000, guid: c86acf236af171b47b3f435b740f1af1, type: 3}
+  cardLegendary: {fileID: 21300000, guid: f10669fcdd2d3ed4e8b7f9f3f0870dae, type: 3}
+  cardFocusRing: {fileID: 21300000, guid: 27c63332083fd6d498fb793abb83f1a5, type: 3}
+  stampSold: {fileID: 21300000, guid: 705f894d3be87cb49a4f64f3b8433515, type: 3}
+  slotAmmo: {fileID: 21300000, guid: e5cd2ed5c6c9ae149be646a07fd1807f, type: 3}
+  slotAmmoEmpty: {fileID: 21300000, guid: fed0b8f3c2c58c741aa654ad37face2f, type: 3}
+  slotActiveRing: {fileID: 21300000, guid: 7b6d36a616dfe0f4da47e7c2c72904df, type: 3}
+  bubbleEmpty: {fileID: 21300000, guid: 1eb8b117f49c0104b9113ad421a2758e, type: 3}
+  bubbleFilledRim: {fileID: 21300000, guid: 88905d4a298e2ea468aaea4e8bc2d7f8, type: 3}
+  bubbleFocused: {fileID: 21300000, guid: 6fd8f4d0a3b052c4cb06a2bd291b0b7a, type: 3}
+  armSlotFilled: {fileID: 21300000, guid: 8200423a2c7f4674f9176ca95c304dac, type: 3}
+  armSlotSelected: {fileID: 21300000, guid: 969e04809ec5f5747aa8db6c19edaa80, type: 3}
+  tetherVine: {fileID: 21300000, guid: 68e2bc2abf04aa4448af7e7a5356e693, type: 3}
+  heartFull: {fileID: 21300000, guid: b6bf603effcaed24cb51bc233d38c160, type: 3}
+  heartEmpty: {fileID: 21300000, guid: e005bb6dfa14bdb43bc04fbc50c91cd8, type: 3}
+  heatTrack: {fileID: 21300000, guid: d53f91b31cf257f499d3eb6122061596, type: 3}
+  heatFill: {fileID: 21300000, guid: ce49b5caec8838a4f880f92d196c975a, type: 3}
+  portraitRing: {fileID: 21300000, guid: d661ebefb7f35df4c9ec2520ee50e11f, type: 3}
+  coin: {fileID: 21300000, guid: ccd9567ed71661c40b0ce5b2d729ad87, type: 3}
+  heatCool: {r: 0.36862746, g: 0.62352943, b: 0.24313726, a: 1}
+  heatWarm: {r: 0.8980392, g: 0.47843137, b: 0.14117648, a: 1}
+  heatHot: {r: 0.84705883, g: 0.26666668, b: 0.22745098, a: 1}
+  hudSlotFilled: {r: 1, g: 1, b: 1, a: 1}
+  hudSlotEmpty: {r: 1, g: 1, b: 1, a: 0.75}
+  sliderTrack: {fileID: 21300000, guid: de5fcd56d4b331b428f2522788176313, type: 3}
+  sliderFill: {fileID: 21300000, guid: 793dc15d55e87f14ab79deca057bd051, type: 3}
+  sliderHandle: {fileID: 21300000, guid: 9fb710dad4623c9419aa6e21dfa14264, type: 3}
+  sliderHandleFocused: {fileID: 21300000, guid: 1fd3f6b19d3ffcf45aa0b18ca6dc8c58, type: 3}
+  toggleOff: {fileID: 21300000, guid: e4148c27c2320494ba8d8c107eb74648, type: 3}
+  toggleOn: {fileID: 21300000, guid: 11523395528fc2f44a41dbd401626432, type: 3}
+  toggleKnob: {fileID: 21300000, guid: 9d0819030184e064d96013742abc809d, type: 3}
+  pedestal: {fileID: 21300000, guid: 3fc2c905216d875469a333459f6ff218, type: 3}
+  spotlight: {fileID: 21300000, guid: 73ab989bef82b1a4cbec2afb8366b824, type: 3}
+  harvestCrateIcon: {fileID: 21300000, guid: 7c243b42c1d4e1d4ba966c02a2f414f3, type: 3}
+  outlinePx: 6
+  dropShadowPx: 9
+  focusLiftPx: 12
+  focusSeconds: 0.12
+  cardBuySeconds: 0.35
+  bubbleInSeconds: 0.25
+  bubbleStaggerSeconds: 0.05
+  screenTransitionSeconds: 0.2
+  textOnPanel: {r: 0.18039216, g: 0.12156863, b: 0.078431375, a: 1}
+  textOnButton: {r: 0.18039216, g: 0.12156863, b: 0.078431375, a: 1}
+  textOnButtonDim: {r: 0.5568628, g: 0.5137255, b: 0.4392157, a: 1}
+  textOnLight: {r: 0.18039216, g: 0.12156863, b: 0.078431375, a: 1}
+  textOnDark: {r: 0.95686275, g: 0.93333334, b: 0.8627451, a: 1}
+  focusSound: {fileID: 0}
+  submitSound: {fileID: 0}
+  cancelSound: {fileID: 0}
+  buySound: {fileID: 0}
+  equipSound: {fileID: 0}
+  errorSound: {fileID: 0}

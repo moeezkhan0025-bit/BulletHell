@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -78,7 +79,6 @@ namespace BulletHell.EditorTools
             SetupMainMenu(doll);
             SetupGame();
             AssetDatabase.SaveAssets();
-            UiThemeSetup.ApplyAll();
             Debug.Log("CC1 setup complete.");
         }
 
@@ -378,7 +378,7 @@ namespace BulletHell.EditorTools
         private static void SetText(Transform parent, string path, string text)
         {
             Transform t = parent.Find(path);
-            if (t != null && t.TryGetComponent(out Text label))
+            if (t != null && t.TryGetComponent(out TMP_Text label))
             {
                 label.text = text;
                 EditorUtility.SetDirty(label);

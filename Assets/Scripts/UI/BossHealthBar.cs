@@ -1,4 +1,5 @@
 using BulletHell.Bosses;
+using TMPro;
 using BulletHell.Core;
 using PrimeTween;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace BulletHell.UI
     public sealed class BossHealthBar : MonoBehaviour
     {
         [SerializeField] private CanvasGroup group;
-        [SerializeField] private Text namePlate;
+        [SerializeField] private TMP_Text namePlate;
         [SerializeField] private Image fill;
         [SerializeField] private Image trail;
         [SerializeField] private RectTransform phaseTick;

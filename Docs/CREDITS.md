@@ -1,27 +1,30 @@
 # Credits
 
-Third-party assets used in this project. Add a row here whenever a pack goes into `Assets/ThirdParty/`.
+Third-party assets used in this project. Add a row here whenever a pack or font goes into the project.
 
-## UI
+## UI art
 
-### Mega Cozy UI Pack, DEMO (Pixel art Edition) by dobo_ui
+The VOX VEGETALLIS UI kit (`Assets/Art/UI/VoxKit`, described by `vox_ui_kit_manifest.json`) is project art, not a third-party
+pack. There is no third-party UI sprite pack in the project any more: the earlier "Mega Cozy UI Pack" (dobo_ui) stand-in was
+removed in UI2 together with its `Assets/UI/DoboCozy` copies.
 
-| | |
-|---|---|
-| Author | dobo_ui |
-| Page | https://dobo-ui.itch.io/cozy-user-interface (author's store: https://dobo-ui.itch.io/) |
-| Version | Free demo (`DEMO_MegaCozyUIPack_doboui.zip`, about 143 kB) |
-| Location | `Assets/ThirdParty/UI-PackDWNLD/DEMO_MegaCozyUIPack_doboui - copia/` (untouched) |
-| License | No license file ships with the pack. The itch.io page states: "Use / rework the assets with personal and commercial projects." |
-| Commercial use | Yes, per the page. |
-| Forbidden | "Resell / distribute the assets to others in any way"; use in crypto/NFT projects; use for training or generative AI. |
-| Attribution | Not required by the page; credited here anyway. |
-| Used for | Panels, buttons (normal / highlighted / selected / pressed / disabled), tabs, tooltip, card frame, item slot / HUD frames, slider, toggle, arrows and header ribbon, all mapped through the `UITheme` asset (`Assets/Data/UI/UITheme.asset`). |
+## Fonts (all SIL Open Font License 1.1)
+
+Font files and the TextMesh Pro font assets built from them are in `Assets/Fonts/`. The license texts sit beside them
+(`OFL_cinzeldecorative.txt`, `OFL_lilitaone.txt`, `OFL_nunito.txt`). All three families are free to use in commercial games and to
+embed; they may not be sold on their own.
+
+| Family | Used for | Weights | Author / copyright | Source |
+|---|---|---|---|---|
+| Cinzel Decorative | screen titles (700), the game logo (900) | Bold, Black | (c) 2012 Natanael Gama | Google Fonts (`google/fonts`, `ofl/cinzeldecorative`) |
+| Lilita One | buttons and numbers | Regular | (c) 2011 Juan Montoreano | Google Fonts (`google/fonts`, `ofl/lilitaone`) |
+| Nunito | body text (600), small labels (800) | SemiBold, ExtraBold | (c) 2014 The Nunito Project Authors | Google Fonts |
 
 Notes:
-- The license text above was read from the itch.io page on 2026-09-29. The page does not give the demo separate terms, so the
-  same terms are assumed to apply. Re-check the page before release and keep a copy of the terms if the author changes them.
-- The pack folder is never modified. The 20 sprites we use are copies in `Assets/UI/DoboCozy/`, re-imported with
-  Point filtering and 9-slice borders. The rest of the pack (about 120 more PNGs) is unused.
-- The screenshots in `Docs/Screenshots/UI1/` show the pack's sprites: keep them out of any public distribution of the game files.
-- The pack is small pixel art in a painted-HD game; it is a stand-in until the themed UI pass (M11).
+- The Google Fonts repository ships Nunito only as a variable font (`Nunito[wght].ttf`), which TextMesh Pro cannot pick weights
+  from. The two static weights used here (`Nunito_600SemiBold.ttf`, `Nunito_800ExtraBold.ttf`) come from the `@expo-google-fonts/nunito`
+  npm package (static instances of the same OFL family, downloaded 2026-09-30).
+- TextMesh Pro font assets: `CinzelDecorative-Bold SDF`, `CinzelDecorative-Black SDF`, `LilitaOne SDF`, `Nunito-SemiBold SDF`,
+  `Nunito-ExtraBold SDF` (static atlases, ASCII + Latin-1 + a few symbols). Each falls back to TMP's bundled Liberation Sans SDF
+  for glyphs the family lacks (for example the arrow used in stat comparisons).
+- `Assets/TextMesh Pro` holds Unity's own TMP Essential Resources (Liberation Sans, shaders, default styles).

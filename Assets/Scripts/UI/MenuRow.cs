@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,7 +14,7 @@ namespace BulletHell.UI
     public sealed class MenuRow : MonoBehaviour, ICancelHandler, ISelectHandler, IDeselectHandler
     {
         [SerializeField] private Button button;
-        [SerializeField] private Text label;
+        [SerializeField] private TMP_Text label;
         [Tooltip("Used only when there is no UITheme.")]
         [SerializeField] private Color normalTextColor = Color.black;
         [SerializeField] private Color dimTextColor = new Color(0.45f, 0.45f, 0.5f);

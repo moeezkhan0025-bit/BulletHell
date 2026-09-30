@@ -82,7 +82,7 @@ namespace BulletHell.Shop
 
         public static List<string> CrateLines(ShopTuning tuning) => new List<string>
         {
-            "Mystery Crate",
+            "Harvest Crate",
             "Open it and pick 1 of " + (tuning != null ? tuning.CrateChoices : 3) + " armaments.",
         };
 

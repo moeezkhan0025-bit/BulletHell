@@ -1,4 +1,5 @@
 using System.Text;
+using TMPro;
 using BulletHell.Core;
 using BulletHell.Enemies;
 using BulletHell.Input;
@@ -29,7 +30,7 @@ namespace BulletHell.UI
         [SerializeField] private PlayerHealth playerHealth;
         [SerializeField] private WaveSpawner waveSpawner;
         [SerializeField] private JumpController jump;
-        [SerializeField] private Text label;
+        [SerializeField] private TMP_Text label;
 
         private readonly StringBuilder builder = new StringBuilder(400);
         private static readonly string[] StateNames = { "none", "soft", "locked" };

@@ -1,4 +1,5 @@
 using System.Linq;
+using TMPro;
 using BulletHell.Core;
 using BulletHell.Cosmetics;
 using BulletHell.Enemies;
@@ -107,15 +108,15 @@ namespace BulletHell.EditorTools
             button.navigation = new Navigation { mode = Navigation.Mode.Vertical };
             rect.gameObject.AddComponent<LayoutElement>().minHeight = 68f;
 
-            Text label = UiBuilder.CreateText("Label", rect, "", 32, TextAnchor.MiddleLeft);
+            TMP_Text label = UiBuilder.CreateText("Label", rect, "", 32, TextAnchor.MiddleLeft);
             label.color = Color.black;
-            label.horizontalOverflow = HorizontalWrapMode.Overflow;
+            label.textWrappingMode = TextWrappingModes.NoWrap;
             UiBuilder.Stretch((RectTransform)label.transform);
             ((RectTransform)label.transform).offsetMin = new Vector2(24f, 0f);
 
-            Text value = UiBuilder.CreateText("Value", rect, "", 32, TextAnchor.MiddleRight);
+            TMP_Text value = UiBuilder.CreateText("Value", rect, "", 32, TextAnchor.MiddleRight);
             value.color = Color.black;
-            value.horizontalOverflow = HorizontalWrapMode.Overflow;
+            value.textWrappingMode = TextWrappingModes.NoWrap;
             UiBuilder.Stretch((RectTransform)value.transform);
             ((RectTransform)value.transform).offsetMax = new Vector2(-24f, 0f);
 
@@ -205,7 +206,7 @@ namespace BulletHell.EditorTools
             // New Game / Continue / Settings / Quit
             Button newGame = buttons.Find("StartGame").GetComponent<Button>();
             newGame.name = "NewGame";
-            newGame.GetComponentInChildren<Text>().text = "New Game";
+            newGame.GetComponentInChildren<TMP_Text>().text = "New Game";
             Button cont = buttons.Find("Continue").GetComponent<Button>();
             Button quit = buttons.Find("Quit").GetComponent<Button>();
             Button settingsButton = UiBuilder.CreateButton("Settings", buttons, "Settings", 100f);
@@ -290,8 +291,8 @@ namespace BulletHell.EditorTools
             // Round intro banner: a big label in the upper part of the screen.
             var bannerRoot = UiBuilder.CreateRect("RoundIntro", safe);
             UiBuilder.Stretch(bannerRoot);
-            Text label = UiBuilder.CreateText("Label", bannerRoot, "", 130, TextAnchor.MiddleCenter);
-            label.fontStyle = FontStyle.Bold;
+            TMP_Text label = UiBuilder.CreateText("Label", bannerRoot, "", 130, TextAnchor.MiddleCenter);
+            label.fontStyle = FontStyles.Bold;
             label.color = new Color(1f, 0.92f, 0.45f);
             label.gameObject.AddComponent<Outline>().effectDistance = new Vector2(4f, -4f);
             var labelRect = (RectTransform)label.transform;

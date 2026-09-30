@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,14 +12,14 @@ namespace BulletHell.UI
     /// </summary>
     public sealed class FlowPanel : MonoBehaviour
     {
-        [SerializeField] private Text title;
-        [SerializeField] private Text body;
+        [SerializeField] private TMP_Text title;
+        [SerializeField] private TMP_Text body;
         [SerializeField] private Button continueButton;
         [SerializeField] private Button menuButton;
         [Tooltip("Optional (the Pause panel has one).")]
         [SerializeField] private Button settingsButton;
         [Tooltip("Optional: the button prompt line at the bottom.")]
-        [SerializeField] private Text hintLabel;
+        [SerializeField] private TMP_Text hintLabel;
 
         public event Action ContinuePressed;
         public event Action MenuPressed;

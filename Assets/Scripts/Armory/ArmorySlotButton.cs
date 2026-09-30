@@ -1,4 +1,6 @@
+using BulletHell.UI;
 using PrimeTween;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -15,7 +17,7 @@ namespace BulletHell.Armory
         [SerializeField] private RectTransform body;
         [SerializeField] private Image frame;
         [SerializeField] private Image focusRing;
-        [SerializeField] private Text label;
+        [SerializeField] private TMP_Text label;
         [SerializeField, Range(0f, 1f)] private float emptyAlpha = 0.55f;
         [SerializeField, Range(0f, 1f)] private float filledAlpha = 0.18f;
         [SerializeField, Min(1f)] private float focusScale = 1.15f;
@@ -32,8 +34,25 @@ namespace BulletHell.Armory
         /// <summary>Sets the slot name ("NE") and whether it holds an arm (a filled slot's frame is nearly invisible: the arm is the picture).</summary>
         public void Set(string slotName, bool filled)
         {
-            label.text = filled ? "" : slotName;
-            Color color = frame.color;
+            UITheme theme = UITheme.Current;
+            if (theme != null)
+            {
+                if (theme.ArmSlotFilled != null)
+                {
+                    frame.sprite = theme.ArmSlotFilled;
+                    frame.type = Image.Type.Simple;
+                    frame.preserveAspect = true;
+                }
+                if (focusRing != null && theme.ArmSlotSelected != null)
+                {
+                    focusRing.sprite = theme.ArmSlotSelected;
+                    focusRing.type = Image.Type.Simple;
+                    focusRing.preserveAspect = true;
+                }
+                label.color = theme.FaintText;
+            }
+            label.text = filled ? "" : "+";
+            Color color = filled ? Color.white : new Color(0.72f, 0.68f, 0.6f);
             color.a = filled ? filledAlpha : emptyAlpha;
             frame.color = color;
         }
