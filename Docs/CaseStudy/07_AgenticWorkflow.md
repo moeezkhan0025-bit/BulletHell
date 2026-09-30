@@ -27,15 +27,18 @@ the repository are marked [VERIFY]. Session transcripts were not read (they live
 Milestones were small and named (`M7.6 Jump`, `M8.6 Animation toolkit`), which kept each session inside one context window and each commit reviewable.
 
 ## 3. Model selection
-Taken from the commit trailers (`git log --format='%h %(trailers:key=Co-Authored-By)'`):
+Taken from the commit trailers and, since 2026-09-30, from the session transcripts (`~/.claude/projects/.../*.jsonl`, read with the author's permission; details and the session table are in `05_DevLog.md`). The author switched models by hand with `/model`.
 
-| Milestones | Model |
+| Work | Model |
 |---|---|
-| M0, M1, M1.5 (skeleton, movement, arm loadout) | Claude Opus 5.5 |
-| M3a onward (ammo, armaments, game flow, combat, arena, AI, UI, boss, performance tools, UI2, PF1) | Claude Sonnet 5.5 |
+| M0 (skeleton) | Claude Sonnet 5.5 (trailer says Opus: Opus took over a minute before the commit) |
+| M1, M1.5 (movement, arm loadout) | Claude Opus 5.5 |
+| M2 to M9d, C1, UI1, CC1, docs work, Skirmisher hook-up | Claude Sonnet 5.5 |
+| M10 planning and first implementation (about 76 minutes) | **Claude Fable 5.1** (commit trailer says Sonnet) |
+| Rest of M10, P1, UI2, PF1 | Claude Sonnet 5.5 (Haiku only for a no-op wait helper) |
 | Art uploads, some design-note commits | human (no trailer) |
 
-The switch to Sonnet after M1.5 is visible in the history; the reason is not recorded there [VERIFY: presumably speed and cost once the architecture was set].
+The commit trailers alone would have hidden two facts: M0 and M2 were Sonnet, and Fable 5.1 did the start of the boss milestone. The transcripts record the switches but not the reasons [VERIFY: ask the author; likely capability and cost, or trying the new model on the boss].
 
 ## 4. How the docs were maintained
 - Design docs first (`Docs/ARMAMENTS.md`, `SHOP.md`, `ARMORY.md`, `UI_AUDIT.md`), then code, then a "tick the milestone in CLAUDE.md" commit (several are separate commits: "M1: mark milestone complete").

@@ -35,6 +35,43 @@ Conventions used below: "Model" is what the commit trailer says. Test file attri
 Counts from `git log --format='%(trailers:key=Co-Authored-By,valueonly,separator=)' | sed '/^$/d' | sort | uniq -c` (5 Opus, 31 Sonnet; 50 total). Every commit has the git author `Cyan`, so the author field does not distinguish human from agent. The PF1 session (this case study) is not committed yet.
 
 [VERIFY] Several untagged commits contain large code changes that look agent-written, not hand-made: `5b356f7` (WIP M1, 37 files, +3467, adds `ArmSelectorTests`), `8cefcd0` (labelled "M2 done; M3 design", 49 files, +1982, adds `FireTimerTests` and `HealthTests`, so it almost certainly holds the M2 code), and `9d5fef6` (labelled "Design: game flow...", 34 files, +1291, adds `ArmInstanceTests` and `StatCalculatorTests`, so it holds early M3b code). The likely reason is that the human committed the working tree by hand at those points, sweeping in the agent's uncommitted work; the model that wrote that code is probably the one of the surrounding milestone (Opus for M1 and M2, Sonnet for the M3b start). This cannot be proven from git alone.
+### Models from the session transcripts (added 2026-09-30, with the author's permission)
+
+The commit trailers only say which model was active when a commit was made. The Claude Code session transcripts
+(`~/.claude/projects/C--Dev-BulletHell/*.jsonl`, read only for the `model`, timestamp and `/model` fields) show what actually did the work.
+Times below are local (UTC-5); transcripts store UTC. Model switches were made by the author with `/model` (confirmed by the
+`Set model to ...` stdout lines in the transcripts). Milestone names come from the "We're doing Mx from CLAUDE.md" prompts.
+
+| Session (id prefix) | Local time | Model(s) in the transcript | Milestone work |
+|---|---|---|---|
+| `489b827c` | 09-28 13:47-14:32 | Sonnet 5.5 until 14:19, then Opus 5.5 | M0 (Sonnet), then M1 started (Opus). Switch via `/model` |
+| `7c9ff7db` | 14:38-14:52 | Opus 5.5 | M1 finish (plan-and-approve rounds) |
+| `4466eaf4` | 15:10-15:36 | Opus 5.5 | M1.5 |
+| `53252171` | 15:37-16:02 | Sonnet 5.5 | M2 (so `8cefcd0`, untagged, holds Sonnet code, not Opus) |
+| `10dfe826` | 16:05-16:22 | Sonnet 5.5 | M3a |
+| `235077d1` | 16:26-16:40 | Sonnet 5.5 | M3b |
+| `9c330260` | 16:42-18:31 | Sonnet 5.5 | M4 (two halves), M5a/M5b; the user's test-from-Boot rule was set here |
+| `abae63f2` | 18:33-19:39 | Sonnet 5.5 | M6, M7 |
+| `47ba1452` | 19:46-21:29 | Sonnet 5.5 | M7.5, M7.6 |
+| `58b753f1` | 21:31-22:33 | Sonnet 5.5 | M7.7, M8 |
+- Model: `f92fefd` Claude Sonnet 5.5; M0 work itself was Sonnet 5.5 (session `489b827c`, until 14:19); `480dc6a` and `150865a` carry an Opus 5.5 trailer because Opus took over at 14:19 (transcript)
+| `bb035825` | 13:11-15:06 | Sonnet 5.5 | M8.6 |
+| `1af0887c` | 15:19-16:22 | Sonnet 5.5 | console-error fix + art scale test (painted backdrop, Chaser) |
+| `bd0d9026` | 16:23 | Sonnet 5.5 | merge of `Docs/CLAUDE.new.md` into CLAUDE.md |
+| `745ad93a` | 16:25-18:25 | Sonnet 5.5 | scale test fixes, doc merges |
+| `3cb55dc3` | 18:34-00:07 | Sonnet 5.5 (one 5.5-hour session, 1167 model turns) | C1, scale lock, UI1, CC1, M9a, M9b, M9c, M9d |
+| `9a558f0e` | 09-30 09:00-12:06 | Sonnet 5.5 (to 09:28) then **Fable 5.1** (09:28-10:44) then Sonnet 5.5 | docs rule and Skirmisher art (Sonnet); **M10 planning and first implementation (Fable 5.1)**; rest of M10 and P1 (Sonnet) |
+| `760a494d` | (ends 12:06) | duplicate of the previous session's turns | looks like a resumed/forked copy of `9a558f0e` [VERIFY]; counted once |
+| `7ff0c1b1` | 09-30 12:15-14:52 | Sonnet 5.5 (plus Haiku for a no-op wait agent) | UI2, PF1 (this session) |
+
+Findings that change the attribution above:
+- Model: Claude Opus 5.5 (`c52770a`, `2addb41`, and untagged `5b356f7`: transcript shows Opus from 14:19, so it is Opus work)
+- **M2 was Sonnet 5.5.** The Opus-for-M2 guess in the VERIFY note below was wrong: session `53252171` is Sonnet only. `5b356f7` (WIP M1) was made after the switch to Opus, so it is Opus work.
+- **M10 was split across models.** The commit trailer for `1a79436` says Sonnet 5.5, but the M10 prompt was sent in the same minute the author switched to Fable 5.1, and Fable 5.1 produced about 340 model turns (09:28 to 10:44 local) before the author switched back to Sonnet 5.5 (`/model`, 10:44) for the rest of M10 and the P1 tooling. [VERIFY] which Pumpking files were written in the Fable window (the transcript has the tool calls).
+- **No Opus after M1.5.** Opus 5.5 appears only in the tail of the M0/M1 session, in M1 and in M1.5. Sonnet 5.5 did everything else, including UI2 and PF1.
+- Assistant-message records per model (excluding the duplicate session `760a494d`): Sonnet 5.5 5,331, Opus 5.5 249, Fable 5.1 340 (Haiku 2, a no-op helper agent). [VERIFY] these are record counts, not tokens or hours; recount with `grep -o '"model":"[^"]*"' <file> | sort | uniq -c`.
+- Why the switches: the transcripts record the switch, not the reason [VERIFY: ask the author; likely capability/cost or trying the new model on the boss, the biggest single design task].
+
 
 ---
 
@@ -50,7 +87,7 @@ Counts from `git log --format='%(trailers:key=Co-Authored-By,valueonly,separator
 - Notes: the first commit already holds 6510 lines of inserted content (project template plus `CLAUDE.md`).
 
 ## M0 - Project skeleton
-
+- Model: Claude Sonnet 5.5 (session `53252171`; `8cefcd0` is untagged because the author committed by hand)
 ### M0 - Skeleton, Boot/Game scenes, Gameplay action map
 - Date: 2026-09-28 (14:11 to 14:52)
 - Commits: `f92fefd` (Unity Pipeline package for CLI Editor control), `480dc6a` (skeleton), `150865a` (tick in CLAUDE.md)
@@ -71,7 +108,7 @@ Counts from `git log --format='%(trailers:key=Co-Authored-By,valueonly,separator
 - Tests / verification: `ArmSelectorTests` (first added in `5b356f7`, 21 `[Test]` methods today).
 - Notes: M0 and M1 were ticked in `CLAUDE.md` by two separate one-line commits at 14:52.
 
-## M1.5 - Arm art and loadout
+- Model: Claude Sonnet 5.5 (`4b0398d`; session `235077d1`); `9d5fef6` untagged, Sonnet work
 
 ### M1.5 - WeaponArmData, loadouts, arms spawned from loadout
 - Date: 2026-09-28 (15:36)
@@ -293,7 +330,7 @@ Counts from `git log --format='%(trailers:key=Co-Authored-By,valueonly,separator
 ## M9c - Armory
 
 ### M9c - Armory screen
-- Date: 2026-09-29 (22:49)
+- Model: commit trailer says Claude Sonnet 5.5, but M10 planning and first implementation ran on Claude Fable 5.1 (09:28-10:44 local), then Sonnet 5.5 finished M10 and P1 (see "Models from the session transcripts")
 - Commits: `4711107`
 - Model: Claude Sonnet 5.5
 - Built: arm ring with gladiator on the left, hovering armament bubbles above the selected arm, tabbed inventory grid, arm to bubble to item equip flow, before/after stat preview, dimmed incompatible items, controller navigation; `Docs/ARMORY.md`.
