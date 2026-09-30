@@ -65,6 +65,7 @@ namespace BulletHell.Input
             input.Debug.DebugNextArmament.performed += OnDebugNext;
             input.Debug.DebugPrevArmament.performed += OnDebugPrev;
             input.Debug.DebugToggleBulletPaths.performed += OnDebugToggleBulletPaths;
+            input.Debug.DebugGiveCurrency.performed += OnDebugGiveCurrency;
 
             ammoActions[0] = gameplay.EquipAmmo1;
             ammoActions[1] = gameplay.EquipAmmo2;
@@ -105,6 +106,7 @@ namespace BulletHell.Input
             input.Debug.DebugNextArmament.performed -= OnDebugNext;
             input.Debug.DebugPrevArmament.performed -= OnDebugPrev;
             input.Debug.DebugToggleBulletPaths.performed -= OnDebugToggleBulletPaths;
+            input.Debug.DebugGiveCurrency.performed -= OnDebugGiveCurrency;
             input.Dispose();
         }
 
@@ -115,6 +117,14 @@ namespace BulletHell.Input
 
         // F6: show / hide the bullet path visualisation (works whether or not the debug overlay is showing).
         private void OnDebugToggleBulletPaths(InputAction.CallbackContext _) => Projectiles.BulletPathDebug.Toggle();
+
+        // F7: give yourself currency (the amount is on ShopTuning). Works in any run state; the Shop refreshes by itself.
+        private void OnDebugGiveCurrency(InputAction.CallbackContext _)
+        {
+            Core.GameServices services = Core.GameServices.Ensure();
+            if (services.Run.State != null)
+                services.Run.State.Currency += services.Config.ShopTuning != null ? services.Config.ShopTuning.DebugCurrencyGrant : 100;
+        }
 
         private void OnLockToggle(InputAction.CallbackContext _) => LockTogglePressed?.Invoke();
 

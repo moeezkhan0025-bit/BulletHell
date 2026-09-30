@@ -27,3 +27,5 @@ MonoBehaviour:
   effects:
   - {fileID: 11400000, guid: 62c530efc85884b4a8a2fdbad286fabe, type: 2}
   armamentSlots: 3
+  rarity: 2
+  priceTier: 4

@@ -26,3 +26,5 @@ MonoBehaviour:
   projectileSize: 0.45
   effects: []
   armamentSlots: 3
+  rarity: 2
+  priceTier: 4

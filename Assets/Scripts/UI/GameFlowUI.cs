@@ -22,13 +22,11 @@ namespace BulletHell.UI
 
         private readonly StringBuilder builder = new StringBuilder(128);
         private RunManager run;
-        private ShopPool shopPool;
 
         private void Awake()
         {
             GameServices services = GameServices.Ensure();
             run = services.Run;
-            shopPool = services.Config.ShopPool;
 
             roundResults.ContinuePressed += run.Advance;
             roundResults.MenuPressed += scene.QuitToMenu;
@@ -62,7 +60,7 @@ namespace BulletHell.UI
                     roundResults.Show($"Round {state.Round} cleared", builder.ToString());
                     break;
                 case GameState.Shop:
-                    shop.Show(state, shopPool);
+                    shop.Show(state);
                     break;
                 case GameState.Armory:
                     armory.Show(state);

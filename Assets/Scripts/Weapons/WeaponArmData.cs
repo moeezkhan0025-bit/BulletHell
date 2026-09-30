@@ -41,10 +41,16 @@ namespace BulletHell.Weapons
         [SerializeField] private ArmEffect[] effects = System.Array.Empty<ArmEffect>();
         [Tooltip("How many armaments this arm can carry (1-3). Rarer arms get more.")]
         [SerializeField, Range(1, 3)] private int armamentSlots = 3;
+        [Header("Shop")]
+        [SerializeField] private ArmamentRarity rarity = ArmamentRarity.Common;
+        [Tooltip("Shop price tier 1-5 (the Shop scales the price with rarity and round).")]
+        [SerializeField, Range(1, 5)] private int priceTier = 2;
 
         public string Id => id;
         public string DisplayName => displayName;
         public int ArmamentSlots => armamentSlots;
+        public ArmamentRarity Rarity => rarity;
+        public int PriceTier => priceTier;
         public Color IdColor => idColor;
         public Sprite Sprite => sprite;
         public float ArtRotation => artRotation;
@@ -58,6 +64,14 @@ namespace BulletHell.Weapons
         public System.Collections.Generic.IReadOnlyList<ArmEffect> Effects => effects ?? System.Array.Empty<ArmEffect>();
 
 #if UNITY_EDITOR
+        /// <summary>Editor-only: sets rarity and price tier for the Shop.</summary>
+        public void SetShopMeta(ArmamentRarity newRarity, int newPriceTier)
+        {
+            rarity = newRarity;
+            priceTier = Mathf.Clamp(newPriceTier, 1, 5);
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
+
         /// <summary>Editor-only: sets how many armament slots this arm has.</summary>
         public void SetArmamentSlots(int value)
         {

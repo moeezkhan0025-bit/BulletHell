@@ -62,6 +62,8 @@ namespace BulletHell.Core
 
             Machine.Reset();
             State = loaded;
+            if (State.Shop == null)
+                State.Shop = BulletHell.Shop.ShopVisit.Create(NewShopSeed()); // an older save without a saved visit
             PendingStart = GameState.Shop;
             LastReward = 0;
             RoundEarnings = 0;
@@ -147,6 +149,7 @@ namespace BulletHell.Core
             switch (Machine.Current)
             {
                 case GameState.RoundResults:
+                    State.Shop = BulletHell.Shop.ShopVisit.Create(NewShopSeed()); // a new visit: new stock, no rerolls yet
                     SaveRun();
                     Machine.TryEnter(GameState.Shop);
                     break;
@@ -184,6 +187,8 @@ namespace BulletHell.Core
             Machine.Reset();
             State = null;
         }
+
+        private static int NewShopSeed() => UnityEngine.Random.Range(1, int.MaxValue);
 
         public void SaveRun()
         {

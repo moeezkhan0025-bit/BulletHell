@@ -20,6 +20,9 @@ namespace BulletHell.Core
         public ArmInventory SpareArms { get; } = new ArmInventory();
         public AmmoSlotSet Ammo { get; } = new AmmoSlotSet();
 
+        /// <summary>The current Shop visit (stock seed, rerolls, SOLD flags). Null before the first Shop; saved with the run.</summary>
+        public BulletHell.Shop.ShopVisit Shop;
+
         /// <summary>A fresh run from the game config: starting loadout, ammo and (test) inventory stock.</summary>
         public static RunState NewRun(GameConfig config)
         {

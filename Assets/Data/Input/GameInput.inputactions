@@ -268,6 +268,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "DebugGiveCurrency",
+                    "type": "Button",
+                    "id": "1d000007-3333-4c07-8d07-0000000000c7",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -369,6 +378,17 @@
                     "action": "DebugToggleBulletPaths",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1e00000c-4444-4d0c-9e0c-0000000000dc",
+                    "path": "<Keyboard>/f7",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DebugGiveCurrency",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -389,6 +409,24 @@
                     "name": "Randomize",
                     "type": "Button",
                     "id": "2f000003-5555-4e03-9f03-0000000000e3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Reroll",
+                    "type": "Button",
+                    "id": "2f000006-5555-4e06-9f06-0000000000e6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Details",
+                    "type": "Button",
+                    "id": "2f000007-5555-4e07-9f07-0000000000e7",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -426,6 +464,50 @@
                     "processors": "",
                     "groups": "",
                     "action": "Randomize",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2f000008-5555-4e08-9f08-0000000000e8",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Reroll",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2f000009-5555-4e09-9f09-0000000000e9",
+                    "path": "<Keyboard>/t",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reroll",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2f00000a-5555-4e0a-9f0a-0000000000ea",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Details",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2f00000b-5555-4e0b-9f0b-0000000000eb",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Details",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

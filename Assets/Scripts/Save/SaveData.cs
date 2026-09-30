@@ -23,6 +23,10 @@ namespace BulletHell.Save
         /// <summary>4 ammo slots, "" = empty.</summary>
         public string[] ammoSlots = new string[0];
         public int activeAmmoSlot = -1;
+        /// <summary>The Shop visit (0 = none): the stock is generated again from these, so Continue shows the same shop.</summary>
+        public int shopSeed;
+        public int shopRerolls;
+        public int shopSoldMask;
     }
 
     /// <summary>One arm instance: its arm type and the armaments in its 3 slots.</summary>

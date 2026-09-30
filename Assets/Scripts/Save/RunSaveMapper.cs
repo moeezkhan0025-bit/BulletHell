@@ -19,6 +19,9 @@ namespace BulletHell.Save
                 activeAmmoSlot = state.Ammo.ActiveIndex,
                 armamentInventory = new string[state.Armaments.Count],
                 spareArms = new ArmSave[state.SpareArms.Count],
+                shopSeed = state.Shop != null ? state.Shop.Seed : 0,
+                shopRerolls = state.Shop != null ? state.Shop.Rerolls : 0,
+                shopSoldMask = state.Shop != null ? state.Shop.SoldMask : 0,
             };
 
             for (int i = 0; i < ArmLoadout.SlotCount; i++)
@@ -77,6 +80,8 @@ namespace BulletHell.Save
                     result.Ammo.Set(i, ammo);
             }
             result.Ammo.TrySelect(data.activeAmmoSlot);
+            if (data.shopSeed != 0)
+                result.Shop = new BulletHell.Shop.ShopVisit { Seed = data.shopSeed, Rerolls = System.Math.Max(0, data.shopRerolls), SoldMask = data.shopSoldMask };
 
             state = result;
             return true;

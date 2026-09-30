@@ -27,6 +27,8 @@ MonoBehaviour:
   startingSpareArms: []
   startingCurrency: 500
   shopPool: {fileID: 11400000, guid: 48ef8a6aba4082d499bc6b8da5ce3540, type: 2}
+  rarityTable: {fileID: 11400000, guid: f20195b0894b1534c84dbd81d194ef5d, type: 2}
+  shopTuning: {fileID: 11400000, guid: b273c9b6c598d7b4c85c9e3505cc8b89, type: 2}
   rounds:
   - {fileID: 11400000, guid: 1b5de15eb1c59f84d937c87d93b9fc02, type: 2}
   - {fileID: 11400000, guid: 40335bb13d3652e47a3c8edc3a4f6e6c, type: 2}
@@ -41,4 +43,5 @@ MonoBehaviour:
   perspective: {fileID: 11400000, guid: c5680df8a34a75d40b6d7ec6b93fc528, type: 2}
   arenaArt: {fileID: 11400000, guid: b8610c28c725b3a44a95f61f9c04e474, type: 2}
   uiTheme: {fileID: 11400000, guid: 586dc52c1a5154f4db078e9fe2a3de57, type: 2}
+  showCustomizationInGame: 0
   feedback: {fileID: 11400000, guid: 3b99271c46dd8dd4aab281a9a20fd355, type: 2}

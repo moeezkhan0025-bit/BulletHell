@@ -18,11 +18,19 @@ namespace BulletHell.Input
         /// <summary>Square / West (or R on the keyboard) pressed: Randomize on the character creation screen.</summary>
         public event Action RandomizePressed;
 
+        /// <summary>Triangle / North (or T) pressed: Reroll in the Shop.</summary>
+        public event Action RerollPressed;
+
+        /// <summary>Square / West (or Q) pressed: toggle detailed stats in the Shop.</summary>
+        public event Action DetailsPressed;
+
         private void Awake()
         {
             input = new GameInput();
             input.Menu.Primary.performed += OnPrimary;
             input.Menu.Randomize.performed += OnRandomize;
+            input.Menu.Reroll.performed += OnReroll;
+            input.Menu.Details.performed += OnDetails;
         }
 
         private void OnEnable() => input.Menu.Enable();
@@ -36,11 +44,17 @@ namespace BulletHell.Input
 
             input.Menu.Primary.performed -= OnPrimary;
             input.Menu.Randomize.performed -= OnRandomize;
+            input.Menu.Reroll.performed -= OnReroll;
+            input.Menu.Details.performed -= OnDetails;
             input.Dispose();
         }
 
         private void OnPrimary(InputAction.CallbackContext _) => PrimaryPressed?.Invoke();
 
         private void OnRandomize(InputAction.CallbackContext _) => RandomizePressed?.Invoke();
+
+        private void OnReroll(InputAction.CallbackContext _) => RerollPressed?.Invoke();
+
+        private void OnDetails(InputAction.CallbackContext _) => DetailsPressed?.Invoke();
     }
 }

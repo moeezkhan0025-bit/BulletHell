@@ -42,6 +42,10 @@ namespace BulletHell.Core
 
         [Header("Shop")]
         [SerializeField] private ShopPool shopPool;
+        [Tooltip("Rarity weights by round, prices and frame colours for Shop stock.")]
+        [SerializeField] private RarityTable rarityTable;
+        [Tooltip("Shop card counts, crate, reroll cost and the debug currency grant.")]
+        [SerializeField] private ShopTuning shopTuning;
 
         [Header("Rounds")]
         [Tooltip("Round 1, 2, 3... in order. Rounds past the end loop over the rounds from Endless Loop Start Round on.")]
@@ -80,6 +84,8 @@ namespace BulletHell.Core
         }
         public int StartingCurrency => startingCurrency;
         public ShopPool ShopPool => shopPool;
+        public RarityTable RarityTable => rarityTable;
+        public ShopTuning ShopTuning => shopTuning;
         public string SaveFileName => saveFileName;
         public string SettingsFileName => settingsFileName;
         public string ProfileFileName => profileFileName;

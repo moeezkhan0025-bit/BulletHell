@@ -200,6 +200,9 @@ namespace BulletHell.EditorTools
                 Transform parent = go.transform.parent;
                 string parentName = parent != null ? parent.name : "";
 
+                if (go.GetComponent<BulletHell.Shop.ShopCard>() != null)
+                    continue; // Shop cards have their own look (rarity frame); not a themed button
+
                 if (go.GetComponent<UnityEngine.UI.Button>() != null)
                 {
                     Ensure<ThemedButton>(go).Apply();

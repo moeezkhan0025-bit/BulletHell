@@ -370,6 +370,16 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""DebugGiveCurrency"",
+                    ""type"": ""Button"",
+                    ""id"": ""1d000007-3333-4c07-8d07-0000000000c7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -471,6 +481,17 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""action"": ""DebugToggleBulletPaths"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e00000c-4444-4d0c-9e0c-0000000000dc"",
+                    ""path"": ""<Keyboard>/f7"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DebugGiveCurrency"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -492,6 +513,26 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""name"": ""Randomize"",
                     ""type"": ""Button"",
                     ""id"": ""2f000003-5555-4e03-9f03-0000000000e3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""Reroll"",
+                    ""type"": ""Button"",
+                    ""id"": ""2f000006-5555-4e06-9f06-0000000000e6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""Details"",
+                    ""type"": ""Button"",
+                    ""id"": ""2f000007-5555-4e07-9f07-0000000000e7"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -532,6 +573,50 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""action"": ""Randomize"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2f000008-5555-4e08-9f08-0000000000e8"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Reroll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2f000009-5555-4e09-9f09-0000000000e9"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reroll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2f00000a-5555-4e0a-9f0a-0000000000ea"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Details"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2f00000b-5555-4e0b-9f0b-0000000000eb"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Details"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -569,10 +654,13 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Debug_DebugNextArmament = m_Debug.FindAction("DebugNextArmament", throwIfNotFound: true);
         m_Debug_DebugPrevArmament = m_Debug.FindAction("DebugPrevArmament", throwIfNotFound: true);
         m_Debug_DebugToggleBulletPaths = m_Debug.FindAction("DebugToggleBulletPaths", throwIfNotFound: true);
+        m_Debug_DebugGiveCurrency = m_Debug.FindAction("DebugGiveCurrency", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Primary = m_Menu.FindAction("Primary", throwIfNotFound: true);
         m_Menu_Randomize = m_Menu.FindAction("Randomize", throwIfNotFound: true);
+        m_Menu_Reroll = m_Menu.FindAction("Reroll", throwIfNotFound: true);
+        m_Menu_Details = m_Menu.FindAction("Details", throwIfNotFound: true);
     }
 
     ~@GameInput()
@@ -855,6 +943,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Debug_DebugNextArmament;
     private readonly InputAction m_Debug_DebugPrevArmament;
     private readonly InputAction m_Debug_DebugToggleBulletPaths;
+    private readonly InputAction m_Debug_DebugGiveCurrency;
     /// <summary>
     /// Provides access to input actions defined in input action map "Debug".
     /// </summary>
@@ -886,6 +975,10 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Debug/DebugToggleBulletPaths".
         /// </summary>
         public InputAction @DebugToggleBulletPaths => m_Wrapper.m_Debug_DebugToggleBulletPaths;
+        /// <summary>
+        /// Provides access to the underlying input action "Debug/DebugGiveCurrency".
+        /// </summary>
+        public InputAction @DebugGiveCurrency => m_Wrapper.m_Debug_DebugGiveCurrency;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -927,6 +1020,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @DebugToggleBulletPaths.started += instance.OnDebugToggleBulletPaths;
             @DebugToggleBulletPaths.performed += instance.OnDebugToggleBulletPaths;
             @DebugToggleBulletPaths.canceled += instance.OnDebugToggleBulletPaths;
+            @DebugGiveCurrency.started += instance.OnDebugGiveCurrency;
+            @DebugGiveCurrency.performed += instance.OnDebugGiveCurrency;
+            @DebugGiveCurrency.canceled += instance.OnDebugGiveCurrency;
         }
 
         /// <summary>
@@ -953,6 +1049,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @DebugToggleBulletPaths.started -= instance.OnDebugToggleBulletPaths;
             @DebugToggleBulletPaths.performed -= instance.OnDebugToggleBulletPaths;
             @DebugToggleBulletPaths.canceled -= instance.OnDebugToggleBulletPaths;
+            @DebugGiveCurrency.started -= instance.OnDebugGiveCurrency;
+            @DebugGiveCurrency.performed -= instance.OnDebugGiveCurrency;
+            @DebugGiveCurrency.canceled -= instance.OnDebugGiveCurrency;
         }
 
         /// <summary>
@@ -992,6 +1091,8 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private List<IMenuActions> m_MenuActionsCallbackInterfaces = new List<IMenuActions>();
     private readonly InputAction m_Menu_Primary;
     private readonly InputAction m_Menu_Randomize;
+    private readonly InputAction m_Menu_Reroll;
+    private readonly InputAction m_Menu_Details;
     /// <summary>
     /// Provides access to input actions defined in input action map "Menu".
     /// </summary>
@@ -1011,6 +1112,14 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Menu/Randomize".
         /// </summary>
         public InputAction @Randomize => m_Wrapper.m_Menu_Randomize;
+        /// <summary>
+        /// Provides access to the underlying input action "Menu/Reroll".
+        /// </summary>
+        public InputAction @Reroll => m_Wrapper.m_Menu_Reroll;
+        /// <summary>
+        /// Provides access to the underlying input action "Menu/Details".
+        /// </summary>
+        public InputAction @Details => m_Wrapper.m_Menu_Details;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1043,6 +1152,12 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @Randomize.started += instance.OnRandomize;
             @Randomize.performed += instance.OnRandomize;
             @Randomize.canceled += instance.OnRandomize;
+            @Reroll.started += instance.OnReroll;
+            @Reroll.performed += instance.OnReroll;
+            @Reroll.canceled += instance.OnReroll;
+            @Details.started += instance.OnDetails;
+            @Details.performed += instance.OnDetails;
+            @Details.canceled += instance.OnDetails;
         }
 
         /// <summary>
@@ -1060,6 +1175,12 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @Randomize.started -= instance.OnRandomize;
             @Randomize.performed -= instance.OnRandomize;
             @Randomize.canceled -= instance.OnRandomize;
+            @Reroll.started -= instance.OnReroll;
+            @Reroll.performed -= instance.OnReroll;
+            @Reroll.canceled -= instance.OnReroll;
+            @Details.started -= instance.OnDetails;
+            @Details.performed -= instance.OnDetails;
+            @Details.canceled -= instance.OnDetails;
         }
 
         /// <summary>
@@ -1226,6 +1347,13 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDebugToggleBulletPaths(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DebugGiveCurrency" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDebugGiveCurrency(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Menu" which allows adding and removing callbacks.
@@ -1248,5 +1376,19 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnRandomize(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Reroll" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnReroll(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Details" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDetails(InputAction.CallbackContext context);
     }
 }
