@@ -415,7 +415,7 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
       Homing, Auto-fire, Velocity, Pierce, Ricochet with documented interactions, generated descriptions.
 - [x] M9b Shop screen: merchant + card layout, ShopPool/RarityTable random stock, crate (pick 1 of 3), reroll,
       scaling prices, tooltips with fit/comparison, buy animation + SOLD, controller-first navigation.
-- [ ] M9c Armory screen: gladiator + arm ring on the left with hovering 1-3 armament bubbles above the selected
+- [x] M9c Armory screen: gladiator + arm ring on the left with hovering 1-3 armament bubbles above the selected
       arm, tabbed inventory grid on the right, arm -> bubble -> item equip flow with before/after preview,
       dimmed incompatible items, controller-first navigation.
 - [ ] M9d UI foundation + bug bash: shared UI components (card, tooltip, button, panel), consistent focus

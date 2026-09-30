@@ -538,6 +538,36 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""TabPrev"",
+                    ""type"": ""Button"",
+                    ""id"": ""2f00000c-5555-4e0c-9f0c-0000000000ec"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""TabNext"",
+                    ""type"": ""Button"",
+                    ""id"": ""2f00000d-5555-4e0d-9f0d-0000000000ed"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""Remove"",
+                    ""type"": ""Button"",
+                    ""id"": ""2f00000e-5555-4e0e-9f0e-0000000000ee"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -617,6 +647,72 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""action"": ""Details"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2f00000f-5555-4e0f-9f0f-0000000000ef"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""TabPrev"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2f000010-5555-4e10-9f10-0000000000f0"",
+                    ""path"": ""<Keyboard>/leftBracket"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TabPrev"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2f000011-5555-4e11-9f11-0000000000f1"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""TabNext"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2f000012-5555-4e12-9f12-0000000000f2"",
+                    ""path"": ""<Keyboard>/rightBracket"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TabNext"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2f000013-5555-4e13-9f13-0000000000f3"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Remove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2f000014-5555-4e14-9f14-0000000000f4"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Remove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -661,6 +757,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Menu_Randomize = m_Menu.FindAction("Randomize", throwIfNotFound: true);
         m_Menu_Reroll = m_Menu.FindAction("Reroll", throwIfNotFound: true);
         m_Menu_Details = m_Menu.FindAction("Details", throwIfNotFound: true);
+        m_Menu_TabPrev = m_Menu.FindAction("TabPrev", throwIfNotFound: true);
+        m_Menu_TabNext = m_Menu.FindAction("TabNext", throwIfNotFound: true);
+        m_Menu_Remove = m_Menu.FindAction("Remove", throwIfNotFound: true);
     }
 
     ~@GameInput()
@@ -1093,6 +1192,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Menu_Randomize;
     private readonly InputAction m_Menu_Reroll;
     private readonly InputAction m_Menu_Details;
+    private readonly InputAction m_Menu_TabPrev;
+    private readonly InputAction m_Menu_TabNext;
+    private readonly InputAction m_Menu_Remove;
     /// <summary>
     /// Provides access to input actions defined in input action map "Menu".
     /// </summary>
@@ -1120,6 +1222,18 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Menu/Details".
         /// </summary>
         public InputAction @Details => m_Wrapper.m_Menu_Details;
+        /// <summary>
+        /// Provides access to the underlying input action "Menu/TabPrev".
+        /// </summary>
+        public InputAction @TabPrev => m_Wrapper.m_Menu_TabPrev;
+        /// <summary>
+        /// Provides access to the underlying input action "Menu/TabNext".
+        /// </summary>
+        public InputAction @TabNext => m_Wrapper.m_Menu_TabNext;
+        /// <summary>
+        /// Provides access to the underlying input action "Menu/Remove".
+        /// </summary>
+        public InputAction @Remove => m_Wrapper.m_Menu_Remove;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1158,6 +1272,15 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @Details.started += instance.OnDetails;
             @Details.performed += instance.OnDetails;
             @Details.canceled += instance.OnDetails;
+            @TabPrev.started += instance.OnTabPrev;
+            @TabPrev.performed += instance.OnTabPrev;
+            @TabPrev.canceled += instance.OnTabPrev;
+            @TabNext.started += instance.OnTabNext;
+            @TabNext.performed += instance.OnTabNext;
+            @TabNext.canceled += instance.OnTabNext;
+            @Remove.started += instance.OnRemove;
+            @Remove.performed += instance.OnRemove;
+            @Remove.canceled += instance.OnRemove;
         }
 
         /// <summary>
@@ -1181,6 +1304,15 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @Details.started -= instance.OnDetails;
             @Details.performed -= instance.OnDetails;
             @Details.canceled -= instance.OnDetails;
+            @TabPrev.started -= instance.OnTabPrev;
+            @TabPrev.performed -= instance.OnTabPrev;
+            @TabPrev.canceled -= instance.OnTabPrev;
+            @TabNext.started -= instance.OnTabNext;
+            @TabNext.performed -= instance.OnTabNext;
+            @TabNext.canceled -= instance.OnTabNext;
+            @Remove.started -= instance.OnRemove;
+            @Remove.performed -= instance.OnRemove;
+            @Remove.canceled -= instance.OnRemove;
         }
 
         /// <summary>
@@ -1390,5 +1522,26 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDetails(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "TabPrev" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnTabPrev(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "TabNext" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnTabNext(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Remove" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnRemove(InputAction.CallbackContext context);
     }
 }

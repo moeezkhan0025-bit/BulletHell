@@ -47,6 +47,9 @@ namespace BulletHell.Shop
         /// <summary>Offer number in the current stock (arms, then armaments, then the crate).</summary>
         public int OfferIndex { get; set; } = -1;
 
+        /// <summary>The focused card moves to the front of its siblings. Off for cards inside a layout group (it would reorder the grid).</summary>
+        public bool RaiseOnFocus { get; set; } = true;
+
         public event Action<ShopCard> Clicked;
 
         private void Awake()
@@ -168,6 +171,60 @@ namespace BulletHell.Shop
                  });
         }
 
+        /// <summary>
+        /// The icon flies to a target (a bubble, a slot) and shrinks into it, then onDone runs. No SOLD stamp: used by the
+        /// Armory when an item moves from the inventory grid onto an arm.
+        /// </summary>
+        public void PlayFly(RectTransform target, Action onDone)
+        {
+            var canvas = GetComponentInParent<Canvas>();
+            if (canvas == null || target == null || !icon.enabled)
+            {
+                onDone?.Invoke();
+                return;
+            }
+
+            var ghost = new GameObject("FlyGhost", typeof(RectTransform), typeof(Image));
+            ghost.transform.SetParent(canvas.rootCanvas.transform, false);
+            var ghostRect = (RectTransform)ghost.transform;
+            ghostRect.position = icon.transform.position;
+            ghostRect.sizeDelta = ((RectTransform)icon.transform).rect.size;
+            var ghostImage = ghost.GetComponent<Image>();
+            ghostImage.sprite = icon.sprite;
+            ghostImage.color = icon.color;
+            ghostImage.preserveAspect = true;
+            ghostImage.raycastTarget = false;
+            ghostRect.SetAsLastSibling();
+
+            Tween.Position(ghostRect, target.position, flySeconds, Ease.InBack, useUnscaledTime: true);
+            Tween.Scale(ghostRect, 0.3f, flySeconds, Ease.InQuad, useUnscaledTime: true)
+                 .OnComplete(() =>
+                 {
+                     if (ghost != null)
+                         Destroy(ghost);
+                     onDone?.Invoke();
+                 });
+        }
+
+        /// <summary>Greys the card out (an item that does not fit the current selection). It stays selectable so focus never gets stuck.</summary>
+        public void SetDimmed(bool dimmed)
+        {
+            var group = body.GetComponent<CanvasGroup>();
+            if (group == null)
+                group = body.gameObject.AddComponent<CanvasGroup>();
+            group.alpha = dimmed ? 0.4f : 1f;
+        }
+
+        /// <summary>Shows a small text (a count like "x3") in the price tag; empty hides the tag when the card has no price.</summary>
+        public void SetBadge(string text)
+        {
+            bool show = !string.IsNullOrEmpty(text);
+            if (priceTag != null)
+                priceTag.gameObject.SetActive(show);
+            priceLabel.text = show ? text : "";
+            priceLabel.color = priceColor;
+        }
+
         /// <summary>A short shake: "you cannot buy this".</summary>
         public void Shake()
         {
@@ -207,7 +264,7 @@ namespace BulletHell.Shop
             Tween.StopAll(body);
             if (focusRing != null)
                 focusRing.enabled = up;
-            if (up)
+            if (up && RaiseOnFocus)
                 transform.SetAsLastSibling(); // the lifted card draws over its neighbours
             Tween.Scale(body, up ? liftScale : 1f, liftSeconds, Ease.OutQuad, useUnscaledTime: true);
             Tween.UIAnchoredPosition(body, restPosition + (up ? new Vector2(0f, liftHeight) : Vector2.zero), liftSeconds, Ease.OutQuad, useUnscaledTime: true);

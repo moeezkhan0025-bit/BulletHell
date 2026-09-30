@@ -5,8 +5,9 @@ using UnityEngine.InputSystem;
 namespace BulletHell.Input
 {
     /// <summary>
-    /// Owner of the "Menu" input map: the controller's Start / Options button as the menu's primary action.
-    /// Navigating and pressing buttons is the EventSystem's job (stick/D-pad + A/Cross); this adds the Start shortcut.
+    /// Owner of the "Menu" input map: the controller's Start / Options button as the menu's primary action, plus the
+    /// extra face/shoulder buttons some screens use.
+    /// Navigating and pressing buttons is the EventSystem's job (stick/D-pad + A/Cross); this adds the shortcuts.
     /// </summary>
     public sealed class MenuInputReader : MonoBehaviour
     {
@@ -24,6 +25,15 @@ namespace BulletHell.Input
         /// <summary>Square / West (or Q) pressed: toggle detailed stats in the Shop.</summary>
         public event Action DetailsPressed;
 
+        /// <summary>L1 / LB / L (or [) pressed: previous tab in the Armory.</summary>
+        public event Action TabPrevPressed;
+
+        /// <summary>R1 / RB / R (or ]) pressed: next tab in the Armory.</summary>
+        public event Action TabNextPressed;
+
+        /// <summary>Triangle / North (or X) pressed: remove the focused arm or armament in the Armory.</summary>
+        public event Action RemovePressed;
+
         private void Awake()
         {
             input = new GameInput();
@@ -31,6 +41,9 @@ namespace BulletHell.Input
             input.Menu.Randomize.performed += OnRandomize;
             input.Menu.Reroll.performed += OnReroll;
             input.Menu.Details.performed += OnDetails;
+            input.Menu.TabPrev.performed += OnTabPrev;
+            input.Menu.TabNext.performed += OnTabNext;
+            input.Menu.Remove.performed += OnRemove;
         }
 
         private void OnEnable() => input.Menu.Enable();
@@ -46,6 +59,9 @@ namespace BulletHell.Input
             input.Menu.Randomize.performed -= OnRandomize;
             input.Menu.Reroll.performed -= OnReroll;
             input.Menu.Details.performed -= OnDetails;
+            input.Menu.TabPrev.performed -= OnTabPrev;
+            input.Menu.TabNext.performed -= OnTabNext;
+            input.Menu.Remove.performed -= OnRemove;
             input.Dispose();
         }
 
@@ -56,5 +72,11 @@ namespace BulletHell.Input
         private void OnReroll(InputAction.CallbackContext _) => RerollPressed?.Invoke();
 
         private void OnDetails(InputAction.CallbackContext _) => DetailsPressed?.Invoke();
+
+        private void OnTabPrev(InputAction.CallbackContext _) => TabPrevPressed?.Invoke();
+
+        private void OnTabNext(InputAction.CallbackContext _) => TabNextPressed?.Invoke();
+
+        private void OnRemove(InputAction.CallbackContext _) => RemovePressed?.Invoke();
     }
 }
