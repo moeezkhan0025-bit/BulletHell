@@ -14,6 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.ArmamentData
   id: Armament_Stun
   displayName: Shock Rounds
+  icon: {fileID: 0}
+  rarity: 1
+  priceTier: 2
+  tags: 128
+  maxStacks: 2
   modifiers: []
   effects:
   - {fileID: 11400000, guid: 8fb5e51113dce424fada004a783689b6, type: 2}

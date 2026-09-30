@@ -25,3 +25,4 @@ MonoBehaviour:
   spread: 0
   projectileSize: 0.6
   effects: []
+  armamentSlots: 1

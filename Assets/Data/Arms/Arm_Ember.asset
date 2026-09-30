@@ -26,3 +26,4 @@ MonoBehaviour:
   projectileSize: 0.3
   effects:
   - {fileID: 11400000, guid: 8bfedb1760cdb614f841b481d0866235, type: 2}
+  armamentSlots: 2

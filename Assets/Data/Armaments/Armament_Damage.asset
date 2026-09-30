@@ -14,6 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.ArmamentData
   id: Armament_Damage
   displayName: +50% Damage
+  icon: {fileID: 0}
+  rarity: 0
+  priceTier: 1
+  tags: 32
+  maxStacks: 4
   modifiers:
   - Stat: 0
     Mode: 1

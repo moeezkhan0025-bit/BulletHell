@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using BulletHell.Arena;
 using BulletHell.Core;
+using BulletHell.Enemies;
 using BulletHell.Feedback;
 using BulletHell.Player;
 using BulletHell.Weapons;
@@ -23,7 +24,7 @@ namespace BulletHell.Projectiles
         private const int RecentCapacity = 8;
 
         private static readonly RaycastHit2D[] HitBuffer = new RaycastHit2D[8];
-        private static readonly Collider2D[] BounceBuffer = new Collider2D[16];
+
 
         // Targets already hit by this bullet: it never hits them twice, so piercing/ricocheting can't stick in one enemy.
         private readonly Collider2D[] recentHits = new Collider2D[RecentCapacity];
@@ -38,9 +39,11 @@ namespace BulletHell.Projectiles
         private float damage;
         private float radius;
         private float lifeLeft;
-        private int pierceLeft;
-        private int bouncesLeft;
-        private float bounceRange;
+        private ShotProperties shot;
+        private ShotState state;
+        private Enemy homingTarget;
+        private bool steeredThisFrame;
+        private FeedbackTuning feedback;
         private bool released;
         private bool hostile;
 
@@ -51,6 +54,7 @@ namespace BulletHell.Projectiles
         {
             pool = owner;
             perspective = GameServices.Ensure().Config.Perspective;
+            feedback = GameServices.Ensure().Config.Feedback;
 
             // Collision stays on the ground plane (this transform); only the drawing is lifted.
             body.transform.localPosition = new Vector3(0f, perspective.BulletVisualLift, 0f);
@@ -74,9 +78,9 @@ namespace BulletHell.Projectiles
             damage = damageAmount;
             radius = size * 0.5f;
             lifeLeft = maxLifetime;
-            pierceLeft = shot.Pierce;
-            bouncesLeft = shot.Bounces;
-            bounceRange = shot.BounceRange;
+            this.shot = shot;
+            state = new ShotState { PierceLeft = shot.Pierce, BouncesLeft = shot.Bounces, NeedsRetarget = true };
+            homingTarget = null;
             hitEffects = effects;
             hostile = false;
             recentCount = 0;
@@ -101,6 +105,10 @@ namespace BulletHell.Projectiles
                 return;
             }
 
+            steeredThisFrame = false;
+            if (shot.HasHoming)
+                Home(dt);
+
             Vector2 start = transform.position;
             Vector2 step = velocity * dt;
             float distance = step.magnitude;
@@ -124,9 +132,53 @@ namespace BulletHell.Projectiles
 
             Vector2 end = start + step;
             transform.position = end;
+            if (BulletPathDebug.Enabled)
+                BulletPathDebug.Segment(start, end, steeredThisFrame);
             lifeLeft -= dt;
             if (lifeLeft <= 0f || !pool.ViewBounds.Contains(end))
                 ReleaseToPool();
+        }
+
+        // Homing: steer towards the current target, picking a new one when there is none, when it died or was already hit,
+        // and after every pierce or bounce (ShotState.NeedsRetarget).
+        private void Home(float dt)
+        {
+            IReadOnlyList<Enemy> enemies = pool.Enemies;
+            if (enemies == null)
+                return;
+
+            Vector2 position = transform.position;
+            if (state.NeedsRetarget)
+            {
+                homingTarget = null;
+                state.NeedsRetarget = false;
+            }
+            if (homingTarget != null && (!homingTarget.IsAlive || WasHit(homingTarget.HitCollider) ||
+                                         (homingTarget.HitCenter - position).sqrMagnitude > shot.HomingRange * shot.HomingRange * 1.5f))
+                homingTarget = null;
+
+            if (homingTarget == null)
+            {
+                Vector2 forward = velocity.normalized;
+                float bestSqr = float.MaxValue;
+                for (int i = 0; i < enemies.Count; i++)
+                {
+                    Enemy candidate = enemies[i];
+                    if (candidate == null || !candidate.IsAlive || WasHit(candidate.HitCollider))
+                        continue;
+                    if (ProjectileRules.InCone(position, forward, candidate.HitCenter, shot.HomingCone, shot.HomingRange, out float sqr) && sqr < bestSqr)
+                    {
+                        bestSqr = sqr;
+                        homingTarget = candidate;
+                    }
+                }
+            }
+
+            if (homingTarget != null)
+            {
+                velocity = ProjectileRules.TurnToward(velocity, position, homingTarget.HitCenter, shot.HomingTurnRate * dt);
+                steeredThisFrame = true;
+            }
         }
 
         // Enemy bullets test one circle (the player's hitbox) against the segment they travel this frame: no physics query.
@@ -166,16 +218,17 @@ namespace BulletHell.Projectiles
                 ReleaseToPool();
         }
 
-        /// <summary>Handles a hit. Returns true when this frame's movement is done (released or redirected).</summary>
+        /// <summary>Handles a hit. Returns true when this frame's movement is done (released or bounced).</summary>
         private bool ResolveHit(in RaycastHit2D hit)
         {
             Collider2D target = hit.collider;
-            if (!target.TryGetComponent(out IDamageable damageable) || !damageable.IsAlive)
-            {
-                ReleaseToPool(); // walls and dead targets stop the bullet
-                return true;
-            }
+            bool damageableAlive = target.TryGetComponent(out IDamageable damageable) && damageable.IsAlive;
+            bool isWall = target.gameObject.layer == pool.ObstacleLayer || !damageableAlive;
 
+            if (isWall)
+                return ResolveWallHit(hit, damageableAlive ? damageable : null);
+
+            // A live enemy (or other damageable target).
             if (target.TryGetComponent(out IHitReceiver receiver))
                 receiver.OnHitFrom(velocity);
             damageable.TakeDamage(damage);
@@ -186,48 +239,54 @@ namespace BulletHell.Projectiles
                         hitEffects[i].OnHit(target, damage);
             RememberHit(target);
 
-            if (pierceLeft > 0)
+            Vector2 point = hit.point;
+            if (ProjectileRules.OnEnemyHit(ref state) == HitOutcome.Continue)
             {
-                pierceLeft--;
+                PlayFeedback(VfxKind.Spark, point, feedback.PierceSparks, feedback.PierceShake);
+                if (BulletPathDebug.Enabled)
+                    BulletPathDebug.Marker(point, BulletPathDebug.MarkerKind.Pierce);
                 return false; // keeps flying through the target
             }
 
-            if (bouncesLeft > 0)
-            {
-                bouncesLeft--;
-                Redirect(hit);
-                return true;
-            }
-
+            if (BulletPathDebug.Enabled)
+                BulletPathDebug.Marker(point, BulletPathDebug.MarkerKind.Stop);
             ReleaseToPool();
             return true;
         }
 
-        /// <summary>Points the bullet at the nearest target it hasn't hit yet, or reflects it off the surface if none is in range.</summary>
-        private void Redirect(in RaycastHit2D hit)
+        // Walls and obstacles: a breakable takes the damage, then the bullet bounces if it has bounces left, else it stops.
+        private bool ResolveWallHit(in RaycastHit2D hit, IDamageable breakable)
         {
-            float speed = velocity.magnitude;
-            Vector2 origin = hit.centroid;
-            Vector2 direction = Vector2.Reflect(velocity / speed, hit.normal);
+            breakable?.TakeDamage(damage);
 
-            int count = Physics2D.OverlapCircle(origin, bounceRange, pool.HitFilter, BounceBuffer);
-            float bestSqr = float.MaxValue;
-            for (int i = 0; i < count; i++)
+            if (ProjectileRules.OnWallHit(ref state, velocity, hit.normal, out Vector2 reflected) == HitOutcome.Bounce)
             {
-                Collider2D candidate = BounceBuffer[i];
-                if (WasHit(candidate) || candidate.gameObject.layer == pool.ObstacleLayer ||
-                    !candidate.TryGetComponent(out IDamageable damageable) || !damageable.IsAlive)
-                    continue;
-                Vector2 toCandidate = (Vector2)candidate.bounds.center - origin;
-                float sqr = toCandidate.sqrMagnitude;
-                if (sqr >= bestSqr || sqr < 0.0001f)
-                    continue;
-                bestSqr = sqr;
-                direction = toCandidate / Mathf.Sqrt(sqr);
+                // Step off the surface so the next sweep does not start inside it.
+                transform.position = hit.centroid + hit.normal * 0.02f;
+                velocity = reflected;
+                PlayFeedback(VfxKind.Spark, hit.point, feedback.RicochetSparks, feedback.RicochetShake);
+                if (BulletPathDebug.Enabled)
+                {
+                    BulletPathDebug.Segment(transform.position, transform.position, false);
+                    BulletPathDebug.Marker(hit.point, BulletPathDebug.MarkerKind.Ricochet);
+                }
+                return true;
             }
 
-            transform.position = origin;
-            velocity = direction * speed;
+            PlayFeedback(VfxKind.Debris, hit.point, feedback.WallImpactDebris, 0f);
+            if (BulletPathDebug.Enabled)
+                BulletPathDebug.Marker(hit.point, BulletPathDebug.MarkerKind.Stop);
+            ReleaseToPool();
+            return true;
+        }
+
+        // Feedback through the M8.6 toolkit: a particle burst at the point (drawn with the bullet lift) and a little camera shake.
+        private void PlayFeedback(VfxKind kind, Vector2 point, int count, float shake)
+        {
+            if (count > 0)
+                FeedbackHub.Play(kind, new Vector3(point.x, point.y + perspective.BulletVisualLift, 0f), count);
+            if (shake > 0f)
+                CameraShake.Add(shake);
         }
 
         private bool WasHit(Collider2D collider)

@@ -13,7 +13,12 @@ MonoBehaviour:
   m_Name: Armament_Pierce
   m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.ArmamentData
   id: Armament_Pierce
-  displayName: Piercing Rounds
+  displayName: Pierce
+  icon: {fileID: 0}
+  rarity: 1
+  priceTier: 2
+  tags: 4
+  maxStacks: 3
   modifiers: []
   effects:
   - {fileID: 11400000, guid: 62c530efc85884b4a8a2fdbad286fabe, type: 2}

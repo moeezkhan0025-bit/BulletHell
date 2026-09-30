@@ -64,6 +64,7 @@ namespace BulletHell.Input
             input.Debug.DebugRemoveArmament.performed += OnDebugRemove;
             input.Debug.DebugNextArmament.performed += OnDebugNext;
             input.Debug.DebugPrevArmament.performed += OnDebugPrev;
+            input.Debug.DebugToggleBulletPaths.performed += OnDebugToggleBulletPaths;
 
             ammoActions[0] = gameplay.EquipAmmo1;
             ammoActions[1] = gameplay.EquipAmmo2;
@@ -103,6 +104,7 @@ namespace BulletHell.Input
             input.Debug.DebugRemoveArmament.performed -= OnDebugRemove;
             input.Debug.DebugNextArmament.performed -= OnDebugNext;
             input.Debug.DebugPrevArmament.performed -= OnDebugPrev;
+            input.Debug.DebugToggleBulletPaths.performed -= OnDebugToggleBulletPaths;
             input.Dispose();
         }
 
@@ -110,6 +112,9 @@ namespace BulletHell.Input
         private void OnDebugRemove(InputAction.CallbackContext _) => DebugRemoveArmamentPressed?.Invoke();
         private void OnDebugNext(InputAction.CallbackContext _) => DebugNextArmamentPressed?.Invoke();
         private void OnDebugPrev(InputAction.CallbackContext _) => DebugPrevArmamentPressed?.Invoke();
+
+        // F6: show / hide the bullet path visualisation (works whether or not the debug overlay is showing).
+        private void OnDebugToggleBulletPaths(InputAction.CallbackContext _) => Projectiles.BulletPathDebug.Toggle();
 
         private void OnLockToggle(InputAction.CallbackContext _) => LockTogglePressed?.Invoke();
 

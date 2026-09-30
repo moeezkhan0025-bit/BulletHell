@@ -38,7 +38,7 @@ namespace BulletHell.EditorTools
             stun.Set(0.3f, 0.8f);
             stun.SetDisplayName("Stun");
             var ricochet = CreateAsset<RicochetEffect>("Effect_Ricochet");
-            ricochet.Set(2, 6f);
+            ricochet.Set(3, 1);
             ricochet.SetDisplayName("Ricochet");
 
             ArmamentData damage = CreateArmament("Armament_Damage", "+50% Damage", null, new StatModifier(StatType.Damage, ModifierMode.Percent, 50f));

@@ -27,6 +27,7 @@ namespace BulletHell.Weapons
         [SerializeField] private int beamSortingOrder = 50;
 
         private readonly FireTimer[] timers = new FireTimer[ArmLoadout.SlotCount];
+        private readonly FireTimer[] autoTimers = new FireTimer[ArmLoadout.SlotCount];
         private readonly HeatComponent[] heat = new HeatComponent[ArmLoadout.SlotCount];
         private readonly SpinUp[] spins = new SpinUp[ArmLoadout.SlotCount];
         private readonly LineRenderer[] beams = new LineRenderer[ArmLoadout.SlotCount];
@@ -42,6 +43,7 @@ namespace BulletHell.Weapons
             for (int i = 0; i < timers.Length; i++)
             {
                 timers[i] = new FireTimer();
+                autoTimers[i] = new FireTimer();
                 heat[i] = new HeatComponent();
                 spins[i] = new SpinUp();
                 beams[i] = CreateBeam(i);
@@ -58,6 +60,7 @@ namespace BulletHell.Weapons
             for (int i = 0; i < timers.Length; i++)
             {
                 timers[i] = new FireTimer();
+                autoTimers[i] = new FireTimer();
                 heat[i] = new HeatComponent();
                 spins[i] = new SpinUp();
                 beams[i].enabled = false;
@@ -93,16 +96,69 @@ namespace BulletHell.Weapons
                     FireBeam(slot, arm, ammo, dt);
                 beams[slot].enabled = beaming;
 
-                slotHeat.Tick(dt, firing, heatSettings);
+                // Auto-fire: an arm with the effect that is NOT selected shoots enemies inside its slot arc at a fraction of its
+                // fire rate. Heat applies like for normal shots; beam ammo does not auto-fire.
+                bool autoFiring = false;
+                if (arm != null && ammo != null && slot != selected && ammo.Behavior == AmmoBehavior.Projectile &&
+                    arm.Instance.Shot.HasAutoFire && !slotHeat.IsOverheated &&
+                    TryFindAutoTarget(arm, ammo, out float autoAngle))
+                {
+                    autoFiring = true;
+                    ShotProperties shot = arm.Instance.Shot;
+                    float autoRate = arm.Instance.Stats.FireRate * ammo.FireRateMultiplier * shot.AutoFireRate;
+                    int autoShots = autoTimers[slot].Tick(dt, true, autoRate);
+                    for (int s = 0; s < autoShots && !slotHeat.IsOverheated; s++)
+                    {
+                        Fire(arm, ammo, autoAngle);
+                        slotHeat.AddShot(heatSettings);
+                    }
+                }
+                else if (arm != null)
+                {
+                    autoTimers[slot].Tick(dt, false, 1f);
+                }
+
+                slotHeat.Tick(dt, firing || autoFiring, heatSettings);
             }
         }
 
-        private void Fire(ArmVisual arm, AmmoTypeData ammo)
+        // The nearest live enemy inside the arm slot arc (its facing +/- AutoFireArc) and within the bullets reach.
+        private bool TryFindAutoTarget(ArmVisual arm, AmmoTypeData ammo, out float angle)
+        {
+            angle = 0f;
+            IReadOnlyList<BulletHell.Enemies.Enemy> enemies = pool.Enemies;
+            if (enemies == null)
+                return false;
+
+            ShotProperties shot = arm.Instance.Shot;
+            Vector2 origin = arms.GroundMuzzle(arm);
+            Vector2 facing = arm.transform.right;
+            float reach = arm.Instance.Stats.ProjectileSpeed * ammo.ProjectileSpeedMultiplier * ammo.MaxLifetime;
+            float bestSqr = float.MaxValue;
+            bool found = false;
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                BulletHell.Enemies.Enemy enemy = enemies[i];
+                if (enemy == null || !enemy.IsAlive)
+                    continue;
+                Vector2 to = enemy.HitCenter - origin;
+                float sqr = to.sqrMagnitude;
+                if (sqr >= bestSqr || sqr > reach * reach || Vector2.Angle(facing, to) > shot.AutoFireArc)
+                    continue;
+                bestSqr = sqr;
+                angle = Mathf.Atan2(to.y, to.x) * Mathf.Rad2Deg;
+                found = true;
+            }
+            return found;
+        }
+
+        // aimAngle: world angle to fire at; without it the shot follows the arm facing (a normal, selected shot).
+        private void Fire(ArmVisual arm, AmmoTypeData ammo, float? aimAngle = null)
         {
             WeaponArmData data = arm.Data;
             Vector2 origin = arms.GroundMuzzle(arm); // bullets live on the ground plane; the arm is drawn above it
             Vector3 facing = arm.transform.right;
-            float baseAngle = Mathf.Atan2(facing.y, facing.x) * Mathf.Rad2Deg;
+            float baseAngle = aimAngle ?? Mathf.Atan2(facing.y, facing.x) * Mathf.Rad2Deg;
             ArmStats stats = arm.Instance.Stats; // base + armaments; ammo scales these
             ShotProperties shot = arm.Instance.Shot;
             IReadOnlyList<ArmEffect> effects = arm.Instance.Effects;

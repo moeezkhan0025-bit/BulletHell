@@ -435,7 +435,7 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
       Assets/ThirdParty, Docs/CREDITS.md, apply to all existing screens.
 - [x] CC1 Character Creation v2: modular paper-doll (Body, Armor/body kit, Head, Accessory 1, Accessory 2)
       with Sprite Library/Resolver, placeholder parts, new screen layout, profile save, HUD portrait from parts.
-- [ ] M9a Armament behaviors: effect interface, variable armament slots per arm, rarity/tags/stacks,
+- [x] M9a Armament behaviors: effect interface, variable armament slots per arm, rarity/tags/stacks,
       Homing, Auto-fire, Velocity, Pierce, Ricochet with documented interactions, generated descriptions.
 - [ ] M9b Shop screen: merchant + card layout, ShopPool/RarityTable random stock, crate (pick 1 of 3), reroll,
       scaling prices, tooltips with fit/comparison, buy animation + SOLD, controller-first navigation.

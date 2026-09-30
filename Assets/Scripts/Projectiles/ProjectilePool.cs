@@ -18,6 +18,8 @@ namespace BulletHell.Projectiles
         [SerializeField] private PlayerHealth playerTarget;
         [Tooltip("The arena: enemy bullets are stopped by its obstacles and walls. Optional.")]
         [SerializeField] private ArenaController arena;
+        [Tooltip("Live enemies, for homing bullets and auto-fire. Optional: without it there is no homing.")]
+        [SerializeField] private BulletHell.AI.NavigationService navigation;
         [Tooltip("Physics layers a projectile can hit.")]
         [SerializeField] private LayerMask hitMask;
         [SerializeField, Min(1)] private int prewarm = 128;
@@ -37,6 +39,8 @@ namespace BulletHell.Projectiles
         public ContactFilter2D HitFilter => hitFilter;
         public PlayerHealth PlayerTarget => playerTarget;
         public ArenaController Arena => arena;
+        /// <summary>The live enemies (null when no navigation service is wired).</summary>
+        public IReadOnlyList<BulletHell.Enemies.Enemy> Enemies => navigation != null ? navigation.Enemies : null;
         /// <summary>Physics layer of arena obstacles (-1 if the layer does not exist). Ricochets never pick them as targets.</summary>
         public int ObstacleLayer { get; private set; } = -1;
 

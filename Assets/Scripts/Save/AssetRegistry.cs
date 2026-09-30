@@ -25,6 +25,8 @@ namespace BulletHell.Save
         private Dictionary<string, AmmoTypeData> ammoById;
         private Dictionary<string, CosmeticPartData> cosmeticsById;
 
+        /// <summary>Every registered armament (the debug tools give any of them).</summary>
+        public IReadOnlyList<ArmamentData> Armaments => armaments;
         public WeaponArmData GetArm(string id) => Find(ref armsById, arms, a => a.Id, id);
         public ArmamentData GetArmament(string id) => Find(ref armamentsById, armaments, a => a.Id, id);
         public AmmoTypeData GetAmmo(string id) => Find(ref ammoById, ammoTypes, a => a.Id, id);

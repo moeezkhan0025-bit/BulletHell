@@ -46,7 +46,7 @@ namespace BulletHell.UI
         private ArmInstance shownInstance;
         private int shownInstanceVersion = -1;
         private ArmamentData shownTestArmament;
-        private int shownTestPosition = -1, shownArmamentInvVersion = -1, shownArmInvVersion = -1;
+        private int shownTestPosition = -1, shownArmamentInvVersion = -1, shownArmInvVersion = -1, shownMessageVersion = -1;
 
         private void Update()
         {
@@ -93,7 +93,7 @@ namespace BulletHell.UI
             PlayerInventory playerInventory = armamentControls.Inventory;
             int armamentInvVersion = playerInventory.Armaments.Version;
             int armInvVersion = playerInventory.Arms.Version;
-            bool armamentsChanged = instance != shownInstance || testArmament != shownTestArmament || testPosition != shownTestPosition ||
+            bool armamentsChanged = instance != shownInstance || testArmament != shownTestArmament || testPosition != shownTestPosition || armamentControls.MessageVersion != shownMessageVersion ||
                                    armamentInvVersion != shownArmamentInvVersion || armInvVersion != shownArmInvVersion ||
                                    (instance != null && instance.Version != shownInstanceVersion);
 
@@ -107,6 +107,7 @@ namespace BulletHell.UI
             shownInstanceVersion = instance != null ? instance.Version : -1;
             shownTestArmament = testArmament;
             shownTestPosition = testPosition;
+            shownMessageVersion = armamentControls.MessageVersion;
             shownArmamentInvVersion = armamentInvVersion;
             shownArmInvVersion = armInvVersion;
 
@@ -207,16 +208,18 @@ namespace BulletHell.UI
             }
             else
             {
-                for (int i = 0; i < ArmInstance.ArmamentSlots; i++)
+                for (int i = 0; i < instance.SlotCount; i++)
                 {
                     ArmamentData armament = instance.GetArmament(i);
                     builder.Append(" [").Append(i + 1).Append(' ').Append(armament != null ? armament.DisplayName : "-").Append(']');
                 }
             }
-            builder.Append("\n         equip: ").Append(testArmament != null ? testArmament.DisplayName : "--");
+            builder.Append("\n         give+equip: ").Append(testArmament != null ? ItemDescriber.Armament(testArmament) : "--");
             if (testPosition > 0)
-                builder.Append(" (").Append(testPosition).Append('/').Append(playerInventory.Armaments.Count).Append(')');
-            builder.Append("   (D-pad up equip, down unequip, left/right pick | F1-F4)\n");
+                builder.Append(" (").Append(testPosition).Append('/').Append(armamentControls.CatalogCount).Append(')');
+            builder.Append("   (F1 give+equip, F2 unequip, F3/F4 pick, F6 bullet paths ").Append(Projectiles.BulletPathDebug.Enabled ? "ON" : "off").Append(")\n");
+            if (!string.IsNullOrEmpty(armamentControls.Message))
+                builder.Append("         > ").Append(armamentControls.Message).Append('\n');
             builder.Append("INVENTORY armaments ").Append(playerInventory.Armaments.Count)
                    .Append("   spare arms ").Append(playerInventory.Arms.Count).Append('\n');
 
@@ -228,7 +231,14 @@ namespace BulletHell.UI
             else
             {
                 for (int i = 0; i < instance.Effects.Count; i++)
+                {
                     builder.Append(i > 0 ? ", " : "").Append(instance.Effects[i].DisplayName);
+                    if (instance.EffectStacks[i] > 1)
+                        builder.Append(" x").Append(instance.EffectStacks[i]);
+                }
+                string shotSummary = ItemDescriber.ShotSummary(instance.Shot);
+                if (shotSummary.Length > 0)
+                    builder.Append("   => ").Append(shotSummary);
             }
             builder.Append('\n');
 

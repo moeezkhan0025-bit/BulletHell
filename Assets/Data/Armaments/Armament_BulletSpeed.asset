@@ -13,9 +13,14 @@ MonoBehaviour:
   m_Name: Armament_BulletSpeed
   m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.ArmamentData
   id: Armament_BulletSpeed
-  displayName: +30% Bullet Speed
+  displayName: Velocity
+  icon: {fileID: 0}
+  rarity: 0
+  priceTier: 1
+  tags: 1
+  maxStacks: 4
   modifiers:
   - Stat: 2
     Mode: 1
-    Value: 30
+    Value: 25
   effects: []

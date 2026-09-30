@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Effect_Ricochet
   m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.RicochetEffect
   displayName: Ricochet
-  bounces: 2
-  range: 6
+  bounces: 3
+  extraPerStack: 1

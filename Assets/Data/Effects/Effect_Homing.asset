@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 079d88595e8d6d24f83d9377cb2a2f25, type: 3}
+  m_Name: Effect_Homing
+  m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.HomingEffect
+  displayName: Homing
+  turnRate: 120
+  turnRatePerStack: 60
+  cone: 60
+  conePerStack: 30
+  range: 9

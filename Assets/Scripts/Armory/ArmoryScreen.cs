@@ -115,7 +115,7 @@ namespace BulletHell.Armory
             SetInfo(builder.ToString());
 
             Action back = () => BackToSlots(armSlot);
-            for (int k = 0; k < ArmInstance.ArmamentSlots; k++)
+            for (int k = 0; k < arm.SlotCount; k++)
             {
                 int slot = k;
                 list.Add($"Slot {k + 1}:  {ItemDescriber.Armament(arm.GetArmament(k))}", () => OpenArmament(slot), back);
@@ -131,7 +131,7 @@ namespace BulletHell.Armory
             if (ArmoryActions.RemoveArm(state, armSlot) == ArmoryResult.LastArm)
             {
                 message = "You must keep at least one arm equipped.";
-                Refresh(ArmInstance.ArmamentSlots);
+                Refresh(state.Loadout[armSlot].SlotCount);
                 return;
             }
             BackToSlots(armSlot, $"{name} moved to the arm inventory.");

@@ -13837,6 +13837,7 @@ MonoBehaviour:
   viewCamera: {fileID: 519420031}
   playerTarget: {fileID: 1106794848}
   arena: {fileID: 950003562}
+  navigation: {fileID: 1017875013}
   hitMask:
     serializedVersion: 2
     m_Bits: 192

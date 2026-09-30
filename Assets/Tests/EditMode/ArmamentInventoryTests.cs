@@ -23,10 +23,10 @@ namespace BulletHell.Tests
             return effect;
         }
 
-        private static RicochetEffect Ricochet(int bounces, float range)
+        private static RicochetEffect Ricochet(int bounces, int extraPerStack = 1)
         {
             var effect = ScriptableObject.CreateInstance<RicochetEffect>();
-            effect.Set(bounces, range);
+            effect.Set(bounces, extraPerStack);
             return effect;
         }
 
@@ -175,11 +175,11 @@ namespace BulletHell.Tests
         }
 
         [Test]
-        public void PierceAndBouncesStackAndRangeTakesTheLongest()
+        public void PierceAndBouncesFromDifferentEffectsAdd()
         {
             var inventory = new ArmamentInventory();
-            ArmamentData a = NewArmament(Pierce(1), Ricochet(1, 4f));
-            ArmamentData b = NewArmament(Pierce(2), Ricochet(2, 7f));
+            ArmamentData a = NewArmament(Pierce(1), Ricochet(1));
+            ArmamentData b = NewArmament(Pierce(2), Ricochet(2));
             inventory.Add(a);
             inventory.Add(b);
             var arm = new ArmInstance(NewArm());
@@ -188,7 +188,6 @@ namespace BulletHell.Tests
 
             Assert.AreEqual(3, arm.Shot.Pierce);
             Assert.AreEqual(3, arm.Shot.Bounces);
-            Assert.AreEqual(7f, arm.Shot.BounceRange);
             Assert.AreEqual(4, arm.Effects.Count);
         }
 

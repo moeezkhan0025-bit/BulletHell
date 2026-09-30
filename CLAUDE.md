@@ -411,7 +411,7 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
       Sprite Library + Sprite Resolver, CosmeticPartData assets (3 placeholder variants per slot, Playersprite = Body 1), new creation screen
       (live preview, slot cycling, Randomize on Square, "To the Arena!"), profile v2, HUD portrait from head + accessory 1.
 - [ ] Vertical slice art for one arena (Docs/ART_SPEC.md section 9).
-- [ ] M9a Armament behaviors: effect interface, variable armament slots per arm, rarity/tags/stacks,
+- [x] M9a Armament behaviors: effect interface, variable armament slots per arm, rarity/tags/stacks,
       Homing, Auto-fire, Velocity, Pierce, Ricochet with documented interactions, generated descriptions.
 - [ ] M9b Shop screen: merchant + card layout, ShopPool/RarityTable random stock, crate (pick 1 of 3), reroll,
       scaling prices, tooltips with fit/comparison, buy animation + SOLD, controller-first navigation.

@@ -57,6 +57,9 @@ namespace BulletHell.Enemies
         public Vector2 Position => transform.position;
         /// <summary>Middle of the body, where its bullets come out.</summary>
         public Vector2 BodyCenter => rig.position;
+        /// <summary>The hurtbox player bullets hit (a homing bullet aims at its centre).</summary>
+        public Collider2D HitCollider => hitbox;
+        public Vector2 HitCenter => hitbox.bounds.center;
         /// <summary>Radius of the flat movement footprint at the feet.</summary>
         public float FootprintRadius => baseFootprint;
         private float baseFootprint;

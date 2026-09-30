@@ -36,6 +36,16 @@ namespace BulletHell.Feedback
         [SerializeField] private HitFeedbackTuning enemyHit;
         [SerializeField] private LifeCycleTuning enemyLifeCycle;
 
+        [Header("Armaments (ricochet, pierce, wall impact)")]
+        [SerializeField, Min(0)] private int ricochetSparks = 6;
+        [Tooltip("Camera shake (0..1) for each ricochet.")]
+        [SerializeField, Range(0f, 1f)] private float ricochetShake = 0.04f;
+        [SerializeField, Min(0)] private int pierceSparks = 4;
+        [Tooltip("Camera shake (0..1) for each pierce.")]
+        [SerializeField, Range(0f, 1f)] private float pierceShake = 0.02f;
+        [Tooltip("Debris puffs when a bullet stops on a wall or obstacle.")]
+        [SerializeField, Min(0)] private int wallImpactDebris = 3;
+
         [Header("Death ghosts")]
         [SerializeField, Min(1)] private int ghostPoolSize = 16;
 
@@ -60,6 +70,11 @@ namespace BulletHell.Feedback
         public MotionTuning EnemyMotion => enemyMotion;
         public HitFeedbackTuning EnemyHit => enemyHit;
         public LifeCycleTuning EnemyLifeCycle => enemyLifeCycle;
+        public int RicochetSparks => ricochetSparks;
+        public float RicochetShake => ricochetShake;
+        public int PierceSparks => pierceSparks;
+        public float PierceShake => pierceShake;
+        public int WallImpactDebris => wallImpactDebris;
         public int GhostPoolSize => ghostPoolSize;
         public int ParticlePoolPerPreset => particlePoolPerPreset;
 

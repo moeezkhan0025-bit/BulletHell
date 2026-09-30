@@ -20,11 +20,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 19ccd0b7ad5ebd64a832f7fef52340cb, type: 2}
   - {fileID: 11400000, guid: 6a19fab820a00414a8d53e0496489b77, type: 2}
   armaments:
+  - {fileID: 11400000, guid: 866573d266068bb48b0bb215f2b3ffc3, type: 2}
   - {fileID: 11400000, guid: 8f64effc0a8f89f47909bfc3e1309fd3, type: 2}
   - {fileID: 11400000, guid: 6d59fa6f3e849724c812571c9373a58a, type: 2}
   - {fileID: 11400000, guid: 84f33c678cc97e948acafc5e9fee6e2e, type: 2}
   - {fileID: 11400000, guid: 42a4c8b069e06b143a9da36ffc7f5dcb, type: 2}
   - {fileID: 11400000, guid: 837b58284e231c6498559edd4cf4bfc8, type: 2}
+  - {fileID: 11400000, guid: 4934c007145a12f4096cc533da41be84, type: 2}
   - {fileID: 11400000, guid: 68ae3a9e11abf4843ae05c1bd7b326dc, type: 2}
   - {fileID: 11400000, guid: dce3b2b82567db744841bbdfdd6b0030, type: 2}
   - {fileID: 11400000, guid: 3d689478f7a5f64439596c7102a3368d, type: 2}

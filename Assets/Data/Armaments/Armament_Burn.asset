@@ -14,6 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.ArmamentData
   id: Armament_Burn
   displayName: Incendiary Rounds
+  icon: {fileID: 0}
+  rarity: 1
+  priceTier: 2
+  tags: 128
+  maxStacks: 2
   modifiers: []
   effects:
   - {fileID: 11400000, guid: 8bfedb1760cdb614f841b481d0866235, type: 2}

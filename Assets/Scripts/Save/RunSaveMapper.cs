@@ -44,10 +44,11 @@ namespace BulletHell.Save
 
             var result = new RunState { Round = Mathf.Max(1, data.round), Currency = Mathf.Max(0, data.currency) };
 
+            var overflow = new List<ArmamentData>(); // saved armaments that no longer fit (fewer slots, stack limits): back to the inventory
             int armCount = 0;
             for (int i = 0; i < ArmLoadout.SlotCount && data.loadout != null && i < data.loadout.Length; i++)
             {
-                result.Loadout[i] = ArmFromSave(data.loadout[i], registry);
+                result.Loadout[i] = ArmFromSave(data.loadout[i], registry, overflow);
                 if (result.Loadout[i] != null)
                     armCount++;
             }
@@ -56,11 +57,14 @@ namespace BulletHell.Save
 
             if (data.spareArms != null)
                 foreach (ArmSave saved in data.spareArms)
-                    result.SpareArms.Add(ArmFromSave(saved, registry));
+                    result.SpareArms.Add(ArmFromSave(saved, registry, overflow));
 
             if (data.armamentInventory != null)
                 foreach (string id in data.armamentInventory)
                     result.Armaments.Add(FindArmament(id, registry));
+
+            foreach (ArmamentData extra in overflow)
+                result.Armaments.Add(extra);
 
             for (int i = 0; i < AmmoSlotSet.Count && data.ammoSlots != null && i < data.ammoSlots.Length; i++)
             {
@@ -85,13 +89,13 @@ namespace BulletHell.Save
                 return saved;
 
             saved.armId = AssetRegistry.IdOf(arm.Data);
-            saved.armamentIds = new string[ArmInstance.ArmamentSlots];
-            for (int i = 0; i < ArmInstance.ArmamentSlots; i++)
+            saved.armamentIds = new string[arm.SlotCount];
+            for (int i = 0; i < arm.SlotCount; i++)
                 saved.armamentIds[i] = AssetRegistry.IdOf(arm.GetArmament(i));
             return saved;
         }
 
-        private static ArmInstance ArmFromSave(ArmSave saved, AssetRegistry registry)
+        private static ArmInstance ArmFromSave(ArmSave saved, AssetRegistry registry, List<ArmamentData> overflow)
         {
             if (saved == null || string.IsNullOrEmpty(saved.armId))
                 return null;
@@ -105,13 +109,19 @@ namespace BulletHell.Save
 
             var arm = new ArmInstance(data);
             var scratch = new ArmamentInventory(); // equip goes through an inventory; this one is thrown away
-            for (int slot = 0; slot < ArmInstance.ArmamentSlots && saved.armamentIds != null && slot < saved.armamentIds.Length; slot++)
+            for (int slot = 0; saved.armamentIds != null && slot < saved.armamentIds.Length; slot++)
             {
                 ArmamentData armament = FindArmament(saved.armamentIds[slot], registry);
                 if (armament == null)
                     continue;
                 scratch.Add(armament);
-                arm.TryEquipAt(slot, armament, scratch);
+                if (!arm.TryEquipAt(slot, armament, scratch))
+                {
+                    // No such slot on this arm any more, or its stack limit is full: the armament goes back to the inventory.
+                    scratch.Remove(armament);
+                    overflow.Add(armament);
+                    Debug.LogWarning($"Saved armament '{armament.DisplayName}' no longer fits arm '{data.DisplayName}' (slot {slot + 1}); returned to the inventory.");
+                }
             }
             return arm;
         }

@@ -13,7 +13,12 @@ MonoBehaviour:
   m_Name: Armament_Ricochet
   m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.ArmamentData
   id: Armament_Ricochet
-  displayName: Ricochet Rounds
+  displayName: Ricochet
+  icon: {fileID: 0}
+  rarity: 2
+  priceTier: 3
+  tags: 8
+  maxStacks: 3
   modifiers: []
   effects:
   - {fileID: 11400000, guid: 7331aabf724b314429fdffa2045b6b5e, type: 2}

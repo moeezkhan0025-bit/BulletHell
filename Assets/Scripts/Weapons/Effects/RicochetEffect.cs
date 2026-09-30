@@ -1,32 +1,36 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace BulletHell.Weapons
 {
     /// <summary>
-    /// After a hit the projectile redirects to the nearest other target in range; with none in range it reflects off
-    /// the surface it hit. Bounce counts stack additively, the longest range wins.
+    /// Bullets bounce off walls and obstacles instead of stopping. Only wall/obstacle bounces count: hitting an enemy
+    /// never spends a bounce (it ends the bullet unless Pierce is left). The first stack gives the base count, every
+    /// further stack adds a fixed extra.
     /// </summary>
     [CreateAssetMenu(fileName = "Effect_Ricochet", menuName = "BulletHell/Effects/Ricochet")]
     public sealed class RicochetEffect : ArmEffect
     {
-        [SerializeField, Min(1)] private int bounces = 2;
-        [Tooltip("How far a ricochet looks for the next target (world units).")]
-        [SerializeField, Min(0.5f)] private float range = 6f;
+        [Tooltip("Wall/obstacle bounces with a single stack.")]
+        [SerializeField, Min(1)] private int bounces = 3;
+        [Tooltip("Extra bounces for every stack after the first.")]
+        [SerializeField, Min(0)] private int extraPerStack = 1;
 
         public int Bounces => bounces;
-        public float Range => range;
+        public int ExtraPerStack => extraPerStack;
 
-        public override void ModifyShot(ref ShotProperties shot)
-        {
-            shot.Bounces += bounces;
-            shot.BounceRange = Mathf.Max(shot.BounceRange, range);
-        }
+        public int BouncesFor(int stacks) => bounces + Mathf.Max(0, stacks - 1) * extraPerStack;
+
+        public override void ModifyShot(ref ShotProperties shot, int stacks) => shot.Bounces += BouncesFor(stacks);
+
+        public override void Describe(int stacks, List<string> lines) =>
+            lines.Add("Bullets bounce off walls and obstacles up to " + BouncesFor(stacks) + " times");
 
 #if UNITY_EDITOR
-        public void Set(int bounceCount, float bounceRange)
+        public void Set(int bounceCount, int extra)
         {
             bounces = bounceCount;
-            range = bounceRange;
+            extraPerStack = extra;
             UnityEditor.EditorUtility.SetDirty(this);
         }
 #endif

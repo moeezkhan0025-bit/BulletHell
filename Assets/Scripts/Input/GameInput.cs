@@ -360,6 +360,16 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""DebugToggleBulletPaths"",
+                    ""type"": ""Button"",
+                    ""id"": ""1d000006-3333-4c06-8d06-0000000000c6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -448,6 +458,17 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""DebugPrevArmament"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e00000a-4444-4d0a-9e0a-0000000000da"",
+                    ""path"": ""<Keyboard>/f6"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DebugToggleBulletPaths"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -547,6 +568,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Debug_DebugRemoveArmament = m_Debug.FindAction("DebugRemoveArmament", throwIfNotFound: true);
         m_Debug_DebugNextArmament = m_Debug.FindAction("DebugNextArmament", throwIfNotFound: true);
         m_Debug_DebugPrevArmament = m_Debug.FindAction("DebugPrevArmament", throwIfNotFound: true);
+        m_Debug_DebugToggleBulletPaths = m_Debug.FindAction("DebugToggleBulletPaths", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Primary = m_Menu.FindAction("Primary", throwIfNotFound: true);
@@ -832,6 +854,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Debug_DebugRemoveArmament;
     private readonly InputAction m_Debug_DebugNextArmament;
     private readonly InputAction m_Debug_DebugPrevArmament;
+    private readonly InputAction m_Debug_DebugToggleBulletPaths;
     /// <summary>
     /// Provides access to input actions defined in input action map "Debug".
     /// </summary>
@@ -859,6 +882,10 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Debug/DebugPrevArmament".
         /// </summary>
         public InputAction @DebugPrevArmament => m_Wrapper.m_Debug_DebugPrevArmament;
+        /// <summary>
+        /// Provides access to the underlying input action "Debug/DebugToggleBulletPaths".
+        /// </summary>
+        public InputAction @DebugToggleBulletPaths => m_Wrapper.m_Debug_DebugToggleBulletPaths;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -897,6 +924,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @DebugPrevArmament.started += instance.OnDebugPrevArmament;
             @DebugPrevArmament.performed += instance.OnDebugPrevArmament;
             @DebugPrevArmament.canceled += instance.OnDebugPrevArmament;
+            @DebugToggleBulletPaths.started += instance.OnDebugToggleBulletPaths;
+            @DebugToggleBulletPaths.performed += instance.OnDebugToggleBulletPaths;
+            @DebugToggleBulletPaths.canceled += instance.OnDebugToggleBulletPaths;
         }
 
         /// <summary>
@@ -920,6 +950,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @DebugPrevArmament.started -= instance.OnDebugPrevArmament;
             @DebugPrevArmament.performed -= instance.OnDebugPrevArmament;
             @DebugPrevArmament.canceled -= instance.OnDebugPrevArmament;
+            @DebugToggleBulletPaths.started -= instance.OnDebugToggleBulletPaths;
+            @DebugToggleBulletPaths.performed -= instance.OnDebugToggleBulletPaths;
+            @DebugToggleBulletPaths.canceled -= instance.OnDebugToggleBulletPaths;
         }
 
         /// <summary>
@@ -1186,6 +1219,13 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDebugPrevArmament(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DebugToggleBulletPaths" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDebugToggleBulletPaths(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Menu" which allows adding and removing callbacks.

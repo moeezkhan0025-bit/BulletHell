@@ -14,6 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: BulletHell::BulletHell.Weapons.ArmamentData
   id: Armament_ExtraProjectile
   displayName: +1 Projectile
+  icon: {fileID: 0}
+  rarity: 1
+  priceTier: 2
+  tags: 32
+  maxStacks: 2
   modifiers:
   - Stat: 3
     Mode: 0

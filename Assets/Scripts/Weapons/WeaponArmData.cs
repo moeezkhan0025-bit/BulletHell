@@ -39,9 +39,12 @@ namespace BulletHell.Weapons
         [Header("Effects")]
         [Tooltip("Special effects (pierce, burn, ...) this arm type always has, on top of its armaments'.")]
         [SerializeField] private ArmEffect[] effects = System.Array.Empty<ArmEffect>();
+        [Tooltip("How many armaments this arm can carry (1-3). Rarer arms get more.")]
+        [SerializeField, Range(1, 3)] private int armamentSlots = 3;
 
         public string Id => id;
         public string DisplayName => displayName;
+        public int ArmamentSlots => armamentSlots;
         public Color IdColor => idColor;
         public Sprite Sprite => sprite;
         public float ArtRotation => artRotation;
@@ -55,6 +58,13 @@ namespace BulletHell.Weapons
         public System.Collections.Generic.IReadOnlyList<ArmEffect> Effects => effects ?? System.Array.Empty<ArmEffect>();
 
 #if UNITY_EDITOR
+        /// <summary>Editor-only: sets how many armament slots this arm has.</summary>
+        public void SetArmamentSlots(int value)
+        {
+            armamentSlots = Mathf.Clamp(value, 1, 3);
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
+
         /// <summary>Editor-only: assigns the save ID.</summary>
         public void SetId(string value)
         {
