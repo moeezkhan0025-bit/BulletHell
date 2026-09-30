@@ -14,7 +14,7 @@ Priority key (suggestion): P1 = blocks the next milestone or the vertical slice;
 | M10 (rounds 5 and 7) Bosses | `[ ]` | "M10 (rounds 5 and 7) Bosses." | P1 |
 | P1 Performance pass | `[~]` partial | "PARTIAL. Tools built ... fixes and the final test are tabled until content is near complete" | P2, resume when content is near complete |
 | M11 Themed UI/visual pass | `[ ]` | "candy-colosseum style for menus, HUD, Shop, Armory, customization; final art." | P2 (UI2 already did a large part of the menus) [VERIFY how much of M11 UI2 covers] |
-| D1 UI polish | `[ ]` | "spacing, alignment, text overflow (long names, 5-digit numbers), focus states, motion timings from the VoxKit manifest, layouts at 1920x1080, 2560x1440 and a phone resolution" | demo track |
+| D1 UI polish | `[x]` (2026-09-30) | "spacing, alignment, text overflow (long names, 5-digit numbers), focus states, motion timings from the VoxKit manifest, layouts at 1920x1080, 2560x1440 and a phone resolution" | demo track |
 | D2 Onboarding | `[ ]` | "skippable, action-driven control prompts in round 1 ... completion saved in the profile, replay option in Settings" | demo track |
 | D3 Playtest telemetry + balance tools | `[ ]` | "local-only CSV per run ... and a debug summary screen" | demo track |
 | D4 Audio | `[ ]` | "music per context with crossfades, SFX ..., mixer groups tied to Settings volumes, CC0 placeholder sounds logged in Docs/CREDITS.md" | demo track |
@@ -140,13 +140,13 @@ Screenshots: `Docs/Screenshots/VoxUI`; mockups: `Docs/Reference/UI`.
 6. Retire old setup scripts and screenshots; chip away at the UI2 list.
 7. M12: touch scheme, glyphs, audio/announcer, SRP batcher, haptics.
 
-## 11. Demo readiness track (D1-D6, added 2026-09-30; each is its own session, none started)
+## 11. Demo readiness track (D1-D6, added 2026-09-30; each is its own session; D1 done 2026-09-30)
 
 Goal: a shareable demo (Windows build, possibly an itch.io browser build). These sit between the UI hot swap (UI2) and M11 in `CLAUDE.md`.
 
 | ID | Scope | Depends on / overlaps | Notes |
 |---|---|---|---|
-| D1 UI polish | Spacing, alignment, text overflow (long names, 5-digit numbers), focus states, motion timings from `vox_ui_kit_manifest.json`; check 1920x1080, 2560x1440 and a phone resolution. Screens: HUD, Settings, Round Results, Pause, Game Over, round banner, boss bar | UI2 mismatch list (section 9); art-independent. Shop merchant panel and Character Creation preview wait for art | Uses `VoxShots` for before/after screenshots |
+| D1 UI polish | Spacing, alignment, text overflow (long names, 5-digit numbers), focus states, motion timings from `vox_ui_kit_manifest.json`; check 1920x1080, 2560x1440 and a phone resolution. Screens: HUD, Settings, Round Results, Pause, Game Over, round banner, boss bar | UI2 mismatch list (section 9); art-independent. Shop merchant panel and Character Creation preview wait for art | Done: before/after shots in `Captures/` (tool `VoxD1Shots`, built on `VoxShots`); fixes listed in `Docs/BUGS.md` Fixed "D1 UI polish" |
 | D2 Onboarding | Skippable, action-driven prompts in round 1: move, select arm, fire, L3 lock, R2 jump, ammo swap; glyphs for the connected controller; completion saved in the profile; replay option in Settings | `PromptHint` and `ButtonGlyphLibrary` already follow the device; profile save format (new field, version check) | Needs a Settings row (overlaps D5) |
 | D3 Playtest telemetry + balance tools | Local-only CSV per run (round reached, cause of death, time and damage taken per round, currency earned/spent, items bought, armaments equipped, boss phase reached) and a debug summary screen | `RunManager`, `BossEvents`, shop and armory events; feeds balance decisions and `09_Metrics.md` | Local files only, no network |
 | D4 Audio | Music per context with crossfades, SFX for combat, movement, pickups, UI and announcer stingers, mixer groups tied to Settings volumes, CC0 placeholder sounds logged in `Docs/CREDITS.md` | `AudioService` stub, `UiSound` hooks (clips empty on `UITheme`), `SettingsData` volumes | Overlaps M12 "announcer/audio" |

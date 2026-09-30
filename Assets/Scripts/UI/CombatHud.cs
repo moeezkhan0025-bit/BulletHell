@@ -65,7 +65,8 @@ namespace BulletHell.UI
 
         private void OnStateChanged(GameState from, GameState to)
         {
-            bool show = to == GameState.RoundIntro || to == GameState.Combat || to == GameState.Pause;
+            // Hidden while paused too: the Pause panel and Settings (opened from it) own the screen, and their prompt lines sit over the HUD corners.
+            bool show = to == GameState.RoundIntro || to == GameState.Combat;
             content.SetActive(show);
             if (to == GameState.RoundIntro)
                 portrait.Apply(GameServices.Ensure().Profile);   // the look chosen on the customization screen

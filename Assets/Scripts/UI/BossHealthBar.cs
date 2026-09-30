@@ -145,7 +145,11 @@ namespace BulletHell.UI
             if (trail != null)
                 trail.fillAmount = Mathf.MoveTowards(trail.fillAmount, fill.fillAmount, trailSpeed * dt);
             if (group != null)
-                group.alpha = Mathf.MoveTowards(group.alpha, targetAlpha, dt / fadeSeconds);
+            {
+                // Paused: the Pause panel owns the screen, so the bar steps aside and returns on resume.
+                float goal = run.Machine.Current == GameState.Pause ? 0f : targetAlpha;
+                group.alpha = Mathf.MoveTowards(group.alpha, goal, dt / fadeSeconds);
+            }
         }
     }
 }

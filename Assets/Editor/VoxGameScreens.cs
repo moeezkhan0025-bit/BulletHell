@@ -38,7 +38,7 @@ namespace BulletHell.EditorTools
                 VoxMenuScreens.RestyleFlowPanel(panel);
             var settings = Object.FindFirstObjectByType<SettingsScreen>(FindObjectsInactive.Include);
             if (settings != null)
-                VoxMenuScreens.RebuildSettings(settings, 0.55f);
+                VoxMenuScreens.RebuildSettings(settings, 0.8f);   // over the paused arena: dim it enough that the title and rows read
             var confirm = Object.FindFirstObjectByType<ConfirmDialog>(FindObjectsInactive.Include);
             if (confirm != null)
             {
@@ -218,7 +218,7 @@ namespace BulletHell.EditorTools
 
             // Round / wave pill (top center): ROUND n | Wave x / y, with checker ends
             Image pill = VoxUi.Themed("RoundPill", rect, ThemeRole.PillMarble);
-            VoxUi.TopCenter(pill.rectTransform, 0f, 24f, 500f, 78f);
+            VoxUi.TopCenter(pill.rectTransform, 0f, 24f, 580f, 78f);
             Image trimL = VoxUi.Trim("TrimL", pill.transform, TrimColor.Leaf);
             trimL.rectTransform.anchorMin = new Vector2(0f, 0f);
             trimL.rectTransform.anchorMax = new Vector2(0f, 1f);
@@ -234,6 +234,7 @@ namespace BulletHell.EditorTools
             round.rectTransform.anchorMax = new Vector2(0.5f, 1f);
             round.rectTransform.offsetMin = new Vector2(30f, 18f);
             round.rectTransform.offsetMax = new Vector2(0f, -8f);
+            VoxUi.Fit(round, 24f, 38f);
             Image divider = VoxUi.Img("Divider", pill.transform, null, Image.Type.Simple, theme.InkSoil);
             divider.rectTransform.anchorMin = divider.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
             divider.rectTransform.sizeDelta = new Vector2(4f, 46f);
@@ -243,10 +244,11 @@ namespace BulletHell.EditorTools
             wave.rectTransform.anchorMax = new Vector2(1f, 1f);
             wave.rectTransform.offsetMin = new Vector2(0f, 18f);
             wave.rectTransform.offsetMax = new Vector2(-30f, -8f);
+            VoxUi.Fit(wave, 22f, 34f);
 
             // Currency pill (top right)
             Image coinPill = VoxUi.Themed("CoinPill", rect, ThemeRole.PillMarble);
-            VoxUi.TopRight(coinPill.rectTransform, 28f, 26f, 230f, 76f);
+            VoxUi.TopRight(coinPill.rectTransform, 28f, 26f, 340f, 76f);
             Image coin = VoxUi.Img("Coin", coinPill.transform, theme.Coin, Image.Type.Simple);
             coin.preserveAspect = true;
             coin.rectTransform.anchorMin = coin.rectTransform.anchorMax = new Vector2(0f, 0.5f);
@@ -258,6 +260,7 @@ namespace BulletHell.EditorTools
             coins.rectTransform.anchorMax = new Vector2(1f, 1f);
             coins.rectTransform.offsetMin = new Vector2(78f, 16f);
             coins.rectTransform.offsetMax = new Vector2(-18f, -6f);
+            VoxUi.Fit(coins, 24f, 40f);
 
             VoxUi.SetRef(runHud, "roundLabel", round);
             VoxUi.SetRef(runHud, "waveLabel", wave);
@@ -298,6 +301,7 @@ namespace BulletHell.EditorTools
                 {
                     VoxMenuScreens.Style(label, TextFont.Title, TextTone.OnDark, 34, outline: true);
                     label.fontStyle = FontStyles.Normal;
+                    VoxUi.Fit(label, 20f, 34f);
                 }
                 ((RectTransform)boss.transform).anchoredPosition = new Vector2(0f, -112f);   // below the round / wave pill
                 Transform bar = boss.transform.Find("Bar");

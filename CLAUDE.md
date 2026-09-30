@@ -90,6 +90,7 @@ Art rules (sizes, perspective, pivots, height classes, colors, naming): Docs/ART
 
 ## HUD (combat)
 - Bottom-left: gladiator portrait (reflects chosen cosmetics), 5 TOMATO hearts = 5 HP (1 heart per hit),
+- The HUD belongs to the fight: hearts, heat, ammo, round / currency pills are shown in RoundIntro and Combat only (hidden in Pause so the Pause and Settings screens own the screen); the boss bar steps aside while paused. Pill text autosizes (round, wave, currency with thousands separators).
   inside the checkered portrait ring, and a heat bar beside them showing the SELECTED arm's heat (fills while firing heat ammo, tinted leaf -> carrot -> tomato
   as it rises, flashes tomato/marble when overheated, drains while cooling). Top center: round / wave pill; top right: currency pill. No arm selected -> bar shows the last selected arm, dimmed.
 - Bottom-right: 4 ammo slot icons in button order, each with its face-button glyph. Active slot highlighted,
@@ -497,7 +498,7 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
       art pipeline, metrics, reflections template), backfilled from git history, CLAUDE.md history, BUGS.md and the code; inferences marked [VERIFY].
       From now on it is updated at the end of every milestone (see the Working agreement).
 - Demo readiness track (D1-D6): each milestone is its own session; none started yet.
-- [ ] D1 UI polish (art-independent): spacing, alignment, text overflow (long names, 5-digit numbers), focus states, motion timings from the VoxKit
+- [x] D1 UI polish (art-independent, done 2026-09-30; before/after shots in Captures/, tool `VoxD1Shots`): spacing, alignment, text overflow (long names, 5-digit numbers), focus states, motion timings from the VoxKit
       manifest, and layouts checked at 1920x1080, 2560x1440 and a phone resolution. Screens: HUD, Settings, Round Results, Pause, Game Over, round
       banner, boss bar. The Shop merchant panel and the Character Creation preview wait for art.
 - [ ] D2 Onboarding: skippable, action-driven control prompts in round 1 (move, select arm, fire, L3 lock, R2 jump, ammo swap), glyphs for the

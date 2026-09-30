@@ -732,7 +732,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &4259438556503731915
+--- !u!1 &4534421209144747321
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -740,9 +740,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2257894637776471945}
-  - component: {fileID: 1128283273171547936}
-  - component: {fileID: 376546406708563095}
+  - component: {fileID: 6462377728658932512}
+  - component: {fileID: 5450319904528757107}
+  - component: {fileID: 6016677170142188750}
   m_Layer: 0
   m_Name: Track
   m_TagString: Untagged
@@ -750,13 +750,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &2257894637776471945
+--- !u!224 &6462377728658932512
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4259438556503731915}
+  m_GameObject: {fileID: 4534421209144747321}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -769,21 +769,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &1128283273171547936
+--- !u!222 &5450319904528757107
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4259438556503731915}
+  m_GameObject: {fileID: 4534421209144747321}
   m_CullTransparentMesh: 1
---- !u!114 &376546406708563095
+--- !u!114 &6016677170142188750
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4259438556503731915}
+  m_GameObject: {fileID: 4534421209144747321}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
@@ -1188,7 +1188,7 @@ MonoBehaviour:
   sliderFill: {fileID: 1214400663795979770}
   sliderHandle: {fileID: 7893793363943134935}
   toggleGroup: {fileID: 7889492650815015369}
-  toggleTrack: {fileID: 376546406708563095}
+  toggleTrack: {fileID: 6016677170142188750}
   toggleKnob: {fileID: 9018079828354796385}
   toggleWord: {fileID: 4903953521841969957}
   choiceGroup: {fileID: 6544046177015694495}
@@ -1222,7 +1222,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2257894637776471945}
+  - {fileID: 6462377728658932512}
   - {fileID: 9018079828354796385}
   - {fileID: 2618911384040137742}
   m_Father: {fileID: 139472355085366903}

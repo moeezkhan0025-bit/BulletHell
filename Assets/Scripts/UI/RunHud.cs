@@ -20,6 +20,7 @@ namespace BulletHell.UI
 
         private readonly StringBuilder builder = new StringBuilder(32);
         private int shownRound = -1, shownCurrency = -1, shownEarned = -1, shownWave = -1, shownWaveCount = -1;
+        private CanvasGroup group;
 
         private void Update()
         {
@@ -27,6 +28,12 @@ namespace BulletHell.UI
             RunState state = run.State;
             if (state == null)
                 return;
+
+            // The pills belong to the fight: shown during the round intro and combat, hidden on every other screen (Pause, Results, Shop...).
+            if (group == null && !TryGetComponent(out group))
+                group = gameObject.AddComponent<CanvasGroup>();
+            GameState current = run.Machine.Current;
+            group.alpha = current == GameState.RoundIntro || current == GameState.Combat ? 1f : 0f;
 
             if (state.Round != shownRound && roundLabel != null)
             {
@@ -58,7 +65,7 @@ namespace BulletHell.UI
                 builder.Clear();
                 builder.Append(shownCurrency.ToString("N0"));
                 if (earned > 0)
-                    builder.Append(" <size=60%>+").Append(earned).Append("</size>");
+                    builder.Append(" <size=60%>+").Append(earned.ToString("N0")).Append("</size>");
                 currencyLabel.text = builder.ToString();
             }
         }

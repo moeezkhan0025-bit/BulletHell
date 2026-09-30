@@ -106,11 +106,14 @@ namespace BulletHell.UI
             SettingsDefaults defaults = settings.Defaults;
 
             AddRow(AudioTab, "Master Volume", () => Percent(settings.Current.masterVolume), SettingKind.Slider, () => settings.Current.masterVolume,
-                dir => Step(settings.Current.masterVolume, dir, defaults.VolumeStep, 0f, 1f, v => settings.Current.masterVolume = v));
+                dir => Step(settings.Current.masterVolume, dir, defaults.VolumeStep, 0f, 1f, v => settings.Current.masterVolume = v),
+                sub: null, setFraction: f => SetByFraction(f, defaults.VolumeStep, 0f, 1f, v => settings.Current.masterVolume = v));
             AddRow(AudioTab, "Music", () => Percent(settings.Current.musicVolume), SettingKind.Slider, () => settings.Current.musicVolume,
-                dir => Step(settings.Current.musicVolume, dir, defaults.VolumeStep, 0f, 1f, v => settings.Current.musicVolume = v));
+                dir => Step(settings.Current.musicVolume, dir, defaults.VolumeStep, 0f, 1f, v => settings.Current.musicVolume = v),
+                sub: null, setFraction: f => SetByFraction(f, defaults.VolumeStep, 0f, 1f, v => settings.Current.musicVolume = v));
             AddRow(AudioTab, "Sound Effects", () => Percent(settings.Current.sfxVolume), SettingKind.Slider, () => settings.Current.sfxVolume,
-                dir => Step(settings.Current.sfxVolume, dir, defaults.VolumeStep, 0f, 1f, v => settings.Current.sfxVolume = v));
+                dir => Step(settings.Current.sfxVolume, dir, defaults.VolumeStep, 0f, 1f, v => settings.Current.sfxVolume = v),
+                sub: null, setFraction: f => SetByFraction(f, defaults.VolumeStep, 0f, 1f, v => settings.Current.sfxVolume = v));
             AddSection(AudioTab, "FEEL");
             AddRow(AudioTab, "Screen Shake", () => OnOff(settings.Current.screenShake), SettingKind.Toggle, null,
                 _ => Toggle(v => settings.Current.screenShake = v, settings.Current.screenShake));
@@ -128,7 +131,9 @@ namespace BulletHell.UI
             AddRow(ControlsTab, "Aim Sensitivity", () => settings.Current.aimSensitivity.ToString("0.0") + "x", SettingKind.Slider,
                 () => Mathf.InverseLerp(defaults.MinAimSensitivity, defaults.MaxAimSensitivity, settings.Current.aimSensitivity),
                 dir => Step(settings.Current.aimSensitivity, dir, defaults.AimSensitivityStep, defaults.MinAimSensitivity, defaults.MaxAimSensitivity,
-                            v => settings.Current.aimSensitivity = v));
+                            v => settings.Current.aimSensitivity = v),
+                sub: null, setFraction: f => SetByFraction(f, defaults.AimSensitivityStep, defaults.MinAimSensitivity, defaults.MaxAimSensitivity,
+                                                           v => settings.Current.aimSensitivity = v));
 
             if (Debug.isDebugBuild)
             {
@@ -211,10 +216,10 @@ namespace BulletHell.UI
                 UIFocusGuard.Focus(first.gameObject);
         }
 
-        private void AddRow(int tab, string labelText, Func<string> value, SettingKind kind, Func<float> fraction, Action<int> adjust, string sub = null)
+        private void AddRow(int tab, string labelText, Func<string> value, SettingKind kind, Func<float> fraction, Action<int> adjust, string sub = null, Action<float> setFraction = null)
         {
             SettingRow row = Instantiate(rowPrefab, rowParent);
-            row.Bind(labelText, value, adjust, kind, fraction, sub != null ? (Func<string>)(() => sub) : null);
+            row.Bind(labelText, value, adjust, kind, fraction, sub != null ? (Func<string>)(() => sub) : null, setFraction);
             row.Cancelled += Close;
             entries.Add(new Entry { Tab = tab, Object = row.gameObject, Row = row });
         }
@@ -233,6 +238,14 @@ namespace BulletHell.UI
         {
             float next = Mathf.Clamp(Mathf.Round((current + direction * step) / step) * step, min, max);
             set(next);
+            settings.Commit();
+        }
+
+        // A slider pressed or dragged by pointer: 0..1 along the track, snapped to the setting's step.
+        private void SetByFraction(float fraction, float step, float min, float max, Action<float> set)
+        {
+            float value = Mathf.Clamp(Mathf.Round(Mathf.Lerp(min, max, fraction) / step) * step, min, max);
+            set(value);
             settings.Commit();
         }
 

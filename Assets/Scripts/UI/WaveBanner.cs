@@ -9,8 +9,7 @@ namespace BulletHell.UI
     public sealed class WaveBanner : MonoBehaviour
     {
         private const float FadeSeconds = 0.4f;
-        private const float PopSeconds = 0.25f;
-
+        
         [SerializeField] private TMP_Text label;
 
         private Color baseColor;
@@ -30,7 +29,8 @@ namespace BulletHell.UI
             label.transform.localScale = Vector3.one * 0.7f;
             gameObject.SetActive(true);
 
-            Tween.Scale(label.transform, 1f, PopSeconds, Ease.OutBack);
+            UITheme theme = UITheme.Current;
+            Tween.Scale(label.transform, 1f, theme != null ? theme.BubbleInSeconds : 0.25f, Ease.OutBack);   // manifest: pop 0.25 s
             float fade = Mathf.Min(FadeSeconds, seconds);
             Tween.Alpha(label, baseColor.a, 0f, fade, Ease.Linear, startDelay: seconds - fade)
                 .OnComplete(Hide);

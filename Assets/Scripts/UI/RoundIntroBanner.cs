@@ -140,7 +140,8 @@ namespace BulletHell.UI
             label.color = baseColor;
             label.transform.localScale = Vector3.one * fromScale;
             label.gameObject.SetActive(true);
-            Tween.Scale(label.transform, 1f, 0.3f, Ease.OutBack);
+            UITheme theme = UITheme.Current;
+            Tween.Scale(label.transform, 1f, theme != null ? theme.BubbleInSeconds : 0.25f, Ease.OutBack);   // manifest: pop 0.25 s
         }
     }
 }

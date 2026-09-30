@@ -78,6 +78,9 @@ namespace BulletHell.UI
                 text = GetComponent<TMP_Text>();
             var config = Resources.Load<GameConfig>(GameConfig.ResourcePath);
             text.text = Build(config != null ? config.ButtonGlyphs : null, GlyphFamilyDetector.Current(), prompts);
+            // The prompt pill sizes itself to its text; rebuild now so a screen that has just been shown does not keep the width of the previous line.
+            if (transform.parent is RectTransform pill && pill.TryGetComponent<ContentSizeFitter>(out _) && gameObject.activeInHierarchy)
+                LayoutRebuilder.ForceRebuildLayoutImmediate(pill);
         }
     }
 }

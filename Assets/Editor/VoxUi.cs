@@ -139,6 +139,16 @@ namespace BulletHell.EditorTools
             return label;
         }
 
+        /// <summary>Shrinks the text to fit its rect (one line, ellipsis as the last resort) instead of overflowing it.</summary>
+        public static void Fit(TMP_Text label, float min, float max)
+        {
+            label.enableAutoSizing = true;
+            label.fontSizeMin = min;
+            label.fontSizeMax = max;
+            label.textWrappingMode = TextWrappingModes.NoWrap;
+            label.overflowMode = TextOverflowModes.Ellipsis;
+        }
+
         /// <summary>A themed button: Image + Button + ThemedButton + CancelRelay, with a centered Lilita One label.</summary>
         public static Button Btn(string name, Transform parent, string label, float w, float h, float fontSize = 36f, ButtonKind kind = ButtonKind.Normal)
         {

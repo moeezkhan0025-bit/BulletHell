@@ -409,7 +409,7 @@ namespace BulletHell.EditorTools
         {
             Transform root = panel.transform;
             if (root.TryGetComponent(out Image dim))
-                dim.color = new Color(0f, 0f, 0f, 0.55f);
+                dim.color = new Color(0f, 0f, 0f, 0.7f);
             Transform box = root.Find("Box");
             if (box != null)
             {
@@ -449,7 +449,7 @@ namespace BulletHell.EditorTools
                     }
                 }
             }
-            Transform hintOld = root.Find("Hint");
+            Transform hintOld = root.Find("HintPill") != null ? root.Find("HintPill") : root.Find("Hint");   // rebuilt each time so older fixed-width pills pick up the self-sizing one
             if (hintOld != null)
             {
                 TMP_Text hint = RebuildHint(root, hintOld);

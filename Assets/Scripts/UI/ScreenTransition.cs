@@ -10,7 +10,7 @@ namespace BulletHell.UI
     /// </summary>
     public sealed class ScreenTransition : MonoBehaviour
     {
-        public const float Seconds = 0.2f;
+        public const float Seconds = 0.2f;   // fallback; the theme (manifest: fade/slide 0.2 s) wins
         public const float SlidePixels = 26f;
 
         private CanvasGroup group;
@@ -46,15 +46,17 @@ namespace BulletHell.UI
         private void Play()
         {
             Prepare();
+            UITheme theme = UITheme.Current;
+            float seconds = theme != null ? theme.ScreenTransitionSeconds : Seconds;
             Tween.StopAll(group);
             if (rect != null)
             {
                 Tween.StopAll(rect);
                 rect.anchoredPosition = rest + new Vector2(0f, -SlidePixels);
-                Tween.UIAnchoredPosition(rect, rest, Seconds, Ease.OutCubic, useUnscaledTime: true);
+                Tween.UIAnchoredPosition(rect, rest, seconds, Ease.OutCubic, useUnscaledTime: true);
             }
             group.alpha = 0f;
-            Tween.Alpha(group, 1f, Seconds, Ease.OutQuad, useUnscaledTime: true);
+            Tween.Alpha(group, 1f, seconds, Ease.OutQuad, useUnscaledTime: true);
         }
 
         private void OnDisable()

@@ -24,7 +24,8 @@ namespace BulletHell.UI
     /// while focused. The visual pieces are plain child objects wired on the prefab.
     /// </summary>
     [RequireComponent(typeof(Button))]
-    public sealed class SettingRow : MonoBehaviour, IMoveHandler, ICancelHandler, ISelectHandler, IDeselectHandler, IPointerEnterHandler
+    public sealed class SettingRow : MonoBehaviour, IMoveHandler, ICancelHandler, ISelectHandler, IDeselectHandler, IPointerEnterHandler,
+                                      IPointerDownHandler, IPointerUpHandler, IDragHandler
     {
         [SerializeField] private Image background;
         [SerializeField] private GameObject focusRing;
@@ -51,11 +52,17 @@ namespace BulletHell.UI
         [SerializeField] private Button arrowLeft;
         [SerializeField] private Button arrowRight;
 
+        private const float SliderEdge = 14f;          // handle travel inset at each end of the track
+        private const float SliderHitPadding = 24f;    // how far past the track ends a press still counts
+
         private SettingKind kind = SettingKind.Choice;
         private Func<string> valueText;
         private Func<string> subText;
         private Func<float> fraction;
         private Action<int> adjust;
+        private Action<float> setFraction;
+        private bool sliderPressed;
+        private int suppressClickFrame = -1;
         private bool focused;
 
         public event Action Cancelled;
@@ -65,7 +72,12 @@ namespace BulletHell.UI
         private void Awake()
         {
             Button = GetComponent<Button>();
-            Button.onClick.AddListener(() => Adjust(1));
+            Button.onClick.AddListener(() =>
+            {
+                // A click that set a slider by position must not also step it.
+                if (Time.frameCount > suppressClickFrame)
+                    Adjust(1);
+            });
             if (arrowLeft != null)
                 arrowLeft.onClick.AddListener(() => Adjust(-1));
             if (arrowRight != null)
@@ -77,13 +89,15 @@ namespace BulletHell.UI
         /// the optional second line of a Choice row.
         /// </summary>
         public void Bind(string labelText, Func<string> valueSource, Action<int> onAdjust,
-                         SettingKind rowKind = SettingKind.Choice, Func<float> fractionSource = null, Func<string> subSource = null)
+                         SettingKind rowKind = SettingKind.Choice, Func<float> fractionSource = null, Func<string> subSource = null,
+                         Action<float> fractionSetter = null)
         {
             label.text = labelText;
             valueText = valueSource;
             adjust = onAdjust;
             kind = rowKind;
             fraction = fractionSource;
+            setFraction = fractionSetter;
             subText = subSource;
             if (sliderGroup != null) sliderGroup.SetActive(kind == SettingKind.Slider);
             if (toggleGroup != null) toggleGroup.SetActive(kind == SettingKind.Toggle);
@@ -144,8 +158,8 @@ namespace BulletHell.UI
             if (sliderHandle != null && sliderTrack != null)
             {
                 RectTransform handle = sliderHandle.rectTransform;
-                float inner = sliderTrack.rect.width - 2f * 14f;
-                handle.anchoredPosition = new Vector2(-sliderTrack.rect.width * 0.5f + 14f + inner * f, 0f);
+                float inner = sliderTrack.rect.width - 2f * SliderEdge;
+                handle.anchoredPosition = new Vector2(-sliderTrack.rect.width * 0.5f + SliderEdge + inner * f, 0f);
             }
         }
 
@@ -225,6 +239,41 @@ namespace BulletHell.UI
         }
 
         public void OnCancel(BaseEventData eventData) => Cancelled?.Invoke();
+
+        // Slider rows: pressing or dragging on the track sets the value where the pointer is (steps stay on left / right).
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            if (kind != SettingKind.Slider || setFraction == null || sliderTrack == null || eventData.button != PointerEventData.InputButton.Left)
+                return;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(sliderTrack, eventData.position, eventData.pressEventCamera, out Vector2 local);
+            Rect bounds = sliderTrack.rect;   // local space: the pivot is not necessarily the centre
+            if (local.x < bounds.xMin - SliderHitPadding || local.x > bounds.xMax + SliderHitPadding)
+                return;
+            sliderPressed = true;
+            suppressClickFrame = Time.frameCount;
+            SetFromPointer(eventData);
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            if (sliderPressed)
+                SetFromPointer(eventData);
+        }
+
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            if (sliderPressed)
+                suppressClickFrame = Time.frameCount;   // the click event follows the release in the same frame
+            sliderPressed = false;
+        }
+
+        private void SetFromPointer(PointerEventData eventData)
+        {
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(sliderTrack, eventData.position, eventData.pressEventCamera, out Vector2 local);
+            float inner = sliderTrack.rect.width - 2f * SliderEdge;
+            setFraction(Mathf.Clamp01((local.x - sliderTrack.rect.xMin - SliderEdge) / inner));
+            Refresh();
+        }
 
         private void Adjust(int direction)
         {
