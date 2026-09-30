@@ -46,7 +46,11 @@ namespace BulletHell.UI
             shownHolding = holding;
 
             bool filled = ammo != null;
-            frame.color = filled ? filledFrame : emptyFrame;
+            UITheme theme = UITheme.Current;
+            if (theme != null)
+                frame.color = filled ? theme.HudSlotFilled : theme.HudSlotEmpty;
+            else
+                frame.color = filled ? filledFrame : emptyFrame;
             icon.enabled = filled;
             if (filled)
             {

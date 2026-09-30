@@ -14,7 +14,7 @@ namespace BulletHell.Cosmetics
     {
         private readonly AssetRegistry registry;
         private readonly JsonFileStore<ProfileData> store;
-        private readonly List<CosmeticData>[] optionsBySlot = new List<CosmeticData>[CosmeticSlots.Count];
+        private readonly List<CosmeticPartData>[] optionsBySlot = new List<CosmeticPartData>[CosmeticSlots.Count];
 
         public ProfileData Data { get; private set; }
 
@@ -47,12 +47,12 @@ namespace BulletHell.Cosmetics
         public void Save() => store.Save(Data);
 
         /// <summary>All items of a slot, in registry order (the first is the default). Empty when the registry has none.</summary>
-        public IReadOnlyList<CosmeticData> Options(CosmeticSlot slot)
+        public IReadOnlyList<CosmeticPartData> Options(CosmeticSlot slot)
         {
-            List<CosmeticData> list = optionsBySlot[(int)slot];
+            List<CosmeticPartData> list = optionsBySlot[(int)slot];
             if (list == null)
             {
-                list = new List<CosmeticData>();
+                list = new List<CosmeticPartData>();
                 if (registry != null)
                     registry.GetCosmetics(slot, list);
                 optionsBySlot[(int)slot] = list;
@@ -61,9 +61,9 @@ namespace BulletHell.Cosmetics
         }
 
         /// <summary>The chosen item of a slot; its default when none/unknown is stored. Null only if the slot has no items at all.</summary>
-        public CosmeticData Get(CosmeticSlot slot)
+        public CosmeticPartData Get(CosmeticSlot slot)
         {
-            IReadOnlyList<CosmeticData> options = Options(slot);
+            IReadOnlyList<CosmeticPartData> options = Options(slot);
             if (options.Count == 0)
                 return null;
 
@@ -74,17 +74,34 @@ namespace BulletHell.Cosmetics
             return options[0];
         }
 
+        /// <summary>The art of the chosen part of a slot (portrait, previews). Null when the slot or library has none.</summary>
+        public Sprite SpriteOf(CosmeticSlot slot) => LibrarySprite(Get(slot));
+
+        /// <summary>The art of a slot's default part (the first in the registry). For Body that is the player's own sprite.</summary>
+        public Sprite DefaultSpriteOf(CosmeticSlot slot)
+        {
+            IReadOnlyList<CosmeticPartData> options = Options(slot);
+            return options.Count > 0 ? LibrarySprite(options[0]) : null;
+        }
+
+        private Sprite LibrarySprite(CosmeticPartData part)
+        {
+            if (part == null || registry == null || registry.PartLibrary == null)
+                return null;
+            return registry.PartLibrary.GetSprite(CosmeticSlots.Category(part.Slot), part.Label);
+        }
+
         public int IndexOf(CosmeticSlot slot)
         {
-            IReadOnlyList<CosmeticData> options = Options(slot);
-            CosmeticData current = Get(slot);
+            IReadOnlyList<CosmeticPartData> options = Options(slot);
+            CosmeticPartData current = Get(slot);
             for (int i = 0; i < options.Count; i++)
                 if (options[i] == current)
                     return i;
             return 0;
         }
 
-        public void Set(CosmeticSlot slot, CosmeticData item)
+        public void Set(CosmeticSlot slot, CosmeticPartData item)
         {
             Data.cosmetics[(int)slot] = item != null ? item.Id : "";
             Changed?.Invoke();
@@ -93,7 +110,7 @@ namespace BulletHell.Cosmetics
         /// <summary>Steps to the next (+1) or previous (-1) item of a slot, wrapping around.</summary>
         public void Cycle(CosmeticSlot slot, int direction)
         {
-            IReadOnlyList<CosmeticData> options = Options(slot);
+            IReadOnlyList<CosmeticPartData> options = Options(slot);
             if (options.Count == 0)
                 return;
             int next = ((IndexOf(slot) + direction) % options.Count + options.Count) % options.Count;
@@ -106,7 +123,7 @@ namespace BulletHell.Cosmetics
             pick ??= count => UnityEngine.Random.Range(0, count);
             for (int i = 0; i < CosmeticSlots.Count; i++)
             {
-                IReadOnlyList<CosmeticData> options = Options((CosmeticSlot)i);
+                IReadOnlyList<CosmeticPartData> options = Options((CosmeticSlot)i);
                 if (options.Count > 0)
                     Data.cosmetics[i] = options[Mathf.Clamp(pick(options.Count), 0, options.Count - 1)].Id;
             }

@@ -18,8 +18,8 @@ Templates: `procreate_templates_4x_P660.zip` (4x masters, P = 660). Older packs 
 | Draw at | 2x final size, export at 2x | 1x, never scale in the art program |
 | Unity filter | Bilinear, compression High Quality | Point (no filter), no compression |
 
-Chosen style: **A (painted HD)**. **Character scale locked at 1.5x after the scale test:**
-player body height in game: **165 px at 1920x1080**. The arena keeps its original scale.
+Chosen style: **A (painted HD)**. **Character scale locked at 1.15x after the scale test (playtested 0.75x-1.5x):**
+player body height in game: **126.5 px at 1920x1080**. The arena keeps its original scale.
 
 **Resolution pipeline (Option A):**
 | | Scale | P (player height) | Arena / screen | Used for |

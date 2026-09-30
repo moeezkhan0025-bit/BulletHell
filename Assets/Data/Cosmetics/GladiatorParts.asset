@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bf7c34a0dc4e6348bea04faa70406ee, type: 3}
+  m_Name: GladiatorParts
+  m_EditorClassIdentifier: Unity.2D.Animation.Runtime::UnityEngine.U2D.Animation.SpriteLibraryAsset
+  m_Labels:
+  - m_Name: Body
+    m_Hash: 999990412
+    m_CategoryList:
+    - m_Name: original
+      m_Hash: 796029061
+      m_Sprite: {fileID: -9047269933771876965, guid: dfe06dce8e10867408669436b43bde75, type: 3}
+    - m_Name: gumdrop
+      m_Hash: 945903781
+      m_Sprite: {fileID: 21300000, guid: c54f25231e2002e449d01a86500b5aaf, type: 3}
+    - m_Name: mint_bean
+      m_Hash: 1009240386
+      m_Sprite: {fileID: 21300000, guid: 65f9a9246bba48e4b8ffde59d1d5f978, type: 3}
+  - m_Name: Armor
+    m_Hash: 1055314424
+    m_CategoryList:
+    - m_Name: plate
+      m_Hash: 832493403
+      m_Sprite: {fileID: 21300000, guid: a20263b021dbbf941abc75ead01a6a90, type: 3}
+    - m_Name: stripes
+      m_Hash: 269780493
+      m_Sprite: {fileID: 21300000, guid: c3f3a37fbfef7c849bb887d0fa51bbe3, type: 3}
+    - m_Name: belt
+      m_Hash: 542603473
+      m_Sprite: {fileID: 21300000, guid: 2b7039d1747c4a24389ee6fe9837647b, type: 3}
+  - m_Name: Head
+    m_Hash: 130111906
+    m_CategoryList:
+    - m_Name: round
+      m_Hash: 99543604
+      m_Sprite: {fileID: 21300000, guid: 9a75cab0f147bf2409d879425ce7594f, type: 3}
+    - m_Name: square
+      m_Hash: 233007273
+      m_Sprite: {fileID: 21300000, guid: cedc212dda3aca249a8575882be8b935, type: 3}
+    - m_Name: pointy
+      m_Hash: 124741431
+      m_Sprite: {fileID: 21300000, guid: 578ddb83972723541aa228fcadc44d54, type: 3}
+  - m_Name: Accessory1
+    m_Hash: 404816141
+    m_CategoryList:
+    - m_Name: crown
+      m_Hash: 276413924
+      m_Sprite: {fileID: 21300000, guid: 81484de8fa3c9eb418fc97c80a2cb89b, type: 3}
+    - m_Name: horns
+      m_Hash: 690157141
+      m_Sprite: {fileID: 21300000, guid: 7fc8084ae4b438a429de4c09e78d6d72, type: 3}
+    - m_Name: bow
+      m_Hash: 404116907
+      m_Sprite: {fileID: 21300000, guid: ee6995e4b89b2ca4e8d5f728b9d30942, type: 3}
+  - m_Name: Accessory2
+    m_Hash: 19419319
+    m_CategoryList:
+    - m_Name: crimson_cape
+      m_Hash: 661934968
+      m_Sprite: {fileID: 21300000, guid: 55adf59840e8bd9468ba3eb3af35c8af, type: 3}
+    - m_Name: banner
+      m_Hash: 798865639
+      m_Sprite: {fileID: 21300000, guid: 8aaf5293edb485b42bce13ade62f4f74, type: 3}
+    - m_Name: backpack
+      m_Hash: 204834153
+      m_Sprite: {fileID: 21300000, guid: 09f65023568732843825d0835ef91e39, type: 3}
+  m_ModificationHash: 0
+  m_Version: 1

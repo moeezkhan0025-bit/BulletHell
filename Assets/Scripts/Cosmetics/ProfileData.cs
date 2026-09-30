@@ -9,7 +9,7 @@ namespace BulletHell.Cosmetics
     [Serializable]
     public sealed class ProfileData
     {
-        public const int CurrentVersion = 1;
+        public const int CurrentVersion = 2;
 
         public int version = CurrentVersion;
         public string[] cosmetics = new string[CosmeticSlots.Count];

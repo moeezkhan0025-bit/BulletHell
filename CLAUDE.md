@@ -399,10 +399,17 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
 - [x] M8.6 Animation toolkit: procedural motion + feedback components, hit flash / dissolve / outline /
       pulse / tint / UV-scroll / wave shaders, particle presets, tween library, 2D Animation + PSD Importer
       installed with a rigged test character; apply to player and current enemies (placeholders).
-- [x] Art scale test: backdrop + Chaser hooked up, 16:9 framing, character scale 1.5x chosen.
+- [x] Art scale test: backdrop + Chaser hooked up, 16:9 framing, character scale 1.5x tried, 1.15x chosen after playtesting.
 - [x] C1 Cleanup: 1.5x character scale baked via import PPU + data (player 315->210, arms 400->266.67, painted enemy 220->146.67,
       placeholder enemy sizes x1.5), CharacterScale + F5 key removed, damage core kept at 0.18, arm ring, muzzles,
       jump height, footprints and nav radius retuned. ScaleTestArt renamed ArenaArt (backdrop only).
+- [x] Scale lock: after playtesting 0.75x-1.5x, character scale locked at 1.15x of the original spec (player 315->273.9 PPU, arms 400->347.8,
+      painted enemy 220->191.3, enemy sizes, muzzles, ring, jump, footprints, nav radius re-baked); temporary F5 scale test removed.
+- [x] UI1 UI theme: UITheme asset (roles -> sprites/colors/font/sounds) on GameConfig, ThemedImage/ThemedButton read it, dobo Mega Cozy
+      demo sprites copied to Assets/UI/DoboCozy with 9-slice, applied to all screens + HUD frames, Docs/CREDITS.md.
+- [x] CC1 Character Creation v2: paper-doll player (Body, Armor, Head, Accessory 1 head anchor, Accessory 2 back anchor) via 2D Animation
+      Sprite Library + Sprite Resolver, CosmeticPartData assets (3 placeholder variants per slot, Playersprite = Body 1), new creation screen
+      (live preview, slot cycling, Randomize on Square, "To the Arena!"), profile v2, HUD portrait from head + accessory 1.
 - [ ] Vertical slice art for one arena (Docs/ART_SPEC.md section 9).
 - [ ] M9a Armament behaviors: effect interface, variable armament slots per arm, rarity/tags/stacks,
       Homing, Auto-fire, Velocity, Pierce, Ricochet with documented interactions, generated descriptions.

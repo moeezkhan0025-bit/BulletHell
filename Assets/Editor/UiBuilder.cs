@@ -12,7 +12,9 @@ namespace BulletHell.EditorTools
 
         private static Font font;
 
-        private static Font Font => font != null ? font : font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        private static UITheme Theme => UITheme.Current;
+
+        private static Font Font => Theme != null && Theme.Font != null ? Theme.Font : font != null ? font : font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
 
         public static Canvas CreateCanvas(string name, int sortingOrder)
         {
@@ -65,6 +67,7 @@ namespace BulletHell.EditorTools
             RectTransform rect = CreateRect(name, parent);
             Center(rect, size);
             rect.gameObject.AddComponent<Image>().color = BoxColor;
+            rect.gameObject.AddComponent<ThemedImage>().Role = ThemeRole.Panel;
             var layout = rect.gameObject.AddComponent<VerticalLayoutGroup>();
             layout.padding = new RectOffset(padding, padding, padding, padding);
             layout.spacing = spacing;
@@ -84,7 +87,7 @@ namespace BulletHell.EditorTools
             label.text = text;
             label.fontSize = size;
             label.alignment = anchor;
-            label.color = Color.white;
+            label.color = Theme != null ? Theme.TextOnPanel : Color.white;
             label.horizontalOverflow = HorizontalWrapMode.Wrap;
             label.verticalOverflow = VerticalWrapMode.Overflow;
             label.raycastTarget = false;
@@ -118,6 +121,7 @@ namespace BulletHell.EditorTools
 
             RectTransform scrollRoot = CreateRect("List", box);
             scrollRoot.gameObject.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0.3f);
+            scrollRoot.gameObject.AddComponent<ThemedImage>().Role = ThemeRole.Inset;
             var layout = scrollRoot.gameObject.AddComponent<LayoutElement>();
             layout.minHeight = 300f;
             layout.flexibleHeight = 1f;
@@ -169,7 +173,7 @@ namespace BulletHell.EditorTools
             return parts;
         }
 
-        /// <summary>A list row: full-width button with a left-aligned dark label and a MenuRow component.</summary>
+        /// <summary>A list row: full-width themed button with a left-aligned label and a MenuRow component.</summary>
         public static GameObject CreateMenuRow()
         {
             RectTransform rect = CreateRect("MenuRow", null);
@@ -177,21 +181,15 @@ namespace BulletHell.EditorTools
             image.color = Color.white;
             var button = rect.gameObject.AddComponent<Button>();
             button.targetGraphic = image;
-            var colors = button.colors;
-            colors.normalColor = new Color(0.82f, 0.84f, 0.9f);
-            colors.highlightedColor = new Color(1f, 0.92f, 0.6f);
-            colors.selectedColor = new Color(1f, 0.8f, 0.2f);
-            colors.pressedColor = new Color(0.9f, 0.6f, 0.1f);
-            colors.disabledColor = new Color(0.45f, 0.45f, 0.5f, 0.6f);
-            button.colors = colors;
             rect.gameObject.AddComponent<LayoutElement>().minHeight = 64f;
 
             Text label = CreateText("Label", rect, "", 28, TextAnchor.MiddleLeft);
-            label.color = Color.black;
+            label.color = Theme != null ? Theme.TextOnButton : Color.black;
             label.horizontalOverflow = HorizontalWrapMode.Overflow;
             Stretch((RectTransform)label.transform);
             ((RectTransform)label.transform).offsetMin = new Vector2(20f, 0f);
 
+            rect.gameObject.AddComponent<ThemedButton>();
             var row = rect.gameObject.AddComponent<MenuRow>();
             var so = new UnityEditor.SerializedObject(row);
             so.FindProperty("button").objectReferenceValue = button;
@@ -206,7 +204,7 @@ namespace BulletHell.EditorTools
             so.ApplyModifiedPropertiesWithoutUndo();
         }
 
-        /// <summary>A button with a dark label; the selected colour is bright so controller focus is obvious.</summary>
+        /// <summary>A themed button (sprite swap per state, so controller focus is obvious).</summary>
         public static Button CreateButton(string name, Transform parent, string label, float height)
         {
             RectTransform rect = CreateRect(name, parent);
@@ -214,19 +212,12 @@ namespace BulletHell.EditorTools
             image.color = Color.white;
             var button = rect.gameObject.AddComponent<Button>();
             button.targetGraphic = image;
-            var colors = button.colors;
-            colors.normalColor = new Color(0.82f, 0.84f, 0.9f);
-            colors.highlightedColor = new Color(1f, 0.92f, 0.6f);
-            colors.selectedColor = new Color(1f, 0.8f, 0.2f);
-            colors.pressedColor = new Color(0.9f, 0.6f, 0.1f);
-            colors.disabledColor = new Color(0.45f, 0.45f, 0.5f, 0.6f);
-            colors.colorMultiplier = 1f;
-            button.colors = colors;
             rect.gameObject.AddComponent<LayoutElement>().minHeight = height;
 
             Text text = CreateText("Label", rect, label, 36, TextAnchor.MiddleCenter);
-            text.color = Color.black;
+            text.color = Theme != null ? Theme.TextOnButton : Color.black;
             Stretch((RectTransform)text.transform);
+            rect.gameObject.AddComponent<ThemedButton>();
             return button;
         }
     }

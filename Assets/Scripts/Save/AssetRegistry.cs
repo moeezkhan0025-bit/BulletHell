@@ -16,22 +16,25 @@ namespace BulletHell.Save
         [SerializeField] private WeaponArmData[] arms = new WeaponArmData[0];
         [SerializeField] private ArmamentData[] armaments = new ArmamentData[0];
         [SerializeField] private AmmoTypeData[] ammoTypes = new AmmoTypeData[0];
-        [SerializeField] private CosmeticData[] cosmetics = new CosmeticData[0];
+        [SerializeField] private CosmeticPartData[] cosmetics = new CosmeticPartData[0];
+        [Tooltip("Sprite Library with one category per paper-doll slot (the art of every CosmeticPartData).")]
+        [SerializeField] private UnityEngine.U2D.Animation.SpriteLibraryAsset partLibrary;
 
         private Dictionary<string, WeaponArmData> armsById;
         private Dictionary<string, ArmamentData> armamentsById;
         private Dictionary<string, AmmoTypeData> ammoById;
-        private Dictionary<string, CosmeticData> cosmeticsById;
+        private Dictionary<string, CosmeticPartData> cosmeticsById;
 
         public WeaponArmData GetArm(string id) => Find(ref armsById, arms, a => a.Id, id);
         public ArmamentData GetArmament(string id) => Find(ref armamentsById, armaments, a => a.Id, id);
         public AmmoTypeData GetAmmo(string id) => Find(ref ammoById, ammoTypes, a => a.Id, id);
-        public CosmeticData GetCosmetic(string id) => Find(ref cosmeticsById, cosmetics, a => a.Id, id);
+        public UnityEngine.U2D.Animation.SpriteLibraryAsset PartLibrary => partLibrary;
+        public CosmeticPartData GetCosmetic(string id) => Find(ref cosmeticsById, cosmetics, a => a.Id, id);
 
         /// <summary>Adds the cosmetics of one slot to the list, in registry order (the first is the slot default).</summary>
-        public void GetCosmetics(CosmeticSlot slot, List<CosmeticData> into)
+        public void GetCosmetics(CosmeticSlot slot, List<CosmeticPartData> into)
         {
-            foreach (CosmeticData item in cosmetics)
+            foreach (CosmeticPartData item in cosmetics)
                 if (item != null && item.Slot == slot)
                     into.Add(item);
         }
@@ -40,7 +43,7 @@ namespace BulletHell.Save
         public static string IdOf(WeaponArmData arm) => arm != null ? arm.Id : "";
         public static string IdOf(ArmamentData armament) => armament != null ? armament.Id : "";
         public static string IdOf(AmmoTypeData ammo) => ammo != null ? ammo.Id : "";
-        public static string IdOf(CosmeticData cosmetic) => cosmetic != null ? cosmetic.Id : "";
+        public static string IdOf(CosmeticPartData cosmetic) => cosmetic != null ? cosmetic.Id : "";
 
         private void OnEnable() => Invalidate();
 
@@ -80,7 +83,7 @@ namespace BulletHell.Save
 
 #if UNITY_EDITOR
         /// <summary>Editor-only: replaces the cosmetics list.</summary>
-        public void SetCosmetics(CosmeticData[] newCosmetics)
+        public void SetCosmetics(CosmeticPartData[] newCosmetics)
         {
             cosmetics = newCosmetics;
             Invalidate();

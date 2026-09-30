@@ -14,6 +14,7 @@ namespace BulletHell.UI
     {
         [SerializeField] private Button button;
         [SerializeField] private Text label;
+        [Tooltip("Used only when there is no UITheme.")]
         [SerializeField] private Color normalTextColor = Color.black;
         [SerializeField] private Color dimTextColor = new Color(0.45f, 0.45f, 0.5f);
 
@@ -25,7 +26,10 @@ namespace BulletHell.UI
         public void Setup(string text, Action select, Action cancel, bool dim)
         {
             label.text = text;
-            label.color = dim ? dimTextColor : normalTextColor;
+            UITheme theme = UITheme.Current;
+            Color normal = theme != null ? theme.TextOnButton : normalTextColor;
+            Color dimmed = theme != null ? theme.TextOnButtonDim : dimTextColor;
+            label.color = dim ? dimmed : normal;
             onSelect = select;
             onCancel = cancel;
         }

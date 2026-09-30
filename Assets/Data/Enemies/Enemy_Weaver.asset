@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BulletHell::BulletHell.Enemies.EnemyData
   displayName: Weaver
   color: {r: 0.95, g: 0.65, b: 0.15, a: 1}
-  size: 1.35
+  size: 1.035
   maxHealth: 16
   hitFlashDuration: 0.08
   coinValue: 8

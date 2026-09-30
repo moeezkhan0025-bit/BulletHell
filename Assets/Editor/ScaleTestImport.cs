@@ -6,14 +6,14 @@ namespace BulletHell.EditorTools
     /// <summary>
     /// Import settings for painted art (Docs/ART_SPEC.md, painted HD style). The 2x exports of the ORIGINAL scale are
     /// 220 px per P, so the arena (backdrop) imports at 220 pixels per unit. Characters (files named enemy_*) are
-    /// baked at the locked 1.5x character scale: 220 / 1.5 pixels per unit. Applied when a texture under
+    /// baked at the locked 1.15x character scale: 220 / 1.5 pixels per unit. Applied when a texture under
     /// Assets/Art/ScaleTest is first imported (or its .meta is missing); change them afterwards in the Inspector and they stay.
     /// </summary>
     public sealed class ScaleTestImport : AssetPostprocessor
     {
         private const string Folder = "Assets/Art/ScaleTest/";
         private const float ArenaPixelsPerUnit = 220f;
-        private const float CharacterScale = 1.5f;
+        private const float CharacterScale = 1.15f;
 
         private void OnPreprocessTexture()
         {

@@ -4,7 +4,8 @@
     "references": [
         "Unity.InputSystem",
         "UnityEngine.UI",
-        "PrimeTween.Runtime"
+        "PrimeTween.Runtime",
+        "Unity.2D.Animation.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

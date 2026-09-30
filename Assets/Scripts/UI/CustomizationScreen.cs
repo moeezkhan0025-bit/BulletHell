@@ -1,24 +1,29 @@
 using System;
 using BulletHell.Core;
 using BulletHell.Cosmetics;
+using BulletHell.Input;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace BulletHell.UI
 {
     /// <summary>
-    /// The Gladiator customization screen: one row per cosmetic slot (left/right cycles its items), a live preview of
-    /// the gladiator, Randomize and Confirm. Edits show in the preview at once; Confirm writes the profile file and
+    /// Character Creation: one row per paper-doll slot (left/right cycles its variants), a live preview of
+    /// the gladiator, Randomize (Square) and "To the Arena!" (Confirm). Edits show in the preview at once; Confirm writes the profile file and
     /// Back throws the edits away. Cosmetics are purely visual.
     /// </summary>
     public sealed class CustomizationScreen : MonoBehaviour
     {
         [SerializeField] private SettingRow rowPrefab;
         [SerializeField] private Transform rowParent;
+        [Tooltip("Square / West randomizes while this screen is open.")]
+        [SerializeField] private MenuInputReader menuInput;
         [SerializeField] private Button randomizeButton;
         [SerializeField] private Button confirmButton;
         [SerializeField] private Button backButton;
-        [Tooltip("The gladiator shown while this screen is open. Enabled and disabled with it.")]
+        [Tooltip("The whole preview (doll, arms, pedestal), shown while this screen is open.")]
+        [SerializeField] private GameObject previewRoot;
+        [Tooltip("The paper doll inside the preview; the look is applied to it.")]
         [SerializeField] private GladiatorCosmetics preview;
 
         private readonly SettingRow[] rows = new SettingRow[CosmeticSlots.Count];
@@ -38,7 +43,9 @@ namespace BulletHell.UI
             onBack = back;
 
             profile.Revert();
-            preview.gameObject.SetActive(true);
+            previewRoot.SetActive(true);
+            if (menuInput != null)
+                menuInput.RandomizePressed += Randomize;
             Refresh();
             UIFocusGuard.Focus(rows[0].gameObject);
         }
@@ -68,7 +75,7 @@ namespace BulletHell.UI
                 rows[i] = row;
             }
 
-            randomizeButton.onClick.AddListener(() => profile.Randomize());
+            randomizeButton.onClick.AddListener(Randomize);
             confirmButton.onClick.AddListener(Confirm);
             backButton.onClick.AddListener(Back);
             foreach (Button button in new[] { randomizeButton, confirmButton, backButton })
@@ -78,7 +85,7 @@ namespace BulletHell.UI
 
         private string NameOf(CosmeticSlot slot)
         {
-            CosmeticData item = profile.Get(slot);
+            CosmeticPartData item = profile.Get(slot);
             return item != null ? item.DisplayName : "-";
         }
 
@@ -91,6 +98,8 @@ namespace BulletHell.UI
                     row.Refresh();
             preview.Apply(profile);
         }
+
+        private void Randomize() => profile.Randomize();
 
         private void Confirm()
         {
@@ -110,7 +119,9 @@ namespace BulletHell.UI
 
         private void Close()
         {
-            preview.gameObject.SetActive(false);
+            if (menuInput != null)
+                menuInput.RandomizePressed -= Randomize;
+            previewRoot.SetActive(false);
             gameObject.SetActive(false);
         }
     }

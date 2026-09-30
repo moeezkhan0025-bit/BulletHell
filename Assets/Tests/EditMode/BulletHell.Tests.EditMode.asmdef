@@ -4,6 +4,7 @@
     "references": [
         "BulletHell",
         "Unity.InputSystem",
+        "Unity.2D.Animation.Runtime",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

@@ -15,10 +15,14 @@ namespace BulletHell.Input
         /// <summary>Start / Options pressed.</summary>
         public event Action PrimaryPressed;
 
+        /// <summary>Square / West (or R on the keyboard) pressed: Randomize on the character creation screen.</summary>
+        public event Action RandomizePressed;
+
         private void Awake()
         {
             input = new GameInput();
             input.Menu.Primary.performed += OnPrimary;
+            input.Menu.Randomize.performed += OnRandomize;
         }
 
         private void OnEnable() => input.Menu.Enable();
@@ -31,9 +35,12 @@ namespace BulletHell.Input
                 return; // destroyed before it ever woke up (a scene closed while this was inactive)
 
             input.Menu.Primary.performed -= OnPrimary;
+            input.Menu.Randomize.performed -= OnRandomize;
             input.Dispose();
         }
 
         private void OnPrimary(InputAction.CallbackContext _) => PrimaryPressed?.Invoke();
+
+        private void OnRandomize(InputAction.CallbackContext _) => RandomizePressed?.Invoke();
     }
 }

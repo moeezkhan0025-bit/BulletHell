@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BulletHell::BulletHell.Enemies.EnemyData
   displayName: Test Ring Shooter
   color: {r: 0.85, g: 0.25, b: 0.25, a: 1}
-  size: 1.65
+  size: 1.265
   maxHealth: 20
   respawnDelay: 3
   hitFlashDuration: 0.08

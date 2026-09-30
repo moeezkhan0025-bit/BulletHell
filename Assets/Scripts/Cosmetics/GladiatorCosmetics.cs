@@ -1,52 +1,108 @@
+using System;
+using System.Collections.Generic;
 using BulletHell.Core;
 using UnityEngine;
+using UnityEngine.U2D.Animation;
 
 namespace BulletHell.Cosmetics
 {
     /// <summary>
-    /// Dresses a gladiator from the profile: the coating tints the body, headgear and cape are their own sprite layers,
-    /// and the arm tint is handed to the arms (ArmTint, plus any preview arm renderers listed here). The same component
-    /// is on the player in the Game scene (applies the profile when it wakes, before PlayerHealth caches the body
-    /// colour) and on the customization preview (the screen calls Apply when the look changes).
+    /// The gladiator paper doll: one SpriteRenderer + SpriteResolver per slot (Body, Armor, Head, Accessory 1, Accessory 2),
+    /// all drawn on the same character template so they line up with no per-part offsets. A SpriteLibrary above them holds
+    /// the art; Apply picks each slot's chosen variant from the profile. Accessory 1 hangs on the head anchor and
+    /// Accessory 2 on the back anchor; the anchors are children of the Motion transform, so the procedural animation
+    /// (breathing, hop, tilt, squash) moves the whole doll and its accessories together. The same component is on the
+    /// player (applies the profile when it wakes) and on the customization preview (the screen calls Apply).
     /// </summary>
     [DefaultExecutionOrder(-50)]
     public sealed class GladiatorCosmetics : MonoBehaviour
     {
-        [SerializeField] private SpriteRenderer body;
-        [SerializeField] private SpriteRenderer headgear;
-        [SerializeField] private SpriteRenderer cape;
-        [Tooltip("Arm sprites that exist in the scene all the time (the customization preview). Spawned arms ask for ArmTint.")]
-        [SerializeField] private SpriteRenderer[] previewArms = new SpriteRenderer[0];
+        [Serializable]
+        public struct Layer
+        {
+            public CosmeticSlot slot;
+            public SpriteRenderer renderer;
+            public SpriteResolver resolver;
+        }
+
+        [SerializeField] private Layer[] layers = new Layer[0];
+        [Tooltip("Head-area anchor: Accessory 1 (hats, horns, bows, crests) hangs here.")]
+        [SerializeField] private Transform headAnchor;
+        [Tooltip("Back/torso anchor: Accessory 2 (capes, banners, backpacks) hangs here.")]
+        [SerializeField] private Transform backAnchor;
         [SerializeField] private bool applyProfileOnAwake = true;
 
-        public Color ArmTint { get; private set; } = Color.white;
+        private readonly List<SpriteRenderer> renderers = new List<SpriteRenderer>();
+
+        public Transform HeadAnchor => headAnchor;
+        public Transform BackAnchor => backAnchor;
+
+        /// <summary>Every layer's renderer, back to front. Feedback (flash, dissolve) and the blink go through all of them.</summary>
+        public IReadOnlyList<SpriteRenderer> Renderers
+        {
+            get
+            {
+                if (renderers.Count != layers.Length)
+                {
+                    renderers.Clear();
+                    foreach (Layer layer in layers)
+                        if (layer.renderer != null)
+                            renderers.Add(layer.renderer);
+                }
+                return renderers;
+            }
+        }
 
         private void Awake()
         {
             if (applyProfileOnAwake)
-                Apply(GameServices.Ensure().Profile);
+            {
+                GameServices services = GameServices.Ensure();
+                if (services.Config.ShowCustomizationInGame)
+                    Apply(services.Profile);
+                else
+                    ApplyOriginalOnly(services.Profile);
+            }
+        }
+
+        /// <summary>
+        /// Gameplay look while the customizer parts are off (GameConfig.ShowCustomizationInGame): only the default Body (the
+        /// original player sprite) is drawn; every other layer is hidden. The profile still holds the chosen look.
+        /// </summary>
+        public void ApplyOriginalOnly(ProfileService profile)
+        {
+            foreach (Layer layer in layers)
+            {
+                if (layer.renderer == null || layer.resolver == null)
+                    continue;
+                IReadOnlyList<CosmeticPartData> options = profile.Options(layer.slot);
+                bool shown = layer.slot == CosmeticSlot.Body && options.Count > 0
+                    && layer.resolver.SetCategoryAndLabel(CosmeticSlots.Category(layer.slot), options[0].Label);
+                layer.renderer.enabled = shown && layer.renderer.sprite != null;
+            }
         }
 
         public void Apply(ProfileService profile)
         {
-            body.color = TintOf(profile.Get(CosmeticSlot.CandyCoating));
-            ApplyLayer(headgear, profile.Get(CosmeticSlot.Headgear));
-            ApplyLayer(cape, profile.Get(CosmeticSlot.Cape));
-
-            ArmTint = TintOf(profile.Get(CosmeticSlot.ArmTint));
-            for (int i = 0; i < previewArms.Length; i++)
-                previewArms[i].color = ArmTint;
+            foreach (Layer layer in layers)
+            {
+                if (layer.renderer == null || layer.resolver == null)
+                    continue;
+                CosmeticPartData part = profile.Get(layer.slot);
+                bool shown = part != null && layer.resolver.SetCategoryAndLabel(CosmeticSlots.Category(layer.slot), part.Label);
+                layer.renderer.enabled = shown && layer.renderer.sprite != null;
+            }
         }
 
-        private static Color TintOf(CosmeticData item) => item != null ? item.Tint : Color.white;
-
-        private static void ApplyLayer(SpriteRenderer layer, CosmeticData item)
+        /// <summary>Sets the alpha of every layer (the invulnerability blink). Colors are otherwise left alone.</summary>
+        public void SetAlpha(float alpha)
         {
-            if (layer == null)
-                return;
-            layer.sprite = item != null ? item.Sprite : null;
-            layer.color = TintOf(item);
-            layer.enabled = layer.sprite != null;
+            foreach (SpriteRenderer r in Renderers)
+            {
+                Color color = r.color;
+                color.a = alpha;
+                r.color = color;
+            }
         }
     }
 }

@@ -13,14 +13,13 @@ namespace BulletHell.Player
     public sealed class PlayerHealth : MonoBehaviour
     {
         [SerializeField] private PlayerData data;
-        [Tooltip("Sprite that blinks while invulnerable. Only its tint is touched, never the art.")]
-        [SerializeField] private SpriteRenderer body;
+        [Tooltip("The paper doll whose layers blink while invulnerable. Only their alpha is touched.")]
+        [SerializeField] private BulletHell.Cosmetics.GladiatorCosmetics doll;
         [Tooltip("Centre of the small damage hitbox, low near the feet on the ground plane. Empty = the root.")]
         [SerializeField] private Transform core;
 
         private Health health;
         private RunManager run;
-        private Color bodyColor;
         private float invulnerableLeft;
         private bool dodgesBulletsInAir;
         private HitFeedback hitFeedback;
@@ -46,7 +45,6 @@ namespace BulletHell.Player
         {
             health = GetComponent<Health>();
             health.Initialize(data.MaxHealth);
-            bodyColor = body.color;
             TryGetComponent(out hitFeedback);
             run = GameServices.Ensure().Run;
         }
@@ -89,7 +87,7 @@ namespace BulletHell.Player
         {
             health.Revive();
             invulnerableLeft = 0f;
-            body.color = bodyColor;
+            SetBlinkAlpha(1f);
         }
 
         private void Update()
@@ -98,10 +96,14 @@ namespace BulletHell.Player
                 return;
 
             invulnerableLeft -= Time.deltaTime;
-            Color color = bodyColor;
             bool faded = invulnerableLeft > 0f && Mathf.FloorToInt(invulnerableLeft / data.BlinkInterval) % 2 == 0;
-            color.a = faded ? bodyColor.a * 0.35f : bodyColor.a;
-            body.color = color;
+            SetBlinkAlpha(faded ? 0.35f : 1f);
+        }
+
+        private void SetBlinkAlpha(float alpha)
+        {
+            if (doll != null)
+                doll.SetAlpha(alpha);
         }
 
         private void OnRoundStarted(int round) => ResetForRound();

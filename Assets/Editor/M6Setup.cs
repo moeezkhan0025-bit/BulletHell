@@ -40,9 +40,7 @@ namespace BulletHell.EditorTools
             Sprite square = PlaceholderSprite("Square", null);
             Sprite triangle = PlaceholderSprite("Triangle", (x, y) => Mathf.Abs(x - 0.5f) < (1f - y) * 0.5f ? 1f : 0f);
             Sprite diamond = PlaceholderSprite("Diamond", (x, y) => Mathf.Abs(x - 0.5f) + Mathf.Abs(y - 0.5f) < 0.5f ? 1f : 0f);
-            CreateCosmetics(circle, square, triangle, diamond);
             AssignConfig();
-            SetupPlayerPrefab();
             SetupRowPrefab();
             SetupMainMenu();
             SetupGame();
@@ -83,55 +81,6 @@ namespace BulletHell.EditorTools
             return AssetDatabase.LoadAssetAtPath<Sprite>(path);
         }
 
-        private static void CreateCosmetics(Sprite circle, Sprite square, Sprite triangle, Sprite diamond)
-        {
-            EnsureFolder(CosmeticsFolder);
-            Color C(float r, float g, float b) => new Color(r, g, b, 1f);
-
-            var items = new (string key, CosmeticSlot slot, string name, Color tint, Sprite sprite)[]
-            {
-                ("Coating_0_Plain", CosmeticSlot.CandyCoating, "Plain", Color.white, null),
-                ("Coating_1_Strawberry", CosmeticSlot.CandyCoating, "Strawberry", C(1f, 0.55f, 0.7f), null),
-                ("Coating_2_Lime", CosmeticSlot.CandyCoating, "Lime", C(0.6f, 1f, 0.5f), null),
-                ("Coating_3_Blueberry", CosmeticSlot.CandyCoating, "Blueberry", C(0.55f, 0.65f, 1f), null),
-                ("Coating_4_Lemon", CosmeticSlot.CandyCoating, "Lemon", C(1f, 0.95f, 0.5f), null),
-
-                ("Headgear_0_None", CosmeticSlot.Headgear, "None", Color.white, null),
-                ("Headgear_1_GoldHelmet", CosmeticSlot.Headgear, "Gold Helmet", C(1f, 0.82f, 0.2f), circle),
-                ("Headgear_2_RedCrest", CosmeticSlot.Headgear, "Red Crest", C(0.95f, 0.2f, 0.2f), triangle),
-                ("Headgear_3_MintCrown", CosmeticSlot.Headgear, "Mint Crown", C(0.5f, 1f, 0.8f), diamond),
-
-                ("Cape_0_None", CosmeticSlot.Cape, "None", Color.white, null),
-                ("Cape_1_Crimson", CosmeticSlot.Cape, "Crimson Cape", C(0.75f, 0.1f, 0.2f), square),
-                ("Cape_2_Royal", CosmeticSlot.Cape, "Royal Cape", C(0.55f, 0.3f, 0.9f), triangle),
-                ("Cape_3_Teal", CosmeticSlot.Cape, "Teal Trail", C(0.1f, 0.75f, 0.75f), diamond),
-
-                ("ArmTint_0_Natural", CosmeticSlot.ArmTint, "Natural", Color.white, null),
-                ("ArmTint_1_Gold", CosmeticSlot.ArmTint, "Gold", C(1f, 0.85f, 0.4f), null),
-                ("ArmTint_2_Bubblegum", CosmeticSlot.ArmTint, "Bubblegum", C(1f, 0.6f, 0.85f), null),
-                ("ArmTint_3_Frost", CosmeticSlot.ArmTint, "Frost", C(0.6f, 0.9f, 1f), null),
-            };
-
-            var created = new CosmeticData[items.Length];
-            for (int i = 0; i < items.Length; i++)
-            {
-                string assetPath = $"{CosmeticsFolder}/Cosmetic_{items[i].key}.asset";
-                var asset = AssetDatabase.LoadAssetAtPath<CosmeticData>(assetPath);
-                if (asset == null)
-                {
-                    asset = ScriptableObject.CreateInstance<CosmeticData>();
-                    AssetDatabase.CreateAsset(asset, assetPath);
-                }
-                asset.Configure(items[i].key.ToLowerInvariant(), items[i].slot, items[i].name, items[i].tint, items[i].sprite);
-                created[i] = asset;
-            }
-
-            // Registry order = slot default first: the list is already ordered by slot, then by the numbered key.
-            var registry = AssetDatabase.LoadAssetAtPath<AssetRegistry>(RegistryPath);
-            registry.SetCosmetics(created);
-            Debug.Log($"Cosmetics: {created.Length} items registered.");
-        }
-
         private static void AssignConfig()
         {
             var config = AssetDatabase.LoadAssetAtPath<GameConfig>(ConfigPath);
@@ -139,56 +88,6 @@ namespace BulletHell.EditorTools
             so.FindProperty("settingsDefaults").objectReferenceValue = AssetDatabase.LoadAssetAtPath<SettingsDefaults>(SettingsDefaultsPath);
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(config);
-        }
-
-        // ---------------------------------------------------------------- Player prefab
-
-        private static void SetupPlayerPrefab()
-        {
-            GameObject root = PrefabUtility.LoadPrefabContents(PlayerPrefabPath);
-            try
-            {
-                if (root.GetComponent<GladiatorCosmetics>() == null)
-                {
-                    Transform bodyTransform = root.transform.Find("Body");
-                    var body = bodyTransform.GetComponent<SpriteRenderer>();
-                    float height = body.bounds.size.y;
-
-                    SpriteRenderer cape = CreateLayer(root.transform, "Cape", new Vector3(0f, -height * 0.3f, 0f), height * 0.85f, -1);
-                    SpriteRenderer headgear = CreateLayer(root.transform, "Headgear", new Vector3(0f, height * 0.42f, 0f), height * 0.5f, body.sortingOrder + 2);
-                    cape.sortingLayerID = headgear.sortingLayerID = body.sortingLayerID;
-                    cape.sortingOrder = body.sortingOrder - 1;
-
-                    var cosmetics = root.AddComponent<GladiatorCosmetics>();
-                    var so = new SerializedObject(cosmetics);
-                    so.FindProperty("body").objectReferenceValue = body;
-                    so.FindProperty("headgear").objectReferenceValue = headgear;
-                    so.FindProperty("cape").objectReferenceValue = cape;
-                    so.ApplyModifiedPropertiesWithoutUndo();
-
-                    var arms = root.GetComponentInChildren<ArmSelectionController>(true);
-                    var armsSo = new SerializedObject(arms);
-                    armsSo.FindProperty("cosmetics").objectReferenceValue = cosmetics;
-                    armsSo.ApplyModifiedPropertiesWithoutUndo();
-                }
-                PrefabUtility.SaveAsPrefabAsset(root, PlayerPrefabPath);
-            }
-            finally
-            {
-                PrefabUtility.UnloadPrefabContents(root);
-            }
-        }
-
-        private static SpriteRenderer CreateLayer(Transform parent, string name, Vector3 localPosition, float scale, int sortingOrder)
-        {
-            var go = new GameObject(name);
-            go.transform.SetParent(parent, false);
-            go.transform.localPosition = localPosition;
-            go.transform.localScale = Vector3.one * scale;
-            var renderer = go.AddComponent<SpriteRenderer>();
-            renderer.sortingOrder = sortingOrder;
-            renderer.enabled = false; // GladiatorCosmetics turns it on when the chosen item has art
-            return renderer;
         }
 
         // ---------------------------------------------------------------- Row prefab
@@ -357,119 +256,8 @@ namespace BulletHell.EditorTools
 
         private static CustomizationScreen CreateCustomizationScreen(Transform safe)
         {
-            // A full-screen holder without a backdrop, so the world-space preview shows through on the left.
-            RectTransform root = UiBuilder.CreateRect("CustomizationScreen", safe);
-            UiBuilder.Stretch(root);
-
-            RectTransform panel = UiBuilder.CreateRect("Panel", root);
-            panel.anchorMin = new Vector2(0.5f, 0.08f);
-            panel.anchorMax = new Vector2(0.97f, 0.94f);
-            panel.offsetMin = panel.offsetMax = Vector2.zero;
-            panel.gameObject.AddComponent<Image>().color = UiBuilder.BoxColor;
-            var layout = panel.gameObject.AddComponent<VerticalLayoutGroup>();
-            layout.padding = new RectOffset(34, 34, 34, 34);
-            layout.spacing = 14f;
-            layout.childAlignment = TextAnchor.UpperCenter;
-            layout.childControlWidth = layout.childControlHeight = true;
-            layout.childForceExpandWidth = true;
-            layout.childForceExpandHeight = false;
-
-            UiBuilder.CreateText("Title", panel, "Customize your Gladiator", 50, TextAnchor.MiddleCenter, 80f);
-            RectTransform rows = CreateRowsContainer(panel);
-            Button randomize = CreateCancelButton("Randomize", panel, "Randomize", 80f);
-            Button confirm = CreateCancelButton("Confirm", panel, "Confirm", 90f);
-            Button back = CreateCancelButton("Back", panel, "Back", 70f);
-
-            GladiatorCosmetics preview = CreatePreview();
-
-            var screen = root.gameObject.AddComponent<CustomizationScreen>();
-            var so = new SerializedObject(screen);
-            so.FindProperty("rowPrefab").objectReferenceValue = RowPrefab();
-            so.FindProperty("rowParent").objectReferenceValue = rows;
-            so.FindProperty("randomizeButton").objectReferenceValue = randomize;
-            so.FindProperty("confirmButton").objectReferenceValue = confirm;
-            so.FindProperty("backButton").objectReferenceValue = back;
-            so.FindProperty("preview").objectReferenceValue = preview;
-            so.ApplyModifiedPropertiesWithoutUndo();
-
-            root.gameObject.SetActive(false);
-            return screen;
-        }
-
-        /// <summary>The gladiator shown on the left of the customization screen: the player's layers plus four arms.</summary>
-        private static GladiatorCosmetics CreatePreview()
-        {
-            GameObject player = PrefabUtility.LoadPrefabContents(PlayerPrefabPath);
-            Sprite bodySprite;
-            float height;
-            Vector3 headgearPosition, capePosition, bodyScale;
-            float headgearScale, capeScale;
-            float bodyCenterHeight = 0.38f;
-            try
-            {
-                var body = player.transform.Find("Body").GetComponent<SpriteRenderer>();
-                bodySprite = body.sprite;
-                bodyScale = body.transform.localScale;
-                height = body.bounds.size.y;
-                Transform headgear = player.transform.Find("Headgear");
-                Transform cape = player.transform.Find("Cape");
-                headgearPosition = headgear.localPosition;
-                headgearScale = headgear.localScale.x;
-                capePosition = cape.localPosition;
-                capeScale = cape.localScale.x;
-                var data = AssetDatabase.LoadAssetAtPath<PlayerData>("Assets/Data/Player/PlayerData.asset");
-                if (data != null)
-                    bodyCenterHeight = data.BodyCenterHeight;
-            }
-            finally
-            {
-                PrefabUtility.UnloadPrefabContents(player);
-            }
-
-            var root = new GameObject("GladiatorPreview");
-            root.transform.position = new Vector3(-4.6f, -0.2f, 0f);
-            root.transform.localScale = Vector3.one * (3.4f / height);
-
-            var bodyRenderer = new GameObject("Body").AddComponent<SpriteRenderer>();
-            bodyRenderer.transform.SetParent(root.transform, false);
-            bodyRenderer.sprite = bodySprite;
-            bodyRenderer.transform.localScale = bodyScale;
-            SpriteRenderer cape2 = CreateLayer(root.transform, "Cape", capePosition, capeScale, -1);
-            SpriteRenderer headgear2 = CreateLayer(root.transform, "Headgear", headgearPosition, headgearScale, 2);
-
-            // Four of the arm types around the body, drawn like in the game (attach point on the ring, pointing outward).
-            var armAssets = AssetDatabase.FindAssets("t:WeaponArmData")
-                .Select(guid => AssetDatabase.LoadAssetAtPath<WeaponArmData>(AssetDatabase.GUIDToAssetPath(guid)))
-                .Where(a => a != null && a.Sprite != null)
-                .OrderBy(a => a.name)
-                .Take(4)
-                .ToArray();
-            var armRenderers = new SpriteRenderer[armAssets.Length];
-            for (int i = 0; i < armAssets.Length; i++)
-            {
-                float compass = 45f + i * 90f;
-                var armGo = new GameObject("Arm" + i);
-                armGo.transform.SetParent(root.transform, false);
-                var renderer = armGo.AddComponent<SpriteRenderer>();
-                renderer.sprite = armAssets[i].Sprite;
-                M77Setup.PlacePreviewArm(armGo.transform, renderer, compass, armAssets[i].ArtRotation, bodyCenterHeight);
-                armRenderers[i] = renderer;
-            }
-
-            var cosmetics = root.AddComponent<GladiatorCosmetics>();
-            var so = new SerializedObject(cosmetics);
-            so.FindProperty("body").objectReferenceValue = bodyRenderer;
-            so.FindProperty("headgear").objectReferenceValue = headgear2;
-            so.FindProperty("cape").objectReferenceValue = cape2;
-            so.FindProperty("applyProfileOnAwake").boolValue = false;
-            SerializedProperty arms = so.FindProperty("previewArms");
-            arms.arraySize = armRenderers.Length;
-            for (int i = 0; i < armRenderers.Length; i++)
-                arms.GetArrayElementAtIndex(i).objectReferenceValue = armRenderers[i];
-            so.ApplyModifiedPropertiesWithoutUndo();
-
-            root.SetActive(false);
-            return cosmetics;
+            // Built by BulletHell/CC1/Setup Everything (paper-doll preview and new layout); this only finds it.
+            return Object.FindFirstObjectByType<CustomizationScreen>(FindObjectsInactive.Include);
         }
 
         // ---------------------------------------------------------------- Game scene

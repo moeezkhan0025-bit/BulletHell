@@ -17,7 +17,7 @@ MonoBehaviour:
   idColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
   sprite: {fileID: 21300000, guid: c80e2f71dd4410b4db65217ac509e58b, type: 3}
   artRotation: 35.9
-  muzzleOffset: {x: 0.9023875, y: 0}
+  muzzleOffset: {x: 0.6918304, y: 0}
   damage: 1
   fireRate: 6
   projectileSpeed: 14

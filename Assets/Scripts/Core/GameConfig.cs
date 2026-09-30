@@ -4,6 +4,7 @@ using BulletHell.Feedback;
 using BulletHell.Save;
 using BulletHell.Settings;
 using BulletHell.Shop;
+using BulletHell.UI;
 using BulletHell.Weapons;
 using UnityEngine;
 
@@ -54,6 +55,10 @@ namespace BulletHell.Core
         [SerializeField] private PerspectiveTuning perspective;
         [Tooltip("The painted arena backdrop. Empty = placeholder arena.")]
         [SerializeField] private ArenaArt arenaArt;
+        [Tooltip("Sprites, colors, font and sounds for every UI screen (roles, not pack files).")]
+        [SerializeField] private UITheme uiTheme;
+        [Tooltip("Off: the paper-doll parts (armor, head, accessories, alternate bodies) show only on the Character Creation screen; in gameplay the player is the original sprite. Turn on when real part sprites exist.")]
+        [SerializeField] private bool showCustomizationInGame;
         [Tooltip("Procedural motion, hit feedback, hitstop, camera shake and particle presets.")]
         [SerializeField] private FeedbackTuning feedback;
 
@@ -61,6 +66,8 @@ namespace BulletHell.Core
         public FeedbackTuning Feedback => feedback;
         public PerspectiveTuning Perspective => perspective != null ? perspective : PerspectiveTuning.Fallback;
         public ArenaArt ArenaArt => arenaArt;
+        public UITheme UITheme => uiTheme;
+        public bool ShowCustomizationInGame => showCustomizationInGame;
         public DifficultyCurve Difficulty => difficulty;
         public ArenaLayoutData DefaultLayout => defaultLayout;
         public int RoundCount => rounds != null ? rounds.Length : 0;

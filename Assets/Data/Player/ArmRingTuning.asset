@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73f5995cb42c1b148bca0cd69587e652, type: 3}
   m_Name: ArmRingTuning
   m_EditorClassIdentifier: BulletHell::BulletHell.Player.ArmRingTuning
-  radiusX: 1.275
+  radiusX: 0.9775
   radiusYRatio: 0.6
-  verticalOffset: 0.15
+  verticalOffset: 0.115
   spinDegreesPerSecond: 720
   backDeadzone: 0.05
   backArtOrder: -3

@@ -24,8 +24,6 @@ namespace BulletHell.Player
         [SerializeField] private ArmVisual armPrefab;
         [Tooltip("The ArmRing anchor at the feet (a child of the player root, not of the lifted Visuals).")]
         [SerializeField] private Transform armParent;
-        [Tooltip("Provides the arm tint cosmetic. Optional.")]
-        [SerializeField] private GladiatorCosmetics cosmetics;
 
         private readonly ArmVisual[] arms = new ArmVisual[ArmLoadout.SlotCount];
         private ArmSelector selector;
@@ -132,8 +130,6 @@ namespace BulletHell.Player
                 arms[i] = Instantiate(armPrefab, armParent);
                 arms[i].name = $"Arm_{i}_{loadout[i].Data.name}";
                 arms[i].Setup(loadout[i]);
-                if (cosmetics != null)
-                    arms[i].SetArtTint(cosmetics.ArmTint);
                 PlaceArm(i, ArmSelector.HomeAngle(i), ArmSelector.HomeAngle(i));
             }
         }

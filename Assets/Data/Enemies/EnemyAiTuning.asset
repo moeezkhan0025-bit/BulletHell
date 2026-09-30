@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de2c9f361475ecf4d87963dc7f53a5fc, type: 3}
   m_Name: EnemyAiTuning
   m_EditorClassIdentifier: BulletHell::BulletHell.AI.EnemyAiTuning
-  navRadius: 0.675
+  navRadius: 0.5175
   minRebuildInterval: 0.1
-  separationPadding: 0.3
+  separationPadding: 0.23
   separationWeight: 1.2
   turnSlowdown: 0.35
   pivotSpeed: 0.15

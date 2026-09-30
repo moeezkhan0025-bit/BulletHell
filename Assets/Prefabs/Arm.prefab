@@ -143,6 +143,7 @@ MonoBehaviour:
   muzzle: {fileID: 1584286157169936493}
   selectedScale: 1.15
   silhouetteMaterial: {fileID: 2100000, guid: 71412d8342c8c7c46a8c751ea2fa71ce, type: 2}
+  silhouetteAlpha: 0.6
   previewData: {fileID: 11400000, guid: 73bc14a71f6add446b79b2dfd4f2305a, type: 2}
 --- !u!1 &7467787960146902892
 GameObject:
@@ -169,7 +170,7 @@ Transform:
   m_GameObject: {fileID: 7467787960146902892}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.59943724, y: 0, z: 0}
+  m_LocalPosition: {x: 0.6893528, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -466,6 +466,16 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""Randomize"",
+                    ""type"": ""Button"",
+                    ""id"": ""2f000003-5555-4e03-9f03-0000000000e3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -477,6 +487,28 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Primary"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2f000004-5555-4e04-9f04-0000000000e4"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Randomize"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2f000005-5555-4e05-9f05-0000000000e5"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Randomize"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -518,6 +550,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Primary = m_Menu.FindAction("Primary", throwIfNotFound: true);
+        m_Menu_Randomize = m_Menu.FindAction("Randomize", throwIfNotFound: true);
     }
 
     ~@GameInput()
@@ -925,6 +958,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Menu;
     private List<IMenuActions> m_MenuActionsCallbackInterfaces = new List<IMenuActions>();
     private readonly InputAction m_Menu_Primary;
+    private readonly InputAction m_Menu_Randomize;
     /// <summary>
     /// Provides access to input actions defined in input action map "Menu".
     /// </summary>
@@ -940,6 +974,10 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Menu/Primary".
         /// </summary>
         public InputAction @Primary => m_Wrapper.m_Menu_Primary;
+        /// <summary>
+        /// Provides access to the underlying input action "Menu/Randomize".
+        /// </summary>
+        public InputAction @Randomize => m_Wrapper.m_Menu_Randomize;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -969,6 +1007,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @Primary.started += instance.OnPrimary;
             @Primary.performed += instance.OnPrimary;
             @Primary.canceled += instance.OnPrimary;
+            @Randomize.started += instance.OnRandomize;
+            @Randomize.performed += instance.OnRandomize;
+            @Randomize.canceled += instance.OnRandomize;
         }
 
         /// <summary>
@@ -983,6 +1024,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @Primary.started -= instance.OnPrimary;
             @Primary.performed -= instance.OnPrimary;
             @Primary.canceled -= instance.OnPrimary;
+            @Randomize.started -= instance.OnRandomize;
+            @Randomize.performed -= instance.OnRandomize;
+            @Randomize.canceled -= instance.OnRandomize;
         }
 
         /// <summary>
@@ -1157,5 +1201,12 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPrimary(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Randomize" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnRandomize(InputAction.CallbackContext context);
     }
 }

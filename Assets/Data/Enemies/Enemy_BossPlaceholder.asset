@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BulletHell::BulletHell.Enemies.EnemyData
   displayName: Warden (boss placeholder)
   color: {r: 0.95, g: 0.25, b: 0.5, a: 1}
-  size: 3.6
+  size: 2.76
   maxHealth: 260
   hitFlashDuration: 0.08
   coinValue: 80

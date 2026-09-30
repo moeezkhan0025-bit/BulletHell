@@ -10,9 +10,9 @@ Project root: C:\Dev\BulletHell. Version control: Git (GitHub private repo), she
 Reference: Docs/Reference/concept_arena.png (target look - not a game asset).
 Art rules (sizes, perspective, pivots, height classes, colors, naming): Docs/ART_SPEC.md. Follow it when hooking up art.
 - CHARACTER SCALE (locked after the scale test): characters (player, arms, enemies, bosses, NPCs) display at
-  1.5x the original spec: player body P = 165 px at 1920x1080 (660 px on 4x masters, 330 px in 2x game art).
-  The arena backdrop and floor tiles keep their original scale. New character art is drawn at P = 660 (4x);
-  older character art drawn at P = 440 is scaled up via import settings (PPU), never by runtime hacks.
+  1.15x the original spec: player body P = ~127 px at 1920x1080 (506 px on 4x masters, 253 px in 2x game art).
+  The arena backdrop and floor tiles keep their original scale. New character art is drawn at P = 506 (4x);
+  art drawn at other sizes is scaled via import settings (PPU), never by runtime hacks.
   The player's damage-core hitbox does NOT scale up with the sprite (keep it small, bullet-hell fair).
 - 3/4 top-down (oblique) view: art is drawn at an angle, but GAMEPLAY STAYS ON THE FLAT 2D XY PLANE.
   No 3D, no height physics. Movement speed is the same in all directions.
@@ -138,6 +138,8 @@ Boot scene (bootstrapper) -> Main Menu scene -> Game scene.
 - The chosen look is stored in the profile file and pre-selected on the next New Game.
   [TBD: how new parts are unlocked - all unlocked for now]
 - Placeholder parts until final art: 3 variants per slot (simple shapes/colors), clearly different.
+  They show ONLY on the Character Creation screen for now: in gameplay the player and HUD portrait use the original sprite until
+  GameConfig.showCustomizationInGame is switched on (when real part sprites exist). The chosen look is saved either way.
 
 ## Third-party UI assets
 - Free UI packs (itch.io, Unity Asset Store) go in Assets/ThirdParty/<PackName>/ untouched, with the pack's
@@ -426,12 +428,12 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
 - [ ] M8.6 Animation toolkit: procedural motion + feedback components, hit flash / dissolve / outline /
       pulse / tint / UV-scroll / wave shaders, particle presets, tween library, 2D Animation + PSD Importer
       installed with a rigged test character; apply to player and current enemies (placeholders).
-- [x] Art scale test: backdrop + Chaser hooked up, 16:9 framing, import quality fixed, character scale 1.5x chosen.
+- [x] Art scale test: backdrop + Chaser hooked up, 16:9 framing, import quality fixed, character scale 1.5x tried, 1.15x chosen after playtesting.
 - [x] C1 Cleanup: bake the 1.5x character scale (PPU/import, not runtime), remove scale-test debug scaffolding,
       keep damage core small, re-check arm ring radius/jump height/colliders at the new scale, fix leftovers.
-- [ ] UI1 UI theme: UITheme asset + shared components reading from it, integrate my free UI pack(s) from
+- [x] UI1 UI theme: UITheme asset + shared components reading from it, integrate my free UI pack(s) from
       Assets/ThirdParty, Docs/CREDITS.md, apply to all existing screens.
-- [ ] CC1 Character Creation v2: modular paper-doll (Body, Armor/body kit, Head, Accessory 1, Accessory 2)
+- [x] CC1 Character Creation v2: modular paper-doll (Body, Armor/body kit, Head, Accessory 1, Accessory 2)
       with Sprite Library/Resolver, placeholder parts, new screen layout, profile save, HUD portrait from parts.
 - [ ] M9a Armament behaviors: effect interface, variable armament slots per arm, rarity/tags/stacks,
       Homing, Auto-fire, Velocity, Pierce, Ricochet with documented interactions, generated descriptions.

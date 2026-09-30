@@ -201,10 +201,10 @@ namespace BulletHell.Tests
 
         // ---- cosmetics and profile
 
-        private static CosmeticData Item(string id, CosmeticSlot slot)
+        private static CosmeticPartData Item(string id, CosmeticSlot slot)
         {
-            var item = Make<CosmeticData>();
-            item.Configure(id, slot, id, Color.white, null);
+            var item = Make<CosmeticPartData>();
+            item.Configure(id, slot, id, id);
             return item;
         }
 
@@ -213,10 +213,11 @@ namespace BulletHell.Tests
             var registry = Make<AssetRegistry>();
             registry.SetCosmetics(new[]
             {
-                Item("coat_a", CosmeticSlot.CandyCoating), Item("coat_b", CosmeticSlot.CandyCoating), Item("coat_c", CosmeticSlot.CandyCoating),
-                Item("hat_none", CosmeticSlot.Headgear), Item("hat_gold", CosmeticSlot.Headgear),
-                Item("cape_none", CosmeticSlot.Cape),
-                Item("arm_none", CosmeticSlot.ArmTint), Item("arm_gold", CosmeticSlot.ArmTint),
+                Item("coat_a", CosmeticSlot.Body), Item("coat_b", CosmeticSlot.Body), Item("coat_c", CosmeticSlot.Body),
+                Item("hat_none", CosmeticSlot.Head), Item("hat_gold", CosmeticSlot.Head),
+                Item("cape_none", CosmeticSlot.Accessory2),
+                Item("arm_none", CosmeticSlot.Accessory1), Item("arm_gold", CosmeticSlot.Accessory1),
+                Item("armor_a", CosmeticSlot.Armor), Item("armor_b", CosmeticSlot.Armor),
             });
             return registry;
         }
@@ -225,23 +226,23 @@ namespace BulletHell.Tests
         public void MissingOrUnknownCosmeticFallsBackToTheSlotDefault()
         {
             var profile = new ProfileService(Registry(), new JsonFileStore<ProfileData>(TempPath()));
-            Assert.AreEqual("coat_a", profile.Get(CosmeticSlot.CandyCoating).Id);
-            Assert.AreEqual("hat_none", profile.Get(CosmeticSlot.Headgear).Id);
+            Assert.AreEqual("coat_a", profile.Get(CosmeticSlot.Body).Id);
+            Assert.AreEqual("hat_none", profile.Get(CosmeticSlot.Head).Id);
 
-            profile.Data.cosmetics[(int)CosmeticSlot.Headgear] = "deleted_hat";
-            Assert.AreEqual("hat_none", profile.Get(CosmeticSlot.Headgear).Id);
+            profile.Data.cosmetics[(int)CosmeticSlot.Head] = "deleted_hat";
+            Assert.AreEqual("hat_none", profile.Get(CosmeticSlot.Head).Id);
         }
 
         [Test]
         public void CyclingWrapsBothWays()
         {
             var profile = new ProfileService(Registry(), new JsonFileStore<ProfileData>(TempPath()));
-            profile.Cycle(CosmeticSlot.CandyCoating, -1);
-            Assert.AreEqual("coat_c", profile.Get(CosmeticSlot.CandyCoating).Id);
-            profile.Cycle(CosmeticSlot.CandyCoating, 1);
-            Assert.AreEqual("coat_a", profile.Get(CosmeticSlot.CandyCoating).Id);
-            profile.Cycle(CosmeticSlot.Cape, 1);   // one item only
-            Assert.AreEqual("cape_none", profile.Get(CosmeticSlot.Cape).Id);
+            profile.Cycle(CosmeticSlot.Body, -1);
+            Assert.AreEqual("coat_c", profile.Get(CosmeticSlot.Body).Id);
+            profile.Cycle(CosmeticSlot.Body, 1);
+            Assert.AreEqual("coat_a", profile.Get(CosmeticSlot.Body).Id);
+            profile.Cycle(CosmeticSlot.Accessory2, 1);   // one item only
+            Assert.AreEqual("cape_none", profile.Get(CosmeticSlot.Accessory2).Id);
         }
 
         [Test]
@@ -254,7 +255,7 @@ namespace BulletHell.Tests
                 profile.Randomize(count => random.Next(count));
                 for (int slot = 0; slot < CosmeticSlots.Count; slot++)
                 {
-                    CosmeticData chosen = profile.Get((CosmeticSlot)slot);
+                    CosmeticPartData chosen = profile.Get((CosmeticSlot)slot);
                     Assert.IsNotNull(chosen);
                     Assert.AreEqual((CosmeticSlot)slot, chosen.Slot);
                     Assert.AreEqual(chosen.Id, profile.Data.cosmetics[slot]);
@@ -270,18 +271,57 @@ namespace BulletHell.Tests
             try
             {
                 var profile = new ProfileService(registry, new JsonFileStore<ProfileData>(path));
-                profile.Cycle(CosmeticSlot.CandyCoating, 1);
+                profile.Cycle(CosmeticSlot.Body, 1);
                 profile.Revert();
-                Assert.AreEqual("coat_a", profile.Get(CosmeticSlot.CandyCoating).Id);   // edit dropped, nothing was saved
+                Assert.AreEqual("coat_a", profile.Get(CosmeticSlot.Body).Id);   // edit dropped, nothing was saved
                 Assert.IsFalse(File.Exists(path));
 
-                profile.Cycle(CosmeticSlot.CandyCoating, 1);
-                profile.Cycle(CosmeticSlot.ArmTint, 1);
+                profile.Cycle(CosmeticSlot.Body, 1);
+                profile.Cycle(CosmeticSlot.Accessory1, 1);
                 profile.Save();
 
                 var reloaded = new ProfileService(registry, new JsonFileStore<ProfileData>(path));
-                Assert.AreEqual("coat_b", reloaded.Get(CosmeticSlot.CandyCoating).Id);
-                Assert.AreEqual("arm_gold", reloaded.Get(CosmeticSlot.ArmTint).Id);
+                Assert.AreEqual("coat_b", reloaded.Get(CosmeticSlot.Body).Id);
+                Assert.AreEqual("arm_gold", reloaded.Get(CosmeticSlot.Accessory1).Id);
+            }
+            finally
+            {
+                new JsonFileStore<ProfileData>(path).Delete();
+            }
+        }
+
+        [Test]
+        public void DefaultSpriteIsTheFirstPartsArt_AndNullWithoutALibrary()
+        {
+            AssetRegistry registry = Registry();
+            var profile = new ProfileService(registry, new JsonFileStore<ProfileData>(TempPath()));
+            Assert.IsNull(profile.DefaultSpriteOf(CosmeticSlot.Body));   // no library yet
+
+            var texture = new Texture2D(2, 2);
+            var sprite = Sprite.Create(texture, new Rect(0, 0, 2, 2), Vector2.zero);
+            var library = Make<UnityEngine.U2D.Animation.SpriteLibraryAsset>();
+            library.AddCategoryLabel(sprite, CosmeticSlots.Category(CosmeticSlot.Body), "coat_a");
+            var so = new UnityEditor.SerializedObject(registry);
+            so.FindProperty("partLibrary").objectReferenceValue = library;
+            so.ApplyModifiedPropertiesWithoutUndo();
+
+            profile.Cycle(CosmeticSlot.Body, 1);   // the chosen part changes, the default does not
+            Assert.AreSame(sprite, profile.DefaultSpriteOf(CosmeticSlot.Body));
+            Object.DestroyImmediate(sprite);
+            Object.DestroyImmediate(texture);
+        }
+
+        [Test]
+        public void AnOldVersionProfileFileIsReplacedByDefaults()
+        {
+            string path = TempPath();
+            try
+            {
+                File.WriteAllText(path, "{\"version\":1,\"cosmetics\":[\"coating_1_strawberry\",\"headgear_2_redcrest\",\"cape_1_crimson\",\"armtint_1_gold\"]}");
+                var profile = new ProfileService(Registry(), new JsonFileStore<ProfileData>(path));
+                Assert.AreEqual(ProfileData.CurrentVersion, profile.Data.version);
+                Assert.AreEqual(CosmeticSlots.Count, profile.Data.cosmetics.Length);
+                Assert.AreEqual("coat_a", profile.Get(CosmeticSlot.Body).Id);
             }
             finally
             {
@@ -295,7 +335,7 @@ namespace BulletHell.Tests
             var profile = new ProfileService(Registry(), new JsonFileStore<ProfileData>(TempPath()));
             int raised = 0;
             profile.Changed += () => raised++;
-            profile.Cycle(CosmeticSlot.CandyCoating, 1);
+            profile.Cycle(CosmeticSlot.Body, 1);
             profile.Randomize(_ => 0);
             Assert.AreEqual(2, raised);
         }
