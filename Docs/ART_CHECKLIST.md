@@ -8,6 +8,31 @@ Tip marked "free" = fine to use a CC0/licensed pack instead of drawing it yourse
 
 ---
 
+## Demo (S1): the only art the demo needs
+
+The demo is New Game through the Pumpking (rounds 1-3), with the default gladiator, only Chaser and Skirmisher enemies, no traps, and the full UI kit already built.
+Effects without painted art (particles, muzzle flash, hit sparks, the smash shockwave ring, the DANGER glow, spawn puffs, coin and pickup glow) are procedural placeholders
+in the VoxKit palette (`BulletHell/Vox/10 Build VFX Placeholders`); they do not block the demo and can be replaced later by swapping a sprite or prefab.
+
+Done:
+- [x] Player (body, base look)
+- [x] Arms x4 (red, blue, green, yellow)
+- [x] Chaser (idle)  (`Enemy_Grunt`, painted)
+- [x] Skirmisher (idle)  (`Enemy_Weaver`, the mushroom, painted)
+- [x] Pumpking (idle; windup and attack poses fall back to idle)
+- [x] Arena backdrop (the painted colosseum, layered by `ArenaArt`)
+
+Still to draw for the demo:
+- [ ] Low wall: straight piece + 2 end caps (left, right)  (tall 512x256 template; "jumpable" cap colour)
+- [ ] Pillar (solid)  (tall 512x768 template)
+- [ ] One breakable (the giant pumpkin or the crate row): intact, damaged, debris  (flat debris)
+- [ ] Player bullet (WHITE / light grey: tinted by the arm in code)
+- [ ] Enemy bullet (bright core + dark outline; reserved violet)
+- [ ] Boss bullet (reserved hot magenta, larger)
+- [ ] Merchant idle (the Shop's Roman trader, one neutral pose; parts and face swaps come later)
+
+---
+
 ## A. Player (you have the body + 4 arms: check these are complete)
 
 - [x] Player body (base look)
@@ -28,8 +53,7 @@ Tip marked "free" = fine to use a CC0/licensed pack instead of drawing it yourse
   (idle hooked up on `Enemy_Weaver` from `ArtSource/Enemies/Skirmisher`: mushroom, pivot at its base. Windup/shoot poses not drawn yet:
   the toolkit's windup pulse plays on the idle pose in the last 0.3 s before each shot, visual only.)
 
-**Mobile Sentry** (1P tall, 1.2P wide, character 1536)
-- [ ] [2] moving (1)  - [ ] planted (1)  - [ ] firing (1-2)  - [ ] overheat (1, vents glowing)
+(Mobile Sentry: moved to "Post-demo" at the end of this file.)
 
 **Pumpking, round 3 boss** (~2.7P as drawn, boss 2560 template, key poses like the enemies)
 - [x] [2] idle (1)  - [ ] [2] windup (1, a clear "about to attack" silhouette)  - [ ] [2] attack (1-2)
@@ -107,12 +131,9 @@ Tall (>= 1.5P, tall 512x768 template):
 
 - [ ] [2] Contact shadow sprite for each obstacle (separate `_shadow` file)
 
-## H. Traps (floor trap 1536x1152 template; flat, x0.6)
+## H. Traps
 
-Each needs: idle, telegraph (2-4 frames, DANGER color), active (3-4), cooldown (2-3).
-- [ ] [1] Floor vent (e.g. steam grate)
-- [ ] [2] Spike line (e.g. kebab skewers popping up: upright parts drawn vertical)
-- [ ] [2] Hazard zone (e.g. bubbling hot sauce puddle that ticks damage)
+(Moved to "Post-demo" at the end of this file: traps and hazard zones arrive after the first boss.)
 
 ## I. Combat HUD (icon 768 template unless noted)
 
@@ -142,11 +163,7 @@ Main Menu:
 - [~] [2] Game logo / title art  (UI2: logo is live Cinzel Decorative text with corn/soil/leaf layers, no drawn art)
 - [~] [2] Menu background (key art or a wide arena shot)  (UI2: generated blur of the arena backdrop as a placeholder)
 
-Character Creation (modular paper doll, see ART_SPEC 6b; side facing first):
-- [ ] [2] Mannequin canvas (base body + plain head) on tpl_character_1536
-- [ ] [2] Body x3  - [ ] Armor/body kit x3  - [ ] Head x3  - [ ] Accessory 1 (head area) x3  - [ ] Accessory 2 (back/torso) x3
-- [x] [2] Preview pedestal/spotlight  - [x] slot selector arrows (or from the UI pack)  (UI2: pedestal_marble + spotlight_arch, arrow buttons)
-- [ ] [3] Screen background (e.g. a gladiator locker room under the stands)
+Character Creation: the demo shows the default gladiator and locks editing; its painted parts are in "Post-demo" at the end of this file. Done here: the preview pedestal and spotlight, the slot arrows.
 
 Round Results:
 - [ ] [3] Results panel art (can reuse the UI kit panel)
@@ -201,3 +218,29 @@ fonts and some VFX cut it further.
 3. **Boss:** Pumpking windup/attack poses, shockwave, boss HUD.
 4. **Screens:** UI kit first (panels, buttons, cards), then Shop, Armory, Main Menu, customization.
 5. **Polish:** crowd/torch/banner animation, extra VFX, Game Over art.
+
+---
+
+## Post-demo (kept from the old slice list; not needed for the demo)
+
+Sentry, traps and hazard zones return from round 4 of the full game; Character Creation editing is post-demo. Existing checkmarks are kept.
+
+**Mobile Sentry** (1P tall, 1.2P wide, character 1536)
+- [ ] [2] moving (1)  - [ ] planted (1)  - [ ] firing (1-2)  - [ ] overheat (1, vents glowing)
+
+
+### Traps (floor trap 1536x1152 template; flat, x0.6)
+
+Each needs: idle, telegraph (2-4 frames, DANGER color), active (3-4), cooldown (2-3).
+- [ ] [1] Floor vent (e.g. steam grate)
+- [ ] [2] Spike line (e.g. kebab skewers popping up: upright parts drawn vertical)
+- [ ] [2] Hazard zone (e.g. bubbling hot sauce puddle that ticks damage)
+
+
+### Character Creation parts (modular paper doll, see ART_SPEC 6b)
+Character Creation (modular paper doll, see ART_SPEC 6b; side facing first):
+- [ ] [2] Mannequin canvas (base body + plain head) on tpl_character_1536
+- [ ] [2] Body x3  - [ ] Armor/body kit x3  - [ ] Head x3  - [ ] Accessory 1 (head area) x3  - [ ] Accessory 2 (back/torso) x3
+- [x] [2] Preview pedestal/spotlight  - [x] slot selector arrows (or from the UI pack)  (UI2: pedestal_marble + spotlight_arch, arrow buttons)
+- [ ] [3] Screen background (e.g. a gladiator locker room under the stands)
+

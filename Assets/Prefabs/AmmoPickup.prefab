@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6620034384730962766}
   - component: {fileID: 2739782977100240917}
   - component: {fileID: 2627059105708570461}
+  - component: {fileID: 5637507568050231711}
   m_Layer: 0
   m_Name: AmmoPickup
   m_TagString: Untagged
@@ -106,3 +107,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: BulletHell::BulletHell.Pickups.AmmoPickup
   ammo: {fileID: 0}
   tuning: {fileID: 11400000, guid: 55541f50769304a4490dc9fcccc3eb58, type: 2}
+--- !u!114 &5637507568050231711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8922334185525199397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1ee4189764e38843a9c1095b9b35d97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BulletHell::BulletHell.Feedback.PickupGlow
+  color: {r: 0.95686275, g: 0.93333334, b: 0.8627451, a: 0.55}
+  size: 1.15
+  pulseSpeed: 3.2
+  pulseAmount: 0.25
+  tintFromAmmo: 1

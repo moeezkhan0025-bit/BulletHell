@@ -34,6 +34,12 @@ namespace BulletHell.Feedback
         private int[] next;
         private Ghost[] ghosts;
         private int nextGhost;
+        private SpriteRenderer[] shockwaves;
+        private float[] shockwaveAge;
+        private float[] shockwaveRadius;
+        private Color[] shockwaveColor;
+        private int nextShockwave;
+        private float lastMuzzleFlash;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics()
@@ -67,6 +73,24 @@ namespace BulletHell.Feedback
                 hub.PlayInternal(kind, position, count);
         }
 
+        /// <summary>A player muzzle flash (a burst of one star). Limited to one per few hundredths of a second, so eight arms do not turn into a blur.</summary>
+        public static void MuzzleFlash(Vector3 position)
+        {
+            FeedbackHub hub = Instance;
+            if (hub == null || Time.unscaledTime - hub.lastMuzzleFlash < hub.tuning.MuzzleFlashMinInterval)
+                return;
+            hub.lastMuzzleFlash = Time.unscaledTime;
+            hub.PlayInternal(VfxKind.MuzzleFlash, position, 1);
+        }
+
+        /// <summary>An expanding ring on the floor (the Pumpking's smash): grows from the landing spot to a little past `groundRadius` and fades.</summary>
+        public static void Shockwave(Vector2 center, float groundRadius, Color color)
+        {
+            FeedbackHub hub = Instance;
+            if (hub != null)
+                hub.ShockwaveInternal(center, groundRadius, color);
+        }
+
         /// <summary>
         /// Leaves a dissolving copy of a sprite where an enemy died. `feet` is the enemy's root (its ground position,
         /// which the ghost sorts by); `body` is the sprite to copy.
@@ -83,6 +107,7 @@ namespace BulletHell.Feedback
             tuning = GameServices.Ensure().Config.Feedback;
             BuildParticles();
             BuildGhosts();
+            BuildShockwaves();
         }
 
         private void OnDestroy()
@@ -133,6 +158,66 @@ namespace BulletHell.Feedback
                 root.SetActive(false);
 
                 ghosts[i] = new Ghost { Root = root.transform, Body = bodyGo.transform, Renderer = renderer, Fx = fx };
+            }
+        }
+
+        private void BuildShockwaves()
+        {
+            const int count = 4;
+            shockwaves = new SpriteRenderer[count];
+            shockwaveAge = new float[count];
+            shockwaveRadius = new float[count];
+            shockwaveColor = new Color[count];
+            for (int i = 0; i < count; i++)
+            {
+                var go = new GameObject("Shockwave");
+                go.transform.SetParent(transform, false);
+                var sprite = go.AddComponent<SpriteRenderer>();
+                sprite.sprite = tuning.ShockwaveSprite;
+                sprite.sortingLayerID = SortingLayers.Id(SortingLayers.Ground);
+                sprite.sortingOrder = 31;   // just above the landing telegraph
+                go.SetActive(false);
+                shockwaves[i] = sprite;
+                shockwaveAge[i] = -1f;
+            }
+        }
+
+        private void ShockwaveInternal(Vector2 center, float groundRadius, Color color)
+        {
+            if (shockwaves == null || tuning.ShockwaveSprite == null)
+                return;
+            int slot = nextShockwave;
+            nextShockwave = (nextShockwave + 1) % shockwaves.Length;
+            shockwaveAge[slot] = 0f;
+            shockwaveRadius[slot] = groundRadius;
+            shockwaveColor[slot] = color;
+            shockwaves[slot].transform.position = center;
+            shockwaves[slot].gameObject.SetActive(true);
+        }
+
+        private void TickShockwaves(float dt)
+        {
+            if (shockwaves == null)
+                return;
+            float flat = GameServices.Ensure().Config.Perspective.ShadowFlatness;
+            for (int i = 0; i < shockwaves.Length; i++)
+            {
+                if (shockwaveAge[i] < 0f)
+                    continue;
+                shockwaveAge[i] += dt;
+                float t = shockwaveAge[i] / tuning.ShockwaveSeconds;
+                if (t >= 1f)
+                {
+                    shockwaveAge[i] = -1f;
+                    shockwaves[i].gameObject.SetActive(false);
+                    continue;
+                }
+                Vector2 native = tuning.ShockwaveSprite.bounds.size;
+                float diameter = shockwaveRadius[i] * 2f * Mathf.Lerp(0.3f, 1.25f, 1f - (1f - t) * (1f - t));   // fast out, easing to a stop
+                shockwaves[i].transform.localScale = new Vector3(diameter / native.x, diameter * flat / native.y, 1f);
+                Color c = shockwaveColor[i];
+                c.a = Mathf.Clamp01(1f - t) * 0.9f;
+                shockwaves[i].color = c;
             }
         }
 
@@ -196,6 +281,7 @@ namespace BulletHell.Feedback
             if (ghosts == null)
                 return;
             float dt = Time.deltaTime;
+            TickShockwaves(dt);
             for (int i = 0; i < ghosts.Length; i++)
             {
                 Ghost g = ghosts[i];

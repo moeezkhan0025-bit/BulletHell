@@ -171,6 +171,7 @@ namespace BulletHell.Enemies
                 status.Clear();
             SetAlive(true);
             motion.PlaySpawn(lifeCycle);
+            FeedbackHub.Play(VfxKind.SpawnPuff, position, 0);   // a puff at the gate where it appears
 
             if (attacker != null)
             {

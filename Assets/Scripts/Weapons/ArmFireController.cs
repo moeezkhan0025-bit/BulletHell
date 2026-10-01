@@ -167,6 +167,7 @@ namespace BulletHell.Weapons
             ArmStats stats = arm.Instance.Stats; // base + armaments; ammo scales these
             ShotProperties shot = arm.Instance.Shot;
             IReadOnlyList<ArmEffect> effects = arm.Instance.Effects;
+            BulletHell.Feedback.FeedbackHub.MuzzleFlash(arm.Muzzle.position);
             int count = stats.ProjectilesPerShot + ammo.ExtraProjectiles;
             float spread = stats.Spread * ammo.SpreadMultiplier + ammo.AddedSpread;
             float speed = stats.ProjectileSpeed * ammo.ProjectileSpeedMultiplier;

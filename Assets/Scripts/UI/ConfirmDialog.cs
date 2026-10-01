@@ -26,6 +26,10 @@ namespace BulletHell.UI
         private Action onNo;
         private GameObject returnFocus;
         private bool open;
+        private bool notifyOnly;
+        private Vector2 yesAnchored;
+        private Vector2 yesAnchorMin, yesAnchorMax, yesPivot;
+        private bool yesCached;
 
         /// <summary>True while any dialog is showing.</summary>
         public static bool AnyOpen => openCount > 0;
@@ -57,6 +61,7 @@ namespace BulletHell.UI
         /// <summary>Opens the dialog. onNo is optional (Circle and "No" both run it).</summary>
         public void Ask(string title, string message, string yes, string no, Action confirmed, Action declined = null)
         {
+            SetNotifyMode(false);
             titleLabel.text = title;
             messageLabel.text = message;
             yesLabel.text = yes;
@@ -75,6 +80,58 @@ namespace BulletHell.UI
             UIFocusGuard.Focus(noButton.gameObject);
         }
 
+        /// <summary>
+        /// A message with one OK button (focused). OK and Circle both close it, run onClosed, and put focus back where it was; the dim behind
+        /// blocks the mouse like every dialog.
+        /// </summary>
+        public void Notify(string title, string message, string ok, Action onClosed = null)
+        {
+            SetNotifyMode(true);
+            titleLabel.text = title;
+            messageLabel.text = message;
+            yesLabel.text = ok;
+            onYes = onClosed;
+            onNo = onClosed;
+
+            returnFocus = EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null;
+            if (!open)
+            {
+                open = true;
+                openCount++;
+            }
+            transform.SetAsLastSibling();
+            ScreenTransition.In(gameObject);
+            UIFocusGuard.Focus(yesButton.gameObject);
+        }
+
+        // One button centred, or the normal pair.
+        private void SetNotifyMode(bool notify)
+        {
+            var rect = (RectTransform)yesButton.transform;
+            if (!yesCached)
+            {
+                yesCached = true;
+                yesAnchored = rect.anchoredPosition;
+                yesAnchorMin = rect.anchorMin;
+                yesAnchorMax = rect.anchorMax;
+                yesPivot = rect.pivot;
+            }
+            notifyOnly = notify;
+            noButton.gameObject.SetActive(!notify);
+            if (notify)
+            {
+                rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0.5f, 0f);
+                rect.anchoredPosition = new Vector2(0f, yesAnchored.y);
+            }
+            else
+            {
+                rect.anchorMin = yesAnchorMin;
+                rect.anchorMax = yesAnchorMax;
+                rect.pivot = yesPivot;
+                rect.anchoredPosition = yesAnchored;
+            }
+        }
+
         private void Answer(bool yes)
         {
             if (!gameObject.activeSelf)
@@ -83,7 +140,7 @@ namespace BulletHell.UI
             Action action = yes ? onYes : onNo;
             onYes = onNo = null;
             action?.Invoke();
-            if (!yes && returnFocus != null && returnFocus.activeInHierarchy)
+            if ((!yes || notifyOnly) && returnFocus != null && returnFocus.activeInHierarchy)
                 UIFocusGuard.Focus(returnFocus);
         }
 

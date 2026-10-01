@@ -16,6 +16,14 @@ namespace BulletHell.Cosmetics
         private readonly JsonFileStore<ProfileData> store;
         private readonly List<CosmeticPartData>[] optionsBySlot = new List<CosmeticPartData>[CosmeticSlots.Count];
 
+        private string[] lockedCosmetics;
+
+        /// <summary>
+        /// The demo build: the gladiator is always the default look, nothing edits it and the profile file keeps the cosmetics it had
+        /// (saving the onboarding flag must not overwrite a look chosen in the full game).
+        /// </summary>
+        public bool CosmeticsLocked { get; private set; }
+
         public ProfileData Data { get; private set; }
 
         /// <summary>Raised whenever the chosen look changes (edit, randomize, revert).</summary>
@@ -41,10 +49,41 @@ namespace BulletHell.Cosmetics
             {
                 Data = new ProfileData();
             }
+            ApplyLock();
             Changed?.Invoke();
         }
 
-        public void Save() => store.Save(Data);
+        /// <summary>Locks the cosmetics to the default look (demo). The file's own look is remembered and written back unchanged.</summary>
+        public void LockCosmetics(bool locked)
+        {
+            CosmeticsLocked = locked;
+            Revert();
+        }
+
+        private void ApplyLock()
+        {
+            if (!CosmeticsLocked)
+            {
+                lockedCosmetics = null;
+                return;
+            }
+            lockedCosmetics = (string[])Data.cosmetics.Clone();
+            for (int i = 0; i < Data.cosmetics.Length; i++)
+                Data.cosmetics[i] = "";   // an empty ID is the slot's default item
+        }
+
+        public void Save()
+        {
+            if (!CosmeticsLocked || lockedCosmetics == null)
+            {
+                store.Save(Data);
+                return;
+            }
+            string[] shown = Data.cosmetics;
+            Data.cosmetics = lockedCosmetics;
+            store.Save(Data);
+            Data.cosmetics = shown;
+        }
 
         /// <summary>The round 1 onboarding has been finished or skipped.</summary>
         public bool TutorialDone => Data.tutorialDone;
@@ -113,6 +152,8 @@ namespace BulletHell.Cosmetics
 
         public void Set(CosmeticSlot slot, CosmeticPartData item)
         {
+            if (CosmeticsLocked)
+                return;
             Data.cosmetics[(int)slot] = item != null ? item.Id : "";
             Changed?.Invoke();
         }
@@ -130,6 +171,8 @@ namespace BulletHell.Cosmetics
         /// <summary>Picks a random item for every slot. The picker returns a number in [0, count).</summary>
         public void Randomize(Func<int, int> pick = null)
         {
+            if (CosmeticsLocked)
+                return;
             pick ??= count => UnityEngine.Random.Range(0, count);
             for (int i = 0; i < CosmeticSlots.Count; i++)
             {

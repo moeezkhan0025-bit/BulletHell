@@ -70,6 +70,21 @@ Screenshots of the built screens: `Docs/Screenshots/VoxUI` (1920x1080). Mockups:
 
 ## Fixed
 <!-- Claude moves entries here with a one-line note of the cause and the fix -->
+### Demo Character Creation and portrait drew placeholder part overlays (found in S1 review)
+- **Steps:** demo build, New Game, Character Creation (and the HUD portrait chip)
+- **Expected:** only the base player sprite
+- **Actual:** the default Round head, Plate armor, Crown and Crimson Cape placeholders were drawn over the player
+- **Severity:** minor (looks)
+- **Fixed (2026-09-30, L1):** the preview applied the profile's default part of every slot. `DemoConfig.showPartOverlays` (off in the demo) now sends the preview, the HUD portrait, the in-game player and the Armory doll through the base-sprite-only path (`GladiatorCosmetics.ApplyOriginalOnly`, `GameConfig.ShowCustomizationInGame` / `CreationShowsParts`). The part system itself is untouched; turning the flag on, or leaving demo mode, brings the overlays back. The "work in progress" notice still opens on any edit attempt. Checked in the Editor and in Chrome.
+
+### Primary (red) buttons showed no focus or hover (found in L1 review)
+- **Steps:** Character Creation "To the Arena!", the Shop "Leave", the Armory "Fight!", the Yes buttons of dialogs: move focus onto them with the stick / d-pad, or hover with the mouse
+- **Expected:** the same gold ring and lift as other buttons (VoxKit manifest: gold ring + lift 12 px, 0.12 s ease-out)
+- **Actual:** nothing changed: `ThemedButton` used the primary sprite for normal, highlighted, selected, so the sprite swap had nothing to show, and only the Main Menu list had a `FocusDecor`
+- **Severity:** minor (feel), but it hid where the controller focus was
+- **Fixed (2026-09-30, L1):** new `ButtonFocusFx`, added by `ThemedButton` to every themed button: gold ring (the row focus ring sprite), lift of the theme's focus height (a scale inside layout groups, so the layout is never fought), press-down while pressed, for controller focus and mouse hover; a button with a `FocusDecor` keeps its trims and laurels and gets the ring. Verified in Chrome with a (stand-in) gamepad: d-pad down from the rows reached "To the Arena!" with the ring; in the Editor: Shop Leave focused, Armory Fight hovered.
+- **Audit of every screen (Main Menu, Character Creation, Settings, Pause, Round Results, Game Over, Shop, Armory, dialogs):** every button now has a focus treatment. Controller reachability (BFS over the real navigation) found one real gap: in the Armory, the ring had no way to the right half, so Fight!, Remove, Main Menu and the tabs could not be reached with the stick. Fixed with explicit navigation: Right from the NE / E / SE slots crosses to the inventory tabs; Left from the tabs or the first card column comes back to the East slot; Fight is reached from the cards, Remove and Main Menu from Fight (all 12 selectables reachable). Left by design: the Settings tabs (L1 / R1 switch tabs) and the Character Creation row arrows (Left / Right on a row change it).
+
 ### WebGL: settings, profile and saves were forgotten on reload (found in D6)
 - **Steps:** WebGL build on Unity's default page; change Master Volume, close Settings, reload the page
 - **Expected:** the value is still there

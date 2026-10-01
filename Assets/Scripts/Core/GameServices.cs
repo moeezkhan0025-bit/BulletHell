@@ -74,6 +74,7 @@ namespace BulletHell.Core
             Settings = new SettingsService(defaults, new JsonFileStore<SettingsData>(Path.Combine(folder, config.SettingsFileName)), Audio);
             Bindings = new InputBindingService(Settings);
             Profile = new ProfileService(config.Registry, new JsonFileStore<ProfileData>(Path.Combine(folder, config.ProfileFileName)));
+            Profile.LockCosmetics(config.IsDemo);   // demo: the default gladiator, never edited or saved (S1)
             Telemetry = new TelemetryService(Run, Path.Combine(folder, config.TelemetryFileName));
         }
 

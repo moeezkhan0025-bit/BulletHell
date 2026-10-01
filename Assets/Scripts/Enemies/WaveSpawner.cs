@@ -162,6 +162,8 @@ namespace BulletHell.Enemies
 
         private void Spawn(in SpawnRequest request)
         {
+            // Demo: a Sentry before its round is swapped for the stand-in (S1); the authored wave keeps its counts.
+            EnemyData authored = services.Config.Demo != null ? services.Config.Demo.Filter(roundNumber, request.Enemy) : request.Enemy;
             bool inArena = arena != null && arena.IsBuilt;
             Vector2 position;
             if (request.Pattern == SpawnPattern.Gates && inArena && arena.Gates.Count > 0)
@@ -170,10 +172,10 @@ namespace BulletHell.Enemies
                 position = SpawnPlacement.Position(request.Pattern, request.Index, request.Count, SpawnRect(), player.FeetPosition,
                                                    tuning.MinSpawnDistanceFromPlayer, tuning.RingRadius, tuning.RowWidthFraction);
             if (inArena)
-                position = arena.Grid.NearestFree(position, request.Enemy.FootprintRadiusFor(GameServices.Ensure().Config.Perspective));   // never inside an obstacle or wall
+                position = arena.Grid.NearestFree(position, authored.FootprintRadiusFor(GameServices.Ensure().Config.Perspective));   // never inside an obstacle or wall
 
-            Enemy enemy = PoolFor(request.Enemy).Get();
-            enemy.Initialize(request.Enemy, position, difficulty, projectiles, player, inArena ? arena : null, navigation);
+            Enemy enemy = PoolFor(authored).Get();
+            enemy.Initialize(authored, position, difficulty, projectiles, player, inArena ? arena : null, navigation);
             enemy.Defeated += OnEnemyDefeated;
             alive.Add(enemy);
         }

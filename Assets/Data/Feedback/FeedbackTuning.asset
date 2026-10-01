@@ -29,6 +29,10 @@ MonoBehaviour:
   pierceShake: 0.02
   wallImpactDebris: 3
   ghostPoolSize: 16
+  glowSprite: {fileID: 21300000, guid: 79b0d3ba96b01bf4a9e3ba3f4a15b9bd, type: 3}
+  shockwaveSprite: {fileID: 21300000, guid: a543d26a09ce56d418c968429e849d45, type: 3}
+  shockwaveSeconds: 0.4
+  muzzleFlashMinInterval: 0.04
   spark: {fileID: 3785815155309802259, guid: f4f32db6ec619d84f8fc0a74df6c6de4, type: 3}
   dust: {fileID: 4633274995839677876, guid: 43c1cb7992f90ef47a52ccd6b59b6126, type: 3}
   smoke: {fileID: 5128225383711020984, guid: e4853f51b9c42a144b79432571db982c, type: 3}
@@ -36,4 +40,6 @@ MonoBehaviour:
   debris: {fileID: 3999802831636771893, guid: f79d52d69b817944da53e8a247424546, type: 3}
   coin: {fileID: 2117672399299262135, guid: c68ff7f4ee67d034393e4608f6d29b2f, type: 3}
   confetti: {fileID: 1364883383727479848, guid: 64b0c8b5fa636fa42901aba93de6298e, type: 3}
+  muzzleFlash: {fileID: 6956770028165228196, guid: 482b4825fc9b33c45afa02a5705e6a7a, type: 3}
+  spawnPuff: {fileID: 2799562982869694615, guid: 9e0ebe96cbcdd444f8926bbf3168e36c, type: 3}
   particlePoolPerPreset: 6

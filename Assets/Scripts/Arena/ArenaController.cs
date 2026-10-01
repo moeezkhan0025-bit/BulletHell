@@ -199,9 +199,12 @@ namespace BulletHell.Arena
                 obstacles.Add(obstacle);
             }
 
+            // Demo: no traps or hazard zones before the first boss (S1); the layout asset keeps them.
+            DemoConfig demo = GameServices.Ensure().Config.Demo;
+            bool trapsAllowed = demo == null || demo.AllowsTraps(run.State != null ? run.State.Round : 1);
             foreach (TrapPlacement t in layout.Traps)
             {
-                if (t.Data == null)
+                if (t.Data == null || !trapsAllowed)
                     continue;
                 Trap trap = trapPool.Get();
                 trap.Setup(t.Data, t.Position, t.Rotation, t.ExtraStartDelay, run, player, circleSprite, squareSprite);

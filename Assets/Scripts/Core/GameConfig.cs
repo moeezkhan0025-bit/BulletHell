@@ -75,6 +75,10 @@ namespace BulletHell.Core
         [Tooltip("Procedural motion, hit feedback, hitstop, camera shake and particle presets.")]
         [SerializeField] private FeedbackTuning feedback;
 
+        [Header("Demo")]
+        [Tooltip("The demo switch (S1): with IsDemo on, Sentries and traps wait for round 4 and Character Creation is locked. Empty = the full game.")]
+        [SerializeField] private DemoConfig demo;
+
         [Header("Debug (editor and development builds only)")]
         [Tooltip("New runs start at this round (e.g. 3 to go straight to the first boss). 0 or 1 = off. Ignored in release builds.")]
         [SerializeField, Min(0)] private int debugStartRound;
@@ -87,7 +91,9 @@ namespace BulletHell.Core
         public UITheme UITheme => uiTheme;
         public BulletHell.UI.ButtonGlyphLibrary ButtonGlyphs => buttonGlyphs;
         public BulletHell.Enemies.EnemyBulletPalette EnemyBulletPalette => enemyBulletPalette != null ? enemyBulletPalette : BulletHell.Enemies.EnemyBulletPalette.Fallback;
-        public bool ShowCustomizationInGame => showCustomizationInGame;
+        public bool ShowCustomizationInGame => showCustomizationInGame && (demo == null || demo.PartOverlaysShown);
+        /// <summary>Character Creation draws the part overlays on its preview (the full game; the demo shows only the base sprite).</summary>
+        public bool CreationShowsParts => demo == null || demo.PartOverlaysShown;
         public DifficultyCurve Difficulty => difficulty;
         public ArenaLayoutData DefaultLayout => defaultLayout;
         public int RoundCount => rounds != null ? rounds.Length : 0;
@@ -107,6 +113,9 @@ namespace BulletHell.Core
         public string ProfileFileName => profileFileName;
         public string TelemetryFileName => telemetryFileName;
         public AudioLibrary AudioLibrary => audioLibrary;
+        public DemoConfig Demo => demo;
+        /// <summary>This is a demo build (the DemoConfig says so).</summary>
+        public bool IsDemo => demo != null && demo.IsDemo;
         public SettingsDefaults SettingsDefaults => settingsDefaults;
         public ArmLoadout NewRunLoadout => newRunLoadout;
         public AmmoTypeData[] StartingAmmo => startingAmmo;

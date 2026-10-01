@@ -155,6 +155,7 @@ Boot scene (bootstrapper) -> Main Menu scene -> Game scene.
   [TBD: also allow the Armory between waves inside a round?]
 
 ## Gladiator customization (cosmetics)
+- In the DEMO build the screen shows the default gladiator and is locked (see "Demo scope"); everything below describes the full game.
 - Purely visual; never changes stats. CosmeticData assets, each belonging to a slot. Starting slots:
   candy coating (body color/pattern), headgear (helmet/crest), cape/trail, and arm tint.
 - Cosmetics render as layered sprites/tints on the gladiator, so new items are new assets, not code.
@@ -162,6 +163,20 @@ Boot scene (bootstrapper) -> Main Menu scene -> Game scene.
   controller, and has Randomize and Confirm. Placeholder items for now (colored shapes/tints).
 - The chosen look is stored in the profile file and pre-selected on the next New Game.
   [TBD: how new cosmetics are unlocked - all unlocked for now]
+
+## Demo scope (S1, `DemoConfig`)
+One ScriptableObject (`Assets/Data/DemoConfig.asset`, on GameConfig) decides what a demo build hides, so nothing is deleted and the full game gets everything back by switching
+`isDemo` off. The D6 build menu has "BulletHell/Build/Demo/..." entries that switch it on for the build and restore it afterwards (folder and zip get "-demo", the Main Menu
+version says "demo"); "BulletHell/Demo/Demo Mode On / Off (Editor)" flips it for Play-mode testing. The shipped asset has it OFF. With it on:
+- **Sentry enemies** (Ringer, Spiraler) appear only from round 4; a Sentry authored earlier is swapped for the Chaser (the Grunt) at the same count, so rounds stay full.
+  Rounds 1-3 were already Chaser + Skirmisher (Grunt, Weaver) + the Pumpking, so nothing changes there today; the filter keeps it that way if waves are edited.
+- **Traps and hazard zones** appear only from round 4 (`ArenaController` skips a layout's traps before that). Obstacles stay.
+- **Character Creation** still follows New Game and shows the base player sprite only (no part overlays: `DemoConfig.showPartOverlays` off; the part system stays intact for the full game; the HUD portrait and the Armory doll follow it), but cannot be changed: any arrow, Randomize or slot cycle opens a themed notice
+  ("Character Creation is a work in progress and unavailable in the demo version." + OK, focus returns to the screen). "To the Arena!" works with the default look.
+  `ProfileService` refuses edits in the demo and writes back the cosmetics the file already had, so a full-game look is never overwritten by a demo save.
+- **Effects without painted art** are procedural placeholders in the VoxKit palette (`BulletHell/Vox/10 Build VFX Placeholders`, `VoxVfx`): hit sparks, dust, smoke, steam, debris,
+  coin burst and confetti presets, a muzzle flash on player shots, a spawn puff at the gate, the Pumpking smash shockwave ring (`FeedbackHub.Shockwave`), a DANGER glow on the floor
+  under a winding-up enemy (`TelegraphFx`), and a soft glow under coins and ammo pickups (`PickupGlow`). None uses the reserved enemy-bullet hues (a test checks).
 
 ## Save system
 - Exactly ONE run save (single slot), JSON, written through ISaveSystem (platform save APIs plug in later).
@@ -344,10 +359,12 @@ PlayStation names below; Xbox = RB / RT / LS click / A B X Y, Switch = R / ZR / 
   Round 3 is the Pumpking alone (see Bosses); rounds 5 and 7 use a tougher placeholder wave until their bosses are built.
 - Arena progression: each RoundData picks an arena LAYOUT (ArenaLayoutData: obstacle and trap placements
   on the same colosseum). Hazards ramp up over the run:
-  - Round 1: NO traps or hazard zones. A few obstacles for cover only.
-  - Each later round adds complexity via a HazardBudget on RoundData (trap count and types, Low walls,
-    breakables, Tall obstacles), introducing one new hazard type at a time.
-  - Boss rounds use their own layouts (usually more open, a few hazards the boss can use).
+  - Rounds 1-3 (up to and including the first boss, the Pumpking): NO traps or hazard zones. Obstacles (low walls, pillars, breakables) are there for cover from round 1.
+  - Traps and hazard zones are introduced AFTER the first boss: round 4 onward in the full game, one new type at a time (vent, then skewer line, then hazard zone).
+    Each later round adds complexity via a HazardBudget on RoundData (trap count and types, Low walls, breakables, Tall obstacles).
+  - The first boss layout is open and has no hazards. (`Layout_R3` still holds its two vents from before this rule; `DemoConfig` filters them out at run time in the demo,
+    and they are to be removed from the asset when the full game is retuned.) Later boss layouts may give the boss a few hazards to use.
+
   - Layouts must always leave a clear spawn area around the player and clear lanes from the enemy gates.
   - Beyond authored rounds, layouts are reused with the difficulty scaling.
   Short breather (~2s, tunable) between waves with a "Wave X/Y" message.
@@ -555,6 +572,14 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
       sensitivity), Gameplay and accessibility (screen shake intensity, bullet outline thickness, high-contrast bullets, HUD scale).
 - [x] D6 Build pipeline (done 2026-09-30; report Docs/WEBGL_REPORT.md, shots Captures/d6): Windows and WebGL builds from one editor menu with version numbers, plus a WebGL test report (controller, saving, audio,
       performance) and a verdict on an itch.io browser demo.
+- [x] S1 Demo scope (done 2026-09-30; shots Captures/s1): `DemoConfig` gates the demo (isDemo true for demo builds, used by the D6 build menu): Sentry cut from rounds 1-3 (they already
+      used only Chaser + Skirmisher), no traps or hazard zones before round 4 (design change: traps arrive after the first boss), Character Creation shown but locked with a themed notice,
+      procedural VoxKit-palette placeholders for the effects without art, Docs/ART_CHECKLIST.md has a Demo section and a Post-demo section.
+- [x] L1 Local web build (done 2026-09-30; report in Docs/WEBGL_REPORT.md, shots Captures/l1): fixes first (demo Character Creation and portrait show only the base player sprite, no part overlays, behind
+      `DemoConfig.showPartOverlays`; every themed button, primary included, gets the gold ring + lift + press-down on controller focus and mouse hover through `ButtonFocusFx`; the Armory ring now
+      reaches the inventory, Fight, Remove and Main Menu by controller), then "BulletHell/Build/Build WebGL (Demo)" (DemoConfig on, Decompression Fallback, a click-to-play cover with the title and a
+      "Desktop only" note, a controller button or a click starts audio and input, fullscreen button, responsive 16:9) and "Build Windows (Demo)" (zipped, Burst debug folder removed), served locally
+      by `Tools/WebTest` and tested in Chrome. W1 (itch.io deployment) is postponed.
 - [ ] M11 Themed UI/visual pass: candy-colosseum style for menus, HUD, Shop, Armory, customization; final art.
 - [ ] M12 Polish: touch controls (incl. jump button), button glyphs, juice, announcer/audio, performance pass
       (the performance pass also covers the 2D SRP Batcher warning on Mat_SpriteCharacter / Mat_SpriteOutline: _TexelSize / _ST properties in the Sprite Unlit graphs).

@@ -49,4 +49,5 @@ MonoBehaviour:
   enemyBulletPalette: {fileID: 11400000, guid: e8893f460627be74abde415ab115199d, type: 2}
   showCustomizationInGame: 0
   feedback: {fileID: 11400000, guid: 3b99271c46dd8dd4aab281a9a20fd355, type: 2}
+  demo: {fileID: 11400000, guid: 9b4b38bc844259946a358816484c1c73, type: 2}
   debugStartRound: 0

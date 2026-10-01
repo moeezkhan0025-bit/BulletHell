@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4063525382504238889}
   - component: {fileID: 2952377032368649151}
   - component: {fileID: 6770075312171918512}
+  - component: {fileID: 6372933778619708079}
   m_Layer: 0
   m_Name: Coin
   m_TagString: Untagged
@@ -104,3 +105,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 146636fc9cad27a45825eb9374319f1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BulletHell::BulletHell.Pickups.CoinPickup
+--- !u!114 &6372933778619708079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4569747119207751338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1ee4189764e38843a9c1095b9b35d97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BulletHell::BulletHell.Feedback.PickupGlow
+  color: {r: 0.9137255, g: 0.7137255, b: 0.22745098, a: 0.6}
+  size: 0.8
+  pulseSpeed: 3.2
+  pulseAmount: 0.25
+  tintFromAmmo: 0

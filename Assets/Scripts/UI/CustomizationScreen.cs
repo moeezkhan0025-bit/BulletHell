@@ -30,6 +30,8 @@ namespace BulletHell.UI
         [SerializeField] private GladiatorCosmetics preview;
         [Tooltip("Optional: the HUD portrait preview chip.")]
         [SerializeField] private HudPortrait portrait;
+        [Tooltip("Shows the demo's \"Character Creation is unavailable\" message.")]
+        [SerializeField] private ConfirmDialog dialog;
 
         private readonly SettingRow[] rows = new SettingRow[CosmeticSlots.Count];
         private ProfileService profile;
@@ -75,7 +77,7 @@ namespace BulletHell.UI
             {
                 CosmeticSlot slot = DisplayOrder[i];
                 SettingRow row = Instantiate(rowPrefab, rowParent);
-                row.Bind(RowLabel(slot), () => NameOf(slot), dir => profile.Cycle(slot, dir), SettingKind.Choice, null, () => IndexText(slot));
+                row.Bind(RowLabel(slot), () => NameOf(slot), dir => { if (!TryLocked()) profile.Cycle(slot, dir); }, SettingKind.Choice, null, () => IndexText(slot));
                 row.Cancelled += Back;
                 row.transform.SetSiblingIndex(i);
                 rows[(int)slot] = row;
@@ -121,12 +123,30 @@ namespace BulletHell.UI
             foreach (SettingRow row in rows)
                 if (row != null)
                     row.Refresh();
-            preview.Apply(profile);
+            if (GameServices.Ensure().Config.CreationShowsParts)
+                preview.Apply(profile);
+            else
+                preview.ApplyOriginalOnly(profile);   // demo: the base player sprite only, no part overlays
             if (portrait != null)
                 portrait.Apply(profile);
         }
 
-        private void Randomize() => profile.Randomize();
+        private void Randomize()
+        {
+            if (!TryLocked())
+                profile.Randomize();
+        }
+
+        // Demo: the screen shows the default gladiator and any attempt to change it opens a themed notice (the profile refuses edits too).
+        private bool TryLocked()
+        {
+            var demo = GameServices.Ensure().Config.Demo;
+            if (demo == null || !demo.CharacterCreationLocked)
+                return false;
+            if (dialog != null && !dialog.IsOpen)
+                dialog.Notify(demo.CharacterCreationTitle, demo.CharacterCreationMessage, demo.OkLabel);
+            return true;
+        }
 
         private void Confirm()
         {

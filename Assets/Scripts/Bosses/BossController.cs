@@ -197,6 +197,7 @@ namespace BulletHell.Bosses
                 player.TryHit(smash.DamageToPlayer, (player.FeetPosition - at).normalized, data.DisplayName + " smash");
 
             ring.Flash();
+            FeedbackHub.Shockwave(at, smash.Radius, smash.TelegraphColor);
             FeedbackHub.Play(VfxKind.Dust, at, smash.DustCount);
             FeedbackHub.Play(VfxKind.Debris, at, smash.DebrisCount);
             CameraShake.Add(smash.Shake);

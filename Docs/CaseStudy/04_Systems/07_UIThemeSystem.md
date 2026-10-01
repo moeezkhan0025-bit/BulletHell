@@ -118,3 +118,7 @@ sequenceDiagram
 - Will the dynamic vs static atlas question matter once localisation arrives (CJK)? [VERIFY]
 - Retire `M4Setup..M9dSetup` screen builders to avoid accidental re-runs?
 - Regression coverage: no EditMode test for the theme or the themed components was found in `Assets/Tests/EditMode`. [VERIFY]
+
+## Notice dialog (S1)
+
+`ConfirmDialog.Notify(title, message, ok)` shows one centred OK button (focused); OK and Circle both close it and return focus to where it was. Used by the demo's Character Creation lock.

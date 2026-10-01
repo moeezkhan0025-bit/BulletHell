@@ -20,6 +20,8 @@ Priority key (suggestion): P1 = blocks the next milestone or the vertical slice;
 | D4 Audio | `[x]` (2026-09-30) | "music per context with crossfades, SFX ..., mixer groups tied to Settings volumes, CC0 placeholder sounds logged in Docs/CREDITS.md" | demo track |
 | D5 Settings completion | `[x]` (2026-09-30) | "Video ..., Controls (button remapping via the Input System ...), Gameplay and accessibility ..." | demo track |
 | D6 Build pipeline | `[x]` (2026-09-30) | "Windows and WebGL builds from one editor menu ..., WebGL test report ..., verdict on an itch.io browser demo" | demo track |
+| S1 Demo scope | `DemoConfig`: Sentry, traps/hazards and Character Creation editing gated off in demo builds; procedural effect placeholders; art checklist split into Demo and Post-demo | D6 build menu (demo flag); ART_CHECKLIST.md | Done 2026-09-30 |
+| L1 Local web build | Two UI fixes (no part overlays in the demo; focus and hover on every button, Armory navigation), then a demo WebGL build for any static host (cover, fullscreen, desktop note), a zipped Windows demo, local server script, Chrome test | S1, D6 | Done 2026-09-30. **W1 itch.io deployment is postponed** |
 | M12 Polish | `[ ]` | "touch controls (incl. jump button), button glyphs, juice, announcer/audio, performance pass" | P2 to P3 |
 
 ## 2. Open design questions: every `[TBD]` in CLAUDE.md
@@ -51,6 +53,7 @@ These are working defaults, not open problems. Listed so the owner can confirm o
 - Bosses for rounds 5 and 7 (P1). Round 3 (Pumpking) is done as the pattern: `BossData`, phases, `Boss.prefab` variant, death sequence. Each new boss likely needs its own `BossData`, `EnemyData`, patterns, painted poses and a layout. [VERIFY effort]
 - Pumpking windup and attack poses: "windup/attack poses fall back to idle until drawn" (CLAUDE.md, Bosses).
 - Post-round-7 flow: boss every 2 rounds, endless scaling or an ending (see the TBD above). Suggestion: decide before building the bosses for 5 and 7 so their difficulty fits the curve.
+- **Post-first-boss and post-demo (S1):** the Mobile Sentry, traps and hazard zones (vent, skewer, zone) and Character Creation editing are no longer part of the demo. Sentry and traps return from round 4 in the full game (traps arrive after the first boss, one type at a time); Character Creation (painted parts, unlock rules) is a post-demo feature. They are gated by `DemoConfig`, not deleted.
 - Enemy roster: Charger and Sniper variants, Mobile Sentry and Skirmisher exist; painted art exists for Chaser and Skirmisher only (see art gaps). Sentry, Charger, Sniper are still placeholder shapes per `ART_CHECKLIST.md` section B [VERIFY].
 - Optional Shop services "later": sell an armament, remove/upgrade (CLAUDE.md, Shop).
 - More ammo types "Later: Tracking, Automatic, more" (CLAUDE.md, Ammo types).
