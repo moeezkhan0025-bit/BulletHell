@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 120f420e9621a534490700da7a456848, type: 3}
+  m_Name: Scenario_Round1
+  m_EditorClassIdentifier: BulletHell::BulletHell.Capture.CaptureScenarioData
+  displayName: Round 1
+  filePrefix: round-1
+  round: 1
+  customLoadout: 0
+  arms: []
+  customAmmo: 0
+  ammo:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  extraSpawns: []
+  extraSpawnSeconds: 0
+  topUpInterval: 0.4
+  captureSeconds: 25
+  tuning: {fileID: 11400000, guid: d33f9aaab176c374bb932ba31de97bb0, type: 2}
+  autopilot: 1

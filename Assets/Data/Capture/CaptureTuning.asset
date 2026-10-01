@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ebcc499edc36cd4e9bd35269c056849, type: 3}
+  m_Name: CaptureTuning
+  m_EditorClassIdentifier: BulletHell::BulletHell.Capture.CaptureTuning
+  decisionInterval: 0.07
+  reactionSeconds: 0.16
+  stickAcceleration: 5.5
+  cruiseSpeed: 0.85
+  bulletScanRadius: 6.5
+  bulletHorizon: 0.9
+  dodgeClearance: 0.5
+  dodgeWeight: 2.4
+  maxBulletsConsidered: 64
+  bulletSpeedSanity: 40
+  meleeKeepDistance: 6.5
+  rangedKeepDistance: 6.5
+  keepDistanceWeight: 2.2
+  strafeWeight: 0.6
+  strafeSwitchSeconds: {x: 3.5, y: 7}
+  wallMargin: 2.4
+  wallWeight: 1.8
+  centerPull: 0.25
+  stuckDistance: 0.3
+  stuckSeconds: 1
+  unstickSeconds: 0.9
+  targetRange: 14
+  retargetInterval: 0.35
+  retargetBias: 0.25
+  aimTurnDegreesPerSecond: 520
+  selectHoldSeconds: 0.16
+  minLockedSeconds: 2.2
+  rehomeAngle: 100
+  fireAngleTolerance: 14
+  fireRange: 12
+  fireHoldSeconds: {x: 1.6, y: 3.2}
+  firePauseSeconds: {x: 0.12, y: 0.3}
+  ammoSwapSeconds: {x: 7, y: 13}
+  smashJumpLead: 0.22
+  smashMargin: 0.6
+  smashAirtimeFallback: 0.8
+  hopDistance: 1.5
+  hopCooldown: 7

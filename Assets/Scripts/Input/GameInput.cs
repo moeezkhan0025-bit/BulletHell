@@ -442,6 +442,26 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""DebugToggleRecording"",
+                    ""type"": ""Button"",
+                    ""id"": ""1d00000b-3333-4c0b-8d0b-0000000000cb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""DebugScreenshot"",
+                    ""type"": ""Button"",
+                    ""id"": ""1d00000c-3333-4c0c-8d0c-0000000000cc"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -585,6 +605,28 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""DebugToggleTelemetry"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e000010-4444-4d10-9e10-0000000000e0"",
+                    ""path"": ""<Keyboard>/f11"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DebugToggleRecording"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e000011-4444-4d11-9e11-0000000000e1"",
+                    ""path"": ""<Keyboard>/f12"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DebugScreenshot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -850,6 +892,8 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Debug_DebugTogglePerfOverlay = m_Debug.FindAction("DebugTogglePerfOverlay", throwIfNotFound: true);
         m_Debug_DebugStartStress = m_Debug.FindAction("DebugStartStress", throwIfNotFound: true);
         m_Debug_DebugToggleTelemetry = m_Debug.FindAction("DebugToggleTelemetry", throwIfNotFound: true);
+        m_Debug_DebugToggleRecording = m_Debug.FindAction("DebugToggleRecording", throwIfNotFound: true);
+        m_Debug_DebugScreenshot = m_Debug.FindAction("DebugScreenshot", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Primary = m_Menu.FindAction("Primary", throwIfNotFound: true);
@@ -1156,6 +1200,8 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Debug_DebugTogglePerfOverlay;
     private readonly InputAction m_Debug_DebugStartStress;
     private readonly InputAction m_Debug_DebugToggleTelemetry;
+    private readonly InputAction m_Debug_DebugToggleRecording;
+    private readonly InputAction m_Debug_DebugScreenshot;
     /// <summary>
     /// Provides access to input actions defined in input action map "Debug".
     /// </summary>
@@ -1203,6 +1249,14 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Debug/DebugToggleTelemetry".
         /// </summary>
         public InputAction @DebugToggleTelemetry => m_Wrapper.m_Debug_DebugToggleTelemetry;
+        /// <summary>
+        /// Provides access to the underlying input action "Debug/DebugToggleRecording".
+        /// </summary>
+        public InputAction @DebugToggleRecording => m_Wrapper.m_Debug_DebugToggleRecording;
+        /// <summary>
+        /// Provides access to the underlying input action "Debug/DebugScreenshot".
+        /// </summary>
+        public InputAction @DebugScreenshot => m_Wrapper.m_Debug_DebugScreenshot;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1256,6 +1310,12 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @DebugToggleTelemetry.started += instance.OnDebugToggleTelemetry;
             @DebugToggleTelemetry.performed += instance.OnDebugToggleTelemetry;
             @DebugToggleTelemetry.canceled += instance.OnDebugToggleTelemetry;
+            @DebugToggleRecording.started += instance.OnDebugToggleRecording;
+            @DebugToggleRecording.performed += instance.OnDebugToggleRecording;
+            @DebugToggleRecording.canceled += instance.OnDebugToggleRecording;
+            @DebugScreenshot.started += instance.OnDebugScreenshot;
+            @DebugScreenshot.performed += instance.OnDebugScreenshot;
+            @DebugScreenshot.canceled += instance.OnDebugScreenshot;
         }
 
         /// <summary>
@@ -1294,6 +1354,12 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @DebugToggleTelemetry.started -= instance.OnDebugToggleTelemetry;
             @DebugToggleTelemetry.performed -= instance.OnDebugToggleTelemetry;
             @DebugToggleTelemetry.canceled -= instance.OnDebugToggleTelemetry;
+            @DebugToggleRecording.started -= instance.OnDebugToggleRecording;
+            @DebugToggleRecording.performed -= instance.OnDebugToggleRecording;
+            @DebugToggleRecording.canceled -= instance.OnDebugToggleRecording;
+            @DebugScreenshot.started -= instance.OnDebugScreenshot;
+            @DebugScreenshot.performed -= instance.OnDebugScreenshot;
+            @DebugScreenshot.canceled -= instance.OnDebugScreenshot;
         }
 
         /// <summary>
@@ -1657,6 +1723,20 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDebugToggleTelemetry(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DebugToggleRecording" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDebugToggleRecording(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DebugScreenshot" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDebugScreenshot(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Menu" which allows adding and removing callbacks.

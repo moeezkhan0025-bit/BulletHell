@@ -27,11 +27,24 @@ namespace BulletHell.Input
         /// <summary>Right stick.</summary>
         public Vector2 Move => DebugOverride ? DebugMove : moveAction.ReadValue<Vector2>();
 
+        /// <summary>Development tools only (the capture autopilot): when set, Aim returns DebugAim instead of the device.</summary>
+        public bool DebugAimOverride { get; set; }
+        public Vector2 DebugAim { get; set; }
+
+        /// <summary>Development tools only (the capture autopilot): when set, FireHeld returns DebugFire instead of the device.</summary>
+        public bool DebugFireOverride { get; set; }
+        public bool DebugFire { get; set; }
+
         /// <summary>Left stick.</summary>
-        public Vector2 Aim => aimAction.ReadValue<Vector2>();
+        public Vector2 Aim => DebugAimOverride ? DebugAim : aimAction.ReadValue<Vector2>();
 
         /// <summary>R1 held down.</summary>
-        public bool FireHeld => fireAction.IsPressed();
+        public bool FireHeld => DebugFireOverride ? DebugFire : fireAction.IsPressed();
+
+        /// <summary>Development tools only (the capture autopilot): raise the same events a button press would.</summary>
+        public void DebugRaiseLockToggle() => LockTogglePressed?.Invoke();
+        public void DebugRaiseJump() => JumpPressed?.Invoke();
+        public void DebugRaiseAmmo(int slot) => AmmoPressed?.Invoke(slot);
 
         public event Action LockTogglePressed;
 
@@ -78,6 +91,8 @@ namespace BulletHell.Input
             input.Debug.DebugTogglePerfOverlay.performed += OnDebugTogglePerfOverlay;
             input.Debug.DebugStartStress.performed += OnDebugStartStress;
             input.Debug.DebugToggleTelemetry.performed += OnDebugToggleTelemetry;
+            input.Debug.DebugToggleRecording.performed += OnDebugToggleRecording;
+            input.Debug.DebugScreenshot.performed += OnDebugScreenshot;
 
             ammoActions[0] = gameplay.EquipAmmo1;
             ammoActions[1] = gameplay.EquipAmmo2;
@@ -143,6 +158,8 @@ namespace BulletHell.Input
             input.Debug.DebugTogglePerfOverlay.performed -= OnDebugTogglePerfOverlay;
             input.Debug.DebugStartStress.performed -= OnDebugStartStress;
             input.Debug.DebugToggleTelemetry.performed -= OnDebugToggleTelemetry;
+            input.Debug.DebugToggleRecording.performed -= OnDebugToggleRecording;
+            input.Debug.DebugScreenshot.performed -= OnDebugScreenshot;
             input.Dispose();
         }
 
@@ -163,6 +180,10 @@ namespace BulletHell.Input
 
         // F9: show / hide the playtest summary (development builds and the editor only).
         private void OnDebugToggleTelemetry(InputAction.CallbackContext _) => Telemetry.TelemetryOverlay.Toggle();
+
+        // F11: start / stop the gameplay video recording (the Editor's Recorder). F12: save a 1920x1080 PNG. Development builds and the editor only.
+        private void OnDebugToggleRecording(InputAction.CallbackContext _) => Capture.CaptureHotkeys.RaiseRecordToggle();
+        private void OnDebugScreenshot(InputAction.CallbackContext _) => Capture.CaptureHotkeys.RaiseScreenshot();
 
         // F7: give yourself currency (the amount is on ShopTuning). Works in any run state; the Shop refreshes by itself.
         private void OnDebugGiveCurrency(InputAction.CallbackContext _)

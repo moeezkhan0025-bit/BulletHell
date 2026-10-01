@@ -24,6 +24,14 @@ Screenshots of the built screens: `Docs/Screenshots/VoxUI` (1920x1080). Mockups:
 - **Old setup scripts:** `M4Setup..M9dSetup`, `Cc1Setup`, `M75Setup` still contain the old skeleton screen builders (TMP-converted but the old look). The screens are now built by `BulletHell/Vox/5..9`; do not re-run the old screen builders.
 - **Retired art in docs:** `Docs/Screenshots/UI1` and `UI1/theme_sheet.png` still show the removed Mega Cozy pack. Delete the folder when convenient.
 
+### R1 capture kit: known gaps (found while testing R1, 2026-10-01)
+- **GIF size:** the spec (960 px wide, 15 fps, under 8 MB) cannot be met on busy gameplay: `Tools/make_hero.ps1` on the Hero loop ended at 640 px / 10 fps / 64 colours for 17 s (7.2 MB) and 800 px / 10 fps / 96 colours for 11 s (7.2 MB). Use the MP4 loops as the hero media and the GIF as a fallback, or relax the limit (`-MaxMB`).
+- **Test pickups in every capture:** the five `TestPickups` (ammo pickup prefabs from M3a) sit in the Game scene, so their orange / yellow discs show in every gameplay clip and screenshot. Remove or hide them for capture (not done: they are the scene's ammo test setup).
+- **Pumpking smash jump unverified:** the autopilot jumps the smash on the landing ring, but capture runs are immune, so a missed jump shows nothing in a clip. Check the timing with Invincible off before relying on it.
+- **Autopilot bullet scan:** `CaptureBulletScanner` finds enemy bullets through the pool's "Fill" child layer and its child layout (no accessors on `Projectile` / `ProjectilePool`); it stops seeing bullets if that structure changes.
+- **Armament icons:** `ArtProvenance` marks the five Armament icons PLACEHOLDER because `Docs/ART_CHECKLIST.md` still lists "Armament icons x5" as pending, although the Shop already shows them. Tick the checklist line if they are final.
+- **Editor Views:** the Inspector + Art Slot Board shot is clipped on screens narrower than about 1800 px; the Build Profiles window shows the platform list only (no Build Profile assets exist in the project).
+
 ### "Destroy may not be called from edit mode" logged when leaving Play mode (seen while working on UI2)
 - **Steps:** enter Play mode (any scene that spawned enemies), then stop it
 - **Expected:** a clean Console

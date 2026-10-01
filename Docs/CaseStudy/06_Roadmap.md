@@ -22,6 +22,7 @@ Priority key (suggestion): P1 = blocks the next milestone or the vertical slice;
 | D6 Build pipeline | `[x]` (2026-09-30) | "Windows and WebGL builds from one editor menu ..., WebGL test report ..., verdict on an itch.io browser demo" | demo track |
 | S1 Demo scope | `DemoConfig`: Sentry, traps/hazards and Character Creation editing gated off in demo builds; procedural effect placeholders; art checklist split into Demo and Post-demo | D6 build menu (demo flag); ART_CHECKLIST.md | Done 2026-09-30 |
 | L1 Local web build | Two UI fixes (no part overlays in the demo; focus and hover on every button, Armory navigation), then a demo WebGL build for any static host (cover, fullscreen, desktop note), a zipped Windows demo, local server script, Chrome test | S1, D6 | Done 2026-09-30. **W1 itch.io deployment is postponed** |
+| R1 Portfolio capture kit | `[x]` | "Everything saves under Captures/ (git-ignored), in subfolders per page section." | done 2026-10-01 |
 | M12 Polish | `[ ]` | "touch controls (incl. jump button), button glyphs, juice, announcer/audio, performance pass" | P2 to P3 |
 
 ## 2. Open design questions: every `[TBD]` in CLAUDE.md

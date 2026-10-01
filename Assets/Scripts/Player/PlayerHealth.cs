@@ -39,6 +39,20 @@ namespace BulletHell.Player
 
         private bool debugGodMode;
 
+        /// <summary>Capture tool only (R1): hits are ignored outright (no damage, no hit feedback) so hearts and the screen stay clean on camera. Marks the run as a debug run.</summary>
+        public bool DebugImmune
+        {
+            get => debugImmune;
+            set
+            {
+                debugImmune = value;
+                if (value && run != null)
+                    run.MarkDebug();
+            }
+        }
+
+        private bool debugImmune;
+
         public float Current => health.Current;
         public float Max => health.Max;
         public bool IsAlive => health.IsAlive;
@@ -47,7 +61,7 @@ namespace BulletHell.Player
         public bool IsAirborne { get; private set; }
         /// <summary>On the ground: ground hazards (traps, hazard zones) only hurt a grounded player.</summary>
         public bool IsGrounded => !IsAirborne;
-        public bool CanBeHit => health.IsAlive && invulnerableLeft <= 0f && !(IsAirborne && dodgesBulletsInAir);
+        public bool CanBeHit => !debugImmune && health.IsAlive && invulnerableLeft <= 0f && !(IsAirborne && dodgesBulletsInAir);
         /// <summary>Where enemy bullets aim and hit: the damage core, low near the feet.</summary>
         public Vector2 Position => core != null ? core.position : transform.position;
         /// <summary>Where the player stands on the floor (traps, coins, spawn distances use this).</summary>

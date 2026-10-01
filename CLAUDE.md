@@ -178,6 +178,27 @@ version says "demo"); "BulletHell/Demo/Demo Mode On / Off (Editor)" flips it for
   coin burst and confetti presets, a muzzle flash on player shots, a spawn puff at the gate, the Pumpking smash shockwave ring (`FeedbackHub.Shockwave`), a DANGER glow on the floor
   under a winding-up enemy (`TelegraphFx`), and a soft glow under coins and ammo pickups (`PickupGlow`). None uses the reserved enemy-bullet hues (a test checks).
 
+## Portfolio capture kit (R1)
+Editor and development builds only; nothing here ships in a release build. Output is git-ignored (`Captures/Gameplay`, `Captures/State`, `Captures/Editor`).
+- **Recording** (`Scripts/Capture`, `Editor/Capture/Recording*`): Unity Recorder, MP4 H.264, 1920x1080, 60 fps constant, game audio, `<scenario>_<date>_<time>.mp4`. **F11** starts / stops, **F12** saves a 1920x1080 PNG
+  (Debug-map actions `DebugToggleRecording` / `DebugScreenshot`; like F8-F10 they only work in RoundIntro and Combat, the menu works anywhere). The REC indicator is an Editor popup + Scene view overlay, never in the Game view,
+  so it cannot appear in a video or PNG. Screenshots taken while Placeholder Annotation is on go to `Captures/State/<scenario>-annotated_*.png`.
+- **Scenarios** (`BulletHell/Capture/Scenarios/...`, data in `Data/Capture/Scenario_*.asset` + `CaptureTuning.asset`): Hero loop (round 2, six arms with Homing / Ricochet / Auto-fire, extra Chasers + Weavers kept alive, 20 s),
+  Round 1 (starting loadout, 25 s), Two enemy types (round 2, 25 s, extra Chasers + Weavers), Pumpking (round 3, 40 s). Each starts a fresh run, skips onboarding in memory only (profile file untouched) and builds a runtime loadout
+  (assets are never modified). "Auto record scenarios" (EditorPrefs, default off) starts / stops the Recorder with the capture window.
+- **Toggles** (EditorPrefs): Clean capture (default on: hides the debug overlays and the cursor, keeps the HUD), Invincible for capture (default on: `PlayerHealth.DebugImmune`, hits are ignored so the hearts stay full; it marks the run as a debug run, so
+  capture runs add debug-flagged rows to `playtest_runs.csv`, left out of the averages).
+- **Autopilot** (`CaptureAutopilot`): dodges bullets, keeps its distance, selects and locks the arm toward the nearest enemy, fires in bursts, swaps ammo, jumps the Pumpking smash on its landing ring. It drives the input reader's debug
+  hooks (`GameplayInputReader.Debug*`), not fake devices. All numbers in `CaptureTuning`. Pumpking jump timing is not verified (the run is immune, so a missed jump shows nothing).
+- **Hero tool** (`Tools/make_hero.ps1`, README beside it; ffmpeg 9.0.2 installed per-user with winget): in / out time -> seamless-looking loop MP4 at 1080p and 720p (crossfade of the tail into the head, each under 8 MB) and a GIF
+  (size ladder: palette / colours / fps / width until under 8 MB). Segment length 10.75-21 s.
+- **Placeholder annotation** (`BulletHell/Capture/Placeholder Annotation`, `Scripts/Capture/Annotation`): VoxKit-styled chips FINAL ART / PLACEHOLDER over the on-screen elements plus a legend. The verdict comes from `ArtProvenance`
+  (asset origin: an `ArtSource` master exists, folder rules, Docs/CREDITS.md for audio, `ART_CHECKLIST.md` for the pending kit icons), with its few rules in `Data/Capture/ArtProvenanceRules.asset`.
+- **Art Slot Board** (`BulletHell/Capture/Art Slot Board`): every sprite / sprite library / audio clip reference in the data assets and prefabs with slot, current asset, FINAL / PLACEHOLDER, size and the spec to meet; counts per
+  section; "Export markdown" writes `Captures/Editor/art_slot_board.md`. First scan: 261 slots, 104 FINAL, 157 PLACEHOLDER.
+- **Editor Views** (`BulletHell/Capture/Editor Views/1..6`, "All views"): Project (Assets, Assets/Scripts), Hierarchy of the Game scene, Build Profiles, Inspector + Art Slot Board, ArtSource -> Assets/Art map; each saves a PNG to
+  `Captures/Editor` when the Editor is focused (`unity command editor_focus` first) and falls back to a "snip it now" notice. Views refuse to run in Play mode.
+
 ## Save system
 - Exactly ONE run save (single slot), JSON, written through ISaveSystem (platform save APIs plug in later).
 - Separate from the run save: a settings file and a profile file (chosen cosmetics, unlocks, onboarding finished). These are
@@ -581,5 +602,8 @@ Tools/ (scripts, e.g. export_art: downscales ArtSource 4x masters 50% into Asset
       "Desktop only" note, a controller button or a click starts audio and input, fullscreen button, responsive 16:9) and "Build Windows (Demo)" (zipped, Burst debug folder removed), served locally
       by `Tools/WebTest` and tested in Chrome. W1 (itch.io deployment) is postponed.
 - [ ] M11 Themed UI/visual pass: candy-colosseum style for menus, HUD, Shop, Armory, customization; final art.
+- [x] R1 Portfolio capture kit (done 2026-10-01; everything saves under `Captures/Gameplay|State|Editor`, git-ignored; older `Captures/*` shots stay tracked): see "Portfolio capture kit (R1)" below. Unity Recorder 5.1.2,
+      F11 record / F12 PNG (F8-F10 keep their debug jobs), `BulletHell/Capture/...` menu (4 scenarios, Clean capture, Invincible, Auto record, Placeholder Annotation, Art Slot Board, Editor Views), camera-friendly
+      autopilot, `Tools/make_hero.ps1` (ffmpeg). Known gap: the GIF cannot reach 960 px / 15 fps under 8 MB on busy gameplay (see Docs/BUGS.md).
 - [ ] M12 Polish: touch controls (incl. jump button), button glyphs, juice, announcer/audio, performance pass
       (the performance pass also covers the 2D SRP Batcher warning on Mat_SpriteCharacter / Mat_SpriteOutline: _TexelSize / _ST properties in the Sprite Unlit graphs).
