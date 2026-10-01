@@ -808,6 +808,17 @@ namespace BulletHell.Armory
                 ring.Slots[i].Button.navigation = new Navigation { mode = Navigation.Mode.Explicit, selectOnLeft = prev, selectOnUp = prev, selectOnRight = next, selectOnDown = next };
             }
 
+            // The way from the ring to the right half (tabs, cards, Fight, Remove, Main Menu): Right from a slot on the right side of the ring (NE, E, SE)
+            // crosses to the inventory; Left from the first column or the tabs comes back to the east slot. Up, Down and Left still cycle the ring.
+            Selectable armsTabEntry = tabs.ArmsButton;
+            Selectable ringReturn = ring.Slots[Mathf.Min(2, n - 1)].Button;
+            for (int i = 1; i <= 3 && i < n; i++)
+            {
+                Navigation nav = ring.Slots[i].Button.navigation;
+                nav.selectOnRight = tabs.Active == ArmoryTabs.Arms ? armsTabEntry : tabs.ArmamentsButton;
+                ring.Slots[i].Button.navigation = nav;
+            }
+
             // Inventory: tabs on top, a 3-column grid below, then Fight.
             Selectable armsTab = tabs.ArmsButton;
             Selectable armamentsTab = tabs.ArmamentsButton;
@@ -816,14 +827,14 @@ namespace BulletHell.Armory
                 if (c.gameObject.activeSelf)
                     active.Add(c.Button);
 
-            armsTab.navigation = new Navigation { mode = Navigation.Mode.Explicit, selectOnRight = armamentsTab, selectOnDown = active.Count > 0 ? active[0] : (Selectable)fightButton };
+            armsTab.navigation = new Navigation { mode = Navigation.Mode.Explicit, selectOnLeft = ringReturn, selectOnRight = armamentsTab, selectOnDown = active.Count > 0 ? active[0] : (Selectable)fightButton };
             armamentsTab.navigation = new Navigation { mode = Navigation.Mode.Explicit, selectOnLeft = armsTab, selectOnDown = active.Count > 0 ? active[Mathf.Min(1, active.Count - 1)] : (Selectable)fightButton };
             Selectable tabForUp = tabs.Active == ArmoryTabs.Arms ? armsTab : armamentsTab;
 
             for (int i = 0; i < active.Count; i++)
             {
                 int col = i % GridColumns;
-                Selectable left = col > 0 ? active[i - 1] : null;
+                Selectable left = col > 0 ? active[i - 1] : ringReturn;
                 Selectable right = col < GridColumns - 1 && i + 1 < active.Count ? active[i + 1] : null;
                 Selectable up = i - GridColumns >= 0 ? active[i - GridColumns] : tabForUp;
                 Selectable down = i + GridColumns < active.Count ? active[i + GridColumns] : (Selectable)fightButton;
@@ -835,8 +846,8 @@ namespace BulletHell.Armory
                 selectOnUp = active.Count > 0 ? active[active.Count - 1] : tabForUp,
                 selectOnLeft = removeButton.gameObject.activeSelf ? (Selectable)removeButton : menuButton,
             };
-            menuButton.navigation = new Navigation { mode = Navigation.Mode.Explicit, selectOnRight = fightButton };
-            removeButton.navigation = new Navigation { mode = Navigation.Mode.Explicit, selectOnRight = fightButton };
+            menuButton.navigation = new Navigation { mode = Navigation.Mode.Explicit, selectOnRight = fightButton, selectOnUp = ringReturn };
+            removeButton.navigation = new Navigation { mode = Navigation.Mode.Explicit, selectOnRight = fightButton, selectOnUp = ringReturn };
         }
 
         private void SetupBubbleNavigation(int count)

@@ -32,7 +32,12 @@ namespace BulletHell.UI
         private void Awake()
         {
             if (Application.isPlaying)
+            {
                 GetComponent<Button>().onClick.AddListener(() => UiSound.Play(UiSoundKind.Confirm));
+                // Gold ring + lift on controller focus and mouse hover, press-down while pressed (the same for marble and primary buttons).
+                if (!TryGetComponent<ButtonFocusFx>(out _))
+                    gameObject.AddComponent<ButtonFocusFx>();
+            }
         }
 
         private void OnEnable() => Apply();

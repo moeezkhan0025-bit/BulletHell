@@ -44,6 +44,16 @@ namespace BulletHell.EditorTools
         [MenuItem("BulletHell/Build/Windows + WebGL", false, 120)]
         public static void MenuBoth() => Run(Target.Windows, Target.WebGL);
 
+        // Demo builds (S1): the DemoConfig flag is switched on for the build and put back afterwards. The folder and zip get a "-demo" suffix.
+        [MenuItem("BulletHell/Build/Build Windows (Demo)", false, 200)]
+        public static void MenuDemoWindows() => Run(true, Target.Windows);
+
+        [MenuItem("BulletHell/Build/Build WebGL (Demo)", false, 201)]
+        public static void MenuDemoWebGL() => Run(true, Target.WebGL);
+
+        [MenuItem("BulletHell/Build/Build Windows + WebGL (Demo)", false, 202)]
+        public static void MenuDemoBoth() => Run(true, Target.Windows, Target.WebGL);
+
         [MenuItem("BulletHell/Build/Show Next Version", false, 140)]
         public static void ShowNextVersion() => Debug.Log("Next build: " + Format(Next(Load())) + " (current " + Format(Load()) + ")");
 
@@ -83,7 +93,41 @@ namespace BulletHell.EditorTools
         // ---------------------------------------------------------------- building
 
         /// <summary>Builds the given targets with one new version number. Returns true when every build succeeded.</summary>
-        public static bool Run(params Target[] targets)
+        public static bool Run(params Target[] targets) => Run(false, targets);
+
+        /// <summary>Builds with the demo flag forced on or off (and restored afterwards).</summary>
+        public static bool Run(bool demo, params Target[] targets)
+        {
+            var demoConfig = AssetDatabase.LoadAssetAtPath<BulletHell.Core.DemoConfig>(DemoSetup.DemoConfigPath);
+            bool previousDemo = demoConfig != null && demoConfig.IsDemo;
+            if (demoConfig != null)
+            {
+                demoConfig.SetDemo(demo);
+                AssetDatabase.SaveAssets();
+            }
+            try
+            {
+                return RunTargets(demo, targets, RestoreDemoFlag(previousDemo));
+            }
+            finally
+            {
+                RestoreDemoFlag(previousDemo)();   // again, in case RunTargets threw before it got there
+            }
+        }
+
+        // Put the demo flag back by path (a build target switch reimports assets and leaves old references dead).
+        private static Action RestoreDemoFlag(bool previousDemo) => () =>
+        {
+            var again = AssetDatabase.LoadAssetAtPath<BulletHell.Core.DemoConfig>(DemoSetup.DemoConfigPath);
+            if (again != null)
+            {
+                again.SetDemo(previousDemo);
+                EditorUtility.SetDirty(again);
+                AssetDatabase.SaveAssets();
+            }
+        };
+
+        private static bool RunTargets(bool demo, Target[] targets, Action restoreDemo)
         {
             VersionData current = Load();
             VersionData next = Next(current);
@@ -97,7 +141,7 @@ namespace BulletHell.EditorTools
             try
             {
                 foreach (Target target in targets)
-                    allOk &= BuildOne(target, version);
+                    allOk &= BuildOne(target, version, demo);
             }
             catch (Exception e)
             {
@@ -116,6 +160,7 @@ namespace BulletHell.EditorTools
                     PlayerSettings.bundleVersion = previousBundle;   // the number is not used up
                     Debug.LogError("BUILD FAILED: version " + version + " was not recorded.");
                 }
+                restoreDemo();   // BEFORE the target switch below: switching back reloads the domain and ends this method early
                 if (EditorUserBuildSettings.activeBuildTarget != previousTarget && previousGroup != BuildTargetGroup.Unknown)
                     EditorUserBuildSettings.SwitchActiveBuildTarget(previousGroup, previousTarget);
                 AssetDatabase.SaveAssets();
@@ -132,11 +177,12 @@ namespace BulletHell.EditorTools
             return list.ToArray();
         }
 
-        private static bool BuildOne(Target target, string version)
+        private static bool BuildOne(Target target, string version, bool demo)
         {
             bool web = target != Target.Windows;
             string platformName = target == Target.Windows ? "Windows" : target == Target.WebGL ? "WebGL" : "WebGL-dev";
-            string folder = Path.Combine(BuildsRoot, web ? "WebGL" : "Windows", version + (target == Target.WebGLDevelopment ? "-dev" : ""));
+            string suffix = (target == Target.WebGLDevelopment ? "-dev" : "") + (demo ? "-demo" : "");
+            string folder = Path.Combine(BuildsRoot, web ? "WebGL" : "Windows", version + suffix);
             if (Directory.Exists(folder))
                 Directory.Delete(folder, true);
             Directory.CreateDirectory(folder);
@@ -163,9 +209,12 @@ namespace BulletHell.EditorTools
                 ok = false;
             }
 
+            if (ok && !web)
+                foreach (string debugFolder in Directory.GetDirectories(folder, "*_BurstDebugInformation_DoNotShip"))
+                    Directory.Delete(debugFolder, true);   // Burst debug symbols are not part of a shippable build
             string zip = "";
-            if (ok && web)
-                zip = Zip(folder, Path.Combine(BuildsRoot, ExeName + "-" + platformName + "-" + version + ".zip"));
+            if (ok)
+                zip = Zip(folder, Path.Combine(BuildsRoot, ExeName + "-" + platformName + (demo ? "-demo-" : "-") + version + ".zip"));   // Windows and WebGL both get a zip
             long size = ok ? DirectorySize(folder) : 0;
             Log(version, platformName, ok ? "ok" : summary.result.ToString(), watch.Elapsed.TotalSeconds, size, summary.totalErrors, summary.totalWarnings, folder, zip);
             Debug.Log("BUILD " + platformName + " " + version + ": " + summary.result + " in " + watch.Elapsed.TotalSeconds.ToString("0") + " s, " + (size / 1048576f).ToString("0.0") + " MB -> " + folder);

@@ -51,7 +51,7 @@ namespace BulletHell.UI
             messageText.text = "";
             BulletHell.Core.GameServices.Ensure().Audio.PlayMusic(BulletHell.Audio.MusicContext.Menu);
             if (versionLabel != null)
-                versionLabel.text = BulletHell.Core.BuildInfo.Display;
+                versionLabel.text = BulletHell.Core.BuildInfo.MenuLine;
             ShowMenu();
         }
 

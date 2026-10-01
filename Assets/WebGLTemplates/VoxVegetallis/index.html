@@ -4,37 +4,64 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no">
-    <title>{{{ PRODUCT_NAME }}}</title>
+    <title>{{{ PRODUCT_NAME }}} (Demo)</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <style>
-      html, body { margin: 0; height: 100%; background: #1b1009; overflow: hidden; font-family: Georgia, 'Times New Roman', serif; }
-      /* The game is 16:9. The canvas takes the largest 16:9 box that fits the window (itch.io embeds it in an iframe of any shape). */
+      @font-face { font-family: 'Cinzel Decorative'; src: url('TemplateData/cinzel-decorative-black.ttf') format('truetype'); font-weight: 900; font-display: swap; }
+      @font-face { font-family: 'Lilita One'; src: url('TemplateData/lilita-one.ttf') format('truetype'); font-display: swap; }
+      :root { --soil: #2e1f14; --marble: #f4eedc; --gold: #e9b63a; --leaf: #5e9f3e; --tomato: #d8443a; --muted: #6b604e; }
+      html, body { margin: 0; height: 100%; background: #1b1009; overflow: hidden; font-family: 'Lilita One', Georgia, serif; color: var(--marble); }
+      /* The game is 16:9: the canvas takes the largest 16:9 box that fits the window (itch.io-style iframes included). */
       #unity-container { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-      #unity-canvas { width: min(100vw, calc(100vh * 16 / 9)); height: min(100vh, calc(100vw * 9 / 16)); background: #2e1f14; display: block; }
-      #unity-loading-bar { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; color: #f4eedc; }
-      #unity-title { font-size: clamp(28px, 6vw, 72px); letter-spacing: .08em; color: #e9b63a; text-shadow: 3px 3px 0 #2e1f14, 6px 6px 0 #5e9f3e; margin-bottom: 28px; }
-      #unity-progress-bar-empty { width: min(60vw, 520px); height: 22px; margin: 0 auto; border: 4px solid #2e1f14; border-radius: 14px; background: #6b604e; overflow: hidden; }
-      #unity-progress-bar-full { width: 0%; height: 100%; background: #5e9f3e; transition: width .15s ease-out; }
-      #unity-progress-text { margin-top: 14px; font-size: 18px; color: #e2d6bc; }
-      #unity-warning { position: absolute; left: 50%; top: 5%; transform: translateX(-50%); z-index: 10; }
-      #unity-fullscreen-button { position: absolute; right: 12px; top: 12px; width: 40px; height: 40px; cursor: pointer; opacity: .75;
+      #unity-canvas { width: min(100vw, calc(100vh * 16 / 9)); height: min(100vh, calc(100vw * 9 / 16)); background: var(--soil); display: block; outline: none; }
+      #unity-warning { position: absolute; left: 50%; top: 5%; transform: translateX(-50%); z-index: 30; }
+      #unity-fullscreen-button { position: absolute; right: 12px; top: 12px; width: 40px; height: 40px; cursor: pointer; opacity: .75; z-index: 5;
         background: url('TemplateData/fullscreen-button.png') no-repeat center / contain; }
       #unity-fullscreen-button:hover { opacity: 1; }
+
+      /* ---- click-to-play cover ---- */
+      #cover { position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+        background: linear-gradient(rgba(27,16,9,.55), rgba(27,16,9,.7)), url('TemplateData/cover.jpg') center / cover no-repeat; }
+      #cover.hidden { display: none; }
+      .kicker { font-family: 'Cinzel Decorative', Georgia, serif; font-weight: 900; font-size: clamp(14px, 2.4vw, 30px); letter-spacing: .12em; color: #cfd9a8; text-shadow: 2px 2px 0 var(--soil); }
+      .logo { font-family: 'Cinzel Decorative', Georgia, serif; font-weight: 900; font-size: clamp(34px, 9.5vw, 150px); line-height: 1.05; margin: .1em 0 .3em; color: var(--gold);
+        text-shadow: 3px 3px 0 var(--soil), 6px 6px 0 var(--leaf), 9px 9px 0 var(--soil); letter-spacing: -.01em; }
+      .demo-tag { font-size: clamp(14px, 2vw, 26px); color: var(--soil); background: var(--gold); border: 4px solid var(--soil); border-radius: 14px; padding: .15em .8em; margin-bottom: 1.6em; box-shadow: 0 6px 0 var(--soil); }
+      #play { font-family: 'Lilita One', Georgia, serif; font-size: clamp(22px, 3.4vw, 46px); color: #fff; background: var(--tomato); border: 6px solid var(--soil); border-radius: 24px; padding: .35em 1.6em;
+        box-shadow: 0 9px 0 var(--soil); cursor: pointer; transition: transform .12s ease-out, box-shadow .12s ease-out; }
+      #play[disabled] { background: #8a7f6c; color: #e2d6bc; cursor: default; }
+      #play:not([disabled]):hover, #play:not([disabled]):focus-visible { transform: translateY(-8px); box-shadow: 0 17px 0 var(--soil), 0 0 0 8px var(--gold); outline: none; }
+      #play:not([disabled]):active { transform: translateY(2px) scale(.97); box-shadow: 0 5px 0 var(--soil); }
+      #progress { width: min(60vw, 520px); height: 16px; margin: 1.6em auto .5em; border: 4px solid var(--soil); border-radius: 12px; background: var(--muted); overflow: hidden; }
+      #progress-fill { width: 0%; height: 100%; background: var(--leaf); transition: width .15s ease-out; }
+      #status { font-size: clamp(13px, 1.6vw, 20px); color: #e2d6bc; min-height: 1.4em; }
+      .note { position: absolute; left: 0; right: 0; bottom: 3vh; font-size: clamp(12px, 1.5vw, 19px); color: #e2d6bc; text-shadow: 1px 1px 0 var(--soil); }
+      .note b { color: var(--gold); font-weight: normal; }
     </style>
   </head>
   <body>
     <div id="unity-container">
-      <canvas id="unity-canvas" width="1920" height="1080" tabindex="-1"></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-title">VOX VEGETALLIS</div>
-        <div id="unity-progress-bar-empty"><div id="unity-progress-bar-full"></div></div>
-        <div id="unity-progress-text">Entering the colosseum...</div>
-      </div>
+      <canvas id="unity-canvas" width="1920" height="1080" tabindex="0"></canvas>
       <div id="unity-warning"></div>
       <div id="unity-fullscreen-button" title="Fullscreen"></div>
     </div>
+
+    <div id="cover">
+      <div class="kicker">THE VEGETABLE COLOSSEUM PRESENTS</div>
+      <div class="logo">VOX VEGETALLIS</div>
+      <div class="demo-tag">Demo &middot; Work in progress</div>
+      <button id="play" disabled>Loading...</button>
+      <div id="progress"><div id="progress-fill"></div></div>
+      <div id="status">Starting download...</div>
+      <div class="note"><b>Desktop only</b> &middot; keyboard / mouse or controller (click Play once; then press any button on your controller)</div>
+    </div>
+
     <script>
       var canvas = document.querySelector("#unity-canvas");
+      var cover = document.querySelector("#cover");
+      var playButton = document.querySelector("#play");
+      var statusLine = document.querySelector("#status");
+      var fill = document.querySelector("#progress-fill");
 
       function unityShowBanner(msg, type) {
         var banner = document.querySelector("#unity-warning");
@@ -43,7 +70,7 @@
         banner.appendChild(div);
         if (type == 'error') div.style = 'background: #d8443a; color: #fff; padding: 10px;';
         else {
-          if (type == 'warning') div.style = 'background: #f4ce4a; padding: 10px;';
+          if (type == 'warning') div.style = 'background: #f4ce4a; color: #2e1f14; padding: 10px;';
           setTimeout(function () { if (div.parentNode) banner.removeChild(div); }, 5000);
         }
       }
@@ -71,34 +98,62 @@
         productName: {{{ JSON.stringify(PRODUCT_NAME) }}},
         productVersion: {{{ JSON.stringify(PRODUCT_VERSION) }}},
         showBanner: unityShowBanner,
-        // Settings, the profile, the run save and the playtest log are files under Application.persistentDataPath.
-        // Without this line the browser forgets them when the tab closes (the default template leaves it off).
+        // Settings, the profile, the run save and the playtest log live under persistentDataPath; without this line the browser forgets them.
         autoSyncPersistentDataPath: true,
         matchWebGLToCanvasSize: true,
       };
 
-      // Phones and tablets: the game is landscape only, so fill the screen.
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        document.querySelector("#unity-canvas").style.width = "100vw";
-        document.querySelector("#unity-canvas").style.height = "100vh";
-      }
+      // While the cover is up the game must not see the controller (a press on the cover would also press New Game behind it), so
+      // the page hides every gamepad until the click that starts the game.
+      var padGate = true;
+      var realGetGamepads = navigator.getGamepads ? navigator.getGamepads.bind(navigator) : null;
+      if (realGetGamepads) navigator.getGamepads = function () { return padGate ? [] : realGetGamepads(); };
 
-      var progressText = document.querySelector("#unity-progress-text");
+      var instance = null;
+      var ready = false;
+      window.voxStart = performance.now();
+
       var script = document.createElement("script");
       script.src = loaderUrl;
       script.onload = function () {
-        window.voxLoadStart = performance.now();
         createUnityInstance(canvas, config, function (progress) {
-          document.querySelector("#unity-progress-bar-full").style.width = (100 * progress) + "%";
-          progressText.textContent = progress < 0.9 ? "Downloading " + Math.round(100 * progress / 0.9) + "%" : "Starting...";
+          fill.style.width = (100 * progress) + "%";
+          statusLine.textContent = progress < 0.9 ? "Downloading " + Math.round(100 * progress / 0.9) + "%" : "Starting the game...";
         }).then(function (unityInstance) {
+          instance = unityInstance;
           window.voxUnity = unityInstance;
-          window.voxLoadedMs = performance.now();   // time from page start to the first frame of the game
-          document.querySelector("#unity-loading-bar").style.display = "none";
+          ready = true;
+          window.voxLoadedMs = performance.now();   // page start to a running game (the cover is still up)
+          fill.style.width = "100%";
+          statusLine.textContent = "Ready.";
+          playButton.disabled = false;
+          playButton.textContent = "Click to Play";
+          playButton.focus();
           document.querySelector("#unity-fullscreen-button").onclick = function () { unityInstance.SetFullscreen(1); };
-        }).catch(function (message) { alert(message); });
+        }).catch(function (message) { statusLine.textContent = "Could not load the game: " + message; });
       };
       document.body.appendChild(script);
+
+      // The click that starts everything: browsers only allow audio and give the canvas keyboard focus after a real user gesture, so the
+      // cover waits for one. It hands focus to the canvas (keys and mouse work at once) and resumes any suspended audio context.
+      function start() {
+        if (!ready) return;
+        cover.className = "hidden";
+        padGate = false;
+        window.voxPlayMs = performance.now();
+        canvas.focus();
+        try {
+          var Module = instance.Module;
+          if (Module && Module.WEBAudio && Module.WEBAudio.audioContext && Module.WEBAudio.audioContext.state !== 'running') Module.WEBAudio.audioContext.resume();
+        } catch (e) {}
+        try {
+          (window.__audio ? window.__audio.contexts : []).forEach(function (c) { if (c.state !== 'running') c.resume(); });
+        } catch (e) {}
+      }
+      playButton.addEventListener("click", start);
+      document.addEventListener("keydown", function (e) { if (!ready || cover.className === "hidden") return; if (e.key === "Enter" || e.key === " ") { e.preventDefault(); start(); } });
+      // Clicking the page again later (after tabbing away) returns keyboard focus to the game.
+      document.addEventListener("pointerdown", function () { if (cover.className === "hidden") canvas.focus(); });
     </script>
   </body>
 </html>

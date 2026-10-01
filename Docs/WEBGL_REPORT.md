@@ -106,3 +106,52 @@ the build folder on `http://localhost:8765/`, launches Chrome with the DevTools 
 evaluate JavaScript, key, click, screenshot, console log, network throttle, stand-in gamepad, audio level, viewport). Stress tests run from the page
 address of the development build: `index.html?perfstress&perfseconds=60&perfenemies=80&perfvsync=0&perflabel=web` (the same switches as the Windows
 command line, without the dashes; `PerfArgs` reads them from the URL in WebGL). The run ends with a `PERFSUMMARY {json}` console line.
+
+---
+
+# L1: the local demo build (2026-09-30)
+
+W1 (itch.io deployment) is postponed. L1 produced the demo as files you can host anywhere and test locally.
+
+## What was built
+
+- **`BulletHell/Build/Build WebGL (Demo)`**: DemoConfig on for the build (put back afterwards), release WebGL, gzip with Decompression Fallback (so any plain static host works, no
+  `Content-Encoding` header needed), 256 MB start / 1 GB cap, no threads. Output `Builds/WebGL/<version>-demo` plus `Builds/VoxVegetallis-WebGL-demo-<version>.zip`.
+  `Build Windows (Demo)` and `Build Windows + WebGL (Demo)` sit next to it; the Windows build is zipped too (the Burst debug-symbol folder is removed first).
+- **The page** (`Assets/WebGLTemplates/VoxVegetallis`): the game downloads behind a cover with the title ("VOX VEGETALLIS", the kit's gold/leaf/soil logo drawn in CSS with the OFL
+  Cinzel Decorative and Lilita One fonts), a "Demo - Work in progress" tag, a progress bar, and a **Click to Play** button that unlocks when the game is ready. The click hides the cover,
+  gives the canvas keyboard focus and resumes audio. While the cover is up the page hides every gamepad from the game, so a button press on the cover cannot also press New Game behind it.
+  A "Desktop only - keyboard / mouse or controller" note, a fullscreen button, and a canvas that takes the largest 16:9 box that fits the window.
+- **The Main Menu** shows `v<version> web   |   Demo - Work in progress` (the version line comes from the build number; the note appears only when DemoConfig is on).
+- **`Tools/ServeWebBuild.ps1`**: `powershell -ExecutionPolicy Bypass -File Tools\ServeWebBuild.ps1` serves the newest `Builds\WebGL\*-demo` folder on http://localhost:8080/ and opens Chrome.
+  (`Tools/WebTest/WebTest.cs` is the scripted test harness used for the measurements below.)
+
+## Measurements (Chrome, this PC, localhost, demo build)
+
+| Item | Result |
+|---|---|
+| Download | 27.4 MB zip (wasm 13.1 MB + data 14.7 MB, gzip) |
+| Load to a running game, localhost | 1.6-2.2 s |
+| Load, cold, 50 Mbit/s + 50 ms (from the D6 measurements, same size) | about 7 s; 10 Mbit/s about 26 s |
+| Frame rate in the menu, Character Creation, round 1 | 227-240 fps (the monitor is 240 Hz), p99 5-7 ms |
+| Windows demo zip | 52.5 MB; starts and runs 25 s with no errors in the player log |
+
+## What worked in the browser
+
+- Click to Play: the cover hides, the canvas has focus (`document.activeElement` is the canvas), the audio context is `running` and the menu music is audible (measured level 0.115 RMS).
+- Both fixes, with a gamepad: the d-pad moved focus down the Character Creation rows onto "To the Arena!" and it showed the gold ring and lift; A started the run; the preview and HUD portrait show only the
+  base player sprite; clicking a slot arrow opens the "Character Creation is a work in progress" notice, A closes it and focus returns to the row.
+- New Game, the onboarding, round 1 combat, Game Over and Main Menu all ran. Saving works (settings persist across a reload, from D6).
+
+## What did not work or was not verified
+
+- **A real controller.** A scripted Chrome cannot see a physical gamepad until a human presses a button on it, so the tests used an injected standard-mapping gamepad. The browser's own
+  Gamepad API path and the game's Input System code ran for real, but your DualSense in Chrome still needs one human try: open the page, click Play, press any button on the controller.
+  `Tools\ServeWebBuild.ps1` is for exactly that.
+- **Hover with a mouse in the browser** was not scripted (the test tool has no pointer-move command); hover and the Shop / Armory buttons were checked in the Editor (the same `ButtonFocusFx` component).
+- **Reaching the Shop and Armory in Chrome:** the stand-in pad died in round 1 (as in D6), so the Shop "Leave", Armory "Fight!" and round results were checked in the Editor, not in the browser.
+- **Audio only after a click:** browsers refuse sound before a user gesture, which is why the cover exists. The cover's Click to Play is that gesture. Using only a controller button to start is
+  not supported (a gamepad press is not a reliable gesture for audio), so controller players click once.
+- **Pause with Esc** leaves browser fullscreen first (the browser eats the key); use the controller's Options button or leave fullscreen.
+- Unity prints a few `FMOD returns error code 78` lines and two URP debug-shader notices at start. Harmless.
+- Not tested: Firefox, Safari, Edge, Linux or Mac, laptops with a touch screen, phones (the page says desktop only).

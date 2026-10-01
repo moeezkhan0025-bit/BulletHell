@@ -14,6 +14,26 @@ namespace BulletHell.Core
         /// <summary>"1.0.12": the Player Settings version.</summary>
         public static string Version => Application.version;
 
+        /// <summary>"Demo - Work in progress" in a demo build (the DemoConfig says so), else empty.</summary>
+        public static string DemoNote
+        {
+            get
+            {
+                var config = Resources.Load<GameConfig>(GameConfig.ResourcePath);
+                return config != null && config.IsDemo ? "Demo - Work in progress" : "";
+            }
+        }
+
+        /// <summary>The full Main Menu line: the version, and in a demo build the demo note after it.</summary>
+        public static string MenuLine
+        {
+            get
+            {
+                string note = DemoNote;
+                return note.Length > 0 ? Display + "   |   " + note : Display;
+            }
+        }
+
         /// <summary>The short line the Main Menu shows: "v1.0.12", plus " dev" for development builds and " web" in the browser.</summary>
         public static string Display
         {
